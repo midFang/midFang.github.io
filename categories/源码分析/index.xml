@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>源码分析 on Jane - A super concise theme for Hugo</title>
+    <link>https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+    <description>Recent content in 源码分析 on Jane - A super concise theme for Hugo</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 30 Sep 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>HashMap源码分析</title>
+      <link>https://midFang.github.io/post/hashmap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/hashmap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>HashMap 可以说是我们在开发中经常使用的到, 在 Java 的数据结构基础里，HashMap 无疑是一个非常重要的数据结构 现在看看源码里面的方法具体都干了一下什么</description>
+    </item>
+    
+    <item>
+      <title>Handler 源码分析</title>
+      <link>https://midFang.github.io/post/4.handler-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/4.handler-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>Handler 主要讲的就是 Android 中的消息机制, 其实讲到 Handler 就少不了几个重要的对象, 也就是 Looper , ThreadLocal , MessageQueue 首先看看是如何使用的吧, 我们就简单的从以下入手, Handler 应该也是做</description>
+    </item>
+    
+    <item>
+      <title>Android源码之单例设计模式</title>
+      <link>https://midFang.github.io/post/android%E6%BA%90%E7%A0%81%E4%B9%8B%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/android%E6%BA%90%E7%A0%81%E4%B9%8B%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description>介绍 单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在 LayoutInflater 单</description>
+    </item>
+    
+    <item>
+      <title>ArrayList源码分析</title>
+      <link>https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻</description>
+    </item>
+    
+    <item>
+      <title>EventBus 源码分析</title>
+      <link>https://midFang.github.io/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>EventBus 是一种用于 Android 的事件发布-订阅总线, 是一个可以实现组件间通信的一个第三方框架, 使用起来非常的简单, 一共也就是 4 个步骤, 注册订阅, 发送事件, 解</description>
+    </item>
+    
+  </channel>
+</rss>

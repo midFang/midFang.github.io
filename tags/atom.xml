@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on midFang&#39;s Blog</title>
+    <link>https://midFang.github.io/tags.html</link>
+    <description>Recent content in Tags on midFang&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 01 Jan 2018 16:01:23 +0800</lastBuildDate>
+    
+	<atom:link href="https://midFang.github.io/tags/atom.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>popular</title>
+      <link>https://midFang.github.io/tags/popular.html</link>
+      <pubDate>Mon, 01 Jan 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://midFang.github.io/tags/popular.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tag-1</title>
+      <link>https://midFang.github.io/tags/tag-1.html</link>
+      <pubDate>Mon, 01 Jan 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://midFang.github.io/tags/tag-1.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tag-2</title>
+      <link>https://midFang.github.io/tags/tag-2.html</link>
+      <pubDate>Mon, 01 Jan 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://midFang.github.io/tags/tag-2.html</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tag-3</title>
+      <link>https://midFang.github.io/tags/tag-3.html</link>
+      <pubDate>Mon, 01 Jan 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://midFang.github.io/tags/tag-3.html</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

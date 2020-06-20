@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Jane - A super concise theme for Hugo</title>
+    <link>https://midFang.github.io/tags/</link>
+    <description>Recent content in Tags on Jane - A super concise theme for Hugo</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 10 Jan 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://midFang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Android</title>
+      <link>https://midFang.github.io/tags/android/</link>
+      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>数据结构</title>
+      <link>https://midFang.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kotlin</title>
+      <link>https://midFang.github.io/tags/kotlin/</link>
+      <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/kotlin/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>源码分析</title>
+      <link>https://midFang.github.io/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>View</title>
+      <link>https://midFang.github.io/tags/view/</link>
+      <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/view/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>WiFi</title>
+      <link>https://midFang.github.io/tags/wifi/</link>
+      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/wifi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>工具</title>
+      <link>https://midFang.github.io/tags/%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/%E5%B7%A5%E5%85%B7/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>线程</title>
+      <link>https://midFang.github.io/tags/%E7%BA%BF%E7%A8%8B/</link>
+      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/%E7%BA%BF%E7%A8%8B/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OkHttp</title>
+      <link>https://midFang.github.io/tags/okhttp/</link>
+      <pubDate>Sun, 22 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/okhttp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>第三方开源库</title>
+      <link>https://midFang.github.io/tags/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BC%80%E6%BA%90%E5%BA%93/</link>
+      <pubDate>Sun, 22 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BC%80%E6%BA%90%E5%BA%93/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

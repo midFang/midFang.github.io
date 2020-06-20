@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>笔记 on Jane - A super concise theme for Hugo</title>
+    <link>https://midFang.github.io/categories/%E7%AC%94%E8%AE%B0/</link>
+    <description>Recent content in 笔记 on Jane - A super concise theme for Hugo</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 20 Jun 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://midFang.github.io/categories/%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>hugo常用命令.md</title>
+      <link>https://midFang.github.io/post/hugo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</link>
+      <pubDate>Thu, 20 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/hugo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</guid>
+      <description>Hugo 常用命令 1 2 3 4 5 6 7 8 9 10 11 #查看版本 hugo version #创建文章 hugo new xxx.md #编译生成静态文件 hugo #编译生成静态文件并启动web服务 hugo server 目录结构 1 2 3 4 5 6</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://midFang.github.io/sitemap.xml

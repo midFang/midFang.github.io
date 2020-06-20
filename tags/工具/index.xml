@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>工具 on Jane - A super concise theme for Hugo</title>
+    <link>https://midFang.github.io/tags/%E5%B7%A5%E5%85%B7/</link>
+    <description>Recent content in 工具 on Jane - A super concise theme for Hugo</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 28 Sep 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://midFang.github.io/tags/%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>使用 PicGo 搭建免费图床</title>
+      <link>https://midFang.github.io/post/%E4%BD%BF%E7%94%A8-picgo-%E6%90%AD%E5%BB%BA%E5%85%8D%E8%B4%B9%E5%9B%BE%E5%BA%8A/</link>
+      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/%E4%BD%BF%E7%94%A8-picgo-%E6%90%AD%E5%BB%BA%E5%85%8D%E8%B4%B9%E5%9B%BE%E5%BA%8A/</guid>
+      <description>身为程序员的我们, 我相信应该大部分人都喜欢用 markdown 来当作写作工具, 他的语法格式也很简单, 但是当我们要使用图片的使用, 那么就要使用到图床了, 也就是</description>
+    </item>
+    
+    <item>
+      <title>git使用代理加速，修改代理方式</title>
+      <link>https://midFang.github.io/post/git%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86%E5%8A%A0%E9%80%9F%E4%BF%AE%E6%94%B9%E4%BB%A3%E7%90%86%E6%96%B9%E5%BC%8F/</link>
+      <pubDate>Mon, 10 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/git%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86%E5%8A%A0%E9%80%9F%E4%BF%AE%E6%94%B9%E4%BB%A3%E7%90%86%E6%96%B9%E5%BC%8F/</guid>
+      <description>最近 git clone 一个项目真的是太慢了，每秒 7kb。。。电脑上也刚好有 ti 子，试试能不能让 git 工具走代理的方式，能不能更快些，实测效果好了很多，设置如下 设</description>
+    </item>
+    
+    <item>
+      <title>关闭 Sublime Text 3 自动更新</title>
+      <link>https://midFang.github.io/post/%E5%85%B3%E9%97%AD-sublime-text-3-%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/%E5%85%B3%E9%97%AD-sublime-text-3-%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0/</guid>
+      <description>在 Mac 中使用 Sublime Text 3 的时候，每次打开软件的时候，总是提示自动更新，那么要怎么样可以取消自动更新呢？ 有如下两个步骤 1.完成注册 如果需要取消自动更新</description>
+    </item>
+    
+  </channel>
+</rss>

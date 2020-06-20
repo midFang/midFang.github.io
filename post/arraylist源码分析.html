@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.58.3" />
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content="Saber v0.11.2">
+    <meta name="author" content="midFang" />
+    <meta name="keywords" content="Hugo, theme, echo" />
+    <meta name="og:site_name" content="midFang&#39;s Blog" /><meta property="og:title" content="An Example Post - midFang&#39;s Blog" />
+    <meta property="og:type" content="article" />
+    <meta property="title" content="An Example Post - midFang&#39;s Blog">
+    <meta property="og:title" content="An Example Post - midFang&#39;s Blog">
+    <meta property="twitter:title" content="An Example Post - midFang&#39;s Blog">
+    <meta property="description" content="开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻">
+    <meta property="og:description" content="开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻">
+    <meta property="twitter:description" content="开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻">
+    <meta property="og:type" content="article">
+    <title>An Example Post - midFang&#39;s Blog</title>
+
+    <meta property="og:url" content="https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.html" />
+
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1607597_jhmihcvh0tm.css" />
+    <link href="/index.xml" rel="alternate" type="application/rss+xml" title="midFang&#39;s Blog">
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-xxx"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-900 tracking-wider leading-normal">
+
+    <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1671.4">
+  <style type="text/css">
+  </style>
+</head>
+<body>
+</body>
+</html>
+
+
+    <div id="container" class="container w-full flex flex-wrap mx-auto px-2 lg:pt-12 mt-10">
+<section class="w-full lg:w-3/4 xl:w-3/4">
+
+    
+    <div class="px-8 py-6 mt-6 lg:mt-0 leading-normal rounded shadow bg-white">
+
+        
+        <div>
+    <h1 class="font-bold break-normal text-gray-800 pt-2 pb-2 text-2xl lg:text-3xl">
+        <a href="https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.html" title="An Example Post">An Example Post</a>
+    </h1>
+    <p class="mb-1 text-sm text-gray-500">
+        <span title=" 2018-01-01 16:01:23 CST">
+            <i class="iconfont icon-calendar" aria-hidden="true"></i> 01 Jan 2018
+        </span>
+
+        <span class="hidden xl:inline-block">
+            |
+            <i class="iconfont icon-book"></i>
+            2541 字
+        </span>
+
+        <span class="hidden xl:inline-block">
+            |
+            <i class="iconfont icon-clock-o"></i>
+            6 分钟读完
+        </span>
+    </p>
+</div>
+
+
+        <div class="md:hidden">
+            
+        </div> 
+
+        <div class="post-content">
+            
+
+<blockquote>
+<p>开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻松许多
+1. ArrayList 的大小是如何自动增加的？
+2. 什么情况下你会使用ArrayList？什么时候你会选择LinkedList？
+3. ArrayList 的扩容机制
+4. 几个重要的参数, 以及构造方法</p>
+
+<p>ArrayList 是我们在开发中高频率使用到的一个基于数组实现的一个有序的集合类, 那下面就简单的从平常是如何使用的, 做源码分析如下, 也了解一下上面几个经常被问到的问题, 做一个解答</p>
+</blockquote>
+
+<pre><code>   List&lt;String&gt; arrayList = new ArrayList&lt;&gt;();
+
+   arrayList.add(&quot;1&quot;);
+   arrayList.add(&quot;3&quot;);
+   arrayList.add(&quot;2&quot;);
+   arrayList.add(&quot;4&quot;);
+   arrayList.add(&quot;5&quot;);
+   arrayList.get(1);
+   arrayList.remove(2);
+   ArrayList&lt;String&gt; arrayList2 = new ArrayList&lt;&gt;();
+   arrayList2.add(&quot;2&quot;);
+   arrayList2.add(&quot;3&quot;);
+   arrayList.containsAll(arrayList2);
+   arrayList.removeAll(arrayList2);
+</code></pre>
+
+<h3 id="几个重要的构造">几个重要的构造</h3>
+
+<pre><code>public class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt;
+        implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable
+        
+    /**
+     * Default initial capacity. 默认大小容量为 10 的大小
+     */
+    private static final int DEFAULT_CAPACITY = 10;
+    
+
+    
+    /**
+     * Shared empty array instance used for default sized empty instances. We
+     * distinguish this from EMPTY_ELEMENTDATA to know how much to inflate when
+     * first element is added.  一个空的数组
+     */
+    private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
+        
+    /**
+     * The size of the ArrayList (the number of elements it contains).
+     *
+     * @serial  当前 ArrayList 的容量实时的容量大小
+     */
+    private int size;
+        
+     /**
+     * Constructs an empty list with the specified initial capacity.
+     *
+     * @param  initialCapacity  the initial capacity of the list
+     * @throws IllegalArgumentException if the specified initial capacity
+     *         is negative
+     */
+    public ArrayList(int initialCapacity) {
+        // 给定初始容量大小的构造
+        if (initialCapacity &gt; 0) {
+            // 创建一个 initialCapacity 大小的 Object 对象数组
+            this.elementData = new Object[initialCapacity];
+        } else if (initialCapacity == 0) {
+            this.elementData = EMPTY_ELEMENTDATA;
+        } else {
+            throw new IllegalArgumentException(&quot;Illegal Capacity: &quot;+
+                                               initialCapacity);
+        }
+    }
+
+    /**
+     * Constructs an empty list with an initial capacity of ten.
+     */
+    public ArrayList() {
+        // 无参数的构造方法
+        this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
+    }
+
+}
+</code></pre>
+
+<ol>
+<li><p>首先从 ArrayList 的继承的结构体系中, 可以大小了解到一些信息, 继承了一个抽象类 AbstractList, 这里就不展示他的源码了, 其实这个类里面并没有做什么操作, 只是简单的定义了一些方法, 他是一个模板设计模式, 然后实现了 RandomAccess,  Cloneable, java.io.Serializable , 随机访问接口, 可克隆, 序列化接口</p></li>
+
+<li><p>然后可以发现初始值容量大小为 10,  ArrayList 底层是用 Object 对象数组来实现的, 然后是无参和有参的构造方法, 这个仅仅是对 DEFAULTCAPACITY_EMPTY_ELEMENTDATA 赋值操作, 和创建一个 new Object[initialCapacity] 大小的数组</p></li>
+</ol>
+
+<h3 id="往集合中添加元素">往集合中添加元素</h3>
+
+<pre><code>   public boolean add(E e) {
+        // 确保容量大小, (其中扩容机制也在这个方法中实现的)
+        ensureCapacityInternal(size + 1);  // Increments modCount!!
+        // 元素放入 Object 对象数组中
+        elementData[size++] = e;
+        return true;
+    }
+</code></pre>
+
+<pre><code>  private void ensureCapacityInternal(int minCapacity) {
+        // 当我们使用无参数构造的时候, 第一次被 add 添加元素的时候, 这个调节是肯定成立的, 因为在上面的无参构造中就是对这个赋值操作
+        if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
+            // 初始化了容量为大小为 10 的大小
+            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
+        }
+
+        // 确保容量大小 
+        ensureExplicitCapacity(minCapacity);
+    }
+</code></pre>
+
+<pre><code>  private void ensureExplicitCapacity(int minCapacity) {
+        // 被修改的次数增加, 这个主要是一个并非修改异常, 这个后面会讲到
+        modCount++;
+
+        // overflow-conscious code
+        if (minCapacity - elementData.length &gt; 0)
+            // 扩容
+            grow(minCapacity);
+  }
+</code></pre>
+
+<p>假设上面, 我们是第一次 add 添加元素, 那么 elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA 这个条件成立, 然后初始化容量大小为 10 的数组, 那么到了这个条件 if (minCapacity - elementData.length &gt; 0) 只要是小于 10 的就不会触发扩容, 那么如果是再添加一个, 那么传递下来的参数就是 11-10=1 那么这个条件成立, 那么就会触发扩容了</p>
+
+<pre><code>private void grow(int minCapacity) {
+        // overflow-conscious code
+        // 假设这里的 minCapacity 为 11 触发扩容机制 
+        // 原数组大小是 10 
+        int oldCapacity = elementData.length;
+        // 赋值新的容量大小, 15 = 10 + (10/2)
+        int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);
+        if (newCapacity - minCapacity &lt; 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+            newCapacity = hugeCapacity(minCapacity);
+        // minCapacity is usually close to size, so this is a win:
+        // 数组的拷贝
+        elementData = Arrays.copyOf(elementData, newCapacity);
+}
+</code></pre>
+
+<p>上面就是扩容机制的代码了, 可以发现很简单, 就是等于 原数组的长度 + 原数组长度 <sup>1</sup>&frasl;<sub>2</sub>, 然后就是数组的拷贝了 Arrays.copyOf(elementData, newCapacity)</p>
+
+<h3 id="arrays-copyof">Arrays.copyOf()</h3>
+
+<pre><code>   public static &lt;T&gt; T[] copyOf(T[] original, int newLength) {
+        return (T[]) copyOf(original, newLength, original.getClass());
+    }
+</code></pre>
+
+<pre><code>   public static &lt;T,U&gt; T[] copyOf(U[] original, int newLength, Class&lt;? extends T[]&gt; newType) {
+        @SuppressWarnings(&quot;unchecked&quot;)
+        // 创建一个新的对象
+        T[] copy = ((Object)newType == (Object)Object[].class)
+            ? (T[]) new Object[newLength]
+            : (T[]) Array.newInstance(newType.getComponentType(), newLength);
+        // 系统底层使用 c 实现的数组拷贝
+        System.arraycopy(original, 0, copy, 0,
+                         Math.min(original.length, newLength));
+        // 将对象返回
+        return copy;
+    }
+</code></pre>
+
+<p>好了, 添加元素操作的源码到这里基本没有了, 到了这里我们知道了扩容机制其实就是扩容原数组的 1.5 倍的大小, 其实也就是说 ArrayList 是一个动态扩容数据, 然后对创建新的数据, 对老的数组进行copy, 这个是会消耗一部分的性能的, 这里给出一个假设, 假设你当前的数组容量为 100, 那么可想而知, 数组会发生好几次的拷贝, 所以当我们知道了数组的容量大小的时候, 最好是直接给定, 防止多次拷贝</p>
+
+<h3 id="获取数据">获取数据</h3>
+
+<pre><code> public E get(int index) {
+        // index 索引值大于当前数组, 抛出越界异常
+        if (index &gt;= size)
+            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+
+        return (E) elementData[index];
+ }
+</code></pre>
+
+<h3 id="删除元素">删除元素</h3>
+
+<ol>
+<li><p>根据下标删除数据</p>
+
+<pre><code>public E remove(int index) {
+    if (index &gt;= size)
+        throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+    // 修改次数加1, 这个主要是一个并非修改异常, 这个后面会讲到
+    modCount++;
+    // 需要删除的元素
+    E oldValue = (E) elementData[index];
+
+    // 数组要移动的次数
+    int numMoved = size - index - 1;
+    if (numMoved &gt; 0)
+        // 发生数组移动, 也就是拷贝
+        System.arraycopy(elementData, index+1, elementData, index,
+                         numMoved);
+    // 堆中数据置为 null, 让 GC 可以回收 
+    elementData[--size] = null; // clear to let GC do its work
+
+    return oldValue;
+}
+</code></pre></li>
+
+<li><p>根据元素内容删除数据</p>
+
+<pre><code>public boolean remove(Object o) {
+    if (o == null) {
+        // 删除为 null 的元素
+        for (int index = 0; index &lt; size; index++)
+            if (elementData[index] == null) {
+                 // 删除元素, 本质上是数组拷贝, 位置发生偏移
+                fastRemove(index);
+                return true;
+            }
+    } else {
+        // for 循环遍历查找元素的内容, 将其删除, 位置发生偏移
+        for (int index = 0; index &lt; size; index++)
+            if (o.equals(elementData[index])) {
+                // 删除元素, 本质上是数组拷贝
+                fastRemove(index);
+                return true;
+            }
+    }
+    return false;
+}
+</code></pre></li>
+</ol>
+
+<h3 id="修改元素">修改元素</h3>
+
+<pre><code>  public E set(int index, E element) {
+        // 越界异常检查
+        if (index &gt;= size)
+            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+        
+        // 旧的元素
+        E oldValue = (E) elementData[index];
+        // 新的元素, 赋值给旧的元素
+        elementData[index] = element;
+        // 然后将旧的元素返回
+        return oldValue;
+    }
+</code></pre>
+
+<p>这里, 由于是数组实现的 ArrayList, 内存地址是连续的, 可基于下标直接访问元素, 这里回到文章开头提到的问题, 在什么情况下使用 ArrayList 什么情况下使用 LinkedList, 这就要看我们的需求是元素是访问多, 还是元素删除多, 访问多的用 ArrayList, 由于 LinkedList 是用链表实现的, 内存地址不连续, 当前节点保存上一个节点和下一个节点, 当要删除元素时候, 直接指针改变指向就可以了, 所以删除多用 LinkedList</p>
+
+<blockquote>
+<p>最后看几个比较有意思的, 算法写的很好, 平时在我用开发中也会经常用的到, 可以作为参考</p>
+</blockquote>
+
+<p>提出问题: 假设目前有一个数组 [1,2,3,4,5] 和 [2,3], 要求是移除相同的元素, 或者是保留相同的元素, 不使用下面的方法, 自己手写的话, 你会怎么写?</p>
+
+<ol>
+<li><p>删除相同的元素, 不相同元素的返回</p>
+
+<pre><code>public boolean removeAll(Collection&lt;?&gt; c) {
+    Objects.requireNonNull(c);
+    return batchRemove(c, false);
+}
+</code></pre></li>
+
+<li><p>返回相同的元素, 不相同的元素删除掉</p>
+
+<pre><code>public boolean retainAll(Collection&lt;?&gt; c) {
+    Objects.requireNonNull(c);
+    return batchRemove(c, true);
+}
+</code></pre></li>
+
+<li><p>稍微留意一下, 这两个方法都是相同的, 仅仅是一个参数的不同</p>
+
+<pre><code>private boolean batchRemove(Collection&lt;?&gt; c, boolean complement) {
+    final Object[] elementData = this.elementData;
+    // 类似读(read)指针, 和一个写(write)指针
+    int r = 0, w = 0;
+    boolean modified = false;
+    try {
+        for (; r &lt; size; r++)
+            // for 循环遍历
+                
+            /** 
+             *  1.r 一直自增加, 当 complement 为 true 的时候, 
+             *    条件成立, w++, 当前相同的元素赋值给  w++ 下标元素
+             *    最后完后所有的操作, 最终就是 [2,3] 
+             */
+                 
+             /** 
+              * 2.r 一直自增加, 当 complement 为 false 的时候,
+              *   条件成立, w++, 当前相同的元素赋值给  w++ 下标元素
+              *   最后完后所有的操作, 最终就是 [1,4,5] 
+              */
+                 
+            if (c.contains(elementData[r]) == complement)
+                elementData[w++] = elementData[r];
+                    
+                    
+    } finally {  // 最终一定会被执行
+        // Preserve behavioral compatibility with AbstractCollection,
+        // even if c.contains() throws.
+            
+        // 上面如果执行了操作, 这个值是相等的
+        if (r != size) {
+            System.arraycopy(elementData, r,
+                             elementData, w,
+                             size - r);
+            w += size - r;
+        }
+            
+        // 条件成立
+            
+        /**
+         * 假设是条件 1, w 是 2, 那么就将 2 下标后面的元素都删除
+         * 假设是条件 2, w 是 3, 那么就将 3 下标后面的元素都删除
+         */
+            
+        if (w != size) {
+            // clear to let GC do its work
+            for (int i = w; i &lt; size; i++)
+                elementData[i] = null; // 将元素置为null, 让 GC 可以回收
+            // 被修改的次数
+            modCount += size - w;
+            // 赋值最新的 size 容量大小
+            size = w;
+            modified = true;
+        }
+    }
+    return modified;
+}
+</code></pre></li>
+</ol>
+
+<p>好了, 源码中写了注释, 用了一个类似, 读指针和写指针的东西, 很巧妙的完成了查找相同元素, 或者是移除相同元素, nice</p>
+
+
+            <hr class="bg-gray-300 mt-8">
+
+            
+
+            
+<div class="border-l-4 border-red-400 mx-auto bg-gray-200 text-gray-700 mt-5">
+    <div class="pt-2 copyright">
+        <ul class="list-none">
+            <li>
+                <strong>原文作者：</strong>
+                <a rel="author" href="https://midFang.github.io/">midFang</a>
+            </li>
+            <li style="word-break:break-all">
+                <strong>原文链接：</strong>
+                <a href="https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.html">https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.html</a>
+            </li>
+            <li>
+                <strong>版权声明：</strong>本作品采用
+                <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh">署名-非商业性使用 4.0 国际 (CC BY-NC 4.0)</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。
+            </li>
+        </ul>
+    </div>
+ 
+</div>
+
+
+        </div>
+
+        
+        <div class="text-base md:text-sm text-gray-500 pt-6">
+                <a class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 hover:bg-gray-300"
+                    href="https://midFang.github.io//tags/popular.html">
+                    #popular
+                </a>
+                                    
+            </div>
+        
+
+         
+        
+            <p class="text-gray-500 text-sm text-right pt-1">
+                <span id="busuanzi_container_page_pv">
+                    本文有 <span id="busuanzi_value_page_pv"></span> 次阅读
+                </span>
+            </p>
+        
+
+    </div>
+    
+
+    
+    <hr class="bg-gray-300 my-10">
+
+    
+        
+        
+        
+        <div class="">
+            
+        </div>
+        
+
+        
+
+
+<div class="p-8 mt-6 lg:mt-0 rounded shadow bg-white">
+    <h2 class="font-sans font-bold break-normal text-gray-700 px-2 pb-3 text-xl">相关文章</h2>
+    
+    <li><a href="/post/kotlin-%E6%89%A9%E5%B1%95%E5%87%BD%E6%95%B0-let-with-run-apply-also-%E7%9A%84%E4%BD%BF%E7%94%A8%E5%88%9D%E6%8E%A2.html" class="underline text-orange-600">An Example Post</a></li>
+    
+    <li><a href="/post/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E5%8D%95%E9%93%BE%E8%A1%A8.html" class="underline text-orange-600">An Example Post</a></li>
+    
+    <li><a href="/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.html" class="underline text-orange-600">An Example Post</a></li>
+    
+    <li><a href="/post/xxxasx.html" class="underline text-orange-600">An Example Post</a></li>
+    
+    <li><a href="/post/java-%E4%B8%AD%E7%9A%84-monitor.html" class="underline text-orange-600">An Example Post</a></li>
+    
+</div>
+
+
+    
+
+</section>
+
+
+<div class="hidden xl:text-sm xl:block xl:w-1/4 xl:px-6 ">
+
+    <div class="lg:w-full mx-auto items-center justify-between">
+    <div class="bg-white shadow rounded overflow-hidden">
+        <div class="bg-cover bg-auto mx-auto w-32 h-32 mt-5 rounded-full" style="background-image: url('')"> </div>
+        
+        <div class="p-4">
+            <p class="text-2xl text-center text-gray-900 pb-2">midFang</p>
+            <p class="text-sm text-center text-gray-700">All in or nothing, now or never!</p>
+        </div>
+        <div class="flex p-4 border-t text-sm border-gray-300 text-gray-700">
+            <div class="flex-1 border-r border-gray-600">
+                <p class="text-center">
+                    <span class="text-gray-700 font-bold">
+                        7
+                    </span>
+                    文章
+                </p>
+            </div>
+            <div class="flex-1 text-center">
+                <p class="text-center">
+                    <span class="text-gray-700 font-bold">
+                        
+                            4
+                        
+                    </span>
+                    标签
+                </p>
+            </div>
+        </div>
+        <div class="px-4 pb-4 border-t border-gray-300">
+            <div class="mt-6 pb-16 lg:pb-0 w-4/5 lg:w-full mx-auto flex flex-wrap items-center justify-between text-gray-500">
+                
+                <a href="//github.com/midFang" class="hover:text-gray-900 p-1 text-2xl" target="_blank" title="GitHub"><i class="my-iconfont icon-social-github"></i></a>
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+                <a href="//midFang.tumblr.com" class="hover:text-gray-900 p-1 text-2xl" target="_blank" title="Tumblr"><i class="my-iconfont icon-social-tumblr"></i></a>
+                
+
+                
+
+                
+
+                
+                <a href="//stackoverflow.com/users/midFang" class="hover:text-gray-900 p-1 text-2xl" target="_blank" title="Stack Overflow"><i class="my-iconfont icon-stack-overflow"></i></a>
+                
+
+                
+
+                
+
+                
+                <a href="//weibo.com/midFang" class="hover:text-gray-900 p-1 text-2xl" target="_blank" title="Weibo"><i class="my-iconfont icon-weibo"></i></a>
+                
+
+                
+
+                
+
+                
+                <a href="//douban.com/people/midFang" class="hover:text-gray-900 p-1 text-2xl" target="_blank" title="Douban"><i class="my-iconfont icon-social-douban"></i></a>
+                
+
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="p-4 mt-2 lg:mt-4 rounded shadow bg-white">
+    <h2 class="font-sans font-bold break-normal text-gray-700 px-2 pb-3 text-lg">热门文章</h2>
+    
+    <li><a href="/about.html" class="underline text-orange-600 text-sm">An Example Post</a></li>
+    
+    <li><a href="/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.html" class="underline text-orange-600 text-sm">An Example Post</a></li>
+    
+    <li><a href="/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.html" class="underline text-orange-600 text-sm">An Example Post</a></li>
+    
+    <li><a href="/post/java-%E4%B8%AD%E7%9A%84-monitor.html" class="underline text-orange-600 text-sm">An Example Post</a></li>
+    
+    <li><a href="/post/java-%E4%B8%AD%E7%9A%84%E6%B3%9B%E5%9E%8B.html" class="underline text-orange-600 text-sm">An Example Post</a></li>
+    
+</div>
+
+
+
+    <div class="profile-ads"><div class="bg-white shadow"><img class=" object-cover w-auto mx-auto mt-6" src="" alt="微信打赏"></div></div>
+
+
+
+
+
+    <div class="flex flex-col justify-between sticky top-0 pt-12 pb-4 -mt-10 text-gray-600">
+        <div class="bg-white shadow rounded p-4 mt-5">
+            
+        </div>
+    </div>
+   
+</div> 
+
+    </div>
+    
+    <script type="text/javascript" src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script> <script>
+  window.onload = function() {
+    document.getElementById("nav-toggle").onclick = function() {
+      document.getElementById("nav-content").classList.toggle("hidden");
+    };
+
+    var donate = document.getElementById("btn-donate");
+    if (donate) {
+      donate.onclick = function() {
+        document.getElementById("donate-image").classList.remove("hidden");
+        donate.classList.add("hidden");
+      };
+    }
+
+    var hostname = window.location.hostname;
+    var divs = document.querySelectorAll('a[href^="http"]');
+    [].forEach.call(divs, function(div) {
+      url = div.getAttribute("href");
+      var domain = url
+        .replace("http://", "")
+        .replace("https://", "")
+        .split(/[/?#:]/)[0];
+      if (domain !== hostname) {
+        div.setAttribute("target", "_blank");
+      }
+    });
+  };
+
+   
+  
+  var h = document.documentElement,
+    b = document.body,
+    st = "scrollTop",
+    sh = "scrollHeight",
+    progress = document.querySelector("#progress"),
+    scroll;
+  var scrollpos = window.scrollY;
+  var header = document.getElementById("header");
+  var navcontent = document.getElementById("nav-content");
+
+  document.addEventListener("scroll", function() {
+     
+    scroll = ((h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight)) * 100;
+    progress.style.setProperty("--scroll", scroll + "%");
+
+     
+    scrollpos = window.scrollY;
+
+    if (scrollpos > 10) {
+      navcontent.classList.remove("bg-gray-100");
+    } else {
+      navcontent.classList.add("bg-gray-100");
+    }
+  });
+</script>
+
+</body>
+
+</html>

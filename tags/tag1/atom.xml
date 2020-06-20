@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tag1 on Forecho&#39;s Blog</title>
+    <link>http://localhost:1313/tags/tag1.html</link>
+    <description>Recent content in tag1 on Forecho&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 11 Jun 2020 19:36:44 +0800</lastBuildDate>
+    
+	<atom:link href="http://localhost:1313/tags/tag1/atom.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>测试</title>
+      <link>http://localhost:1313/post/%E6%B5%8B%E8%AF%95.html</link>
+      <pubDate>Thu, 11 Jun 2020 19:36:44 +0800</pubDate>
+      
+      <guid>http://localhost:1313/post/%E6%B5%8B%E8%AF%95.html</guid>
+      <description>&lt;h3 id=&#34;测试&#34;&gt;测试&lt;/h3&gt;
+
+&lt;p&gt;正文内容&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/checkFang/img/master/image-20191117214932098.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

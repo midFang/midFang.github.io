@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>线程 on Jane - A super concise theme for Hugo</title>
+    <link>https://midFang.github.io/categories/%E7%BA%BF%E7%A8%8B/</link>
+    <description>Recent content in 线程 on Jane - A super concise theme for Hugo</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 28 Sep 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://midFang.github.io/categories/%E7%BA%BF%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Java 中的 Monitor</title>
+      <link>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84-monitor/</link>
+      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84-monitor/</guid>
+      <description>什么是 Monitor? Java 虚拟机给每个对象和 class 字节码都设置了一个监听器 Monitor，用于检测并发代码的重入，同时在 Object 类中还提供了 notify 和 wait 方法来对线程进行控制</description>
+    </item>
+    
+  </channel>
+</rss>

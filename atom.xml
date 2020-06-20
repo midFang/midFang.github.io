@@ -1,0 +1,1425 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>midFang&#39;s Blog</title>
+    <link>https://midFang.github.io/</link>
+    <description>Recent content on midFang&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 01 Jan 2018 16:01:23 +0800</lastBuildDate>
+    
+        <atom:link href="https://midFang.github.io/atom.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>An Example Post</title>
+      <link>https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.html</link>
+      <pubDate>Mon, 01 Jan 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.html</guid>
+      
+        <description>
+
+&lt;blockquote&gt;
+&lt;p&gt;开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻松许多
+1. ArrayList 的大小是如何自动增加的？
+2. 什么情况下你会使用ArrayList？什么时候你会选择LinkedList？
+3. ArrayList 的扩容机制
+4. 几个重要的参数, 以及构造方法&lt;/p&gt;
+
+&lt;p&gt;ArrayList 是我们在开发中高频率使用到的一个基于数组实现的一个有序的集合类, 那下面就简单的从平常是如何使用的, 做源码分析如下, 也了解一下上面几个经常被问到的问题, 做一个解答&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code&gt;   List&amp;lt;String&amp;gt; arrayList = new ArrayList&amp;lt;&amp;gt;();
+
+   arrayList.add(&amp;quot;1&amp;quot;);
+   arrayList.add(&amp;quot;3&amp;quot;);
+   arrayList.add(&amp;quot;2&amp;quot;);
+   arrayList.add(&amp;quot;4&amp;quot;);
+   arrayList.add(&amp;quot;5&amp;quot;);
+   arrayList.get(1);
+   arrayList.remove(2);
+   ArrayList&amp;lt;String&amp;gt; arrayList2 = new ArrayList&amp;lt;&amp;gt;();
+   arrayList2.add(&amp;quot;2&amp;quot;);
+   arrayList2.add(&amp;quot;3&amp;quot;);
+   arrayList.containsAll(arrayList2);
+   arrayList.removeAll(arrayList2);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;几个重要的构造&#34;&gt;几个重要的构造&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;public class ArrayList&amp;lt;E&amp;gt; extends AbstractList&amp;lt;E&amp;gt;
+        implements List&amp;lt;E&amp;gt;, RandomAccess, Cloneable, java.io.Serializable
+        
+    /**
+     * Default initial capacity. 默认大小容量为 10 的大小
+     */
+    private static final int DEFAULT_CAPACITY = 10;
+    
+
+    
+    /**
+     * Shared empty array instance used for default sized empty instances. We
+     * distinguish this from EMPTY_ELEMENTDATA to know how much to inflate when
+     * first element is added.  一个空的数组
+     */
+    private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
+        
+    /**
+     * The size of the ArrayList (the number of elements it contains).
+     *
+     * @serial  当前 ArrayList 的容量实时的容量大小
+     */
+    private int size;
+        
+     /**
+     * Constructs an empty list with the specified initial capacity.
+     *
+     * @param  initialCapacity  the initial capacity of the list
+     * @throws IllegalArgumentException if the specified initial capacity
+     *         is negative
+     */
+    public ArrayList(int initialCapacity) {
+        // 给定初始容量大小的构造
+        if (initialCapacity &amp;gt; 0) {
+            // 创建一个 initialCapacity 大小的 Object 对象数组
+            this.elementData = new Object[initialCapacity];
+        } else if (initialCapacity == 0) {
+            this.elementData = EMPTY_ELEMENTDATA;
+        } else {
+            throw new IllegalArgumentException(&amp;quot;Illegal Capacity: &amp;quot;+
+                                               initialCapacity);
+        }
+    }
+
+    /**
+     * Constructs an empty list with an initial capacity of ten.
+     */
+    public ArrayList() {
+        // 无参数的构造方法
+        this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;首先从 ArrayList 的继承的结构体系中, 可以大小了解到一些信息, 继承了一个抽象类 AbstractList, 这里就不展示他的源码了, 其实这个类里面并没有做什么操作, 只是简单的定义了一些方法, 他是一个模板设计模式, 然后实现了 RandomAccess,  Cloneable, java.io.Serializable , 随机访问接口, 可克隆, 序列化接口&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;然后可以发现初始值容量大小为 10,  ArrayList 底层是用 Object 对象数组来实现的, 然后是无参和有参的构造方法, 这个仅仅是对 DEFAULTCAPACITY_EMPTY_ELEMENTDATA 赋值操作, 和创建一个 new Object[initialCapacity] 大小的数组&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;往集合中添加元素&#34;&gt;往集合中添加元素&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;   public boolean add(E e) {
+        // 确保容量大小, (其中扩容机制也在这个方法中实现的)
+        ensureCapacityInternal(size + 1);  // Increments modCount!!
+        // 元素放入 Object 对象数组中
+        elementData[size++] = e;
+        return true;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;  private void ensureCapacityInternal(int minCapacity) {
+        // 当我们使用无参数构造的时候, 第一次被 add 添加元素的时候, 这个调节是肯定成立的, 因为在上面的无参构造中就是对这个赋值操作
+        if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
+            // 初始化了容量为大小为 10 的大小
+            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
+        }
+
+        // 确保容量大小 
+        ensureExplicitCapacity(minCapacity);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;  private void ensureExplicitCapacity(int minCapacity) {
+        // 被修改的次数增加, 这个主要是一个并非修改异常, 这个后面会讲到
+        modCount++;
+
+        // overflow-conscious code
+        if (minCapacity - elementData.length &amp;gt; 0)
+            // 扩容
+            grow(minCapacity);
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;假设上面, 我们是第一次 add 添加元素, 那么 elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA 这个条件成立, 然后初始化容量大小为 10 的数组, 那么到了这个条件 if (minCapacity - elementData.length &amp;gt; 0) 只要是小于 10 的就不会触发扩容, 那么如果是再添加一个, 那么传递下来的参数就是 11-10=1 那么这个条件成立, 那么就会触发扩容了&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;private void grow(int minCapacity) {
+        // overflow-conscious code
+        // 假设这里的 minCapacity 为 11 触发扩容机制 
+        // 原数组大小是 10 
+        int oldCapacity = elementData.length;
+        // 赋值新的容量大小, 15 = 10 + (10/2)
+        int newCapacity = oldCapacity + (oldCapacity &amp;gt;&amp;gt; 1);
+        if (newCapacity - minCapacity &amp;lt; 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE &amp;gt; 0)
+            newCapacity = hugeCapacity(minCapacity);
+        // minCapacity is usually close to size, so this is a win:
+        // 数组的拷贝
+        elementData = Arrays.copyOf(elementData, newCapacity);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面就是扩容机制的代码了, 可以发现很简单, 就是等于 原数组的长度 + 原数组长度 &lt;sup&gt;1&lt;/sup&gt;&amp;frasl;&lt;sub&gt;2&lt;/sub&gt;, 然后就是数组的拷贝了 Arrays.copyOf(elementData, newCapacity)&lt;/p&gt;
+
+&lt;h3 id=&#34;arrays-copyof&#34;&gt;Arrays.copyOf()&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;   public static &amp;lt;T&amp;gt; T[] copyOf(T[] original, int newLength) {
+        return (T[]) copyOf(original, newLength, original.getClass());
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;   public static &amp;lt;T,U&amp;gt; T[] copyOf(U[] original, int newLength, Class&amp;lt;? extends T[]&amp;gt; newType) {
+        @SuppressWarnings(&amp;quot;unchecked&amp;quot;)
+        // 创建一个新的对象
+        T[] copy = ((Object)newType == (Object)Object[].class)
+            ? (T[]) new Object[newLength]
+            : (T[]) Array.newInstance(newType.getComponentType(), newLength);
+        // 系统底层使用 c 实现的数组拷贝
+        System.arraycopy(original, 0, copy, 0,
+                         Math.min(original.length, newLength));
+        // 将对象返回
+        return copy;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;好了, 添加元素操作的源码到这里基本没有了, 到了这里我们知道了扩容机制其实就是扩容原数组的 1.5 倍的大小, 其实也就是说 ArrayList 是一个动态扩容数据, 然后对创建新的数据, 对老的数组进行copy, 这个是会消耗一部分的性能的, 这里给出一个假设, 假设你当前的数组容量为 100, 那么可想而知, 数组会发生好几次的拷贝, 所以当我们知道了数组的容量大小的时候, 最好是直接给定, 防止多次拷贝&lt;/p&gt;
+
+&lt;h3 id=&#34;获取数据&#34;&gt;获取数据&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt; public E get(int index) {
+        // index 索引值大于当前数组, 抛出越界异常
+        if (index &amp;gt;= size)
+            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+
+        return (E) elementData[index];
+ }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;删除元素&#34;&gt;删除元素&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;根据下标删除数据&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public E remove(int index) {
+    if (index &amp;gt;= size)
+        throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+    // 修改次数加1, 这个主要是一个并非修改异常, 这个后面会讲到
+    modCount++;
+    // 需要删除的元素
+    E oldValue = (E) elementData[index];
+
+    // 数组要移动的次数
+    int numMoved = size - index - 1;
+    if (numMoved &amp;gt; 0)
+        // 发生数组移动, 也就是拷贝
+        System.arraycopy(elementData, index+1, elementData, index,
+                         numMoved);
+    // 堆中数据置为 null, 让 GC 可以回收 
+    elementData[--size] = null; // clear to let GC do its work
+
+    return oldValue;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;根据元素内容删除数据&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public boolean remove(Object o) {
+    if (o == null) {
+        // 删除为 null 的元素
+        for (int index = 0; index &amp;lt; size; index++)
+            if (elementData[index] == null) {
+                 // 删除元素, 本质上是数组拷贝, 位置发生偏移
+                fastRemove(index);
+                return true;
+            }
+    } else {
+        // for 循环遍历查找元素的内容, 将其删除, 位置发生偏移
+        for (int index = 0; index &amp;lt; size; index++)
+            if (o.equals(elementData[index])) {
+                // 删除元素, 本质上是数组拷贝
+                fastRemove(index);
+                return true;
+            }
+    }
+    return false;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;修改元素&#34;&gt;修改元素&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;  public E set(int index, E element) {
+        // 越界异常检查
+        if (index &amp;gt;= size)
+            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+        
+        // 旧的元素
+        E oldValue = (E) elementData[index];
+        // 新的元素, 赋值给旧的元素
+        elementData[index] = element;
+        // 然后将旧的元素返回
+        return oldValue;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这里, 由于是数组实现的 ArrayList, 内存地址是连续的, 可基于下标直接访问元素, 这里回到文章开头提到的问题, 在什么情况下使用 ArrayList 什么情况下使用 LinkedList, 这就要看我们的需求是元素是访问多, 还是元素删除多, 访问多的用 ArrayList, 由于 LinkedList 是用链表实现的, 内存地址不连续, 当前节点保存上一个节点和下一个节点, 当要删除元素时候, 直接指针改变指向就可以了, 所以删除多用 LinkedList&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;最后看几个比较有意思的, 算法写的很好, 平时在我用开发中也会经常用的到, 可以作为参考&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;提出问题: 假设目前有一个数组 [1,2,3,4,5] 和 [2,3], 要求是移除相同的元素, 或者是保留相同的元素, 不使用下面的方法, 自己手写的话, 你会怎么写?&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;删除相同的元素, 不相同元素的返回&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public boolean removeAll(Collection&amp;lt;?&amp;gt; c) {
+    Objects.requireNonNull(c);
+    return batchRemove(c, false);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;返回相同的元素, 不相同的元素删除掉&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public boolean retainAll(Collection&amp;lt;?&amp;gt; c) {
+    Objects.requireNonNull(c);
+    return batchRemove(c, true);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;稍微留意一下, 这两个方法都是相同的, 仅仅是一个参数的不同&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;private boolean batchRemove(Collection&amp;lt;?&amp;gt; c, boolean complement) {
+    final Object[] elementData = this.elementData;
+    // 类似读(read)指针, 和一个写(write)指针
+    int r = 0, w = 0;
+    boolean modified = false;
+    try {
+        for (; r &amp;lt; size; r++)
+            // for 循环遍历
+                
+            /** 
+             *  1.r 一直自增加, 当 complement 为 true 的时候, 
+             *    条件成立, w++, 当前相同的元素赋值给  w++ 下标元素
+             *    最后完后所有的操作, 最终就是 [2,3] 
+             */
+                 
+             /** 
+              * 2.r 一直自增加, 当 complement 为 false 的时候,
+              *   条件成立, w++, 当前相同的元素赋值给  w++ 下标元素
+              *   最后完后所有的操作, 最终就是 [1,4,5] 
+              */
+                 
+            if (c.contains(elementData[r]) == complement)
+                elementData[w++] = elementData[r];
+                    
+                    
+    } finally {  // 最终一定会被执行
+        // Preserve behavioral compatibility with AbstractCollection,
+        // even if c.contains() throws.
+            
+        // 上面如果执行了操作, 这个值是相等的
+        if (r != size) {
+            System.arraycopy(elementData, r,
+                             elementData, w,
+                             size - r);
+            w += size - r;
+        }
+            
+        // 条件成立
+            
+        /**
+         * 假设是条件 1, w 是 2, 那么就将 2 下标后面的元素都删除
+         * 假设是条件 2, w 是 3, 那么就将 3 下标后面的元素都删除
+         */
+            
+        if (w != size) {
+            // clear to let GC do its work
+            for (int i = w; i &amp;lt; size; i++)
+                elementData[i] = null; // 将元素置为null, 让 GC 可以回收
+            // 被修改的次数
+            modCount += size - w;
+            // 赋值最新的 size 容量大小
+            size = w;
+            modified = true;
+        }
+    }
+    return modified;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;好了, 源码中写了注释, 用了一个类似, 读指针和写指针的东西, 很巧妙的完成了查找相同元素, 或者是移除相同元素, nice&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>An Example Post</title>
+      <link>https://midFang.github.io/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.html</link>
+      <pubDate>Mon, 01 Jan 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://midFang.github.io/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.html</guid>
+      
+        <description>
+
+&lt;p&gt;EventBus 是一种用于 Android 的事件发布-订阅总线, 是一个可以实现组件间通信的一个第三方框架, 使用起来非常的简单, 一共也就是 4 个步骤, 注册订阅, 发送事件, 解除订阅, 大致的流程如下&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class MainActivity extends Activity {
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(initLayout());
+        // 第一步
+        EventBus.getDefault().register(this); // 注册一个订阅者
+        
+        // 第四步
+        EventBus.getDefault().post(&amp;quot;&amp;quot;); // 发送一个事件
+    }
+    
+    // 第二步
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void receiverEvent(String/* 事件类型 */ str) {
+    
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 第三步
+        EventBus.getDefault().unregister(this); // 解除注册
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;下面,就让我们看看源码中是如何实现的, 其具体的实现原理是什么&lt;/p&gt;
+
+&lt;h2 id=&#34;注册订阅事件&#34;&gt;注册订阅事件&lt;/h2&gt;
+
+&lt;p&gt;首先先看一下大致的 EventBus 一些类的成员信息&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class EventBus {
+    static volatile EventBus defaultInstance;
+    
+     //DCL 单利设计模式
+     public static EventBus getDefault() {
+        if (defaultInstance == null) {
+            synchronized (EventBus.class) {
+                if (defaultInstance == null) {
+                    defaultInstance = new EventBus();
+                }
+            }
+        }
+        return defaultInstance;
+    }
+    
+    // Key 对应的是事件类型, Value 对应的是关于事件类型的信息集合
+    private final Map&amp;lt;Class&amp;lt;?&amp;gt;, CopyOnWriteArrayList&amp;lt;Subscription&amp;gt;&amp;gt; subscriptionsByEventType;
+    // Key 对应的是订阅者, Value 对应的是事件类型集合
+    private final Map&amp;lt;Object, List&amp;lt;Class&amp;lt;?&amp;gt;&amp;gt;&amp;gt; typesBySubscriber;
+    // 存储粘性事件的集合, Key 对应的是事件类型类, Value 存储的是事件类型
+    private final Map&amp;lt;Class&amp;lt;?&amp;gt;, Object&amp;gt; stickyEvents;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;注册&#34;&gt;注册&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;具体在源码中的注册流程如下, 看这部分的代码, 其实也就是3个部分&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code&gt;public void register(Object subscriber) {
+        // 获取订阅者的 Class 类
+        Class&amp;lt;?&amp;gt; subscriberClass = subscriber.getClass();
+        // 找到订阅者的所有订阅方法, 进行封装
+        List&amp;lt;SubscriberMethod&amp;gt; subscriberMethods = subscriberMethodFinder.findSubscriberMethods(subscriberClass);
+        synchronized (this) {
+            for (SubscriberMethod subscriberMethod : subscriberMethods) {
+                // 订阅
+                subscribe(subscriber, subscriberMethod);
+            }
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;通过 register 注册订阅者, 然后再通过订阅者找到订阅者的相关的方法的信息, 封装成一个集合, 然后再开始订阅, 如果根据上面的小示例的话, 传入的是 MainActivity.class 类, 然后找到这个类被添加了注解 Subscribe 的订阅的所有方法, 封装成一个集合, 再订阅相关操作, 具体再看源码&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;List&amp;lt;SubscriberMethod&amp;gt; findSubscriberMethods(Class&amp;lt;?&amp;gt; subscriberClass) {
+        // 检测缓存中是否有订阅者的信息, 如果有直接返回
+        // 反射需要消耗性能, 所以这里做了一个缓存处理
+        List&amp;lt;SubscriberMethod&amp;gt; subscriberMethods = METHOD_CACHE.get(subscriberClass);
+        if (subscriberMethods != null) {
+            return subscriberMethods;
+        }
+
+        // 这里默认为false, 
+        if (ignoreGeneratedIndex) {
+            // 使用反射的方式
+            subscriberMethods = findUsingReflection(subscriberClass);
+        } else {
+            // 这里是使用编译时注解的方式
+            subscriberMethods = findUsingInfo(subscriberClass);
+        }
+        
+        // 为空的话,直接抛了个异常, 也就是说, 如果你订阅了, 必须要有方法
+        if (subscriberMethods.isEmpty()) {
+            throw new EventBusException(&amp;quot;Subscriber &amp;quot; + subscriberClass
+                    + &amp;quot; and its super classes have no public methods with the @Subscribe annotation&amp;quot;);
+        } else {
+            // 将对应的 class 订阅者, 和方法保存起来
+            METHOD_CACHE.put(subscriberClass, subscriberMethods);
+            return subscriberMethods;
+        }
+    }
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;  private List&amp;lt;SubscriberMethod&amp;gt; findUsingReflection(Class&amp;lt;?&amp;gt; subscriberClass) {
+        // 创建了 FindState 对象, 这里使用了一个享元设计模式, 也就是对象的复用
+        FindState findState = prepareFindState();
+        // 初始化值
+        findState.initForSubscriber(subscriberClass);
+        while (findState.clazz != null) {
+            // 寻找订阅者中的所有方法
+            findUsingReflectionInSingleClass(findState);
+            // 检查父类是否有订阅了的方法
+            // 如果父类没有订阅了的方法, 那么就退出了这个循环 
+            findState.moveToSuperclass();
+        }
+        return getMethodsAndRelease(findState);
+    }
+    
+    
+    
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;private void findUsingReflectionInSingleClass(FindState findState) {
+        Method[] methods;
+        try {
+            // This is faster than getMethods, especially when subscribers are fat classes like Activities
+            // 通过反射找到订阅者的所有方法
+            methods = findState.clazz.getDeclaredMethods();
+        } catch (Throwable th) {
+            // Workaround for java.lang.NoClassDefFoundError, see https://github.com/greenrobot/EventBus/issues/149
+            methods = findState.clazz.getMethods();
+            // 是否跳过父类的查找, 默认为false
+            findState.skipSuperClasses = true;
+        }
+        // 遍历所有的方法
+        for (Method method : methods) {
+            // 获取方法的权限修饰符
+            int modifiers = method.getModifiers();
+            // 必须要为 public 的
+            if ((modifiers &amp;amp; Modifier.PUBLIC) != 0 &amp;amp;&amp;amp; (modifiers &amp;amp; MODIFIERS_IGNORE) == 0) {
+                // 获取方法的参数
+                Class&amp;lt;?&amp;gt;[] parameterTypes = method.getParameterTypes();
+                // 方法的参数的长度必须是 1
+                if (parameterTypes.length == 1) {
+                    // 获取方法注解上面的信息
+                    Subscribe subscribeAnnotation = method.getAnnotation(Subscribe.class);
+                    if (subscribeAnnotation != null) {
+                        Class&amp;lt;?&amp;gt; eventType = parameterTypes[0];
+                        if (findState.checkAdd(method, eventType)) {
+                            // 线程模型
+                            ThreadMode threadMode = subscribeAnnotation.threadMode();
+                            // 将解析到的所有属性,进行封装,添加到集合中
+                            findState.subscriberMethods.add(new
+                            SubscriberMethod(method, eventType, threadMode,
+                                    subscribeAnnotation.priority(), subscribeAnnotation.sticky()));
+                        }
+                    }
+                } else if (strictMethodVerification &amp;amp;&amp;amp; method.isAnnotationPresent(Subscribe.class)) {
+                    String methodName = method.getDeclaringClass().getName() + &amp;quot;.&amp;quot; + method.getName();
+                    throw new EventBusException(&amp;quot;@Subscribe method &amp;quot; + methodName +
+                            &amp;quot;must have exactly 1 parameter but has &amp;quot; + parameterTypes.length);
+                }
+            } else if (strictMethodVerification &amp;amp;&amp;amp; method.isAnnotationPresent(Subscribe.class)) {
+                String methodName = method.getDeclaringClass().getName() + &amp;quot;.&amp;quot; + method.getName();
+                throw new EventBusException(methodName +
+                        &amp;quot; is a illegal @Subscribe method: must be public, non-static, and non-abstract&amp;quot;);
+            }
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;订阅&#34;&gt;订阅&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;private void subscribe(Object subscriber, SubscriberMethod subscriberMethod) {
+        // 获取方法参数的 calss
+        Class&amp;lt;?&amp;gt; eventType = subscriberMethod.eventType;
+        // 创建 newSubscription , 将对应的订阅者, 和订阅者的方法封装在一个对象中
+        Subscription newSubscription = new Subscription(subscriber, subscriberMethod);
+        CopyOnWriteArrayList&amp;lt;Subscription&amp;gt; subscriptions = subscriptionsByEventType.get(eventType);
+        if (subscriptions == null) {
+            // 创建线程安全的 ArrayList
+            subscriptions = new CopyOnWriteArrayList&amp;lt;&amp;gt;();
+            // 存储到集合中
+            subscriptionsByEventType.put(eventType, subscriptions);
+        } else {
+            if (subscriptions.contains(newSubscription)) {
+                throw new EventBusException(&amp;quot;Subscriber &amp;quot; + subscriber.getClass() + &amp;quot; already registered to event &amp;quot;
+                        + eventType);
+            }
+        }
+    
+        // 获取方法的个数, 主要这里处理的是优先级
+        int size = subscriptions.size();
+        for (int i = 0; i &amp;lt;= size; i++) {
+            if (i == size || subscriberMethod.priority &amp;gt; subscriptions.get(i).subscriberMethod.priority) {
+                subscriptions.add(i, newSubscription);
+                break;
+            }
+        }
+        
+        List&amp;lt;Class&amp;lt;?&amp;gt;&amp;gt; subscribedEvents = typesBySubscriber.get(subscriber);
+        if (subscribedEvents == null) {
+            subscribedEvents = new ArrayList&amp;lt;&amp;gt;();
+            typesBySubscriber.put(subscriber, subscribedEvents);
+        }
+        // 将事件类,添加到订阅者集合中
+        subscribedEvents.add(eventType);
+
+        // 处理粘性事件
+        if (subscriberMethod.sticky) {
+            if (eventInheritance) { // 默认为 true
+                Set&amp;lt;Map.Entry&amp;lt;Class&amp;lt;?&amp;gt;, Object&amp;gt;&amp;gt; entries = stickyEvents.entrySet();
+                for (Map.Entry&amp;lt;Class&amp;lt;?&amp;gt;, Object&amp;gt; entry : entries) {
+                    Class&amp;lt;?&amp;gt; candidateEventType = entry.getKey();
+                    // 判断类类型是否相同
+                    if (eventType.isAssignableFrom(candidateEventType)) {
+                        Object stickyEvent = entry.getValue();
+                        // 发布处理事件
+                        checkPostStickyEventToSubscription(newSubscription, stickyEvent);
+                    }
+                }
+            } else {
+                Object stickyEvent = stickyEvents.get(eventType);
+                checkPostStickyEventToSubscription(newSubscription, stickyEvent);
+            }
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这里的操作, 其实没有做什么, 只是将订阅者类的信息方法检测和封装, 分别是方法必须是为 public 的, 事件类型参数只能为一个, 然后对线程模型, 优先级, 是否为粘性事件&lt;/p&gt;
+
+&lt;p&gt;这里还有一个特别重要的信息, 那就是我们都知道粘性事件, 和普通发送的 post 事件不同, post 事件是先订阅后发布, 粘性事件是可以先发布后订阅, 在上面的源码中, subscriberMethod.sticky 在 for 循环处理的时候会检查是否是粘性事件, 如果是粘性事件, 其实在我们发送一个粘性事件的时候, 会往集合中存入事件,  那我们到了另外一个界面, 订阅的时候如果检查到有粘性事件就直接给他处理了, 这也就是为什么粘性事件可以先发布后订阅的原因&lt;/p&gt;
+
+&lt;h2 id=&#34;发布-post&#34;&gt;发布 POST&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;public void post(Object event) {
+        // 这里使用的 ThreadLocal 对象维护的一个某个线程下唯一的对象 (和Handler 源码中的 ThreadLocal 也是一样的)
+        PostingThreadState postingState = currentPostingThreadState.get();
+        List&amp;lt;Object&amp;gt; eventQueue = postingState.eventQueue;
+        eventQueue.add(event);
+
+        if (!postingState.isPosting) {
+            // 判断是否是 主线程
+            postingState.isMainThread = isMainThread();
+            postingState.isPosting = true;
+            if (postingState.canceled) {
+                throw new EventBusException(&amp;quot;Internal error. Abort state was not reset&amp;quot;);
+            }
+            try {
+                while (!eventQueue.isEmpty()) {
+                    // 主要的方法, 发送事件
+                    postSingleEvent(eventQueue.remove(0), postingState);
+                }
+            } finally {
+                postingState.isPosting = false;
+                postingState.isMainThread = false;
+            }
+        }
+    }
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt; private void postSingleEvent(Object event, PostingThreadState postingState) throws Error {
+        // 获取事件的 class
+        Class&amp;lt;?&amp;gt; eventClass = event.getClass();
+        boolean subscriptionFound = false;
+        if (eventInheritance) {
+            // 查找 eventClass 的所有的父类和接口
+            List&amp;lt;Class&amp;lt;?&amp;gt;&amp;gt; eventTypes = lookupAllEventTypes(eventClass);
+            int countTypes = eventTypes.size();
+            for (int h = 0; h &amp;lt; countTypes; h++) {
+                Class&amp;lt;?&amp;gt; clazz = eventTypes.get(h);
+                // for循环, 依次发送事件
+                subscriptionFound |= postSingleEventForEventType(event, postingState, clazz);
+            }
+        } else {
+            // 发送事件
+            subscriptionFound = postSingleEventForEventType(event, postingState, eventClass);
+        }
+        if (!subscriptionFound) {
+            if (logNoSubscriberMessages) {
+                logger.log(Level.FINE, &amp;quot;No subscribers registered for event &amp;quot; + eventClass);
+            }
+            if (sendNoSubscriberEvent &amp;amp;&amp;amp; eventClass != NoSubscriberEvent.class &amp;amp;&amp;amp;
+                    eventClass != SubscriberExceptionEvent.class) {
+                post(new NoSubscriberEvent(this, event));
+            }
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;private boolean postSingleEventForEventType(Object event, PostingThreadState postingState, Class&amp;lt;?&amp;gt; eventClass) {
+        CopyOnWriteArrayList&amp;lt;Subscription&amp;gt; subscriptions;
+        synchronized (this) {
+            // 在缓存中得到 Subscription 列表
+            subscriptions = subscriptionsByEventType.get(eventClass);
+        }
+        if (subscriptions != null &amp;amp;&amp;amp; !subscriptions.isEmpty()) {
+            // 遍历集合中的所有 subscription
+            for (Subscription subscription : subscriptions) {
+                postingState.event = event;
+                postingState.subscription = subscription;
+                boolean aborted = false;
+                try {
+                    // 发送事件
+                    postToSubscription(subscription, event, postingState.isMainThread);
+                    // 事件是否取消了
+                    aborted = postingState.canceled;
+                } finally {
+                    postingState.event = null;
+                    postingState.subscription = null;
+                    postingState.canceled = false;
+                }
+                // 如果取消了, 退出循环
+                if (aborted) {
+                    break;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt; private void postToSubscription(Subscription subscription, Object event, boolean isMainThread) {
+        switch (subscription.subscriberMethod.threadMode) {
+            case POSTING:
+                // 直接执行,  发送的事件在什么线程,就是什么线程
+                invokeSubscriber(subscription, event);
+                break;
+            case MAIN:
+                // 在主线程中执行
+                if (isMainThread) {
+                    invokeSubscriber(subscription, event);
+                } else {
+                    // 如果发送的线程不是主线程, 那么使用 Handler 切换回主线程来
+                    mainThreadPoster.enqueue(subscription, event);
+                }
+                break;
+                // 在子线程中执行
+            case BACKGROUND:
+                if (isMainThread) {
+                    // 如果发布的线程是主线程, 切换回子线程中执行, 这里使用的是线程池 Executors.newCachedThreadPool()
+                    backgroundPoster.enqueue(subscription, event);
+                } else {
+                    // 直接执行
+                    invokeSubscriber(subscription, event);
+                }
+                break;
+            case ASYNC:
+                // 和发送事件处于不同的线程
+                asyncPoster.enqueue(subscription, event);
+                break;
+            default:
+                throw new IllegalStateException(&amp;quot;Unknown thread mode: &amp;quot; + subscription.subscriberMethod.threadMode);
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;粘性事件&#34;&gt;粘性事件&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt; public void postSticky(Object event) {
+        synchronized (stickyEvents) {
+            // 存入到集合中
+            stickyEvents.put(event.getClass(), event);
+        }
+        // Should be posted after it is putted, in case the subscriber wants to remove immediately
+        // 直接执行
+        post(event); 
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将订阅信息存入到集合中, 这个主要是为了, 先发布后订阅的时候可以执行, 也就是上面源码分析的地方, 订阅的时候, 判断集合中是否有粘性事件, 如果存在粘性事件, 并且事件类型相同的话, 就直接执行了。 这里可以发现, 还有一个 post(event) 方法, 也就是说, 这里也可以先订阅后发布的那种方式处理事件&lt;/p&gt;
+
+&lt;h2 id=&#34;取消订阅&#34;&gt;取消订阅&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;  public synchronized void unregister(Object subscriber) {
+        // 通过订阅者, 获取所有订阅事件类集合, Key 对应的是订阅者, Value 对应的是事件类型集合
+        // 概括为移除订阅者对应订阅者信息(相关方法和注解上面的信息等)
+        List&amp;lt;Class&amp;lt;?&amp;gt;&amp;gt; subscribedTypes = typesBySubscriber.get(subscriber);
+        if (subscribedTypes != null) {
+            for (Class&amp;lt;?&amp;gt; eventType : subscribedTypes) {
+                // 将订阅者的订阅信息移除
+                unsubscribeByEventType(subscriber, eventType);
+            }
+            // 集合中移除订阅者
+            typesBySubscriber.remove(subscriber);
+        } else {
+            logger.log(Level.WARNING, &amp;quot;Subscriber to unregister was not registered before: &amp;quot; + subscriber.getClass());
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;private void unsubscribeByEventType(Object subscriber, Class&amp;lt;?&amp;gt; eventType) {       
+        // 获取事件类的所有订阅信息列表，将订阅信息从订阅信息集合中移除，同时将订阅信息中的active属性置为FALSE
+        List&amp;lt;Subscription&amp;gt; subscriptions = subscriptionsByEventType.get(eventType);
+        if (subscriptions != null) {
+            int size = subscriptions.size();
+            for (int i = 0; i &amp;lt; size; i++) {
+                Subscription subscription = subscriptions.get(i);
+                if (subscription.subscriber == subscriber) {
+                    // 置为false
+                    subscription.active = false;
+                    // 移除
+                    subscriptions.remove(i);
+                    i--;
+                    size--;
+                }
+            }
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;总结&#34;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;好了, 到了这里大致的执行流程的源码就分析完成了, 这里其实有点像观察者设计模式, 但是其实不是, 这里主要是靠几个集合类, 然后通过反射的方式进行执行的, 也就是其核心原理了&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;注册的时候, 通过查找订阅者类信息上面的注解信息, 封装成 SubscriberMethod 存入到集合中 (subscriptionsByEventType Key 对应的是事件类型, Value 对应的是关于事件类型的信息集合), 并缓存起来, 然后再对粘性事件进行处理&lt;/li&gt;
+&lt;li&gt;发送的时候, 通过订阅者查找所有订阅者中对应的事件类型, 再反射执行相应的所有的事件类型&lt;/li&gt;
+&lt;li&gt;解除注册的时候通过订阅者查找 typesBySubscriber (Key 对应的是订阅者, Value 对应的是事件类型集合) 移除相应的事件类型集合, 然后再移除订阅者信息&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>An Example Post</title>
+      <link>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84-monitor.html</link>
+      <pubDate>Mon, 01 Jan 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84-monitor.html</guid>
+      
+        <description>&lt;p&gt;什么是 Monitor?&lt;/p&gt;
+
+&lt;p&gt;Java 虚拟机给每个对象和 class 字节码都设置了一个监听器 Monitor，用于检测并发代码的重入，同时在 Object 类中还提供了 notify 和 wait 方法来对线程进行控制&lt;/p&gt;
+
+&lt;p&gt;在线程的同步起着关键的作用, 假设有如下代码&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class ThreadTest {
+		private String str;
+		
+    private synchronized void println2(String str){
+    		this.str = str;
+    }
+
+    public static synchronized void println(){
+        System.out.println(&amp;quot;hello world&amp;quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在上述方法中, 当执行到非静态方法 println2 时, 需要获取当前对象 this 的 Monitor , 获取后, 其他需要获取该对象的Monitor 的线程会被堵塞。&lt;/p&gt;
+
+&lt;p&gt;当执行到静态方法 println 时, 需要获取到当前类的字节码的 Monitor (因为静态方法不属于对象, 而属于类) , 获取后, 其他需要 Monitor 的线程会被堵塞。&lt;/p&gt;
+
+&lt;p&gt;假设有如下的示例, 分别有线程 1 和线程 2 , 一个线程去赋值数据, 一个线程在得到数据后使用这个数据, (听起来有点拗口, 不如想象成一个线程去请求数据, 一个线程在请求到数据之后将数据渲染到界面上)这里线程 1 和线程 2 都模拟了一下耗时操作, 这里是写死耗时时间, 在实际的情况中, 可能是不定时的,  我们来看看打印的值。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class ThreadTest {
+    private String str;
+
+    public synchronized void initStr() {
+        str = &amp;quot;hello world&amp;quot;;
+    }
+
+    public synchronized void printStr() {
+        System.out.println(str);
+    }
+
+    public static void main(String[] args) {
+        ThreadTest threadTest = new ThreadTest();
+
+        Thread thread = new Thread(() -&amp;gt; {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            threadTest.printStr();
+        });
+        thread.start();
+
+        Thread thread2 = new Thread(() -&amp;gt; {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            threadTest.initStr();
+        });
+        thread2.start();
+
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;打印的结果&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;null
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这里打印的结果可想而知, 相信大家都可以猜到, 但是这里并不符合我们的需求, 我们需要的是一个线程请求到数据后, 另外一个线程使用这个数据, 稍加改造一下&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; public synchronized void printStr() {
+        while (str == null) {
+
+        }
+        System.out.println(str);
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我们在这里加一个判断, 当 str 为 null 的时候, 死循环, 就不打印他的值, 也就是说当另外一个线程赋值成功后, 这里将不为null, 然后就会打印值, 真的是这样吗? run 一下程序后会发现, 一直也不会打印, 这是为什么?&lt;/p&gt;
+
+&lt;p&gt;这是因为, 当我们执行到 printStr 的时候, 持有了当前类对象的 Monitor, 而这个时候恰好另外一个线程去赋值了, 发现这个时候当前类对象的 Monitor 被别人给持有了, 将发生堵塞, 那么将一直不会被执行。&lt;/p&gt;
+
+&lt;p&gt;再进行下一步改造, 如果我们在没有拿到数据之前稍微等一会, 并且不持有 Monitor , 然后另外一个赋值的时候不是刚刚好可以赋值了吗? 赋值成功后, 我们再通知线程已经有值了, 再打印一下。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; public synchronized void initStr() {
+        str = &amp;quot;hello world&amp;quot;;
+        notifyAll();
+    }
+
+    public synchronized void printStr() {
+        while (str == null) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    System.out.println(str);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;打印结果&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;hello world
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;wait: 当前线程会进入等待, 释放当前的 Monitor&lt;/p&gt;
+
+&lt;p&gt;notifyAll: 唤醒所有在等待的线程&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>An Example Post</title>
+      <link>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84%E6%B3%9B%E5%9E%8B.html</link>
+      <pubDate>Mon, 01 Jan 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84%E6%B3%9B%E5%9E%8B.html</guid>
+      
+        <description>&lt;p&gt;假设有 3 个类, 他们的继承关系是这样的&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class Person {
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;public class Gril extends Person {
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;public class Boy extends Person {
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;public class Father {
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在类上指定的泛型, 那么在当前类, 使用的都是这个对象&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class MyTest&amp;lt;T&amp;gt; {
+		
+		public void println(T t){
+					 System.out.println(t.getClass().getSimpleName());
+		}
+
+    public static void main(String[] args) {
+				        new MyTest&amp;lt;Person&amp;gt;(); // 打印的是 Person
+        				new MyTest&amp;lt;Gril&amp;gt;(); // 打印的是 Gril
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;方法上面的泛型&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; public static &amp;lt;T extends Person&amp;gt; void println1(T t) {
+        System.out.println(t.getClass().getSimpleName());
+ }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;泛型的上限和下限&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;T extends Person&amp;gt;  泛型上限， 只能是 Person 或者是 Person 的子类
+&amp;lt;T super Person&amp;gt;    泛型下限， 只能是 Person 或者是 Person 的父类
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;泛型通配符: 表示可接受一切类型&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ArrayList&amp;lt;Boy&amp;gt; arrayList1 = new ArrayList&amp;lt;&amp;gt;();
+ArrayList&amp;lt;Gril&amp;gt; arrayList2 = new ArrayList&amp;lt;&amp;gt;();
+ArrayList&amp;lt;Person&amp;gt; arrayList3 = new ArrayList&amp;lt;&amp;gt;();
+ArrayList&amp;lt;Father&amp;gt; arrayList4 = new ArrayList&amp;lt;&amp;gt;();
+
+println1(arrayList1);
+println1(arrayList2);
+println1(arrayList3);
+println1(arrayList4);
+
+public static void println1(List&amp;lt;?&amp;gt; t) {
+     System.out.println(t.getClass().getSimpleName());   
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;泛型擦除&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ArrayList&amp;lt;String&amp;gt; list1 = new ArrayList&amp;lt;String&amp;gt;();
+list1.add(&amp;quot;abc&amp;quot;);
+
+ArrayList&amp;lt;Integer&amp;gt; list2 = new ArrayList&amp;lt;Integer&amp;gt;();
+list2.add(123);
+
+// 打印的结果为 true 类型一致, 这就是泛型擦除
+System.out.println(&amp;quot;类型是否一致 &amp;quot; + (list1.getClass() == list2.getClass())); 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这里的结果为什么会为 true 呢? 这就是因为泛型在编译时期就被擦除了, 他们在编译后都是 List 类型相等, 所以为 true, 这个时候如果我们在手写代码的时候, 如果是添加其他的类型仍然会报错, 这个又是为什么呢 ? 这是因为, 其实是在编译之前, 编译器会帮我们检查类型是否是一致的, 避免发生强转失败的现象&lt;/p&gt;
+
+&lt;p&gt;最后再看一个现象&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ArrayList&amp;lt;? extends Person&amp;gt; arrayList = new ArrayList&amp;lt;&amp;gt;();
+arrayList.add(new Person()); // 报错
+arrayList.add(new Boy()); // 报错
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;不能够添加, 这个是为什么 ? 这个因为虽然你使用了通配符接受了继承至 Person 的任意类型, 但是其实编译器并不知道你的 arrayList 是具体的那一个类型的, 所以不能添加,  其实和你写 &amp;lt;? extends Object&amp;gt; 是一样的, 编译器并不能够确定是具体的那一个类型, 那接着只需要简单修改一下, 就不会再报错了&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ArrayList&amp;lt;? super Person&amp;gt; arrayList = new ArrayList&amp;lt;&amp;gt;();
+arrayList.add(new Person()); 
+arrayList.add(new Boy());  
+//arrayList.add(new Father()); // 报错, 因为 Father 不是 Person 的子类
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样就不会报错了, 这又是为什么呢 ? 其实当这个时候, 规则是泛型下限, 只能够接受 Person 的父类, 这个时候就能够确定要添加的类型了, 那么也就意味着, arrayList 添加子类是肯定没有问题的, 只要父类出现的地方, 子类一定能够出现, 这也遵循了一大原则: 里氏替换原则&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>An Example Post</title>
+      <link>https://midFang.github.io/post/kotlin-%E6%89%A9%E5%B1%95%E5%87%BD%E6%95%B0-let-with-run-apply-also-%E7%9A%84%E4%BD%BF%E7%94%A8%E5%88%9D%E6%8E%A2.html</link>
+      <pubDate>Mon, 01 Jan 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://midFang.github.io/post/kotlin-%E6%89%A9%E5%B1%95%E5%87%BD%E6%95%B0-let-with-run-apply-also-%E7%9A%84%E4%BD%BF%E7%94%A8%E5%88%9D%E6%8E%A2.html</guid>
+      
+        <description>
+
+&lt;p&gt;最近的项目中也是基本处于是逐渐切换 Kotlin 的状态, 以下是在项目中经常使用到的几个扩展函数, 做一个记录, 不得不说有的时候真的比 Java 方便很多&lt;/p&gt;
+
+&lt;h3 id=&#34;内联扩展函数之-let&#34;&gt;内联扩展函数之 let&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;一般可以用来判断 null 的操作,或者是作用域内都使用了这个实例对象 返回值是函数的最后一行, 或者是 return 返回的值, 在作用域里面可使用 it 来代表当前的实例对象&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在 Java 中判断空的处理是这样的&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;if (userInfoBean != null) {
+     System.out.println(userInfoBean.name);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;而在 Kotlin 中的处理是这样的, [ ?. ] 的使用也就是在非空的时候才会执行括号中的代码&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  // block 是 Unit 类型的, 是函数的最后一行, 或者是 return 的返回值
+  val block =  uerInfoBean?.let {
+       print(it.name)
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;内联函数之-with&#34;&gt;内联函数之 with&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;在函数块内可以通过 this 指代该对象, 返回值是函数的最后一行, 或者是 return 返回的值&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;举例在适配器中使用, 在 Java 中是这么使用的&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@Override
+public void onBindViewHolder(ViewHolder holder, int position) {
+
+    UserInfoBean item = getItem(position);
+    if (item == null) {
+        return;
+    }
+
+    holder.tvName.setText(item.getName());
+    holder.tvAge.setText(item.getAge());
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在 Kotlin 是这么使用的&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int){
+    val item = getItem(position)?: return
+
+    with(item){
+        holder.tvName.text = name
+        holder.tvAge.text = age
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;内联扩展函数之-run&#34;&gt;内联扩展函数之 run&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;是 let 和 with 结合体, 返回值是函数的最后一行, 或者是 return 返回的值&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;借助上一个 Kotlin 的示例, 这里判断 null 直接 return 了, 那么使用 Kotlin 可以简化成这样&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int){
+		// 在 getItem() 不为 null 的时候才会执行如下代码
+    getItem(position)?.run{
+        holder.tvName.text = name
+        holder.tvAge.text = age
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;内联扩展函数之apply&#34;&gt;内联扩展函数之apply&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;一般用来初始化的操作, 内部有 this 指代该对象, 返回值是当前调用的对象&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code&gt;rv_iot_mode?.apply {
+            layoutManager = LinearLayoutManager(this@IoTMainActivity,    LinearLayoutManager.HORIZONTAL, false)
+            adapter = mIOTMainSceneModeAdapter
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;或者是这样的, 比如当我们使用 Token 拿到了用户信息, 当用户信息不为 null 的时候, 再使用用户信息的 id 去请求另外一个接口&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;uerInfoBean?.apply {
+        initUserInfoView()
+}?.id?.apply {
+				// 当用户信息不为 null 的时候, id 也不 null 的时候, 再使用 id 去请求另外一个接口请求
+        fetchHomeInfoById(id)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;内联扩展函数之-also&#34;&gt;内联扩展函数之 also&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;传入的是当前对象, 内部使用 it 可以引用当前的实例对象, 返回值传入的对象, 和 let 扩展函数有点像, 也就是返回值不同&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在 let 能用到的地方, 也可以使用 also&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  // 返回的是当前传入的对象
+  val block =  uerInfoBean?.also {
+       print(it.name)
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面 apply 的方式, 用 also 的方式也是可以的&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;uerInfoBean?.also {
+        initUserInfoView()
+}?.id?.apply {
+				// 当前 it 即使代表 id
+				// 当用户信息不为 null 的时候, id 也不 null 的时候, 再使用 id 去请求另外一个接口请求
+        fetchHomeInfoById(it)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面的几个扩展函数大家在开发中可以使用起来细细体会, 其实很多扩展函数, 可以替代或者是配合使用, 一定程度上相比于 Java 确实会方便许多&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>An Example Post</title>
+      <link>https://midFang.github.io/post/xxxasx.html</link>
+      <pubDate>Mon, 01 Jan 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://midFang.github.io/post/xxxasx.html</guid>
+      
+        <description>&lt;p&gt;代码中数据结构是这样的&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;class Node {
+    // 存储下一个节点
+    Node next;
+    String mes;
+    public Node(String mes) {
+        this.mes = mes;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;插入&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>An Example Post</title>
+      <link>https://midFang.github.io/post/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E5%8D%95%E9%93%BE%E8%A1%A8.html</link>
+      <pubDate>Mon, 01 Jan 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://midFang.github.io/post/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E5%8D%95%E9%93%BE%E8%A1%A8.html</guid>
+      
+        <description>
+
+&lt;h2 id=&#34;nisdfaisdfasdfa&#34;&gt;nisdfaisdfasdfa&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;anidf&lt;/li&gt;
+&lt;li&gt;andif&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;手写一个简单的单链表的增删改查, 本文不注重代码的严谨格式等, 仅仅是探究其实现的思想&lt;/p&gt;
+
+&lt;p&gt;假如我们需要添加一个数据&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://imgconvert.csdnimg.cn/aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2NoZWNrRmFuZy9pbWcvbWFzdGVyLzIwMjAwMTEyMjI1MjI1LnBuZw?x-oss-process=image/format,png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;代码中数据结构是这样的&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;class Node {
+    // 存储下一个节点
+    Node next;
+    String mes;
+    public Node(String mes) {
+        this.mes = mes;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;插入&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public static void insert(Node n) {
+        Node current = rootNode;
+
+        if (current == null) {
+            // 第一次插入
+            rootNode = n;
+            return;
+        }
+
+        Node next;
+        while ((next = current.getNext()) != null) {
+            current = next; // 移动指针
+        }
+        current.setNext(n);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;删除&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://imgconvert.csdnimg.cn/aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2NoZWNrRmFuZy9pbWcvbWFzdGVyLzIwMjAwMTEyMjMxMjI4LnBuZw?x-oss-process=image/format,png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; public static void delete(String mes) {
+        Node current = rootNode;
+
+        Node next;
+        // 1， 2， 3， 4， 5
+        // 假如是要删除3， 则需要2的指针链上4
+        // 因为单链表找不到前驱节点， 所以需要先找到2所在的当前节点， 然后删除3，找到3所在的节点的下一个节点指向2
+        while ((next = current.getNext()) != null) {
+
+            if (mes.equals(next.getMes())) {
+                // 删除节点， 指针位置发生改变
+                current.setNext(next.getNext());  // 2 = 4
+                next.setNext(null); // 3 // 原本3的指向移除掉
+                return;
+            }
+            current = next;
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;修改&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; public static void modify(String oldMes, String newMes) {
+        Node current = rootNode;
+
+        Node next;
+        // 1， 2， 3， 4， 5
+        // 假如要修改的是3，改为 6
+
+        while ((next = current.getNext()) != null) {
+            if (oldMes.equals(current.getMes())) {
+                current.setMes(newMes);
+                return;
+            }
+            current = next;
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;获取&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    public static void getAll() {
+        Node current = rootNode;
+        Node next;
+        while ((next = current.getNext()) != null) {
+            System.out.println(current.getMes());
+            current = next;
+        }
+        System.out.println(current.getMes());
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;完整代码如下&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class MyTest {
+
+    private static Node rootNode = null;
+
+    public static void insert(Node n) {
+        Node current = rootNode;
+
+        if (current == null) {
+            // 第一次插入
+            rootNode = n;
+            return;
+        }
+
+        Node next;
+        while ((next = current.getNext()) != null) {
+            current = next; // 移动指针
+        }
+        current.setNext(n);
+    }
+
+    public static void delete(String mes) {
+        Node current = rootNode;
+
+        Node next;
+        // 1， 2， 3， 4， 5
+        // 假如是要删除3， 则需要2的指针链上4
+        // 因为单链表找不到前驱节点， 所以需要先找到2所在的当前节点， 然后删除3，找到3所在的节点的下一个节点指向2
+        while ((next = current.getNext()) != null) {
+
+            if (mes.equals(next.getMes())) {
+                // 删除节点， 指针位置发生改变
+                current.setNext(next.getNext());  // 2 = 4
+                next.setNext(null); // 3 // 原本3的指向移除掉
+                return;
+            }
+            current = next;
+        }
+    }
+
+    public static void modify(String oldMes, String newMes) {
+        Node current = rootNode;
+
+        Node next;
+        // 1， 2， 3， 4， 5
+        // 假如要修改的是3，改为 6
+
+        while ((next = current.getNext()) != null) {
+            if (oldMes.equals(current.getMes())) {
+                current.setMes(newMes);
+            }
+            current = next;
+        }
+    }
+
+    public static void getAll() {
+        Node current = rootNode;
+
+        Node next;
+        while ((next = current.getNext()) != null) {
+            System.out.println(current.getMes());
+            current = next;
+        }
+        System.out.println(current.getMes());
+    }
+
+    public static void main(String[] args) {
+
+        Node node = new Node(&amp;quot;1&amp;quot;);
+        Node node1 = new Node(&amp;quot;2&amp;quot;);
+        Node node2 = new Node(&amp;quot;3&amp;quot;);
+        Node node3 = new Node(&amp;quot;4&amp;quot;);
+        Node node4 = new Node(&amp;quot;5&amp;quot;);
+
+        insert(node);
+        insert(node1);
+        insert(node2);
+        insert(node3);
+        insert(node4);
+
+        delete(&amp;quot;3&amp;quot;);
+        modify(&amp;quot;3&amp;quot;, &amp;quot;6&amp;quot;);
+
+        getAll();
+
+    }
+
+}
+
+class Node {
+    // 存储下一个节点
+    private Node next;
+
+    private String mes;
+
+    public Node(String mes) {
+        this.mes = mes;
+    }
+
+    public Node getNext() {
+        return next;
+    }
+
+    public void setNext(Node next) {
+        this.next = next;
+    }
+
+    public String getMes() {
+        return mes;
+    }
+
+    public void setMes(String mes) {
+        this.mes = mes;
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;好了, 增删改查的代码大致就是这些了, 在 &lt;a href=&#34;https://blog.csdn.net/github_37858290/article/details/102540166&#34;&gt;ArrayList源码分析&lt;/a&gt; 中我们了解到其内部使用的是数组的结构, 或者叫顺序表的方式, 那么他们两个到底有什么区别呢 ? 或者是在使用场景上有什么区别呢 ?&lt;/p&gt;
+
+&lt;p&gt;首先针对数据的增删改查来说,  顺序表的内存地址是连续的,  他可以基于下标快速访问到元素,这是优点,  删除元素需要一直遍历查找到元素为止, 然后一个一个到挪动元素的位置, 消耗时间&lt;/p&gt;
+
+&lt;p&gt;相对于顺序表, 单链表的优点是, 内存地址是不连续的, 当前节点存在着下一个节点的引用, 直接修改节点引用即可, 复杂度相对于顺序表简单&lt;/p&gt;
+
+&lt;p&gt;所以查找到使用顺序表结构, 修改多使用链表的形式&lt;/p&gt;
+</description>
+      
+    </item>
+    
+  </channel>
+</rss>
