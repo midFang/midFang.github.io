@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Git on Jane - A super concise theme for Hugo</title>
+    <link>https://midFang.github.io/categories/git/</link>
+    <description>Recent content in Git on Jane - A super concise theme for Hugo</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 20 Jun 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://midFang.github.io/categories/git/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>清空 git 提交的以往所有历史记录</title>
+      <link>https://midFang.github.io/post/%E6%B8%85%E7%A9%BA-git-%E6%8F%90%E4%BA%A4%E7%9A%84%E4%BB%A5%E5%BE%80%E6%89%80%E6%9C%89%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Thu, 20 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/%E6%B8%85%E7%A9%BA-git-%E6%8F%90%E4%BA%A4%E7%9A%84%E4%BB%A5%E5%BE%80%E6%89%80%E6%9C%89%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95/</guid>
+      <description>前言 为什么要清空提交的历史记录呢 ？ 在使用 Git 进行仓库代码管理的时候，难免不注意会提交一些隐私的信息，即使是后面删除了，但还是能够从 Git 的历史记录</description>
+    </item>
+    
+  </channel>
+</rss>

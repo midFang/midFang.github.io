@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Kotlin 扩展函数 let with run apply also 的使用初探 - Jane - A super concise theme for Hugo</title>
+  <title>清空 git 提交的以往所有历史记录 - Jane - A super concise theme for Hugo</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -23,7 +23,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="author" content="midFang" />
-  <meta name="description" content="最近的项目中也是基本处于是逐渐切换 Kotlin 的状态, 以下是在项目中经常使用到的几个扩展函数, 做一个记录, 不得不说有的时候真的比 Java 方便很多 内联扩展函数" />
+  <meta name="description" content="前言 为什么要清空提交的历史记录呢 ？ 在使用 Git 进行仓库代码管理的时候，难免不注意会提交一些隐私的信息，即使是后面删除了，但还是能够从 Git 的历史记录" />
 
   <meta name="keywords" content="Hugo, theme, jane" />
 
@@ -35,7 +35,7 @@
 <meta name="generator" content="Hugo 0.58.3" />
 
 
-<link rel="canonical" href="https://midFang.github.io/post/kotlin-%E6%89%A9%E5%B1%95%E5%87%BD%E6%95%B0-let-with-run-apply-also-%E7%9A%84%E4%BD%BF%E7%94%A8%E5%88%9D%E6%8E%A2/" />
+<link rel="canonical" href="https://midFang.github.io/post/%E6%B8%85%E7%A9%BA-git-%E6%8F%90%E4%BA%A4%E7%9A%84%E4%BB%A5%E5%BE%80%E6%89%80%E6%9C%89%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95/" />
 
 
 
@@ -59,26 +59,26 @@
 
 
 
-<meta property="og:title" content="Kotlin 扩展函数 let with run apply also 的使用初探" />
-<meta property="og:description" content="最近的项目中也是基本处于是逐渐切换 Kotlin 的状态, 以下是在项目中经常使用到的几个扩展函数, 做一个记录, 不得不说有的时候真的比 Java 方便很多 内联扩展函数" />
+<meta property="og:title" content="清空 git 提交的以往所有历史记录" />
+<meta property="og:description" content="前言 为什么要清空提交的历史记录呢 ？ 在使用 Git 进行仓库代码管理的时候，难免不注意会提交一些隐私的信息，即使是后面删除了，但还是能够从 Git 的历史记录" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://midFang.github.io/post/kotlin-%E6%89%A9%E5%B1%95%E5%87%BD%E6%95%B0-let-with-run-apply-also-%E7%9A%84%E4%BD%BF%E7%94%A8%E5%88%9D%E6%8E%A2/" />
-<meta property="article:published_time" content="2019-09-30T00:00:00+00:00" />
-<meta property="article:modified_time" content="2019-09-30T00:00:00+00:00" />
-<meta itemprop="name" content="Kotlin 扩展函数 let with run apply also 的使用初探">
-<meta itemprop="description" content="最近的项目中也是基本处于是逐渐切换 Kotlin 的状态, 以下是在项目中经常使用到的几个扩展函数, 做一个记录, 不得不说有的时候真的比 Java 方便很多 内联扩展函数">
+<meta property="og:url" content="https://midFang.github.io/post/%E6%B8%85%E7%A9%BA-git-%E6%8F%90%E4%BA%A4%E7%9A%84%E4%BB%A5%E5%BE%80%E6%89%80%E6%9C%89%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95/" />
+<meta property="article:published_time" content="2019-06-20T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-06-20T00:00:00+00:00" />
+<meta itemprop="name" content="清空 git 提交的以往所有历史记录">
+<meta itemprop="description" content="前言 为什么要清空提交的历史记录呢 ？ 在使用 Git 进行仓库代码管理的时候，难免不注意会提交一些隐私的信息，即使是后面删除了，但还是能够从 Git 的历史记录">
 
 
-<meta itemprop="datePublished" content="2019-09-30T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2019-09-30T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="875">
+<meta itemprop="datePublished" content="2019-06-20T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2019-06-20T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="346">
 
 
 
-<meta itemprop="keywords" content="Android,kotlin," />
+<meta itemprop="keywords" content="Git," />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Kotlin 扩展函数 let with run apply also 的使用初探"/>
-<meta name="twitter:description" content="最近的项目中也是基本处于是逐渐切换 Kotlin 的状态, 以下是在项目中经常使用到的几个扩展函数, 做一个记录, 不得不说有的时候真的比 Java 方便很多 内联扩展函数"/>
+<meta name="twitter:title" content="清空 git 提交的以往所有历史记录"/>
+<meta name="twitter:description" content="前言 为什么要清空提交的历史记录呢 ？ 在使用 Git 进行仓库代码管理的时候，难免不注意会提交一些隐私的信息，即使是后面删除了，但还是能够从 Git 的历史记录"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -336,14 +336,14 @@
           <article class="post bg-white">
     
     <header class="post-header">
-      <h1 class="post-title">Kotlin 扩展函数 let with run apply also 的使用初探</h1>
+      <h1 class="post-title">清空 git 提交的以往所有历史记录</h1>
       
       <div class="post-meta">
-        <time datetime="2019-09-30" class="post-time">
-          2019-09-30
+        <time datetime="2019-06-20" class="post-time">
+          2019-06-20
         </time>
         <div class="post-category">
-            <a href="https://midFang.github.io/categories/kotlin/"> kotlin </a>
+            <a href="https://midFang.github.io/categories/git/"> Git </a>
             
           </div>
         
@@ -365,13 +365,9 @@
 <ul>
 <li>
 <ul>
-<li>
+<li><a href="#前言">前言</a>
 <ul>
-<li><a href="#内联扩展函数之-let">内联扩展函数之 let</a></li>
-<li><a href="#内联函数之-with">内联函数之 with</a></li>
-<li><a href="#内联扩展函数之-run">内联扩展函数之 run</a></li>
-<li><a href="#内联扩展函数之apply">内联扩展函数之apply</a></li>
-<li><a href="#内联扩展函数之-also">内联扩展函数之 also</a></li>
+<li><a href="#解决方案">解决方案</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -383,208 +379,88 @@
     <div class="post-content">
       
 
-<p>最近的项目中也是基本处于是逐渐切换 Kotlin 的状态, 以下是在项目中经常使用到的几个扩展函数, 做一个记录, 不得不说有的时候真的比 Java 方便很多</p>
+<h2 id="前言">前言</h2>
 
-<h3 id="内联扩展函数之-let">内联扩展函数之 let</h3>
+<p>为什么要清空提交的历史记录呢 ？</p>
 
-<blockquote>
-<p>一般可以用来判断 null 的操作,或者是作用域内都使用了这个实例对象 返回值是函数的最后一行, 或者是 return 返回的值, 在作用域里面可使用 it 来代表当前的实例对象</p>
-</blockquote>
+<p>在使用 Git 进行仓库代码管理的时候，难免不注意会提交一些隐私的信息，即使是后面删除了，但还是能够从 Git 的历史记录可以找的到以往提交的信息。而且大部分开发者都是使用 Public Repository 公开的仓库，别人 clone 下来的话，那么就会造成隐式信息的直接暴露。</p>
 
-<p>在 Java 中判断空的处理是这样的</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">if (userInfoBean != null) {
-     System.out.println(userInfoBean.name);
-}</pre></td></tr></table>
-</div>
-</div>
-<p>而在 Kotlin 中的处理是这样的, [ ?. ] 的使用也就是在非空的时候才会执行括号中的代码</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">  // block 是 Unit 类型的, 是函数的最后一行, 或者是 return 的返回值
-  val block =  uerInfoBean?.let {
-       print(it.name)
-  }</pre></td></tr></table>
-</div>
-</div>
-<h3 id="内联函数之-with">内联函数之 with</h3>
+<h3 id="解决方案">解决方案</h3>
 
 <blockquote>
-<p>在函数块内可以通过 this 指代该对象, 返回值是函数的最后一行, 或者是 return 返回的值</p>
+<p>思路： 大致就是创建一个新的节点备份一下，然后删除原来的节点，再将新的节点完全覆盖推送到远端</p>
 </blockquote>
 
-<p>举例在适配器中使用, 在 Java 中是这么使用的</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">@Override
-public void onBindViewHolder(ViewHolder holder, int position) {
-
-    UserInfoBean item = getItem(position);
-    if (item == null) {
-        return;
-    }
-
-    holder.tvName.setText(item.getName());
-    holder.tvAge.setText(item.getAge());
-}</pre></td></tr></table>
-</div>
-</div>
-<p>在 Kotlin 是这么使用的</p>
+<p>需要使用到 orphan 命令</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
 </span></pre></td>
 <td class="lntd">
-<pre class="chroma">override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int){
-    val item = getItem(position)?: return
-
-    with(item){
-        holder.tvName.text = name
-        holder.tvAge.text = age
-    }
-}</pre></td></tr></table>
+<pre class="chroma">orphan 创建的节点，只有当前节点被添加的记录，不会有其他节点的历史提交信息</pre></td></tr></table>
 </div>
 </div>
-<h3 id="内联扩展函数之-run">内联扩展函数之 run</h3>
-
-<blockquote>
-<p>是 let 和 with 结合体, 返回值是函数的最后一行, 或者是 return 返回的值</p>
-</blockquote>
-
-<p>借助上一个 Kotlin 的示例, 这里判断 null 直接 return 了, 那么使用 Kotlin 可以简化成这样</p>
+<ul>
+<li><p>使用 git checkout &ndash;orphan new_branch ,基于当前分支创建一个独立的分支new_branch</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
 </span></pre></td>
 <td class="lntd">
-<pre class="chroma">override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int){
-		// 在 getItem() 不为 null 的时候才会执行如下代码
-    getItem(position)?.run{
-        holder.tvName.text = name
-        holder.tvAge.text = age
-    }
-}</pre></td></tr></table>
+<pre class="chroma">git checkout --orphan  new_branch</pre></td></tr></table>
 </div>
-</div>
-<h3 id="内联扩展函数之apply">内联扩展函数之apply</h3>
+</div></li>
 
-<blockquote>
-<p>一般用来初始化的操作, 内部有 this 指代该对象, 返回值是当前调用的对象</p>
-</blockquote>
+<li><p>添加所有文件变化至暂存空间</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
 </span></pre></td>
 <td class="lntd">
-<pre class="chroma">rv_iot_mode?.apply {
-            layoutManager = LinearLayoutManager(this@IoTMainActivity,    LinearLayoutManager.HORIZONTAL, false)
-            adapter = mIOTMainSceneModeAdapter
-}</pre></td></tr></table>
+<pre class="chroma">git add -A</pre></td></tr></table>
 </div>
-</div>
-<p>或者是这样的, 比如当我们使用 Token 拿到了用户信息, 当用户信息不为 null 的时候, 再使用用户信息的 id 去请求另外一个接口</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">uerInfoBean?.apply {
-        initUserInfoView()
-}?.id?.apply {
-				// 当用户信息不为 null 的时候, id 也不 null 的时候, 再使用 id 去请求另外一个接口请求
-        fetchHomeInfoById(id)
-}</pre></td></tr></table>
-</div>
-</div>
-<h3 id="内联扩展函数之-also">内联扩展函数之 also</h3>
+</div></li>
 
-<blockquote>
-<p>传入的是当前对象, 内部使用 it 可以引用当前的实例对象, 返回值传入的对象, 和 let 扩展函数有点像, 也就是返回值不同</p>
-</blockquote>
+<li><p>提交并添加提交记录</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">git commit -am &#34;commit message&#34;</pre></td></tr></table>
+</div>
+</div></li>
 
-<p>在 let 能用到的地方, 也可以使用 also</p>
+<li><p>删除当前分支</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
 </span></pre></td>
 <td class="lntd">
-<pre class="chroma">  // 返回的是当前传入的对象
-  val block =  uerInfoBean?.also {
-       print(it.name)
-  }</pre></td></tr></table>
+<pre class="chroma">git branch -D master</pre></td></tr></table>
 </div>
-</div>
-<p>上面 apply 的方式, 用 also 的方式也是可以的</p>
+</div></li>
+
+<li><p>重新命名当前独立分支为 master</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
 </span></pre></td>
 <td class="lntd">
-<pre class="chroma">uerInfoBean?.also {
-        initUserInfoView()
-}?.id?.apply {
-				// 当前 it 即使代表 id
-				// 当用户信息不为 null 的时候, id 也不 null 的时候, 再使用 id 去请求另外一个接口请求
-        fetchHomeInfoById(it)
-}</pre></td></tr></table>
+<pre class="chroma">git branch -m master</pre></td></tr></table>
 </div>
+</div></li>
+
+<li><p>强制推送到远端分支 （会覆盖掉远端代码，小心使用）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">git push -f origin master</pre></td></tr></table>
 </div>
-<p>上面的几个扩展函数大家在开发中可以使用起来细细体会, 其实很多扩展函数, 可以替代或者是配合使用, 一定程度上相比于 Java 确实会方便许多</p>
+</div></li>
+</ul>
 
     </div>
 
@@ -598,7 +474,7 @@ public void onBindViewHolder(ViewHolder holder, int position) {
   <p class="copyright-item">
     <span class="item-title">LastMod</span>
     <span class="item-content">
-      2019-09-30
+      2019-06-20
       
     </span>
   </p>
@@ -615,15 +491,14 @@ public void onBindViewHolder(ViewHolder holder, int position) {
 
     <footer class="post-footer">
       <div class="post-tags">
-          <a href="https://midFang.github.io/tags/android/">Android</a>
-          <a href="https://midFang.github.io/tags/kotlin/">kotlin</a>
+          <a href="https://midFang.github.io/tags/git/">Git</a>
           
         </div>
 
       
       <nav class="post-nav">
         
-          <a class="prev" href="/post/java-%E4%B8%AD%E7%9A%84%E6%B3%9B%E5%9E%8B/">
+          <a class="prev" href="/post/hugo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
             
             <i class="iconfont">
               <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
@@ -633,12 +508,12 @@ public void onBindViewHolder(ViewHolder holder, int position) {
 </svg>
 
             </i>
-            <span class="prev-text nav-default">Java 中的泛型</span>
+            <span class="prev-text nav-default">hugo常用命令.md</span>
             <span class="prev-text nav-mobile">Prev</span>
           </a>
         
-          <a class="next" href="/post/view-%E7%9A%84-draw-%E8%BF%87%E7%A8%8B/">
-            <span class="next-text nav-default">View 的 draw 过程</span>
+          <a class="next" href="/post/git%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86%E5%8A%A0%E9%80%9F%E4%BF%AE%E6%94%B9%E4%BB%A3%E7%90%86%E6%96%B9%E5%BC%8F/">
+            <span class="next-text nav-default">git使用代理加速，修改代理方式</span>
             <span class="prev-text nav-mobile">Next</span>
             
             <i class="iconfont">

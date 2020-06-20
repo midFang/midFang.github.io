@@ -30,6 +30,15 @@
     </item>
     
     <item>
+      <title>Java 中的泛型</title>
+      <link>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84%E6%B3%9B%E5%9E%8B/</link>
+      <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84%E6%B3%9B%E5%9E%8B/</guid>
+      <description>假设有 3 个类, 他们的继承关系是这样的 1 2 public class Person { } 1 2 public class Gril extends Person { } 1 2 public class Boy extends Person { } 1 2 public class Father { } 在类上指定的泛型, 那么在当前类, 使用的都</description>
+    </item>
+    
+    <item>
       <title>Kotlin 扩展函数 let with run apply also 的使用初探</title>
       <link>https://midFang.github.io/post/kotlin-%E6%89%A9%E5%B1%95%E5%87%BD%E6%95%B0-let-with-run-apply-also-%E7%9A%84%E4%BD%BF%E7%94%A8%E5%88%9D%E6%8E%A2/</link>
       <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
@@ -90,15 +99,6 @@
       
       <guid>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84-monitor/</guid>
       <description>什么是 Monitor? Java 虚拟机给每个对象和 class 字节码都设置了一个监听器 Monitor，用于检测并发代码的重入，同时在 Object 类中还提供了 notify 和 wait 方法来对线程进行控制</description>
-    </item>
-    
-    <item>
-      <title>WiFi开发断开当前正在连接的 WiFi</title>
-      <link>https://midFang.github.io/post/wifi%E5%BC%80%E5%8F%91%E6%96%AD%E5%BC%80%E5%BD%93%E5%89%8D%E6%AD%A3%E5%9C%A8%E8%BF%9E%E6%8E%A5%E7%9A%84-wifi/</link>
-      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/wifi%E5%BC%80%E5%8F%91%E6%96%AD%E5%BC%80%E5%BD%93%E5%89%8D%E6%AD%A3%E5%9C%A8%E8%BF%9E%E6%8E%A5%E7%9A%84-wifi/</guid>
-      <description>在 WiFi 功能开发的时候，项目中有一个需求是超时逻辑，但是 Android 系统 WiFi 连接的广播只有连接成功，或者是 WiFi 密码错误的广播，并没有定义这种类型。所以我在项目</description>
     </item>
     
   </channel>
