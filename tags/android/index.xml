@@ -6,10 +6,19 @@
     <description>Recent content in Android on Jane - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 10 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 04 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/android/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>关于8.0以下出现Only fullscreen opaque activities can request orientation问题的解决方案</title>
+      <link>https://midFang.github.io/post/%E5%85%B3%E4%BA%8E8.0%E4%BB%A5%E4%B8%8B%E5%87%BA%E7%8E%B0only-fullscreen-opaque-activities-can-request-orientation%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</link>
+      <pubDate>Sat, 04 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/%E5%85%B3%E4%BA%8E8.0%E4%BB%A5%E4%B8%8B%E5%87%BA%E7%8E%B0only-fullscreen-opaque-activities-can-request-orientation%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</guid>
+      <description>前言 不得不说 Google 的适配是真的烦。真的是一不小心各种坑，市面上的 Android 版本也很多，各种各样的屏幕也很多。最近做的项目在自己手上测试的都还行，直接丢给</description>
+    </item>
     
     <item>
       <title>Java 动态代理</title>
@@ -90,15 +99,6 @@
       
       <guid>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84-monitor/</guid>
       <description>什么是 Monitor? Java 虚拟机给每个对象和 class 字节码都设置了一个监听器 Monitor，用于检测并发代码的重入，同时在 Object 类中还提供了 notify 和 wait 方法来对线程进行控制</description>
-    </item>
-    
-    <item>
-      <title>WiFi开发断开当前正在连接的 WiFi</title>
-      <link>https://midFang.github.io/post/wifi%E5%BC%80%E5%8F%91%E6%96%AD%E5%BC%80%E5%BD%93%E5%89%8D%E6%AD%A3%E5%9C%A8%E8%BF%9E%E6%8E%A5%E7%9A%84-wifi/</link>
-      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/wifi%E5%BC%80%E5%8F%91%E6%96%AD%E5%BC%80%E5%BD%93%E5%89%8D%E6%AD%A3%E5%9C%A8%E8%BF%9E%E6%8E%A5%E7%9A%84-wifi/</guid>
-      <description>在 WiFi 功能开发的时候，项目中有一个需求是超时逻辑，但是 Android 系统 WiFi 连接的广播只有连接成功，或者是 WiFi 密码错误的广播，并没有定义这种类型。所以我在项目</description>
     </item>
     
   </channel>

@@ -6,10 +6,28 @@
     <description>Recent content in Posts on Jane - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 10 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 05 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>《Google工作法》读书笔记</title>
+      <link>https://midFang.github.io/post/google%E5%B7%A5%E4%BD%9C%E6%B3%95%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Sun, 05 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/google%E5%B7%A5%E4%BD%9C%E6%B3%95%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</guid>
+      <description>一次结束，避免过度推迟 避免过度推迟只会浪费更多人的时间， 在一场会议之前，需要考虑会议的目标，明确会议的目的，最终要会议要取得的结果才是真正的</description>
+    </item>
+    
+    <item>
+      <title>关于8.0以下出现Only fullscreen opaque activities can request orientation问题的解决方案</title>
+      <link>https://midFang.github.io/post/%E5%85%B3%E4%BA%8E8.0%E4%BB%A5%E4%B8%8B%E5%87%BA%E7%8E%B0only-fullscreen-opaque-activities-can-request-orientation%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</link>
+      <pubDate>Sat, 04 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/%E5%85%B3%E4%BA%8E8.0%E4%BB%A5%E4%B8%8B%E5%87%BA%E7%8E%B0only-fullscreen-opaque-activities-can-request-orientation%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</guid>
+      <description>前言 不得不说 Google 的适配是真的烦。真的是一不小心各种坑，市面上的 Android 版本也很多，各种各样的屏幕也很多。最近做的项目在自己手上测试的都还行，直接丢给</description>
+    </item>
     
     <item>
       <title>Java 动态代理</title>
@@ -81,24 +99,6 @@
       
       <guid>https://midFang.github.io/post/android-%E6%B5%8B%E9%87%8F%E8%A7%84%E6%A0%BC-measurespec/</guid>
       <description>MeasureSpec MeasureSpec 代表的是一个 32 位的 int 值，高2位代表 SpecMode，低 30 位代表 SpecSize，SpecMode 指的测量模式，SpecSize 是指在某种</description>
-    </item>
-    
-    <item>
-      <title>Handler 源码分析</title>
-      <link>https://midFang.github.io/post/4.handler-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
-      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/4.handler-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
-      <description>Handler 主要讲的就是 Android 中的消息机制, 其实讲到 Handler 就少不了几个重要的对象, 也就是 Looper , ThreadLocal , MessageQueue 首先看看是如何使用的吧, 我们就简单的从以下入手, Handler 应该也是做</description>
-    </item>
-    
-    <item>
-      <title>Java 中的 Monitor</title>
-      <link>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84-monitor/</link>
-      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84-monitor/</guid>
-      <description>什么是 Monitor? Java 虚拟机给每个对象和 class 字节码都设置了一个监听器 Monitor，用于检测并发代码的重入，同时在 Object 类中还提供了 notify 和 wait 方法来对线程进行控制</description>
     </item>
     
   </channel>

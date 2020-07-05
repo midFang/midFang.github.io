@@ -20,5 +20,14 @@
       <description>在 WiFi 功能开发的时候，项目中有一个需求是超时逻辑，但是 Android 系统 WiFi 连接的广播只有连接成功，或者是 WiFi 密码错误的广播，并没有定义这种类型。所以我在项目</description>
     </item>
     
+    <item>
+      <title>蓝牙基础知识</title>
+      <link>https://midFang.github.io/post/%E8%93%9D%E7%89%99%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+      <pubDate>Mon, 24 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/%E8%93%9D%E7%89%99%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+      <description>A2DP Advanced Audio Distribution Profile。高质量音频数据传输的协议，其定义了传送单声道或立体声等高质量音频信息的协议和过程。A2DP的典型应用是将音乐播放器的</description>
+    </item>
+    
   </channel>
 </rss>
