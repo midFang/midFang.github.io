@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>Git 管理 .gitignore file 文件的使用</title>
+      <link>https://midFang.github.io/post/git-%E7%AE%A1%E7%90%86-.gitignore-file-%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Sun, 05 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/git-%E7%AE%A1%E7%90%86-.gitignore-file-%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
+      <description>Git 忽略文件的原则 忽略操作系统自动生成的文件，比如缩略图等 忽略编译生成的中间文件、可执行文件等，也就是如果一个文件是通过另一个文件自动生成的，</description>
+    </item>
+    
+    <item>
       <title>《Google工作法》读书笔记</title>
       <link>https://midFang.github.io/post/google%E5%B7%A5%E4%BD%9C%E6%B3%95%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Sun, 05 Jul 2020 00:00:00 +0000</pubDate>
@@ -90,15 +99,6 @@
       
       <guid>https://midFang.github.io/post/view-%E7%9A%84-measure-%E6%B5%8B%E9%87%8F%E8%BF%87%E7%A8%8B/</guid>
       <description>View 的测量过程 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个顶点的位置, draw 则是将布局绘</description>
-    </item>
-    
-    <item>
-      <title>Android 测量规格 MeasureSpec</title>
-      <link>https://midFang.github.io/post/android-%E6%B5%8B%E9%87%8F%E8%A7%84%E6%A0%BC-measurespec/</link>
-      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/android-%E6%B5%8B%E9%87%8F%E8%A7%84%E6%A0%BC-measurespec/</guid>
-      <description>MeasureSpec MeasureSpec 代表的是一个 32 位的 int 值，高2位代表 SpecMode，低 30 位代表 SpecSize，SpecMode 指的测量模式，SpecSize 是指在某种</description>
     </item>
     
   </channel>
