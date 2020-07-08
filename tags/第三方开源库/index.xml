@@ -6,10 +6,19 @@
     <description>Recent content in 第三方开源库 on Jane - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 22 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 01 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BC%80%E6%BA%90%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>EventBus 源码分析</title>
+      <link>https://midFang.github.io/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>EventBus 是一种用于 Android 的事件发布-订阅总线, 是一个可以实现组件间通信的一个第三方框架, 使用起来非常的简单, 一共也就是 4 个步骤, 注册订阅, 发送事件, 解</description>
+    </item>
     
     <item>
       <title>OKHttp 拦截器添加公共参数</title>
@@ -18,15 +27,6 @@
       
       <guid>https://midFang.github.io/post/okhttp-%E6%8B%A6%E6%88%AA%E5%99%A8%E6%B7%BB%E5%8A%A0%E5%85%AC%E5%85%B1%E5%8F%82%E6%95%B0/</guid>
       <description>使用场景 在我们实际的开发中, 比如有很多接口都需要传递版本号, 参数的签名的校验信息, token 信息, 请求头信息等等, 那么我们就可以使用 OKHttp 添加拦截器的方</description>
-    </item>
-    
-    <item>
-      <title>EventBus 源码分析</title>
-      <link>https://midFang.github.io/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
-      <description>EventBus 是一种用于 Android 的事件发布-订阅总线, 是一个可以实现组件间通信的一个第三方框架, 使用起来非常的简单, 一共也就是 4 个步骤, 注册订阅, 发送事件, 解</description>
     </item>
     
   </channel>

@@ -6,6 +6,7 @@
     <description>Recent content in 动画 on Jane - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
+    <lastBuildDate>Wed, 02 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/categories/%E5%8A%A8%E7%94%BB/index.xml" rel="self" type="application/rss+xml" />
     
@@ -13,7 +14,7 @@
     <item>
       <title>Activity 从各个方向进入和退出的转场动画</title>
       <link>https://midFang.github.io/post/activity-%E4%BB%8E%E5%90%84%E4%B8%AA%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 02 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/activity-%E4%BB%8E%E5%90%84%E4%B8%AA%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/</guid>
       <description>向左推 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 // R.anim.i_slide_in_left &amp;lt;set xmlns:android=&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&amp;gt; &amp;lt;translate android:fromXDelta=&amp;#34;100%p&amp;#34; android:toXDelta=&amp;#34;0&amp;#34; android:duration=&amp;#34;350&amp;#34;/&amp;gt; &amp;lt;/set&amp;gt; // R.anim.i_slide_out_left &amp;lt;?xml version=&amp;#34;1.0&amp;#34; encoding=&amp;#34;utf-8&amp;#34;?&amp;gt; &amp;lt;set xmlns:android=&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&amp;gt; &amp;lt;translate android:fromXDelta=&amp;#34;0&amp;#34; android:toXDelta=&amp;#34;-100%p&amp;#34; android:duration=&amp;#34;350&amp;#34;/&amp;gt; &amp;lt;/set&amp;gt; 向右推 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 // R.anim.i_slide_in_right &amp;lt;set xmlns:android=&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&amp;gt; &amp;lt;translate android:fromXDelta=&amp;#34;-100%p&amp;#34; android:toXDelta=&amp;#34;0&amp;#34; android:duration=&amp;#34;350&amp;#34;/&amp;gt; &amp;lt;/set&amp;gt; // R.anim.i_slide_out_right</description>
