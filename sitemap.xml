@@ -2,7 +2,56 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://midFang.github.io/categories/android/</loc>
+    <lastmod>2020-08-01T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/tags/android/</loc>
+    <lastmod>2020-08-01T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://midFang.github.io/categories/</loc>
+    <lastmod>2020-08-01T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/</loc>
+    <lastmod>2020-08-01T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/post/</loc>
+    <lastmod>2020-08-01T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/tags/</loc>
+    <lastmod>2020-08-01T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/post/window.layoutparams/</loc>
+    <lastmod>2020-08-01T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/categories/git/</loc>
     <lastmod>2020-07-05T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -16,35 +65,7 @@
   </url>
   
   <url>
-    <loc>https://midFang.github.io/categories/git/</loc>
-    <lastmod>2020-07-05T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://midFang.github.io/post/git-%E7%AE%A1%E7%90%86-.gitignore-file-%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
-    <lastmod>2020-07-05T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://midFang.github.io/</loc>
-    <lastmod>2020-07-05T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://midFang.github.io/post/</loc>
-    <lastmod>2020-07-05T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://midFang.github.io/tags/</loc>
     <lastmod>2020-07-05T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -58,13 +79,6 @@
   </url>
   
   <url>
-    <loc>https://midFang.github.io/tags/%E9%98%85%E8%AF%BB/</loc>
-    <lastmod>2020-07-05T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://midFang.github.io/categories/%E9%98%85%E8%AF%BB/</loc>
     <lastmod>2020-07-05T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -72,8 +86,8 @@
   </url>
   
   <url>
-    <loc>https://midFang.github.io/tags/android/</loc>
-    <lastmod>2020-07-04T00:00:00+00:00</lastmod>
+    <loc>https://midFang.github.io/tags/%E9%98%85%E8%AF%BB/</loc>
+    <lastmod>2020-07-05T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -86,14 +100,14 @@
   </url>
   
   <url>
-    <loc>https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
+    <loc>https://midFang.github.io/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
     <lastmod>2020-07-04T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://midFang.github.io/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
+    <loc>https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
     <lastmod>2020-07-04T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -191,14 +205,14 @@
   </url>
   
   <url>
-    <loc>https://midFang.github.io/categories/java/</loc>
+    <loc>https://midFang.github.io/tags/java/</loc>
     <lastmod>2019-09-30T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://midFang.github.io/tags/java/</loc>
+    <loc>https://midFang.github.io/categories/java/</loc>
     <lastmod>2019-09-30T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -268,13 +282,6 @@
   </url>
   
   <url>
-    <loc>https://midFang.github.io/categories/android/</loc>
-    <lastmod>2019-09-28T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://midFang.github.io/post/android-%E6%B5%8B%E9%87%8F%E8%A7%84%E6%A0%BC-measurespec/</loc>
     <lastmod>2019-09-28T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -338,14 +345,14 @@
   </url>
   
   <url>
-    <loc>https://midFang.github.io/tags/%E7%BA%BF%E7%A8%8B/</loc>
+    <loc>https://midFang.github.io/categories/%E7%BA%BF%E7%A8%8B/</loc>
     <lastmod>2019-09-28T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://midFang.github.io/categories/%E7%BA%BF%E7%A8%8B/</loc>
+    <loc>https://midFang.github.io/tags/%E7%BA%BF%E7%A8%8B/</loc>
     <lastmod>2019-09-28T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -373,14 +380,14 @@
   </url>
   
   <url>
-    <loc>https://midFang.github.io/tags/%E8%93%9D%E7%89%99/</loc>
+    <loc>https://midFang.github.io/categories/%E8%93%9D%E7%89%99/</loc>
     <lastmod>2019-06-24T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://midFang.github.io/categories/%E8%93%9D%E7%89%99/</loc>
+    <loc>https://midFang.github.io/tags/%E8%93%9D%E7%89%99/</loc>
     <lastmod>2019-06-24T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -394,14 +401,14 @@
   </url>
   
   <url>
-    <loc>https://midFang.github.io/tags/hugo/</loc>
+    <loc>https://midFang.github.io/categories/hugo/</loc>
     <lastmod>2019-06-20T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://midFang.github.io/categories/hugo/</loc>
+    <loc>https://midFang.github.io/tags/hugo/</loc>
     <lastmod>2019-06-20T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -422,14 +429,14 @@
   </url>
   
   <url>
-    <loc>https://midFang.github.io/tags/%E7%AC%94%E8%AE%B0/</loc>
+    <loc>https://midFang.github.io/categories/%E7%AC%94%E8%AE%B0/</loc>
     <lastmod>2019-06-20T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://midFang.github.io/categories/%E7%AC%94%E8%AE%B0/</loc>
+    <loc>https://midFang.github.io/tags/%E7%AC%94%E8%AE%B0/</loc>
     <lastmod>2019-06-20T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

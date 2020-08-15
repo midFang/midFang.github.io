@@ -6,10 +6,426 @@
     <description>Recent content on Jane - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 05 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 01 Aug 2020 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://midFang.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>WindowManager.LayoutParams 参数详解</title>
+      <link>https://midFang.github.io/post/window.layoutparams/</link>
+      <pubDate>Sat, 01 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/window.layoutparams/</guid>
+      
+        <description>
+
+&lt;p&gt;WindowManager.LayoutParams 是 WindowManager 接口的嵌套类；继承于 ViewGroup.LayoutParams 。它的内容十分丰富。其实WindowManager.&lt;a href=&#34;http://lib.csdn.net/base/17&#34;&gt;Java&lt;/a&gt;的主要内容就是由这个类定义构成。下面来分析一下这个类。&lt;/p&gt;
+
+&lt;h2 id=&#34;定义&#34;&gt;定义&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;public static class WindowManager.LayoutParams 		
+	extends ViewGroup.LayoutParams implements Parcelable&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 id=&#34;继承关系&#34;&gt;继承关系&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;java.lang.Object
+    ↳android.view.ViewGroup.LayoutParams
+   		↳android.view.WindowManager.LayoutParams&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 id=&#34;继承来的属性与常量&#34;&gt;继承来的属性与常量&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;从 ViewManager.LayoutParams 继承来的属性：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;android:layout_height
+Specifies the basic height of the view.
+   
+android:layout_width
+Specifies the basic width of the view.&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;从 ViewManager.LayoutParams继承的常量：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;FILL_PARENT
+WRAP_CONTENT
+MATCH_PARENT &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;两个变量&#34;&gt;两个变量&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;width&lt;/li&gt;
+&lt;li&gt;height&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;属性及可用的常量定义&#34;&gt;属性及可用的常量定义&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;public int x;
+如果忽略gravity属性，那 么它表示窗口的绝对X位置
+什么是gravity属性呢？简单地说，就是窗口如何停靠
+当设置了 Gravity.LEFT 或 Gravity.RIGHT 之后，x值就表示到特定边的距离&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;public int y;
+如果忽略gravity属性，那么它表示窗口的绝对Y位置
+当设置了 Gravity.TOP 或 Gravity.BOTTOM 之后，y值就表示到特定边的距离&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;public float horizontalWeight;
+public float verticalWeight;
+在纵/横向上，为关联的view预留了多少扩展空间（像素）。如果是0，那么此view不能被拉伸
+其他情况下，扩展空间（像素）将被widget所均分。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;public int type;
+窗口类型。有3种主要类型：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Applicationwindows：
+取值在 FIRST_APPLICATION_WINDOW 和 LAST_APPLICATION_WINDOW 之间
+是通常的、顶层的应用程序窗口。必须将 token 设置成 activity 的 token&lt;/li&gt;
+&lt;li&gt;Sub_windows：
+取值在 FIRST_SUB_WINDOW 和 LAST_SUB_WINDOW 之间
+与顶层窗口相关联，token 必须设置为它所附着的宿主窗口的 tken&lt;/li&gt;
+&lt;li&gt;Systemwindows：
+取值在 FIRST_SYSTEM_WINDOW 和 LAST_SYSTEM_WINDOW 之间
+用于特定的系统功能。它不能用于应用程序，使用时需要特殊权限
+
+&lt;br /&gt;
+
+&lt;br /&gt;
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;type-的类型&#34;&gt;type 的类型&lt;/h2&gt;
+
+&lt;p&gt;应用程序窗口&lt;br /&gt;
+ public static final int FIRST_APPLICATION_WINDOW = 1;&lt;/p&gt;
+
+&lt;p&gt;所有程序窗口的“基地”窗口，其他应用程序窗口都显示在它上面&lt;br /&gt;
+ public static final int TYPE_BASE_APPLICATION  =1;&lt;/p&gt;
+
+&lt;p&gt;普通应哟功能程序窗口。token必须设置为Activity的token，以指出该窗口属谁&lt;br /&gt;
+   public static final int TYPE_APPLICATION    = 2;&lt;/p&gt;
+
+&lt;p&gt;用于应用程序启动时所显示的窗口。应用本身不要使用这种类型&lt;br /&gt;
+   它用于让系统显示些信息，直到应用程序可以开启自己的窗口
+ public static final int TYPE_APPLICATION_STARTING = 3;&lt;/p&gt;
+
+&lt;p&gt;应用程序窗口结束&lt;br /&gt;
+ public static final int LAST_APPLICATION_WINDOW = 99;&lt;/p&gt;
+
+&lt;p&gt;子窗口。子窗口的Z序和坐标空间都依赖于他们的宿主窗口&lt;br /&gt;
+ public static final int FIRST_SUB_WINDOW    = 1000;&lt;/p&gt;
+
+&lt;p&gt;面板窗口，显示于宿主窗口上层&lt;br /&gt;
+ public static final int TYPE_APPLICATION_PANEL = FIRST_SUB_WINDOW;&lt;/p&gt;
+
+&lt;p&gt;媒体窗口，例如视频。显示于宿主窗口下层&lt;br /&gt;
+ public static final int TYPE_APPLICATION_MEDIA = FIRST_SUB_WINDOW+1;&lt;/p&gt;
+
+&lt;p&gt;应用程序窗口的子面板。显示于所有面板窗口的上层（GUI的一般规律，越“子”越靠上）&lt;br /&gt;
+ public static final int TYPE_APPLICATION_SUB_PANEL = FIRST_SUB_WINDOW +2;&lt;/p&gt;
+
+&lt;p&gt;对话框。类似于面板窗口，绘制类似于顶层窗口，而不是宿主的子窗口&lt;br /&gt;
+ public static final int TYPE_APPLICATION_ATTACHED_DIALOG = FIRST_SUB_WINDOW +3;&lt;/p&gt;
+
+&lt;p&gt;媒体信息。显示在媒体层和程序窗口之间，需要实现透明（半透明）效果。（例如显示字幕）&lt;br /&gt;
+ public static final int TYPE_APPLICATION_MEDIA_OVERLAY = FIRST_SUB_WINDOW +4;&lt;/p&gt;
+
+&lt;p&gt;子窗口结束。（ End of types of sub-windows ）&lt;br /&gt;
+ public static final int LAST_SUB_WINDOW    = 1999;&lt;/p&gt;
+
+&lt;p&gt;系统窗口。非应用程序创建&lt;br /&gt;
+ public static final int FIRST_SYSTEM_WINDOW  = 2000;&lt;/p&gt;
+
+&lt;p&gt;状态栏。只能有一个状态栏；它位于屏幕顶端，其他窗口都位于它下方&lt;br /&gt;
+ public static final int TYPE_STATUS_BAR    = FIRST_SYSTEM_WINDOW;&lt;/p&gt;
+
+&lt;p&gt;搜索栏。只能有一个搜索栏；它位于屏幕上方&lt;br /&gt;
+ public static final int TYPE_SEARCH_BAR    = FIRST_SYSTEM_WINDOW+1;&lt;/p&gt;
+
+&lt;p&gt;电话窗口。它用于电话交互（特别是呼入）。它置于所有应用程序之上，状态栏之下&lt;br /&gt;
+ public static final int TYPE_PHONE      = FIRST_SYSTEM_WINDOW+2;&lt;/p&gt;
+
+&lt;p&gt;系统提示。它总是出现在应用程序窗口之上&lt;br /&gt;
+ public static final int TYPE_SYSTEM_ALERT   = FIRST_SYSTEM_WINDOW +3;&lt;/p&gt;
+
+&lt;p&gt;在软件盘交互中，软件盘弹出模式无效最好使用error模式 ，锁屏窗口&lt;br /&gt;
+ public static final int TYPE_KEYGUARD     = FIRST_SYSTEM_WINDOW +4;&lt;/p&gt;
+
+&lt;p&gt;信息窗口。用于显示toast&lt;br /&gt;
+ public static final int TYPE_TOAST      = FIRST_SYSTEM_WINDOW +5;&lt;/p&gt;
+
+&lt;p&gt;系统顶层窗口。显示在其他一切内容之上。此窗口不能获得输入焦点，否则影响锁屏&lt;br /&gt;
+ public static final int TYPE_SYSTEM_OVERLAY  = FIRST_SYSTEM_WINDOW +6;&lt;/p&gt;
+
+&lt;p&gt;电话优先，当锁屏时显示。此窗口不能获得输入焦点，否则影响锁屏&lt;br /&gt;
+ public static final int TYPE_PRIORITY_PHONE  = FIRST_SYSTEM_WINDOW +7;&lt;/p&gt;
+
+&lt;p&gt;系统对话框。（例如音量调节框）&lt;br /&gt;
+ public static final int TYPE_SYSTEM_DIALOG   = FIRST_SYSTEM_WINDOW +8;&lt;/p&gt;
+
+&lt;p&gt;锁屏时显示的对话框&lt;br /&gt;
+ public static final int TYPE_KEYGUARD_DIALOG  = FIRST_SYSTEM_WINDOW +9;&lt;/p&gt;
+
+&lt;p&gt;系统内部错误提示，显示于所有内容之上&lt;br /&gt;
+ public static final int TYPE_SYSTEM_ERROR   = FIRST_SYSTEM_WINDOW +10;&lt;/p&gt;
+
+&lt;p&gt;需要软件盘交互最好使用此选项， 软件盘弹出会压缩布局高度， FLAG_LAYOUT_NO_LIMITS&lt;/p&gt;
+
+&lt;p&gt;内部输入法窗口，显示于普通UI之上。应用程序可重新布局以免被此窗口覆盖。&lt;br /&gt;
+   public static final int TYPE_INPUT_METHOD   = FIRST_SYSTEM_WINDOW +11;&lt;/p&gt;
+
+&lt;p&gt;内部输入法对话框，显示于当前输入法窗口之上&lt;br /&gt;
+   public static final int TYPE_INPUT_METHOD_DIALOG= FIRST_SYSTEM_WINDOW +12;&lt;/p&gt;
+
+&lt;p&gt;墙纸窗口&lt;br /&gt;
+   public static final int TYPE_WALLPAPER     = FIRST_SYSTEM_WINDOW +13;&lt;/p&gt;
+
+&lt;p&gt;状态栏的滑动面板&lt;br /&gt;
+   public static final int TYPE_STATUS_BAR_PANEL  = FIRST_SYSTEM_WINDOW +14;&lt;/p&gt;
+
+&lt;p&gt;系统窗口结束&lt;br /&gt;
+   public static final int LAST_SYSTEM_WINDOW   = 2999;&lt;/p&gt;
+
+&lt;p&gt;public int memoryType;
+  指出窗口所使用的内存缓冲类型。默认为 NORMAL ，下面定义了 memoryType 的取值：窗口缓冲位于主内存&lt;br /&gt;
+   public static final int MEMORY_TYPE_NORMAL = 0;&lt;/p&gt;
+
+&lt;p&gt;窗口缓冲位于可以被DMA访问，或者硬件加速的内存区域&lt;br /&gt;
+   public static final int MEMORY_TYPE_HARDWARE = 1;&lt;/p&gt;
+
+&lt;p&gt;窗口缓冲位于可被图形加速器访问的区域&lt;br /&gt;
+   public static final int MEMORY_TYPE_GPU = 2;&lt;/p&gt;
+
+&lt;p&gt;窗口缓冲不拥有自己的缓冲区，不能被锁定。缓冲区由本地方法提供&lt;br /&gt;
+   public static final int MEMORY_TYPE_PUSH_BUFFERS = 3;&lt;/p&gt;
+
+&lt;p&gt;窗口之后的内容变暗&lt;br /&gt;
+   public static final int FLAG_DIM_BEHIND    = 0x00000002;&lt;/p&gt;
+
+&lt;p&gt;窗口之后的内容变模糊&lt;br /&gt;
+   public static final int FLAG_BLUR_BEHIND    = 0x00000004;&lt;/p&gt;
+
+&lt;p&gt;不许获得焦点&lt;br /&gt;
+   public static final int FLAG_NOT_FOCUSABLE   = 0x00000008;&lt;/p&gt;
+
+&lt;p&gt;不接受触摸屏事件&lt;br /&gt;
+   public static final int FLAG_NOT_TOUCHABLE   = 0x00000010;&lt;/p&gt;
+
+&lt;p&gt;当窗口可以获得焦点（没有设置 FLAG_NOT_FOCUSALBE 选项）时，仍然将窗口范围之外的点设备事件（鼠标、触摸屏）发送给后面的窗口处理。否则它将独占所有的点设备事件，而不管它们是不是发生在窗口范围内&lt;br /&gt;
+   public static final int FLAG_NOT_TOUCH_MODAL  = 0x00000020;&lt;/p&gt;
+
+&lt;p&gt;如果设置了这个标志，当设备休眠时，点击触摸屏，设备将收到这个第一触摸事件&lt;br /&gt;
+   通常第一触摸事件被系统所消耗，用户不会看到他们点击屏幕有什么反应。
+   public static final int FLAG_TOUCHABLE_WHEN_WAKING = 0x00000040;&lt;/p&gt;
+
+&lt;p&gt;当此窗口为用户可见时，保持设备常开，并保持亮度不变&lt;br /&gt;
+   public static final int FLAG_KEEP_SCREEN_ON  = 0x00000080;&lt;/p&gt;
+
+&lt;p&gt;窗口占满整个屏幕，忽略周围的装饰边框（例如状态栏）。此窗口需考虑到装饰边框的内容&lt;br /&gt;
+   public static final int FLAG_LAYOUT_IN_SCREEN  =0x00000100;     window坐标系原点包括系统状态栏&lt;/p&gt;
+
+&lt;p&gt;允许窗口扩展到屏幕之外&lt;br /&gt;
+   public static final int FLAG_LAYOUT_NO_LIMITS  =0x00000200;     window坐标系原点不包括系统状态栏&lt;/p&gt;
+
+&lt;p&gt;窗口显示时，隐藏所有的屏幕装饰（例如状态条）。使窗口占用整个显示区域&lt;br /&gt;
+   public static final int FLAG_FULLSCREEN   = 0x00000400;&lt;/p&gt;
+
+&lt;p&gt;此选项将覆盖FLAG_FULLSCREEN选项，并强制屏幕装饰（如状态条）弹出&lt;br /&gt;
+   public static final int FLAG_FORCE_NOT_FULLSCREEN  =0x00000800;&lt;/p&gt;
+
+&lt;p&gt;抖动。指 对半透明的显示方法。又称“点透”。图形处理较差的设备往往用“点透”替代Alpha混合&lt;br /&gt;
+   public static final int FLAG_DITHER      = 0x00001000;&lt;/p&gt;
+
+&lt;p&gt;不允许屏幕截图&lt;br /&gt;
+   public static final int FLAG_SECURE      = 0x00002000;&lt;/p&gt;
+
+&lt;p&gt;一种特殊模式，布局参数用于指示显示比例&lt;br /&gt;
+   public static final int FLAG_SCALED      = 0x00004000;&lt;/p&gt;
+
+&lt;p&gt;当屏幕有可能贴着脸时，这一选项可防止面颊对屏幕造成误操作&lt;br /&gt;
+   public static final int FLAG_IGNORE_CHEEK_PRESSES  = 0x00008000;&lt;/p&gt;
+
+&lt;p&gt;当请求布局时，你的窗口可能出现在状态栏的上面或下面，从而造成遮挡。当设置这一选项后，窗口管理器将确保窗口内容不会被装饰条（状态栏）盖住&lt;br /&gt;
+   public static final int FLAG_LAYOUT_INSET_DECOR = 0x00010000;&lt;/p&gt;
+
+&lt;p&gt;反转FLAG_NOT_FOCUSABLE选项&lt;br /&gt;
+   如果同时设置了FLAG_NOT_FOCUSABLE选项和本选项，窗口将能够与输入法交互，允许输入法窗口覆盖；
+   如果FLAG_NOT_FOCUSABLE没有设置而设置了本选项，窗口不能与输入法交互，可以覆盖输入法窗口&lt;br /&gt;
+   public static final int FLAG_ALT_FOCUSABLE_IM = 0x00020000;&lt;/p&gt;
+
+&lt;p&gt;如果你设置了FLAG_NOT_TOUCH_MODAL，那么当触屏事件发生在窗口之外事，可以通过设置此标志接收到一个 MotionEvent.ACTION_OUTSIDE事件。注意，你不会收到完整的down/move/up事件，只有第一次down事件时可以收到 ACTION_OUTSIDE&lt;br /&gt;
+   public static final int FLAG_WATCH_OUTSIDE_TOUCH = 0x00040000;&lt;/p&gt;
+
+&lt;p&gt;当屏幕锁定时，窗口可以被看到。这使得应用程序窗口优先于锁屏界面。可配合FLAG_KEEP_SCREEN_ON选项点亮屏幕并直接显示在锁屏界面之前。可使用FLAG_DISMISS_KEYGUARD选项直接解除非加锁的锁屏状态。此选项只用于最顶层的全屏幕窗口&lt;br /&gt;
+   public static final int FLAG_SHOW_WHEN_LOCKED = 0x00080000;&lt;/p&gt;
+
+&lt;p&gt;请求系统墙纸显示在你的窗口后面。窗口必须是半透明的&lt;br /&gt;
+   public static final int FLAG_SHOW_WALLPAPER = 0x00100000;&lt;/p&gt;
+
+&lt;p&gt;窗口一旦显示出来，系统将点亮屏幕，正如用户唤醒设备那样&lt;br /&gt;
+   public static final int FLAG_TURN_SCREEN_ON = 0x00200000;&lt;/p&gt;
+
+&lt;p&gt;解除锁屏。只有锁屏界面不是加密的才能解锁。如果锁屏界面是加密的，那么用户解锁之后才能看到此窗口，除非设置了FLAG_SHOW_WHEN_LOCKED选项&lt;br /&gt;
+   public static final int FLAG_DISMISS_KEYGUARD = 0x00400000;&lt;/p&gt;
+
+&lt;p&gt;锁屏界面淡出时，继续运行它的动画&lt;br /&gt;
+   public static final int FLAG_KEEP_SURFACE_WHILE_ANIMATING =0x10000000;&lt;/p&gt;
+
+&lt;p&gt;以原始尺寸显示窗口。用于在兼容模式下运行程序&lt;br /&gt;
+   public static final int FLAG_COMPATIBLE_WINDOW = 0x20000000;&lt;/p&gt;
+
+&lt;p&gt;用于系统对话框。设置此选项的窗口将无条件获得焦点&lt;br /&gt;
+   public static final int FLAG_SYSTEM_ERROR = 0x40000000;&lt;/p&gt;
+
+&lt;p&gt;public int softInputMode;
+  软输入法模式选项：&lt;/p&gt;
+
+&lt;p&gt;以下选项与 softInputMode 有关：
+   软输入区域是否可见&lt;br /&gt;
+   public static final int SOFT_INPUT_MASK_STATE = 0x0f;&lt;/p&gt;
+
+&lt;p&gt;未指定状态&lt;br /&gt;
+   public static final int SOFT_INPUT_STATE_UNSPECIFIED = 0;&lt;/p&gt;
+
+&lt;p&gt;不要修改软输入法区域的状态&lt;br /&gt;
+   public static final int SOFT_INPUT_STATE_UNCHANGED = 1;&lt;/p&gt;
+
+&lt;p&gt;隐藏输入法区域（当用户进入窗口时）&lt;br /&gt;
+   public static final int SOFT_INPUT_STATE_HIDDEN = 2;&lt;/p&gt;
+
+&lt;p&gt;当窗口获得焦点时，隐藏输入法区域&lt;br /&gt;
+   public static final int SOFT_INPUT_STATE_ALWAYS_HIDDEN = 3;&lt;/p&gt;
+
+&lt;p&gt;显示输入法区域（当用户进入窗口时）&lt;br /&gt;
+   public static final int SOFT_INPUT_STATE_VISIBLE = 4;&lt;/p&gt;
+
+&lt;p&gt;当窗口获得焦点时，显示输入法区域&lt;br /&gt;
+   public static final int SOFT_INPUT_STATE_ALWAYS_VISIBLE = 5;&lt;/p&gt;
+
+&lt;p&gt;窗口应当主动调整，以适应软输入窗口&lt;br /&gt;
+   public static final int SOFT_INPUT_MASK_ADJUST = 0xf0;&lt;/p&gt;
+
+&lt;p&gt;未指定状态，系统将根据窗口内容尝试选择一个输入法样式&lt;br /&gt;
+   public static final int SOFT_INPUT_ADJUST_UNSPECIFIED = 0x00;&lt;/p&gt;
+
+&lt;p&gt;当输入法显示时，允许窗口重新计算尺寸，使内容不被输入法所覆盖
+   不可与SOFT_INPUT_ADJUSP_PAN混合使用,如果两个都没有设置，系统将根据窗口内容自动设置一个选项。&lt;br /&gt;
+   public static final int SOFT_INPUT_ADJUST_RESIZE = 0x10;&lt;/p&gt;
+
+&lt;p&gt;输入法显示时平移窗口。它不需要处理尺寸变化，框架能够移动窗口以确保输入焦点可见
+   不可与SOFT_INPUT_ADJUST_RESIZE混合使用;如果两个都没设置,系统将根据窗口内容自动设置一个选项。&lt;br /&gt;
+   public static final int SOFT_INPUT_ADJUST_PAN = 0x20;&lt;/p&gt;
+
+&lt;p&gt;当用户转至此窗口时，由系统自动设置，所以你不要设置它
+   当窗口显示之后该标志自动清除。&lt;br /&gt;
+   public static final int SOFT_INPUT_IS_FORWARD_NAVIGATION = 0x100;&lt;/p&gt;
+
+&lt;p&gt;期望的位图格式。默认为不透明。参考android.graphics.PixelFormat&lt;/p&gt;
+
+&lt;p&gt;public int format;&lt;/p&gt;
+
+&lt;p&gt;窗口所使用的动画设置。它必须是一个系统资源而不是应用程序资源，因为窗口管理器不能访问应用程序。&lt;/p&gt;
+
+&lt;p&gt;public int windowAnimations;&lt;/p&gt;
+
+&lt;p&gt;整个窗口的半透明值，1.0表示不透明，0.0表示全透明。&lt;/p&gt;
+
+&lt;p&gt;public float alpha = 1.0f;&lt;/p&gt;
+
+&lt;p&gt;当FLAG_DIM_BEHIND设置后生效。该变量指示后面的窗口变暗的程度。1.0表示完全不透明，0.0表示没有变暗。&lt;/p&gt;
+
+&lt;p&gt;public float dimAmount = 1.0f;&lt;/p&gt;
+
+&lt;p&gt;用来覆盖用户设置的屏幕亮度。表示应用用户设置的屏幕亮度。从0到1调整亮度从暗到最亮发生变化。&lt;/p&gt;
+
+&lt;p&gt;public float screenBrightness = -1.0f;&lt;/p&gt;
+
+&lt;p&gt;窗口的标示符。( Identifier for this window. This will usually be filled in for you. )&lt;/p&gt;
+
+&lt;p&gt;public IBinder token = null;&lt;/p&gt;
+
+&lt;p&gt;此窗口所在的包名。&lt;/p&gt;
+
+&lt;p&gt;public String packageName = null;&lt;/p&gt;
+
+&lt;p&gt;屏幕方向，参见android.content.pm.ActivityInfo#screenOrientation。&lt;/p&gt;
+
+&lt;p&gt;public int screenOrientation =ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;&lt;/p&gt;
+
+&lt;p&gt;在兼容模式下，备份/恢复参数所使用的内部缓冲区。&lt;br /&gt;
+  public int[] mCompatibilityParamsBackup = null;&lt;/p&gt;
+
+&lt;h3 id=&#34;常用方法&#34;&gt;常用方法&lt;/h3&gt;
+
+&lt;p&gt;public final int copyFrom (WindowManager.LayoutParams o);&lt;br /&gt;
+ 下面定义了各种“CHANGE”信息，为copyFrom函数所使用。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;  public staticfinal int LAYOUT_CHANGED =1&amp;lt;&amp;lt;0;
+  public staticfinal int TYPE_CHANGED =1&amp;lt;&amp;lt;1;
+  public staticfinal int FLAGS_CHANGED =1&amp;lt;&amp;lt;2;
+  public staticfinal int FORMAT_CHANGED =1&amp;lt;&amp;lt;3;
+  public staticfinal int ANIMATION_CHANGED =1&amp;lt;&amp;lt;4;
+  public staticfinal int DIM_AMOUNT_CHANGED =1&amp;lt;&amp;lt;5;
+  public staticfinal int TITLE_CHANGED =1&amp;lt;&amp;lt;6;
+  public staticfinal int ALPHA_CHANGED =1&amp;lt;&amp;lt;7;
+  public staticfinal int MEMORY_TYPE_CHANGED =1&amp;lt;&amp;lt;8;
+  public staticfinal int SOFT_INPUT_MODE_CHANGED =1&amp;lt;&amp;lt;9;
+  public staticfinal int SCREEN_ORIENTATION_CHANGED =1&amp;lt;&amp;lt;10;
+  public staticfinal int SCREEN_BRIGHTNESS_CHANGED =1&amp;lt;&amp;lt;11;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;转载： &lt;a href=&#34;https://www.cnblogs.com/ldq2016/p/6844362.html&#34;&gt;https://www.cnblogs.com/ldq2016/p/6844362.html&lt;/a&gt;&lt;/p&gt;
+</description>
+      
+    </item>
     
     <item>
       <title>Git 管理 .gitignore file 文件的使用</title>
@@ -3293,7 +3709,9 @@ iBank.applyBank();&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
       
         <description>
 
-&lt;h2 id=&#34;eventbus-是一种用于-android-的事件发布-订阅总线-是一个可以实现组件间通信的一个第三方框架-使用起来非常的简单-一共也就是-4-个步骤-注册订阅-发送事件-解除订阅-大致的流程如下&#34;&gt;EventBus 是一种用于 Android 的事件发布-订阅总线, 是一个可以实现组件间通信的一个第三方框架, 使用起来非常的简单, 一共也就是 4 个步骤, 注册订阅, 发送事件, 解除订阅, 大致的流程如下&lt;/h2&gt;
+&lt;h2 id=&#34;大致流程&#34;&gt;大致流程&lt;/h2&gt;
+
+&lt;p&gt;EventBus 是一种用于 Android 的事件发布-订阅总线, 是一个可以实现组件间通信的一个第三方框架, 使用起来非常的简单, 一共也就是 4 个步骤, 注册订阅, 发送事件, 解除订阅, 大致的流程如下&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -4834,195 +5252,6 @@ transient int modCount;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;p&gt;获取元素: 通过 key 计算 hash 值, 然后根据hash值计算在表中的位置, 通过比较 key 是否相同, 相同则返回&lt;/p&gt;
 
 &lt;p&gt;删除元素: 通过 key 计算 hash 值, 然后计算在表中的位置, 通过比较 key 是否相同, 相同将其删除, 然后返回&lt;/p&gt;
-</description>
-      
-    </item>
-    
-    <item>
-      <title>Java 中的泛型</title>
-      <link>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84%E6%B3%9B%E5%9E%8B/</link>
-      <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84%E6%B3%9B%E5%9E%8B/</guid>
-      
-        <description>&lt;p&gt;假设有 3 个类, 他们的继承关系是这样的&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public class Person {
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public class Gril extends Person {
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public class Boy extends Person {
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public class Father {
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;在类上指定的泛型, 那么在当前类, 使用的都是这个对象&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public class MyTest&amp;lt;T&amp;gt; {
-		
-		public void println(T t){
-					 System.out.println(t.getClass().getSimpleName());
-		}
-
-    public static void main(String[] args) {
-				        new MyTest&amp;lt;Person&amp;gt;(); // 打印的是 Person
-        				new MyTest&amp;lt;Gril&amp;gt;(); // 打印的是 Gril
-    }
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;方法上面的泛型&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt; public static &amp;lt;T extends Person&amp;gt; void println1(T t) {
-        System.out.println(t.getClass().getSimpleName());
- }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;泛型的上限和下限&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&amp;lt;T extends Person&amp;gt;  泛型上限， 只能是 Person 或者是 Person 的子类
-&amp;lt;T super Person&amp;gt;    泛型下限， 只能是 Person 或者是 Person 的父类&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;泛型通配符: 表示可接受一切类型&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;ArrayList&amp;lt;Boy&amp;gt; arrayList1 = new ArrayList&amp;lt;&amp;gt;();
-ArrayList&amp;lt;Gril&amp;gt; arrayList2 = new ArrayList&amp;lt;&amp;gt;();
-ArrayList&amp;lt;Person&amp;gt; arrayList3 = new ArrayList&amp;lt;&amp;gt;();
-ArrayList&amp;lt;Father&amp;gt; arrayList4 = new ArrayList&amp;lt;&amp;gt;();
-
-println1(arrayList1);
-println1(arrayList2);
-println1(arrayList3);
-println1(arrayList4);
-
-public static void println1(List&amp;lt;?&amp;gt; t) {
-     System.out.println(t.getClass().getSimpleName());   
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;泛型擦除&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;ArrayList&amp;lt;String&amp;gt; list1 = new ArrayList&amp;lt;String&amp;gt;();
-list1.add(&amp;#34;abc&amp;#34;);
-
-ArrayList&amp;lt;Integer&amp;gt; list2 = new ArrayList&amp;lt;Integer&amp;gt;();
-list2.add(123);
-
-// 打印的结果为 true 类型一致, 这就是泛型擦除
-System.out.println(&amp;#34;类型是否一致 &amp;#34; + (list1.getClass() == list2.getClass())); &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;这里的结果为什么会为 true 呢? 这就是因为泛型在编译时期就被擦除了, 他们在编译后都是 List 类型相等, 所以为 true, 这个时候如果我们在手写代码的时候, 如果是添加其他的类型仍然会报错, 这个又是为什么呢 ? 这是因为, 其实是在编译之前, 编译器会帮我们检查类型是否是一致的, 避免发生强转失败的现象&lt;/p&gt;
-
-&lt;p&gt;最后再看一个现象&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;ArrayList&amp;lt;? extends Person&amp;gt; arrayList = new ArrayList&amp;lt;&amp;gt;();
-arrayList.add(new Person()); // 报错
-arrayList.add(new Boy()); // 报错&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;不能够添加, 这个是为什么 ? 这个因为虽然你使用了通配符接受了继承至 Person 的任意类型, 但是其实编译器并不知道你的 arrayList 是具体的那一个类型的, 所以不能添加,  其实和你写 &amp;lt;? extends Object&amp;gt; 是一样的, 编译器并不能够确定是具体的那一个类型, 那接着只需要简单修改一下, 就不会再报错了&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;ArrayList&amp;lt;? super Person&amp;gt; arrayList = new ArrayList&amp;lt;&amp;gt;();
-arrayList.add(new Person()); 
-arrayList.add(new Boy());  
-//arrayList.add(new Father()); // 报错, 因为 Father 不是 Person 的子类&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;这样就不会报错了, 这又是为什么呢 ? 其实当这个时候, 规则是泛型下限, 只能够接受 Person 的父类, 这个时候就能够确定要添加的类型了, 那么也就意味着, arrayList 添加子类是肯定没有问题的, 只要父类出现的地方, 子类一定能够出现, 这也遵循了一大原则: 里氏替换原则&lt;/p&gt;
 </description>
       
     </item>
