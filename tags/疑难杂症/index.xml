@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>笔记 on Jane - A super concise theme for Hugo</title>
-    <link>https://midFang.github.io/categories/%E7%AC%94%E8%AE%B0/</link>
-    <description>Recent content in 笔记 on Jane - A super concise theme for Hugo</description>
+    <title>疑难杂症 on Jane - A super concise theme for Hugo</title>
+    <link>https://midFang.github.io/tags/%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/</link>
+    <description>Recent content in 疑难杂症 on Jane - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Thu, 29 Aug 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://midFang.github.io/categories/%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://midFang.github.io/tags/%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -18,15 +18,6 @@
       
       <guid>https://midFang.github.io/post/dialog-%E5%BC%B9%E5%87%BA%E9%9A%90%E8%97%8F%E7%8A%B6%E6%80%81%E6%A0%8F%E5%92%8C%E5%AF%BC%E8%88%AA%E6%A0%8F/</guid>
       <description>1、概述 由于我们开发的应用是不需要显示出来导航栏的，避免导航栏显示出来了，无法预估用户做什么操作，直接可能把我们的应用给干掉了。首先我们的 APP</description>
-    </item>
-    
-    <item>
-      <title>hugo常用命令.md</title>
-      <link>https://midFang.github.io/post/hugo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</link>
-      <pubDate>Thu, 20 Jun 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/hugo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</guid>
-      <description>Hugo 常用命令 1 2 3 4 5 6 7 8 9 10 11 #查看版本 hugo version #创建文章 hugo new xxx.md #编译生成静态文件 hugo #编译生成静态文件并启动web服务 hugo server 目录结构 1 2 3 4 5 6</description>
     </item>
     
   </channel>
