@@ -2121,6 +2121,53 @@ iBank.applyBank();&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;span class=&#34;c1&#34;&gt;// 在 startActivity 后调用
 &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;overridePendingTransition&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;xx__in&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;xx_out&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+&lt;h4 id=&#34;或者是在清单文件中配置&#34;&gt;或者是在清单文件中配置&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&amp;lt;style name=&amp;#34;AppTheme&amp;#34; parent=&amp;#34;Theme.AppCompat.Light.NoActionBar&amp;#34;&amp;gt;
+        &amp;lt;item name=&amp;#34;colorPrimary&amp;#34;&amp;gt;@color/colorPrimary&amp;lt;/item&amp;gt;
+        &amp;lt;item name=&amp;#34;colorPrimaryDark&amp;#34;&amp;gt;@color/colorPrimaryDark&amp;lt;/item&amp;gt;
+        &amp;lt;item name=&amp;#34;colorAccent&amp;#34;&amp;gt;@color/colorAccent&amp;lt;/item&amp;gt;
+        &amp;lt;item name=&amp;#34;android:windowIsTranslucent&amp;#34;&amp;gt;true&amp;lt;/item&amp;gt;
+        &amp;lt;item name=&amp;#34;android:windowAnimationStyle&amp;#34;&amp;gt;@style/AnimActivityOptions&amp;lt;/item&amp;gt;
+&amp;lt;/style&amp;gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&amp;lt;style name=&amp;#34;AnimActivityOptions&amp;#34; parent=&amp;#34;@android:style/Animation.Activity&amp;#34;&amp;gt;
+        &amp;lt;item name=&amp;#34;android:activityOpenEnterAnimation&amp;#34;&amp;gt;@anim/slide_left_in&amp;lt;/item&amp;gt;
+        &amp;lt;item name=&amp;#34;android:activityCloseExitAnimation&amp;#34;&amp;gt;@anim/slide_right_out&amp;lt;/item&amp;gt;
+&amp;lt;/style&amp;gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;android:activityOpenEnterAnimation   一个 activity 创建进入的效果。
+android:activityOpenExitAnimation    一个 activity 进入，另外一个 activity 的退出的效果
+android:activityCloseEnterAnimation  一个 activity 退出，另外一个 activity 进入的效果
+android:activityCloseExitAnimation   一个 activity 退出的效果&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
 &lt;/div&gt;</description>
       
     </item>

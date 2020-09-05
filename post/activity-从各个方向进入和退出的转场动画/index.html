@@ -71,7 +71,7 @@
 
 <meta itemprop="datePublished" content="2019-10-02T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2019-10-02T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="281">
+<meta itemprop="wordCount" content="385">
 
 
 
@@ -375,6 +375,7 @@
 <ul>
 <li><a href="#退出">退出</a></li>
 <li><a href="#进入">进入</a></li>
+<li><a href="#或者是在清单文件中配置">或者是在清单文件中配置</a></li>
 </ul></li>
 </ul></li>
 </ul></li>
@@ -652,6 +653,53 @@
 <pre class="chroma"><code class="language-java" data-lang="java"><span class="n">startActivityForResult</span><span class="p">(</span><span class="n">intent1</span><span class="p">,</span> <span class="n">REQUEST_MUSIC_CODE</span><span class="p">)</span>
 <span class="c1">// 在 startActivity 后调用
 </span><span class="c1"></span><span class="n">overridePendingTransition</span><span class="p">(</span><span class="n">xx__in</span><span class="p">,</span> <span class="n">xx_out</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="或者是在清单文件中配置">或者是在清单文件中配置</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">&lt;style name=&#34;AppTheme&#34; parent=&#34;Theme.AppCompat.Light.NoActionBar&#34;&gt;
+        &lt;item name=&#34;colorPrimary&#34;&gt;@color/colorPrimary&lt;/item&gt;
+        &lt;item name=&#34;colorPrimaryDark&#34;&gt;@color/colorPrimaryDark&lt;/item&gt;
+        &lt;item name=&#34;colorAccent&#34;&gt;@color/colorAccent&lt;/item&gt;
+        &lt;item name=&#34;android:windowIsTranslucent&#34;&gt;true&lt;/item&gt;
+        &lt;item name=&#34;android:windowAnimationStyle&#34;&gt;@style/AnimActivityOptions&lt;/item&gt;
+&lt;/style&gt;</pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">&lt;style name=&#34;AnimActivityOptions&#34; parent=&#34;@android:style/Animation.Activity&#34;&gt;
+        &lt;item name=&#34;android:activityOpenEnterAnimation&#34;&gt;@anim/slide_left_in&lt;/item&gt;
+        &lt;item name=&#34;android:activityCloseExitAnimation&#34;&gt;@anim/slide_right_out&lt;/item&gt;
+&lt;/style&gt;</pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">android:activityOpenEnterAnimation   一个 activity 创建进入的效果。
+android:activityOpenExitAnimation    一个 activity 进入，另外一个 activity 的退出的效果
+android:activityCloseEnterAnimation  一个 activity 退出，另外一个 activity 进入的效果
+android:activityCloseExitAnimation   一个 activity 退出的效果</pre></td></tr></table>
 </div>
 </div>
     </div>
