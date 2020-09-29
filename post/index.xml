@@ -17,7 +17,9 @@
       <pubDate>Tue, 15 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</guid>
-      <description>Java 中的异常处理 日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 RetrofitUtil.getInstance().callAppData(call, object : NetListener { override fun onSuccess(message:</description>
+      <description>&lt;h3 id=&#34;java-中的异常处理&#34;&gt;Java 中的异常处理&lt;/h3&gt;
+
+&lt;p&gt;日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -26,7 +28,19 @@
       <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/</guid>
-      <description>定义 如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数 函数类型的定义如下 1 (String, Int) -&amp;gt; Unit 定义一个函数类型</description>
+      <description>&lt;h3 id=&#34;定义&#34;&gt;定义&lt;/h3&gt;
+
+&lt;p&gt;如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数&lt;/p&gt;
+
+&lt;p&gt;函数类型的定义如下&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;(String, Int) -&amp;gt; Unit &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -35,7 +49,9 @@
       <pubDate>Sun, 30 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/</guid>
-      <description>密封类 密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也</description>
+      <description>&lt;h2 id=&#34;密封类&#34;&gt;密封类&lt;/h2&gt;
+
+&lt;p&gt;密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也是受限的，但每个枚举常量只存在一个实例，而密封类 的一个子类可以有可包含状态的多个实例。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -44,7 +60,9 @@
       <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/</guid>
-      <description>简介 运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 + - * / % ++ &amp;ndash; 。而 Kotlin 中允许我们将这些所有</description>
+      <description>&lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
+
+&lt;p&gt;运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 + - * / % ++ &amp;ndash; 。而 Kotlin 中允许我们将这些所有的运算符甚至其他的关键字进行重载&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -53,7 +71,15 @@
       <pubDate>Wed, 19 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</guid>
-      <description>Binder 是什么 首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式 为什么需要跨进程通信 因为在 Android 中一个应用相当于一个进程，而一</description>
+      <description>&lt;h3 id=&#34;binder-是什么&#34;&gt;Binder 是什么&lt;/h3&gt;
+
+&lt;p&gt;首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式&lt;/p&gt;
+
+&lt;h3 id=&#34;为什么需要跨进程通信&#34;&gt;为什么需要跨进程通信&lt;/h3&gt;
+
+&lt;p&gt;因为在 Android 中一个应用相当于一个进程，而一个进程中有一个独立的用户空间，而用户空间都是独立的，进程之间是隔离的。也就是说，两个进程之间不可进行直接的通信，需要通过一个桥梁，这个就是 Binder&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/checkFang/img/master/20200924223216.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -62,7 +88,7 @@
       <pubDate>Sat, 01 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/window.layoutparams/</guid>
-      <description>WindowManager.LayoutParams 是 WindowManager 接口的嵌套类；继承于 ViewGroup.LayoutParams 。它的内容十分丰富。其实WindowManager.Java的主要内容就是由这个类定义构成。下面来分析一下这个类</description>
+      <description>&lt;p&gt;WindowManager.LayoutParams 是 WindowManager 接口的嵌套类；继承于 ViewGroup.LayoutParams 。它的内容十分丰富。其实WindowManager.&lt;a href=&#34;http://lib.csdn.net/base/17&#34;&gt;Java&lt;/a&gt;的主要内容就是由这个类定义构成。下面来分析一下这个类。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -71,7 +97,13 @@
       <pubDate>Sun, 05 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/git-%E7%AE%A1%E7%90%86-.gitignore-file-%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
-      <description>Git 忽略文件的原则 忽略操作系统自动生成的文件，比如缩略图等 忽略编译生成的中间文件、可执行文件等，也就是如果一个文件是通过另一个文件自动生成的，</description>
+      <description>&lt;h2 id=&#34;git-忽略文件的原则&#34;&gt;Git 忽略文件的原则&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;忽略操作系统自动生成的文件，比如缩略图等&lt;/li&gt;
+&lt;li&gt;忽略编译生成的中间文件、可执行文件等，也就是如果一个文件是通过另一个文件自动生成的，那自动生成的文件就没必要放进版本库，比如 Java 编译产生的 .class 文件&lt;/li&gt;
+&lt;li&gt;忽略你自己的带有敏感信息的配置文件，比如存放口令的配置文件&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>

@@ -17,7 +17,15 @@
       <pubDate>Wed, 19 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</guid>
-      <description>Binder 是什么 首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式 为什么需要跨进程通信 因为在 Android 中一个应用相当于一个进程，而一</description>
+      <description>&lt;h3 id=&#34;binder-是什么&#34;&gt;Binder 是什么&lt;/h3&gt;
+
+&lt;p&gt;首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式&lt;/p&gt;
+
+&lt;h3 id=&#34;为什么需要跨进程通信&#34;&gt;为什么需要跨进程通信&lt;/h3&gt;
+
+&lt;p&gt;因为在 Android 中一个应用相当于一个进程，而一个进程中有一个独立的用户空间，而用户空间都是独立的，进程之间是隔离的。也就是说，两个进程之间不可进行直接的通信，需要通过一个桥梁，这个就是 Binder&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/checkFang/img/master/20200924223216.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

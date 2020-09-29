@@ -26,7 +26,15 @@
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/android%E6%BA%90%E7%A0%81%E4%B9%8B%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
-      <description>介绍 单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在 LayoutInflater 单</description>
+      <description>&lt;h2 id=&#34;介绍&#34;&gt;介绍&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;layoutinflater-单例分析&#34;&gt;LayoutInflater 单例分析&lt;/h3&gt;
+
+&lt;p&gt;在 Activity View 加载一个布局的时候, 通常是这样做的&lt;/p&gt;</description>
     </item>
     
     <item>

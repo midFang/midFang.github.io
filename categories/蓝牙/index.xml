@@ -17,7 +17,14 @@
       <pubDate>Mon, 24 Jun 2019 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/%E8%93%9D%E7%89%99%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
-      <description>A2DP Advanced Audio Distribution Profile。高质量音频数据传输的协议，其定义了传送单声道或立体声等高质量音频信息的协议和过程。A2DP的典型应用是将音乐播放器的</description>
+      <description>&lt;h2 id=&#34;a2dp&#34;&gt;A2DP&lt;/h2&gt;
+
+&lt;p&gt;Advanced Audio Distribution Profile。高质量音频数据传输的协议，其定义了传送单声道或立体声等高质量音频信息的协议和过程。A2DP的典型应用是将音乐播放器的音频数据发送到耳机或音箱。&lt;/p&gt;
+
+&lt;p&gt;A2DP 定义了两种角色：&lt;/p&gt;
+
+&lt;p&gt;Audio Source ：（音频源） 音频的输入端对音频数据进行编码，发送到 Sink 端。
+Audio Sink ：   （音频接收器） 接收到音频数据后，进行解码操作还原出音频。&lt;/p&gt;</description>
     </item>
     
   </channel>

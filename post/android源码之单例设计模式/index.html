@@ -23,7 +23,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="author" content="midFang" />
-  <meta name="description" content="介绍 单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在 LayoutInflater 单" />
+  <meta name="description" content="介绍  单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在
+ LayoutInflater 单例分析 在 Activity View 加载一个布局的时候, 通常是这样做的
+" />
 
   <meta name="keywords" content="Hugo, theme, jane" />
 
@@ -60,13 +62,29 @@
 
 
 <meta property="og:title" content="Android源码之单例设计模式" />
-<meta property="og:description" content="介绍 单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在 LayoutInflater 单" />
+<meta property="og:description" content="介绍
+
+
+单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在
+
+
+LayoutInflater 单例分析
+
+在 Activity View 加载一个布局的时候, 通常是这样做的" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://midFang.github.io/post/android%E6%BA%90%E7%A0%81%E4%B9%8B%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" />
 <meta property="article:published_time" content="2019-10-01T00:00:00+00:00" />
 <meta property="article:modified_time" content="2019-10-01T00:00:00+00:00" />
 <meta itemprop="name" content="Android源码之单例设计模式">
-<meta itemprop="description" content="介绍 单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在 LayoutInflater 单">
+<meta itemprop="description" content="介绍
+
+
+单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在
+
+
+LayoutInflater 单例分析
+
+在 Activity View 加载一个布局的时候, 通常是这样做的">
 
 
 <meta itemprop="datePublished" content="2019-10-01T00:00:00&#43;00:00" />
@@ -78,7 +96,15 @@
 <meta itemprop="keywords" content="Android,源码分析," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Android源码之单例设计模式"/>
-<meta name="twitter:description" content="介绍 单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在 LayoutInflater 单"/>
+<meta name="twitter:description" content="介绍
+
+
+单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在
+
+
+LayoutInflater 单例分析
+
+在 Activity View 加载一个布局的时候, 通常是这样做的"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -377,9 +403,7 @@
 
     
     <div class="post-content">
-      
-
-<h2 id="介绍">介绍</h2>
+      <h2 id="介绍">介绍</h2>
 
 <blockquote>
 <p>单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在</p>
@@ -388,6 +412,7 @@
 <h3 id="layoutinflater-单例分析">LayoutInflater 单例分析</h3>
 
 <p>在 Activity View 加载一个布局的时候, 通常是这样做的</p>
+
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
@@ -1294,7 +1319,6 @@
 </div>
 </div>
 <p>这个部分也很好理解, 比如在我们开发的时候, 自己写的自定义的 View, 都是需要写全路径的, 但是我们写系统的 View 就不需要, 其实, 也是做了操作的, 只是说在源码中, 自动给我们添加了前缀</p>
-
     </div>
 
     

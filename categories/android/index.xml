@@ -17,7 +17,15 @@
       <pubDate>Wed, 19 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</guid>
-      <description>Binder 是什么 首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式 为什么需要跨进程通信 因为在 Android 中一个应用相当于一个进程，而一</description>
+      <description>&lt;h3 id=&#34;binder-是什么&#34;&gt;Binder 是什么&lt;/h3&gt;
+
+&lt;p&gt;首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式&lt;/p&gt;
+
+&lt;h3 id=&#34;为什么需要跨进程通信&#34;&gt;为什么需要跨进程通信&lt;/h3&gt;
+
+&lt;p&gt;因为在 Android 中一个应用相当于一个进程，而一个进程中有一个独立的用户空间，而用户空间都是独立的，进程之间是隔离的。也就是说，两个进程之间不可进行直接的通信，需要通过一个桥梁，这个就是 Binder&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/checkFang/img/master/20200924223216.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -26,7 +34,7 @@
       <pubDate>Sat, 01 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/window.layoutparams/</guid>
-      <description>WindowManager.LayoutParams 是 WindowManager 接口的嵌套类；继承于 ViewGroup.LayoutParams 。它的内容十分丰富。其实WindowManager.Java的主要内容就是由这个类定义构成。下面来分析一下这个类</description>
+      <description>&lt;p&gt;WindowManager.LayoutParams 是 WindowManager 接口的嵌套类；继承于 ViewGroup.LayoutParams 。它的内容十分丰富。其实WindowManager.&lt;a href=&#34;http://lib.csdn.net/base/17&#34;&gt;Java&lt;/a&gt;的主要内容就是由这个类定义构成。下面来分析一下这个类。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -44,7 +52,14 @@
       <pubDate>Mon, 24 Jun 2019 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/%E8%93%9D%E7%89%99%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
-      <description>A2DP Advanced Audio Distribution Profile。高质量音频数据传输的协议，其定义了传送单声道或立体声等高质量音频信息的协议和过程。A2DP的典型应用是将音乐播放器的</description>
+      <description>&lt;h2 id=&#34;a2dp&#34;&gt;A2DP&lt;/h2&gt;
+
+&lt;p&gt;Advanced Audio Distribution Profile。高质量音频数据传输的协议，其定义了传送单声道或立体声等高质量音频信息的协议和过程。A2DP的典型应用是将音乐播放器的音频数据发送到耳机或音箱。&lt;/p&gt;
+
+&lt;p&gt;A2DP 定义了两种角色：&lt;/p&gt;
+
+&lt;p&gt;Audio Source ：（音频源） 音频的输入端对音频数据进行编码，发送到 Sink 端。
+Audio Sink ：   （音频接收器） 接收到音频数据后，进行解码操作还原出音频。&lt;/p&gt;</description>
     </item>
     
   </channel>

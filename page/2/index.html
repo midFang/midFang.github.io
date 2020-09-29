@@ -425,7 +425,46 @@
   <div class="post-content">
     
     <div class="post-summary">
-      向左推 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 // R.anim.i_slide_in_left &lt;set xmlns:android=&#34;http://schemas.android.com/apk/res/android&#34;&gt; &lt;translate android:fromXDelta=&#34;100%p&#34; android:toXDelta=&#34;0&#34; android:duration=&#34;350&#34;/&gt; &lt;/set&gt; // R.anim.i_slide_out_left &lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt; &lt;set xmlns:android=&#34;http://schemas.android.com/apk/res/android&#34;&gt; &lt;translate android:fromXDelta=&#34;0&#34; android:toXDelta=&#34;-100%p&#34; android:duration=&#34;350&#34;/&gt; &lt;/set&gt; 向右推 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 // R.anim.i_slide_in_right &lt;set xmlns:android=&#34;http://schemas.android.com/apk/res/android&#34;&gt; &lt;translate android:fromXDelta=&#34;-100%p&#34; android:toXDelta=&#34;0&#34; android:duration=&#34;350&#34;/&gt; &lt;/set&gt; // R.anim.i_slide_out_right
+      <h3 id="向左推">向左推</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// R.anim.i_slide_in_left
+</span><span class="c1"></span><span class="o">&lt;</span><span class="n">set</span> <span class="nf">xmlns</span><span class="o">:</span><span class="n">android</span><span class="o">=</span><span class="s">&#34;http://schemas.android.com/apk/res/android&#34;</span><span class="o">&gt;</span>
+	<span class="o">&lt;</span><span class="n">translate</span> 
+	<span class="nf">android</span><span class="o">:</span><span class="n">fromXDelta</span><span class="o">=</span><span class="s">&#34;100%p&#34;</span>
+	<span class="n">android</span><span class="o">:</span><span class="n">toXDelta</span><span class="o">=</span><span class="s">&#34;0&#34;</span>
+	<span class="n">android</span><span class="o">:</span><span class="n">duration</span><span class="o">=</span><span class="s">&#34;350&#34;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">set</span><span class="o">&gt;</span>
+
+<span class="c1">// R.anim.i_slide_out_left
+</span><span class="c1"></span><span class="o">&lt;?</span><span class="n">xml</span> <span class="nf">version</span><span class="o">=</span><span class="s">&#34;1.0&#34;</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#34;utf-8&#34;</span><span class="o">?&gt;</span>
+<span class="o">&lt;</span><span class="n">set</span> <span class="nf">xmlns</span><span class="o">:</span><span class="n">android</span><span class="o">=</span><span class="s">&#34;http://schemas.android.com/apk/res/android&#34;</span><span class="o">&gt;</span>
+	<span class="o">&lt;</span><span class="n">translate</span> 
+	<span class="nf">android</span><span class="o">:</span><span class="n">fromXDelta</span><span class="o">=</span><span class="s">&#34;0&#34;</span>
+	<span class="n">android</span><span class="o">:</span><span class="n">toXDelta</span><span class="o">=</span><span class="s">&#34;-100%p&#34;</span>
+	<span class="n">android</span><span class="o">:</span><span class="n">duration</span><span class="o">=</span><span class="s">&#34;350&#34;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">set</span><span class="o">&gt;</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="向右推">向右推</h3>
     </div>
     <div class="read-more">
       <a href="/post/activity-%E4%BB%8E%E5%90%84%E4%B8%AA%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/" class="read-more-link">Read more</a>
@@ -459,7 +498,15 @@
   <div class="post-content">
     
     <div class="post-summary">
-      介绍 单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在 LayoutInflater 单
+      <h2 id="介绍">介绍</h2>
+
+<blockquote>
+<p>单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在</p>
+</blockquote>
+
+<h3 id="layoutinflater-单例分析">LayoutInflater 单例分析</h3>
+
+<p>在 Activity View 加载一个布局的时候, 通常是这样做的</p>
     </div>
     <div class="read-more">
       <a href="/post/android%E6%BA%90%E7%A0%81%E4%B9%8B%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="read-more-link">Read more</a>

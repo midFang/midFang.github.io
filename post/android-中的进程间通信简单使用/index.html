@@ -23,7 +23,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="author" content="midFang" />
-  <meta name="description" content="Binder 是什么 首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式 为什么需要跨进程通信 因为在 Android 中一个应用相当于一个进程，而一" />
+  <meta name="description" content="Binder 是什么 首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式
+为什么需要跨进程通信 因为在 Android 中一个应用相当于一个进程，而一个进程中有一个独立的用户空间，而用户空间都是独立的，进程之间是隔离的。也就是说，两个进程之间不可进行直接的通信，需要通过一个桥梁，这个就是 Binder
+" />
 
   <meta name="keywords" content="Hugo, theme, jane" />
 
@@ -60,13 +62,29 @@
 
 
 <meta property="og:title" content="Android 中的进程间通信简单使用" />
-<meta property="og:description" content="Binder 是什么 首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式 为什么需要跨进程通信 因为在 Android 中一个应用相当于一个进程，而一" />
+<meta property="og:description" content="Binder 是什么
+
+首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式
+
+为什么需要跨进程通信
+
+因为在 Android 中一个应用相当于一个进程，而一个进程中有一个独立的用户空间，而用户空间都是独立的，进程之间是隔离的。也就是说，两个进程之间不可进行直接的通信，需要通过一个桥梁，这个就是 Binder
+
+" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" />
 <meta property="article:published_time" content="2020-08-19T00:00:00+00:00" />
 <meta property="article:modified_time" content="2020-08-19T00:00:00+00:00" />
 <meta itemprop="name" content="Android 中的进程间通信简单使用">
-<meta itemprop="description" content="Binder 是什么 首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式 为什么需要跨进程通信 因为在 Android 中一个应用相当于一个进程，而一">
+<meta itemprop="description" content="Binder 是什么
+
+首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式
+
+为什么需要跨进程通信
+
+因为在 Android 中一个应用相当于一个进程，而一个进程中有一个独立的用户空间，而用户空间都是独立的，进程之间是隔离的。也就是说，两个进程之间不可进行直接的通信，需要通过一个桥梁，这个就是 Binder
+
+">
 
 
 <meta itemprop="datePublished" content="2020-08-19T00:00:00&#43;00:00" />
@@ -78,7 +96,15 @@
 <meta itemprop="keywords" content="Android,IPC," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Android 中的进程间通信简单使用"/>
-<meta name="twitter:description" content="Binder 是什么 首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式 为什么需要跨进程通信 因为在 Android 中一个应用相当于一个进程，而一"/>
+<meta name="twitter:description" content="Binder 是什么
+
+首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式
+
+为什么需要跨进程通信
+
+因为在 Android 中一个应用相当于一个进程，而一个进程中有一个独立的用户空间，而用户空间都是独立的，进程之间是隔离的。也就是说，两个进程之间不可进行直接的通信，需要通过一个桥梁，这个就是 Binder
+
+"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -394,9 +420,7 @@
 
     
     <div class="post-content">
-      
-
-<h3 id="binder-是什么">Binder 是什么</h3>
+      <h3 id="binder-是什么">Binder 是什么</h3>
 
 <p>首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式</p>
 

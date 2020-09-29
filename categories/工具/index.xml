@@ -26,7 +26,11 @@
       <pubDate>Mon, 10 Jun 2019 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/git%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86%E5%8A%A0%E9%80%9F%E4%BF%AE%E6%94%B9%E4%BB%A3%E7%90%86%E6%96%B9%E5%BC%8F/</guid>
-      <description>最近 git clone 一个项目真的是太慢了，每秒 7kb。。。电脑上也刚好有 ti 子，试试能不能让 git 工具走代理的方式，能不能更快些，实测效果好了很多，设置如下 设</description>
+      <description>&lt;p&gt;最近 git clone 一个项目真的是太慢了，每秒 7kb。。。电脑上也刚好有 ti 子，试试能不能让 git 工具走代理的方式，能不能更快些，实测效果好了很多，设置如下&lt;/p&gt;
+
+&lt;h3 id=&#34;设置使用代理&#34;&gt;设置使用代理&lt;/h3&gt;
+
+&lt;p&gt;将你的proxy server地址代替以下的127.0.0.1&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -35,7 +39,17 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/%E5%85%B3%E9%97%AD-sublime-text-3-%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0/</guid>
-      <description>在 Mac 中使用 Sublime Text 3 的时候，每次打开软件的时候，总是提示自动更新，那么要怎么样可以取消自动更新呢？ 有如下两个步骤 1.完成注册 如果需要取消自动更新</description>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;在 Mac 中使用 Sublime Text 3 的时候，每次打开软件的时候，总是提示自动更新，那么要怎么样可以取消自动更新呢？ 有如下两个步骤&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;1-完成注册&#34;&gt;1.完成注册&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;如果需要取消自动更新，必须要软件进行授权&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;网上随便找一个注册 License&lt;/p&gt;</description>
     </item>
     
   </channel>

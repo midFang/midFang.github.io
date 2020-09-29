@@ -18,11 +18,10 @@
       
       <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</guid>
       
-        <description>
-
-&lt;h3 id=&#34;java-中的异常处理&#34;&gt;Java 中的异常处理&lt;/h3&gt;
+        <description>&lt;h3 id=&#34;java-中的异常处理&#34;&gt;Java 中的异常处理&lt;/h3&gt;
 
 &lt;p&gt;日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理：&lt;/p&gt;
+
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -248,8 +247,7 @@
         &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;exceptionOrNull 返回的是： 如果是发生了异常返回异常类， 否则返回 null， 所以 getOrElse 里面返回的是： 异常情况下，返回异常类，否则返回处理的结果 value&lt;/p&gt;
-</description>
+&lt;p&gt;exceptionOrNull 返回的是： 如果是发生了异常返回异常类， 否则返回 null， 所以 getOrElse 里面返回的是： 异常情况下，返回异常类，否则返回处理的结果 value&lt;/p&gt;</description>
       
     </item>
     
@@ -260,9 +258,7 @@
       
       <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/</guid>
       
-        <description>
-
-&lt;h3 id=&#34;定义&#34;&gt;定义&lt;/h3&gt;
+        <description>&lt;h3 id=&#34;定义&#34;&gt;定义&lt;/h3&gt;
 
 &lt;p&gt;如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数&lt;/p&gt;
 
@@ -498,8 +494,7 @@ public static void main(){
 &lt;li&gt;inline 编译后的代码会被替换，常在高阶函数中使用，可以使用 return 关键字&lt;/li&gt;
 &lt;li&gt;noinline 被标记了的函数在内联函数中，不会参与内联，也就是编译后，代码不会被直接替换&lt;/li&gt;
 &lt;li&gt;crossinline  表示在内联函数中的 lambda 表达式中一定不会使用 return 关键字&lt;/li&gt;
-&lt;/ul&gt;
-</description>
+&lt;/ul&gt;</description>
       
     </item>
     
@@ -510,9 +505,7 @@ public static void main(){
       
       <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/</guid>
       
-        <description>
-
-&lt;h2 id=&#34;密封类&#34;&gt;密封类&lt;/h2&gt;
+        <description>&lt;h2 id=&#34;密封类&#34;&gt;密封类&lt;/h2&gt;
 
 &lt;p&gt;密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也是受限的，但每个枚举常量只存在一个实例，而密封类 的一个子类可以有可包含状态的多个实例。&lt;/p&gt;
 
@@ -623,9 +616,7 @@ public static void main(){
       
       <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/</guid>
       
-        <description>
-
-&lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
+        <description>&lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
 
 &lt;p&gt;运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 + - * / % ++ &amp;ndash; 。而 Kotlin 中允许我们将这些所有的运算符甚至其他的关键字进行重载&lt;/p&gt;
 
@@ -951,8 +942,7 @@ public static void main(){
 &lt;td&gt;a.invoke(i_1, …, i_n)&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
-&lt;/table&gt;
-</description>
+&lt;/table&gt;</description>
       
     </item>
     
@@ -963,9 +953,7 @@ public static void main(){
       
       <guid>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</guid>
       
-        <description>
-
-&lt;h3 id=&#34;binder-是什么&#34;&gt;Binder 是什么&lt;/h3&gt;
+        <description>&lt;h3 id=&#34;binder-是什么&#34;&gt;Binder 是什么&lt;/h3&gt;
 
 &lt;p&gt;首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式&lt;/p&gt;
 
@@ -1670,9 +1658,7 @@ public static void main(){
       
       <guid>https://midFang.github.io/post/window.layoutparams/</guid>
       
-        <description>
-
-&lt;p&gt;WindowManager.LayoutParams 是 WindowManager 接口的嵌套类；继承于 ViewGroup.LayoutParams 。它的内容十分丰富。其实WindowManager.&lt;a href=&#34;http://lib.csdn.net/base/17&#34;&gt;Java&lt;/a&gt;的主要内容就是由这个类定义构成。下面来分析一下这个类。&lt;/p&gt;
+        <description>&lt;p&gt;WindowManager.LayoutParams 是 WindowManager 接口的嵌套类；继承于 ViewGroup.LayoutParams 。它的内容十分丰富。其实WindowManager.&lt;a href=&#34;http://lib.csdn.net/base/17&#34;&gt;Java&lt;/a&gt;的主要内容就是由这个类定义构成。下面来分析一下这个类。&lt;/p&gt;
 
 &lt;h2 id=&#34;定义&#34;&gt;定义&lt;/h2&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
@@ -2074,8 +2060,7 @@ public float verticalWeight;
   public staticfinal int SCREEN_BRIGHTNESS_CHANGED =1&amp;lt;&amp;lt;11;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;转载： &lt;a href=&#34;https://www.cnblogs.com/ldq2016/p/6844362.html&#34;&gt;https://www.cnblogs.com/ldq2016/p/6844362.html&lt;/a&gt;&lt;/p&gt;
-</description>
+&lt;p&gt;转载： &lt;a href=&#34;https://www.cnblogs.com/ldq2016/p/6844362.html&#34;&gt;https://www.cnblogs.com/ldq2016/p/6844362.html&lt;/a&gt;&lt;/p&gt;</description>
       
     </item>
     
@@ -2086,9 +2071,7 @@ public float verticalWeight;
       
       <guid>https://midFang.github.io/post/git-%E7%AE%A1%E7%90%86-.gitignore-file-%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
       
-        <description>
-
-&lt;h2 id=&#34;git-忽略文件的原则&#34;&gt;Git 忽略文件的原则&lt;/h2&gt;
+        <description>&lt;h2 id=&#34;git-忽略文件的原则&#34;&gt;Git 忽略文件的原则&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;忽略操作系统自动生成的文件，比如缩略图等&lt;/li&gt;
@@ -2280,8 +2263,7 @@ git push origin master&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&
 &lt;/div&gt;
 &lt;h2 id=&#34;官网配置文件&#34;&gt;官网配置文件&lt;/h2&gt;
 
-&lt;p&gt;&lt;a href=&#34;https://github.com/github/gitignore&#34;&gt;https://github.com/github/gitignore&lt;/a&gt;&lt;/p&gt;
-</description>
+&lt;p&gt;&lt;a href=&#34;https://github.com/github/gitignore&#34;&gt;https://github.com/github/gitignore&lt;/a&gt;&lt;/p&gt;</description>
       
     </item>
     
