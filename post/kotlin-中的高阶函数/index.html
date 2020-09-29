@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>kotlin 中的运算符重载 - Jane - A super concise theme for Hugo</title>
+  <title>Kotlin 中的高阶函数 - Jane - A super concise theme for Hugo</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -23,7 +23,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="author" content="midFang" />
-  <meta name="description" content="简介 运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 &#43; - * / % &#43;&#43; &amp;ndash; 。而 Kotlin 中允许我们将这些所有" />
+  <meta name="description" content="定义 如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数 函数类型的定义如下 1 (String, Int) -&amp;gt; Unit 定义一个函数类型" />
 
   <meta name="keywords" content="Hugo, theme, jane" />
 
@@ -35,7 +35,7 @@
 <meta name="generator" content="Hugo 0.58.3" />
 
 
-<link rel="canonical" href="https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" />
+<link rel="canonical" href="https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/" />
 
 
 
@@ -59,26 +59,26 @@
 
 
 
-<meta property="og:title" content="kotlin 中的运算符重载" />
-<meta property="og:description" content="简介 运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 &#43; - * / % &#43;&#43; &ndash; 。而 Kotlin 中允许我们将这些所有" />
+<meta property="og:title" content="Kotlin 中的高阶函数" />
+<meta property="og:description" content="定义 如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数 函数类型的定义如下 1 (String, Int) -&gt; Unit 定义一个函数类型" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" />
-<meta property="article:published_time" content="2020-08-20T00:00:00+00:00" />
-<meta property="article:modified_time" content="2020-08-20T00:00:00+00:00" />
-<meta itemprop="name" content="kotlin 中的运算符重载">
-<meta itemprop="description" content="简介 运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 &#43; - * / % &#43;&#43; &ndash; 。而 Kotlin 中允许我们将这些所有">
+<meta property="og:url" content="https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/" />
+<meta property="article:published_time" content="2020-09-10T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-09-10T00:00:00+00:00" />
+<meta itemprop="name" content="Kotlin 中的高阶函数">
+<meta itemprop="description" content="定义 如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数 函数类型的定义如下 1 (String, Int) -&gt; Unit 定义一个函数类型">
 
 
-<meta itemprop="datePublished" content="2020-08-20T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2020-08-20T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="995">
+<meta itemprop="datePublished" content="2020-09-10T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-09-10T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1730">
 
 
 
 <meta itemprop="keywords" content="kotlin," />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="kotlin 中的运算符重载"/>
-<meta name="twitter:description" content="简介 运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 &#43; - * / % &#43;&#43; &ndash; 。而 Kotlin 中允许我们将这些所有"/>
+<meta name="twitter:title" content="Kotlin 中的高阶函数"/>
+<meta name="twitter:description" content="定义 如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数 函数类型的定义如下 1 (String, Int) -&gt; Unit 定义一个函数类型"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -336,11 +336,11 @@
           <article class="post bg-white">
     
     <header class="post-header">
-      <h1 class="post-title">kotlin 中的运算符重载</h1>
+      <h1 class="post-title">Kotlin 中的高阶函数</h1>
       
       <div class="post-meta">
-        <time datetime="2020-08-20" class="post-time">
-          2020-08-20
+        <time datetime="2020-09-10" class="post-time">
+          2020-09-10
         </time>
         <div class="post-category">
             <a href="https://midFang.github.io/categories/kotlin/"> kotlin </a>
@@ -365,20 +365,11 @@
 <ul>
 <li>
 <ul>
-<li><a href="#简介">简介</a></li>
-<li><a href="#运算符重载">运算符重载</a></li>
-<li><a href="#使用">使用</a></li>
-<li><a href="#常见的操作符">常见的操作符</a>
-<ul>
 <li>
 <ul>
-<li><a href="#一元操作符-unary-operators">一元操作符（Unary Operators）</a></li>
-<li><a href="#二元操作符-binary-operators">二元操作符（  Binary Operators）</a></li>
-<li><a href="#数值类型操作符-array-type-operators">数值类型操作符（Array type operators）</a></li>
-<li><a href="#等于和不等于操作符-equals-operation">等于和不等于操作符（Equals Operation）</a></li>
-<li><a href="#比较操作符-comparison-operators">比较操作符（Comparison operators）</a></li>
-<li><a href="#调用操作符-invoke-operator">调用操作符（Invoke operator）</a></li>
-</ul></li>
+<li><a href="#定义">定义</a></li>
+<li><a href="#noinline-与-crossinline">noinline 与 crossinline</a></li>
+<li><a href="#总结">总结</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -390,21 +381,61 @@
     <div class="post-content">
       
 
-<h2 id="简介">简介</h2>
+<h3 id="定义">定义</h3>
 
-<p>运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 + - * / % ++ &ndash; 。而 Kotlin 中允许我们将这些所有的运算符甚至其他的关键字进行重载</p>
+<p>如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数</p>
 
-<p>在 Java 中的运算符基本都是加减乘除那样的，相信每个人肯定都用过。但是在 Kotlin 中的运算符重载允许我们让任意两个对象相加，或者是进行其他更多的功能</p>
-
-<h2 id="运算符重载">运算符重载</h2>
-
-<ol>
-<li><p>假如有这么一个例子，在 Kotlin 中运算法重载使用的关键字是使用 operator 修饰，只要在指定函数的前面加上 operator 关键字，就可以实现运算符重载的功能了。但是问题在于这个指定函数是什么呢？ 这是运算符重载里面比较复杂的一个问题，因为不同的运算符对应的重载函数是不同的。比如说加号的运算符是 plus() ，减号的运算符是 minus() ，各自所对应的运算符重载函数名称都不是相同的</p></li>
-
-<li><p>这里我们尝试两个钱的对象相加，返回两个对象钱的数量之和。如下代码可以看到这里使用的是 operator 关键字修饰了 plus 函数，这是必须的。同时这里不仅可以进行对象的相加，还可以直接和数字进行相加，因为 Kotlin 中是允许对同一个运算符进行多重重载的。</p>
+<p>函数类型的定义如下</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">(String, Int) -&gt; Unit </pre></td></tr></table>
+</div>
+</div>
+<p>定义一个函数类型，最关键的就是声明该函数接受什么样的参数，以及它得返回值是什么。因此  -&gt;  左边的的是声明函数接受什么样的参数，右边返回的是什么类型。多个参数之间用逗号隔开，如果没有参数的话，就是一个括号，这里得 Unit 返回值相当于 Java 中得 void。</p>
+
+<p>下面举一个例子看看如何使用一个高阶函数，以及作用是什么，其实高阶函数的作用就是大体允许让函数类型参数来决定具体得执行逻辑。看如下实例，定义一个 num1AndNum2() 的高阶函数。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">fun num1AndNum2(num1: Int, num2: Int, operation: (Int, Int) -&gt; Int): Int {
+    val result = operation(num1, num2)
+    return result
+}</pre></td></tr></table>
+</div>
+</div>
+<p>然后再定义两个可以匹配函数类型的函数</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">fun plus(num1: Int, num2: Int): Int {
+    return num1 + num2
+}
+
+fun minus(num1: Int, num2: Int): Int {
+    return num1 - num2
+}</pre></td></tr></table>
+</div>
+</div>
+<p>然后具体的使用如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -417,29 +448,35 @@
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">class</span> <span class="nc">Money</span><span class="p">(</span><span class="k">val</span> <span class="py">money</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span> <span class="p">{</span>
-			<span class="c1">// 对象直接直接相加
-</span><span class="c1"></span>    <span class="k">operator</span> <span class="k">fun</span> <span class="nf">plus</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="p">:</span> <span class="n">Money</span> <span class="p">{</span>
-        <span class="k">val</span> <span class="py">sum</span> <span class="p">=</span> <span class="n">money</span> <span class="p">+</span> <span class="n">value</span><span class="p">.</span><span class="n">money</span>
-        <span class="k">return</span> <span class="n">Money</span><span class="p">(</span><span class="n">sum</span><span class="p">)</span>
-    <span class="p">}</span>  
-        
-			<span class="c1">// 对象和数字相加
-</span><span class="c1"></span>    <span class="k">operator</span> <span class="k">fun</span> <span class="nf">plus</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Int</span><span class="p">):</span> <span class="n">Money</span> <span class="p">{</span>
-        <span class="k">val</span> <span class="py">sum</span> <span class="p">=</span> <span class="n">money</span> <span class="p">+</span> <span class="n">value</span>
-        <span class="k">return</span> <span class="n">Money</span><span class="p">(</span><span class="n">sum</span><span class="p">)</span>
-    <span class="p">}</span> 
-<span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ol>
+<pre class="chroma">fun main() {
+    val a = 10;
+    val b = 5;
+    // 匹配函数的方式
+    val result1 = num1AndNum2(a, b, ::plus)
+    val result2 = num1AndNum2(a, b, ::minus)
 
-<h2 id="使用">使用</h2>
+		// 也可以使用 Lambda 表达式的方式
+    val result3 = num1AndNum2(a, b) { i: Int, i2: Int -&gt;
+        return@num1AndNum2 i * i2
+    }
+
+    println(result1)
+    println(result2)
+    println(result3)
+}</pre></td></tr></table>
+</div>
+</div>
+<p>可以看到 num1AndNum2 结果的返回值，完全是根据我们传入的参数中的高阶函数来决定的。</p>
+
+<p>但是由于 Java 中又是没有高阶函数的，我们来看看他的实现原理到底是怎么样的。编译后的源码如下</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -450,273 +487,137 @@
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">money</span> <span class="p">=</span> <span class="n">Money</span><span class="p">(</span><span class="m">10</span><span class="p">)</span>
-            <span class="k">val</span> <span class="py">money2</span> <span class="p">=</span> <span class="n">Money</span><span class="p">(</span><span class="m">20</span><span class="p">)</span>
-            <span class="k">val</span> <span class="py">money3</span> <span class="p">=</span> <span class="m">40</span>
+<pre class="chroma">public static final int num1AndNum2(int num1, int num2, @NotNull Function2 operation) {
+      Intrinsics.checkParameterIsNotNull(operation, &#34;operation&#34;);
+      int result = ((Number)operation.invoke(num1, num2)).intValue();
+      return result;
+}
 
-            <span class="k">val</span> <span class="py">moneySum</span> <span class="p">=</span> <span class="n">money</span> <span class="p">+</span> <span class="n">money2</span>
-            <span class="k">val</span> <span class="py">moneySum2</span> <span class="p">=</span> <span class="n">moneySum</span> <span class="p">+</span> <span class="n">money3</span>
-            
-            <span class="n">println</span><span class="p">(</span><span class="s">&#34;moneySum= ${moneySum.money}&#34;</span><span class="p">)</span> <span class="c1">// 结果等于 30
-</span><span class="c1"></span>            <span class="n">println</span><span class="p">(</span><span class="s">&#34;moneySum= ${moneySum2.money}&#34;</span><span class="p">)</span> <span class="c1">// 结果等于 70
-</span><span class="c1"></span><span class="p">}</span></code></pre></td></tr></table>
+public static void main(){
+			int a = 10;
+			int b = 5;
+			int result3 = num1AndNum2(a, b, new Function(){
+					@Override
+					public Integer invoke(Integer n1, Integer n2){
+								return n1 + n2;
+					}
+			});
+}</pre></td></tr></table>
 </div>
 </div>
-<p>使用方式就像上面那样了。可以和对象相加，也可以和数字相加。Kotlin 中的允许重载的运算符还有很多，如果想要对其他运算符进行重载，或者进行其他的操作，只需要修改对应的指定函数即可</p>
+<p>为了可读性，对部分代码进行了些许的调整，大致的源码就是这样，在这里可以发现， Kotlin 实现的高阶函数，在 Java 当中就是创建了一个匿名内部类对象，需要注意的是由于多创建了一个对象，在一定的程度上会造成额外的开销。不过在一般情况下是可以忽略的，不过要是在 for 循环的情况下，情况是不一样了。</p>
 
-<h2 id="常见的操作符">常见的操作符</h2>
+<p>所以 Kotlin 中引入了另外一个关键字， inline ,只需要在定义了高阶函数的函数上加上这个关键字。其实就是 Kotlin 编译器会将内联函数中的代码在编译的时候自动替换到调用他的地方，这样就不存在额外的内存开销了。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">inline fun num1AndNum2(num1: Int, num2: Int, operation: (Int, Int) -&gt; Int): Int {
+    val result = operation(num1, num2)
+    return result
+}</pre></td></tr></table>
+</div>
+</div>
+<p>再次编译源码后看看, 精简部分代码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">public static final void main() {
+      int a = 10;
+      int b = 5;
+		
+      int result3 = a * b;
+    
+      System.out.println(result3);
+}</pre></td></tr></table>
+</div>
+</div>
+<h3 id="noinline-与-crossinline">noinline 与 crossinline</h3>
 
-<blockquote>
-<p>以下对应的运算符来自 <a href="https://www.jianshu.com/p/15dc4cef61e0">https://www.jianshu.com/p/15dc4cef61e0</a></p>
-</blockquote>
+<p>一个高阶函数中如果接受了两个或者更多的函数类型参数，这时如果加上了 inline 关键字，那么 Kotlin 将会自动将所有的 Lambda 表达式进行内联。</p>
 
-<p>常见的操作符和对应的方法名：</p>
+<p>如果我们其中一个参数不想内联怎么办，那么就可以使用 noinline 关键字。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">inline fun inlineTest(block1: () -&gt; Unit, noinline block2: () -&gt; Unit) {    
+}</pre></td></tr></table>
+</div>
+</div>
+<p>这样的话，block1 函数就会被内联，而 block2 就不会被内联了， 那么 Kotlin 为什么要提供一个 noinline 关键字呢，这是因为内联的函数类型参数在编译的时候会被进行代码替换，因为他没有真正的参数类型。非内联的函数可以自由的传递给其他任何函数，因为他就是一个真实的参数，而内联的函数类型只允许传递给另外一个内联函数，这也就是他最大的局限性。</p>
 
-<h4 id="一元操作符-unary-operators">一元操作符（Unary Operators）</h4>
+<p>另外，内联函数和非内联函数还有一个重要的区别，因为内联函数在编译的时候代码会进行替换，所以再内联函数中，是可以直接使用 return 的，而非内联函数在代码编译后，由于是匿名内部类的实现，在匿名内部类里面是不能直接使用 return 关键字的，但是可以进行匿名内部类中的局部 return 返回。</p>
 
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>方法名</th>
-</tr>
-</thead>
+<p>将高阶函数声明成内联函数在大多数的情况下都是可用的， 并且也不会产生额外的性能开销，但是在有一种情况下，加上 inline 关键字是无法通过编译的。看如下示例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">inline fun runRunnable(block: () -&gt; Unit) {
+    val runnable = Runnable {
+    		// 报错信息： Can&#39;t inline &#39;block&#39; here: it may contain non-local returns. Add &#39;crossinline&#39; modifier to parameter declaration &#39;block&#39;
+        block()
+    }
+}</pre></td></tr></table>
+</div>
+</div>
+<p>出现这个错误的原因也比较好解释，都是我们上面解释过的。</p>
 
-<tbody>
-<tr>
-<td>+a</td>
-<td>a.unaryPlus()</td>
-</tr>
+<p>首先 Runnable 他是一个 lambda 表达式的高阶函数，他在编译后，也是一个匿名内部类的实现的方式， 然后由于 runRunnable 是一个内联函数，编译后的代码会被替换，但是真正的原因是因为替换后的代码可以直接使用 return 关键字了。但是这里由于 block 函数的实现是在匿名类中的，block 函数这里面是不能直接使用 return 关键字的，只能使用局部返回（类似 return@xxx）。</p>
 
-<tr>
-<td>-a</td>
-<td>a.unaryMinus()</td>
-</tr>
+<p>为了解决这个问题也很好解决，只需要告诉编译器，这里的代码我是不会使用 return 关键字的，那么只需要加上 crossinline 关键字，即可，代码如下。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">inline fun runRunnable(crossinline block: () -&gt; Unit) {
+    val runnable = Runnable {
+        block()
+    }
+}</pre></td></tr></table>
+</div>
+</div>
+<h3 id="总结">总结</h3>
 
-<tr>
-<td>!a</td>
-<td>a.not()</td>
-</tr>
-
-<tr>
-<td>a++</td>
-<td>a.inc()</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="二元操作符-binary-operators">二元操作符（  Binary Operators）</h4>
-
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>方法名</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>a + b</td>
-<td>a.plus(b)</td>
-</tr>
-
-<tr>
-<td>a – b</td>
-<td>a.minus(b)</td>
-</tr>
-
-<tr>
-<td>a * b</td>
-<td>a.times(b)</td>
-</tr>
-
-<tr>
-<td>a / b</td>
-<td>a.div(b)</td>
-</tr>
-
-<tr>
-<td>a % b</td>
-<td>a.mod(b)</td>
-</tr>
-
-<tr>
-<td>a..b</td>
-<td>a.rangeTo(b)</td>
-</tr>
-
-<tr>
-<td>a in b</td>
-<td>b.contains(a)</td>
-</tr>
-
-<tr>
-<td>a !in b</td>
-<td>!b.contains(a)</td>
-</tr>
-
-<tr>
-<td>a += b</td>
-<td>a.plusAssign(b)</td>
-</tr>
-
-<tr>
-<td>a -= b</td>
-<td>a.minusAssign(b)</td>
-</tr>
-
-<tr>
-<td>a *= b</td>
-<td>a.timesAssign(b)</td>
-</tr>
-
-<tr>
-<td>a /= b</td>
-<td>a.divAssign(b)</td>
-</tr>
-
-<tr>
-<td>a %= b</td>
-<td>a.modAssign(b)</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="数值类型操作符-array-type-operators">数值类型操作符（Array type operators）</h4>
-
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>方法名</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>a[i]</td>
-<td>a.get(i)</td>
-</tr>
-
-<tr>
-<td>a[i, j]</td>
-<td>a.get(i, j)</td>
-</tr>
-
-<tr>
-<td>a[i_1, …, i_n]</td>
-<td>a.get(i_1, …, i_n)</td>
-</tr>
-
-<tr>
-<td>a[i] = b</td>
-<td>a.set(i, b)</td>
-</tr>
-
-<tr>
-<td>a[i, j] = b</td>
-<td>a.set(i, j, b)</td>
-</tr>
-
-<tr>
-<td>a[i_1, …, i_n] = b</td>
-<td>a.set(i_1, …, i_n, b)</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="等于和不等于操作符-equals-operation">等于和不等于操作符（Equals Operation）</h4>
-
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>方法名</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>a == b</td>
-<td>a?.equals(b) ?: (b === null)</td>
-</tr>
-
-<tr>
-<td>a != b</td>
-<td>!(a?.equals(b) ?: (b === null))</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="比较操作符-comparison-operators">比较操作符（Comparison operators）</h4>
-
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>方法名</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>a &gt; b</td>
-<td>a.compareTo(b) &gt; 0</td>
-</tr>
-
-<tr>
-<td>a &lt; b</td>
-<td>a.compareTo(b) &lt; 0</td>
-</tr>
-
-<tr>
-<td>a &gt;= b</td>
-<td>a.compareTo(b) &gt;= 0</td>
-</tr>
-
-<tr>
-<td>a &lt;= b</td>
-<td>a.compareTo(b) &lt;= 0</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="调用操作符-invoke-operator">调用操作符（Invoke operator）</h4>
-
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>方法名</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>a()</td>
-<td>a.invoke()</td>
-</tr>
-
-<tr>
-<td>a(i)</td>
-<td>a.invoke(i)</td>
-</tr>
-
-<tr>
-<td>a(i, j)</td>
-<td>a.invoke(i, j)</td>
-</tr>
-
-<tr>
-<td>a(i_1, …, i_n)</td>
-<td>a.invoke(i_1, …, i_n)</td>
-</tr>
-</tbody>
-</table>
+<ul>
+<li>inline 编译后的代码会被替换，常在高阶函数中使用，可以使用 return 关键字</li>
+<li>noinline 被标记了的函数在内联函数中，不会参与内联，也就是编译后，代码不会被直接替换</li>
+<li>crossinline  表示在内联函数中的 lambda 表达式中一定不会使用 return 关键字</li>
+</ul>
 
     </div>
 
@@ -730,7 +631,7 @@
   <p class="copyright-item">
     <span class="item-title">LastMod</span>
     <span class="item-content">
-      2020-08-20
+      2020-09-10
       
     </span>
   </p>
@@ -754,7 +655,7 @@
       
       <nav class="post-nav">
         
-          <a class="prev" href="/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/">
+          <a class="prev" href="/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/">
             
             <i class="iconfont">
               <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
@@ -764,12 +665,12 @@
 </svg>
 
             </i>
-            <span class="prev-text nav-default">Kotlin 中的密封类</span>
+            <span class="prev-text nav-default">Kotlin 中的异常处理</span>
             <span class="prev-text nav-mobile">Prev</span>
           </a>
         
-          <a class="next" href="/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">
-            <span class="next-text nav-default">Android 中的进程间通信简单使用</span>
+          <a class="next" href="/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/">
+            <span class="next-text nav-default">Kotlin 中的密封类</span>
             <span class="prev-text nav-mobile">Next</span>
             
             <i class="iconfont">

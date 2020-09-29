@@ -6,15 +6,960 @@
     <description>Recent content on Jane - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 25 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 15 Sep 2020 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://midFang.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Kotlin 中的异常处理</title>
+      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</link>
+      <pubDate>Tue, 15 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</guid>
+      
+        <description>
+
+&lt;h3 id=&#34;java-中的异常处理&#34;&gt;Java 中的异常处理&lt;/h3&gt;
+
+&lt;p&gt;日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;n&#34;&gt;RetrofitUtil&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getInstance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;().&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;callAppData&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;call&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;: &lt;/span&gt;&lt;span class=&#34;nc&#34;&gt;NetListener&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;onSuccess&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;Log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TAG&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;onSuccess() called with: message = $message&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;bean&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;try&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                    &lt;span class=&#34;n&#34;&gt;GsonUtils&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromJson&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CollectionBean&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CollectionBean&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;java&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;catch&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;e&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Exception&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                    &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;
+                &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+                &lt;span class=&#34;c1&#34;&gt;// showUI
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+            &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;onFailed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;Log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TAG&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;onFailed() called with: message = $message&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;})&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 id=&#34;kotlin-中的异常处理&#34;&gt;Kotlin 中的异常处理&lt;/h3&gt;
+
+&lt;p&gt;这是一段 Kotlin 里面的代码，然后我们针对服务器返回的 message Json 进行 Bean 对象的转换，由于服务器返回的数据可能会和原初定义的不一样，所以我们在这里进行的 try catch 的处理。这是 Java 处理异常的方式， 但是我们已经使用 Kotlin 语言， 可以使用 Kotlin 提供的方式，会更加的简便，代码的可读性也会更好，看下是如何实现的，以及可以有哪些扩展：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt; &lt;span class=&#34;n&#34;&gt;RetrofitUtil&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getInstance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;().&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;callAppData&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;call&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;: &lt;/span&gt;&lt;span class=&#34;nc&#34;&gt;NetListener&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;onSuccess&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;Log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TAG&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;onSuccess() called with: message = $message&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+              
+                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;result&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;runCatching&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;bean&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;GsonUtils&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromJson&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CollectionBean&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CollectionBean&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;java&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;@runCatching&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bean&lt;/span&gt;
+                &lt;span class=&#34;p&#34;&gt;}.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;onSuccess&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                    &lt;span class=&#34;n&#34;&gt;Log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TAG&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;onSuccess: &amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                &lt;span class=&#34;p&#34;&gt;}.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;onFailure&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                    &lt;span class=&#34;n&#34;&gt;Log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TAG&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;onFailure: &amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;orNull&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getOrNull&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;defaultValue&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getOrDefault&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CollectionBean&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+
+                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;orThrow&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getOrThrow&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;result3&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getOrElse&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                    &lt;span class=&#34;n&#34;&gt;Log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TAG&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;onFail: 异常了&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+            &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;onFailed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;Log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TAG&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;onFailed() called with: message = $message&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;})&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;在 Kotlin 中使用异常处理的方式是使用 &lt;strong&gt;runCatching&lt;/strong&gt; 函数，这其实是一个高阶函数。这里先简单介绍一下这些 API 稍后看下源码具体是如何实现的这个部分。首先在 runCatching 高阶函数的代码块中，这个部分就已经进行了  try catch 包裹的处理，同时还实现了 onSuccess 和 onFailure 高阶函数，实际业务需求可以在这里做成功和失败的逻辑处理，这里我只是做了日志的打印。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;runCatching&lt;/strong&gt; 函数返回的是一个 Result 类，Result 类中，一共定义了如上述的 4 个方法：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;其中 getOrNull 返回的是 runCatching 中处理的结果，是一个可空类型的，比如这里我返回的是 CollectionBean 类&lt;/li&gt;
+&lt;li&gt;getOrDefault 返回的是一个不可空的类型，调用的时候需要传递默认值，为 null 的时候会返回默认值&lt;/li&gt;
+&lt;li&gt;getOrThrow  未发生的异常返回的是 runCatching 中处理的结果，如果 runCatching 中发生了异常，调用这个 API 会抛出异常&lt;/li&gt;
+&lt;li&gt;getOrElse 返回处理的结果，或者是异常自己处理&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;源码分析&#34;&gt;源码分析&lt;/h3&gt;
+
+&lt;p&gt;1.runCatching 的实现&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;n&#34;&gt;@InlineOnly&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;@SinceKotlin&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;1.3&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;inline&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &amp;lt;T, R&amp;gt; &lt;span class=&#34;nf&#34;&gt;T&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;runCatching&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;block&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;T&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;try&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;Result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;success&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;block&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;catch&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;e&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Throwable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;Result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;failure&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;e&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;runCatching 是一个内联的高阶函数，返回了一个 Result 类，函数里面对回调出去的 lambda 表达式进行了 try catch 的处理。返回的内容使用 Result.success 和 Result.failure 进行的包裹&lt;/p&gt;
+
+&lt;p&gt;2.getOrNull&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;n&#34;&gt;@InlineOnly&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;inline&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;getOrNull&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;T&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;
+       &lt;span class=&#34;k&#34;&gt;when&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;isFailure&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;value&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;T&lt;/span&gt;
+       &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;异常的情况返回 null ，要么就是返回 value， value 是 Result 的一个属性，也就是上面使用 Result.success(block())  中返回的结果&lt;/p&gt;
+
+&lt;p&gt;3.getOrDefault&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;inline&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &amp;lt;R, T : R&amp;gt; &lt;span class=&#34;nf&#34;&gt;Result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;T&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getOrDefault&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;defaultValue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isFailure&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;defaultValue&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;value&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;T&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;如果是异常的情况返回默认值，要么返回的是 value&lt;/p&gt;
+
+&lt;p&gt;4.getOrElse&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;inline&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &amp;lt;R, T : R&amp;gt; &lt;span class=&#34;nf&#34;&gt;Result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;T&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getOrElse&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;onFailure&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exception&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Throwable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;contract&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;callsInPlace&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;onFailure&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;InvocationKind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;AT_MOST_ONCE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;when&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;exception&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;exceptionOrNull&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;value&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;T&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;onFailure&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exception&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;先看看 exceptionOrNull 处理的是什么：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;exceptionOrNull&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Throwable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;when&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Failure&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exception&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;exceptionOrNull 返回的是： 如果是发生了异常返回异常类， 否则返回 null， 所以 getOrElse 里面返回的是： 异常情况下，返回异常类，否则返回处理的结果 value&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>Kotlin 中的高阶函数</title>
+      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/</link>
+      <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/</guid>
+      
+        <description>
+
+&lt;h3 id=&#34;定义&#34;&gt;定义&lt;/h3&gt;
+
+&lt;p&gt;如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数&lt;/p&gt;
+
+&lt;p&gt;函数类型的定义如下&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;(String, Int) -&amp;gt; Unit &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;定义一个函数类型，最关键的就是声明该函数接受什么样的参数，以及它得返回值是什么。因此  -&amp;gt;  左边的的是声明函数接受什么样的参数，右边返回的是什么类型。多个参数之间用逗号隔开，如果没有参数的话，就是一个括号，这里得 Unit 返回值相当于 Java 中得 void。&lt;/p&gt;
+
+&lt;p&gt;下面举一个例子看看如何使用一个高阶函数，以及作用是什么，其实高阶函数的作用就是大体允许让函数类型参数来决定具体得执行逻辑。看如下实例，定义一个 num1AndNum2() 的高阶函数。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun num1AndNum2(num1: Int, num2: Int, operation: (Int, Int) -&amp;gt; Int): Int {
+    val result = operation(num1, num2)
+    return result
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;然后再定义两个可以匹配函数类型的函数&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun plus(num1: Int, num2: Int): Int {
+    return num1 + num2
+}
+
+fun minus(num1: Int, num2: Int): Int {
+    return num1 - num2
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;然后具体的使用如下&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun main() {
+    val a = 10;
+    val b = 5;
+    // 匹配函数的方式
+    val result1 = num1AndNum2(a, b, ::plus)
+    val result2 = num1AndNum2(a, b, ::minus)
+
+		// 也可以使用 Lambda 表达式的方式
+    val result3 = num1AndNum2(a, b) { i: Int, i2: Int -&amp;gt;
+        return@num1AndNum2 i * i2
+    }
+
+    println(result1)
+    println(result2)
+    println(result3)
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;可以看到 num1AndNum2 结果的返回值，完全是根据我们传入的参数中的高阶函数来决定的。&lt;/p&gt;
+
+&lt;p&gt;但是由于 Java 中又是没有高阶函数的，我们来看看他的实现原理到底是怎么样的。编译后的源码如下&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;public static final int num1AndNum2(int num1, int num2, @NotNull Function2 operation) {
+      Intrinsics.checkParameterIsNotNull(operation, &amp;#34;operation&amp;#34;);
+      int result = ((Number)operation.invoke(num1, num2)).intValue();
+      return result;
+}
+
+public static void main(){
+			int a = 10;
+			int b = 5;
+			int result3 = num1AndNum2(a, b, new Function(){
+					@Override
+					public Integer invoke(Integer n1, Integer n2){
+								return n1 + n2;
+					}
+			});
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;为了可读性，对部分代码进行了些许的调整，大致的源码就是这样，在这里可以发现， Kotlin 实现的高阶函数，在 Java 当中就是创建了一个匿名内部类对象，需要注意的是由于多创建了一个对象，在一定的程度上会造成额外的开销。不过在一般情况下是可以忽略的，不过要是在 for 循环的情况下，情况是不一样了。&lt;/p&gt;
+
+&lt;p&gt;所以 Kotlin 中引入了另外一个关键字， inline ,只需要在定义了高阶函数的函数上加上这个关键字。其实就是 Kotlin 编译器会将内联函数中的代码在编译的时候自动替换到调用他的地方，这样就不存在额外的内存开销了。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;inline fun num1AndNum2(num1: Int, num2: Int, operation: (Int, Int) -&amp;gt; Int): Int {
+    val result = operation(num1, num2)
+    return result
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;再次编译源码后看看, 精简部分代码&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;public static final void main() {
+      int a = 10;
+      int b = 5;
+		
+      int result3 = a * b;
+    
+      System.out.println(result3);
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 id=&#34;noinline-与-crossinline&#34;&gt;noinline 与 crossinline&lt;/h3&gt;
+
+&lt;p&gt;一个高阶函数中如果接受了两个或者更多的函数类型参数，这时如果加上了 inline 关键字，那么 Kotlin 将会自动将所有的 Lambda 表达式进行内联。&lt;/p&gt;
+
+&lt;p&gt;如果我们其中一个参数不想内联怎么办，那么就可以使用 noinline 关键字。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;inline fun inlineTest(block1: () -&amp;gt; Unit, noinline block2: () -&amp;gt; Unit) {    
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;这样的话，block1 函数就会被内联，而 block2 就不会被内联了， 那么 Kotlin 为什么要提供一个 noinline 关键字呢，这是因为内联的函数类型参数在编译的时候会被进行代码替换，因为他没有真正的参数类型。非内联的函数可以自由的传递给其他任何函数，因为他就是一个真实的参数，而内联的函数类型只允许传递给另外一个内联函数，这也就是他最大的局限性。&lt;/p&gt;
+
+&lt;p&gt;另外，内联函数和非内联函数还有一个重要的区别，因为内联函数在编译的时候代码会进行替换，所以再内联函数中，是可以直接使用 return 的，而非内联函数在代码编译后，由于是匿名内部类的实现，在匿名内部类里面是不能直接使用 return 关键字的，但是可以进行匿名内部类中的局部 return 返回。&lt;/p&gt;
+
+&lt;p&gt;将高阶函数声明成内联函数在大多数的情况下都是可用的， 并且也不会产生额外的性能开销，但是在有一种情况下，加上 inline 关键字是无法通过编译的。看如下示例：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;inline fun runRunnable(block: () -&amp;gt; Unit) {
+    val runnable = Runnable {
+    		// 报错信息： Can&amp;#39;t inline &amp;#39;block&amp;#39; here: it may contain non-local returns. Add &amp;#39;crossinline&amp;#39; modifier to parameter declaration &amp;#39;block&amp;#39;
+        block()
+    }
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;出现这个错误的原因也比较好解释，都是我们上面解释过的。&lt;/p&gt;
+
+&lt;p&gt;首先 Runnable 他是一个 lambda 表达式的高阶函数，他在编译后，也是一个匿名内部类的实现的方式， 然后由于 runRunnable 是一个内联函数，编译后的代码会被替换，但是真正的原因是因为替换后的代码可以直接使用 return 关键字了。但是这里由于 block 函数的实现是在匿名类中的，block 函数这里面是不能直接使用 return 关键字的，只能使用局部返回（类似 return@xxx）。&lt;/p&gt;
+
+&lt;p&gt;为了解决这个问题也很好解决，只需要告诉编译器，这里的代码我是不会使用 return 关键字的，那么只需要加上 crossinline 关键字，即可，代码如下。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;inline fun runRunnable(crossinline block: () -&amp;gt; Unit) {
+    val runnable = Runnable {
+        block()
+    }
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;inline 编译后的代码会被替换，常在高阶函数中使用，可以使用 return 关键字&lt;/li&gt;
+&lt;li&gt;noinline 被标记了的函数在内联函数中，不会参与内联，也就是编译后，代码不会被直接替换&lt;/li&gt;
+&lt;li&gt;crossinline  表示在内联函数中的 lambda 表达式中一定不会使用 return 关键字&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>Kotlin 中的密封类</title>
+      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/</link>
+      <pubDate>Sun, 30 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/</guid>
+      
+        <description>
+
+&lt;h2 id=&#34;密封类&#34;&gt;密封类&lt;/h2&gt;
+
+&lt;p&gt;密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也是受限的，但每个枚举常量只存在一个实例，而密封类 的一个子类可以有可包含状态的多个实例。&lt;/p&gt;
+
+&lt;p&gt;声明一个密封类，使用 &lt;strong&gt;sealed&lt;/strong&gt; 修饰类，密封类可以有子类，但是所有的子类都必须要内嵌在密封类中。&lt;/p&gt;
+
+&lt;p&gt;sealed 不能修饰 interface ,abstract class(会报 warning,但是不会出现编译错误)&lt;/p&gt;
+
+&lt;p&gt;密封类一般情况都，都是配合 when 来实用的类，假如有这么一个操作 UI 的类，我们需要操作 UI 的显示和隐藏，&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;sealed&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;UIOperator&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Show&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Hide&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;invoke&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;view&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;View&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;uiOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;when&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;uiOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Show&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;view&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;visibility&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;View&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;VISIBLE&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Hide&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;view&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;visibility&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;View&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;INVISIBLE&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;这样的代码，其实用枚举也可以做，但是枚举只能有一个实例，假如这里我们后续要添加平移的方法，还需要一些参数的传入，如果用枚举的话，就不太好实现了。这时密封类就发挥优势了。再给 UIOperator 定义两个方法&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;sealed&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;UIOperator&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Show&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Hide&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;TranslateX&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;px&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Float&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;TranslateY&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;px&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Float&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;同时使用密封类有一个好处，不需要我们再实现 else 语句的代码，因为密封类已经知道我们要实现哪些方法了，同时如果在密封类中新增加了方法，原来使用到了的地方就需要强制实现新增加的方法了，也就是像下面图片那样，这样就不用凭借记忆那个地方有调用的地方了。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/checkFang/img/master/3.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;完整代码如下&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;sealed&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;UIOperator&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Show&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Hide&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;TranslateX&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;px&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Float&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;TranslateY&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;py&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Float&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;invoke&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;view&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;View&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;uiOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;when&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;uiOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Show&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;view&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;visibility&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;View&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;VISIBLE&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Hide&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;view&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;visibility&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;View&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;INVISIBLE&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TranslateX&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;view&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;translationX&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;uiOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;px&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;UIOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TranslateY&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;view&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;translationX&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;uiOperator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;py&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description>
+      
+    </item>
+    
+    <item>
+      <title>kotlin 中的运算符重载</title>
+      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/</link>
+      <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/</guid>
+      
+        <description>
+
+&lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
+
+&lt;p&gt;运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 + - * / % ++ &amp;ndash; 。而 Kotlin 中允许我们将这些所有的运算符甚至其他的关键字进行重载&lt;/p&gt;
+
+&lt;p&gt;在 Java 中的运算符基本都是加减乘除那样的，相信每个人肯定都用过。但是在 Kotlin 中的运算符重载允许我们让任意两个对象相加，或者是进行其他更多的功能&lt;/p&gt;
+
+&lt;h2 id=&#34;运算符重载&#34;&gt;运算符重载&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;假如有这么一个例子，在 Kotlin 中运算法重载使用的关键字是使用 operator 修饰，只要在指定函数的前面加上 operator 关键字，就可以实现运算符重载的功能了。但是问题在于这个指定函数是什么呢？ 这是运算符重载里面比较复杂的一个问题，因为不同的运算符对应的重载函数是不同的。比如说加号的运算符是 plus() ，减号的运算符是 minus() ，各自所对应的运算符重载函数名称都不是相同的&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;这里我们尝试两个钱的对象相加，返回两个对象钱的数量之和。如下代码可以看到这里使用的是 operator 关键字修饰了 plus 函数，这是必须的。同时这里不仅可以进行对象的相加，还可以直接和数字进行相加，因为 Kotlin 中是允许对同一个运算符进行多重重载的。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+			&lt;span class=&#34;c1&#34;&gt;// 对象直接直接相加
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;operator&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;plus&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;sum&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;money&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;money&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sum&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;  
+        
+			&lt;span class=&#34;c1&#34;&gt;// 对象和数字相加
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;operator&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;plus&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;sum&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;money&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sum&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; 
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;使用&#34;&gt;使用&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;money&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;money2&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;20&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;money3&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;40&lt;/span&gt;
+
+            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;moneySum&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;money&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;money2&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;moneySum2&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;moneySum&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;money3&lt;/span&gt;
+            
+            &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;moneySum= ${moneySum.money}&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 结果等于 30
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;            &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;moneySum= ${moneySum2.money}&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 结果等于 70
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;使用方式就像上面那样了。可以和对象相加，也可以和数字相加。Kotlin 中的允许重载的运算符还有很多，如果想要对其他运算符进行重载，或者进行其他的操作，只需要修改对应的指定函数即可&lt;/p&gt;
+
+&lt;h2 id=&#34;常见的操作符&#34;&gt;常见的操作符&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;以下对应的运算符来自 &lt;a href=&#34;https://www.jianshu.com/p/15dc4cef61e0&#34;&gt;https://www.jianshu.com/p/15dc4cef61e0&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;常见的操作符和对应的方法名：&lt;/p&gt;
+
+&lt;h4 id=&#34;一元操作符-unary-operators&#34;&gt;一元操作符（Unary Operators）&lt;/h4&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;操作符&lt;/th&gt;
+&lt;th&gt;方法名&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;+a&lt;/td&gt;
+&lt;td&gt;a.unaryPlus()&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;-a&lt;/td&gt;
+&lt;td&gt;a.unaryMinus()&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;!a&lt;/td&gt;
+&lt;td&gt;a.not()&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a++&lt;/td&gt;
+&lt;td&gt;a.inc()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h4 id=&#34;二元操作符-binary-operators&#34;&gt;二元操作符（  Binary Operators）&lt;/h4&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;操作符&lt;/th&gt;
+&lt;th&gt;方法名&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;a + b&lt;/td&gt;
+&lt;td&gt;a.plus(b)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a – b&lt;/td&gt;
+&lt;td&gt;a.minus(b)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a * b&lt;/td&gt;
+&lt;td&gt;a.times(b)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a / b&lt;/td&gt;
+&lt;td&gt;a.div(b)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a % b&lt;/td&gt;
+&lt;td&gt;a.mod(b)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a..b&lt;/td&gt;
+&lt;td&gt;a.rangeTo(b)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a in b&lt;/td&gt;
+&lt;td&gt;b.contains(a)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a !in b&lt;/td&gt;
+&lt;td&gt;!b.contains(a)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a += b&lt;/td&gt;
+&lt;td&gt;a.plusAssign(b)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a -= b&lt;/td&gt;
+&lt;td&gt;a.minusAssign(b)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a *= b&lt;/td&gt;
+&lt;td&gt;a.timesAssign(b)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a /= b&lt;/td&gt;
+&lt;td&gt;a.divAssign(b)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a %= b&lt;/td&gt;
+&lt;td&gt;a.modAssign(b)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h4 id=&#34;数值类型操作符-array-type-operators&#34;&gt;数值类型操作符（Array type operators）&lt;/h4&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;操作符&lt;/th&gt;
+&lt;th&gt;方法名&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;a[i]&lt;/td&gt;
+&lt;td&gt;a.get(i)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a[i, j]&lt;/td&gt;
+&lt;td&gt;a.get(i, j)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a[i_1, …, i_n]&lt;/td&gt;
+&lt;td&gt;a.get(i_1, …, i_n)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a[i] = b&lt;/td&gt;
+&lt;td&gt;a.set(i, b)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a[i, j] = b&lt;/td&gt;
+&lt;td&gt;a.set(i, j, b)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a[i_1, …, i_n] = b&lt;/td&gt;
+&lt;td&gt;a.set(i_1, …, i_n, b)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h4 id=&#34;等于和不等于操作符-equals-operation&#34;&gt;等于和不等于操作符（Equals Operation）&lt;/h4&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;操作符&lt;/th&gt;
+&lt;th&gt;方法名&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;a == b&lt;/td&gt;
+&lt;td&gt;a?.equals(b) ?: (b === null)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a != b&lt;/td&gt;
+&lt;td&gt;!(a?.equals(b) ?: (b === null))&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h4 id=&#34;比较操作符-comparison-operators&#34;&gt;比较操作符（Comparison operators）&lt;/h4&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;操作符&lt;/th&gt;
+&lt;th&gt;方法名&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;a &amp;gt; b&lt;/td&gt;
+&lt;td&gt;a.compareTo(b) &amp;gt; 0&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a &amp;lt; b&lt;/td&gt;
+&lt;td&gt;a.compareTo(b) &amp;lt; 0&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a &amp;gt;= b&lt;/td&gt;
+&lt;td&gt;a.compareTo(b) &amp;gt;= 0&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a &amp;lt;= b&lt;/td&gt;
+&lt;td&gt;a.compareTo(b) &amp;lt;= 0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h4 id=&#34;调用操作符-invoke-operator&#34;&gt;调用操作符（Invoke operator）&lt;/h4&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;操作符&lt;/th&gt;
+&lt;th&gt;方法名&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;a()&lt;/td&gt;
+&lt;td&gt;a.invoke()&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a(i)&lt;/td&gt;
+&lt;td&gt;a.invoke(i)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a(i, j)&lt;/td&gt;
+&lt;td&gt;a.invoke(i, j)&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;a(i_1, …, i_n)&lt;/td&gt;
+&lt;td&gt;a.invoke(i_1, …, i_n)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+      
+    </item>
+    
+    <item>
       <title>Android 中的进程间通信简单使用</title>
       <link>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</link>
-      <pubDate>Tue, 25 Aug 2020 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 19 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</guid>
       
@@ -715,346 +1660,6 @@
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;</description>
-      
-    </item>
-    
-    <item>
-      <title>kotlin 中的运算符重载</title>
-      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/</link>
-      <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/</guid>
-      
-        <description>
-
-&lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
-
-&lt;p&gt;运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 + - * / % ++ &amp;ndash; 。而 Kotlin 中允许我们将这些所有的运算符甚至其他的关键字进行重载&lt;/p&gt;
-
-&lt;p&gt;在 Java 中的运算符基本都是加减乘除那样的，相信每个人肯定都用过。但是在 Kotlin 中的运算符重载允许我们让任意两个对象相加，或者是进行其他更多的功能&lt;/p&gt;
-
-&lt;h2 id=&#34;运算符重载&#34;&gt;运算符重载&lt;/h2&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;假如有这么一个例子，在 Kotlin 中运算法重载使用的关键字是使用 operator 修饰，只要在指定函数的前面加上 operator 关键字，就可以实现运算符重载的功能了。但是问题在于这个指定函数是什么呢？ 这是运算符重载里面比较复杂的一个问题，因为不同的运算符对应的重载函数是不同的。比如说加号的运算符是 plus() ，减号的运算符是 minus() ，各自所对应的运算符重载函数名称都不是相同的&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;这里我们尝试两个钱的对象相加，返回两个对象钱的数量之和。如下代码可以看到这里使用的是 operator 关键字修饰了 plus 函数，这是必须的。同时这里不仅可以进行对象的相加，还可以直接和数字进行相加，因为 Kotlin 中是允许对同一个运算符进行多重重载的。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-			&lt;span class=&#34;c1&#34;&gt;// 对象直接直接相加
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;operator&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;plus&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;sum&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;money&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;money&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sum&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;  
-        
-			&lt;span class=&#34;c1&#34;&gt;// 对象和数字相加
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;operator&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;plus&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;sum&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;money&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sum&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; 
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&#34;使用&#34;&gt;使用&lt;/h2&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;money&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;money2&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Money&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;20&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;money3&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;40&lt;/span&gt;
-
-            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;moneySum&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;money&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;money2&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;moneySum2&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;moneySum&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;money3&lt;/span&gt;
-            
-            &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;moneySum= ${moneySum.money}&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 结果等于 30
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;            &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;moneySum= ${moneySum2.money}&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 结果等于 70
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;使用方式就像上面那样了。可以和对象相加，也可以和数字相加。Kotlin 中的允许重载的运算符还有很多，如果想要对其他运算符进行重载，或者进行其他的操作，只需要修改对应的指定函数即可&lt;/p&gt;
-
-&lt;h2 id=&#34;常见的操作符&#34;&gt;常见的操作符&lt;/h2&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;以下对应的运算符来自 &lt;a href=&#34;https://www.jianshu.com/p/15dc4cef61e0&#34;&gt;https://www.jianshu.com/p/15dc4cef61e0&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;常见的操作符和对应的方法名：&lt;/p&gt;
-
-&lt;h4 id=&#34;一元操作符-unary-operators&#34;&gt;一元操作符（Unary Operators）&lt;/h4&gt;
-
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;操作符&lt;/th&gt;
-&lt;th&gt;方法名&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;+a&lt;/td&gt;
-&lt;td&gt;a.unaryPlus()&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;-a&lt;/td&gt;
-&lt;td&gt;a.unaryMinus()&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;!a&lt;/td&gt;
-&lt;td&gt;a.not()&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a++&lt;/td&gt;
-&lt;td&gt;a.inc()&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h4 id=&#34;二元操作符-binary-operators&#34;&gt;二元操作符（  Binary Operators）&lt;/h4&gt;
-
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;操作符&lt;/th&gt;
-&lt;th&gt;方法名&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;a + b&lt;/td&gt;
-&lt;td&gt;a.plus(b)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a – b&lt;/td&gt;
-&lt;td&gt;a.minus(b)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a * b&lt;/td&gt;
-&lt;td&gt;a.times(b)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a / b&lt;/td&gt;
-&lt;td&gt;a.div(b)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a % b&lt;/td&gt;
-&lt;td&gt;a.mod(b)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a..b&lt;/td&gt;
-&lt;td&gt;a.rangeTo(b)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a in b&lt;/td&gt;
-&lt;td&gt;b.contains(a)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a !in b&lt;/td&gt;
-&lt;td&gt;!b.contains(a)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a += b&lt;/td&gt;
-&lt;td&gt;a.plusAssign(b)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a -= b&lt;/td&gt;
-&lt;td&gt;a.minusAssign(b)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a *= b&lt;/td&gt;
-&lt;td&gt;a.timesAssign(b)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a /= b&lt;/td&gt;
-&lt;td&gt;a.divAssign(b)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a %= b&lt;/td&gt;
-&lt;td&gt;a.modAssign(b)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h4 id=&#34;数值类型操作符-array-type-operators&#34;&gt;数值类型操作符（Array type operators）&lt;/h4&gt;
-
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;操作符&lt;/th&gt;
-&lt;th&gt;方法名&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;a[i]&lt;/td&gt;
-&lt;td&gt;a.get(i)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a[i, j]&lt;/td&gt;
-&lt;td&gt;a.get(i, j)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a[i_1, …, i_n]&lt;/td&gt;
-&lt;td&gt;a.get(i_1, …, i_n)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a[i] = b&lt;/td&gt;
-&lt;td&gt;a.set(i, b)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a[i, j] = b&lt;/td&gt;
-&lt;td&gt;a.set(i, j, b)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a[i_1, …, i_n] = b&lt;/td&gt;
-&lt;td&gt;a.set(i_1, …, i_n, b)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h4 id=&#34;等于和不等于操作符-equals-operation&#34;&gt;等于和不等于操作符（Equals Operation）&lt;/h4&gt;
-
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;操作符&lt;/th&gt;
-&lt;th&gt;方法名&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;a == b&lt;/td&gt;
-&lt;td&gt;a?.equals(b) ?: (b === null)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a != b&lt;/td&gt;
-&lt;td&gt;!(a?.equals(b) ?: (b === null))&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h4 id=&#34;比较操作符-comparison-operators&#34;&gt;比较操作符（Comparison operators）&lt;/h4&gt;
-
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;操作符&lt;/th&gt;
-&lt;th&gt;方法名&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;a &amp;gt; b&lt;/td&gt;
-&lt;td&gt;a.compareTo(b) &amp;gt; 0&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a &amp;lt; b&lt;/td&gt;
-&lt;td&gt;a.compareTo(b) &amp;lt; 0&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a &amp;gt;= b&lt;/td&gt;
-&lt;td&gt;a.compareTo(b) &amp;gt;= 0&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a &amp;lt;= b&lt;/td&gt;
-&lt;td&gt;a.compareTo(b) &amp;lt;= 0&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h4 id=&#34;调用操作符-invoke-operator&#34;&gt;调用操作符（Invoke operator）&lt;/h4&gt;
-
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;操作符&lt;/th&gt;
-&lt;th&gt;方法名&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;a()&lt;/td&gt;
-&lt;td&gt;a.invoke()&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a(i)&lt;/td&gt;
-&lt;td&gt;a.invoke(i)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a(i, j)&lt;/td&gt;
-&lt;td&gt;a.invoke(i, j)&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;a(i_1, …, i_n)&lt;/td&gt;
-&lt;td&gt;a.invoke(i_1, …, i_n)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-</description>
       
     </item>
     
@@ -2889,1907 +3494,6 @@ iBank.applyBank();&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;p&gt;我们可以发现一个重要的执行代码 super.h.invoke(this, m4, (Object[])null); 其实 super.h 就是我们创建的代理类BankInvocationHandler ，然后执行了 m4， m4 其实就是这个方法 Class.forName(&amp;ldquo;com.fangsf.java_lib.proxy.Man&amp;rdquo;).getMethod(&amp;ldquo;applyBank&amp;rdquo;)&lt;/p&gt;
 
 &lt;p&gt;到这里基本就结束了，我们可以发现其实代理对象其实也是有的，只不过是 Java 帮助我们动态生成了，所以我们不用去写这个类，即使后面增加了目标业务需求，只需要代理对象实现相应方法即可，我们的动态代理类会自动生成的。更加的方便，不过需要注意的是动态代理用了大量的反射，比静态代理会更加耗性能。&lt;/p&gt;
-</description>
-      
-    </item>
-    
-    <item>
-      <title>Activity 从各个方向进入和退出的转场动画</title>
-      <link>https://midFang.github.io/post/activity-%E4%BB%8E%E5%90%84%E4%B8%AA%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/</link>
-      <pubDate>Wed, 02 Oct 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/activity-%E4%BB%8E%E5%90%84%E4%B8%AA%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/</guid>
-      
-        <description>
-
-&lt;h3 id=&#34;向左推&#34;&gt;向左推&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// R.anim.i_slide_in_left
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;xmlns&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-	&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;translate&lt;/span&gt; 
-	&lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromXDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;100%p&amp;#34;&lt;/span&gt;
-	&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toXDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt;
-	&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;350&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-&lt;span class=&#34;o&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-
-&lt;span class=&#34;c1&#34;&gt;// R.anim.i_slide_out_left
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;?&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;xml&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;version&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;1.0&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;encoding&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;utf-8&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?&amp;gt;&lt;/span&gt;
-&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;xmlns&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-	&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;translate&lt;/span&gt; 
-	&lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromXDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt;
-	&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toXDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;-100%p&amp;#34;&lt;/span&gt;
-	&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;350&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-&lt;span class=&#34;o&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;h3 id=&#34;向右推&#34;&gt;向右推&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// R.anim.i_slide_in_right
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;xmlns&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-	&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;translate&lt;/span&gt; 
-	&lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromXDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;-100%p&amp;#34;&lt;/span&gt; 
-	&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toXDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt; 
-	&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;350&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-&lt;span class=&#34;o&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-
-
-&lt;span class=&#34;c1&#34;&gt;// R.anim.i_slide_out_right
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;xmlns&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-	&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;translate&lt;/span&gt; 
-	&lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromXDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt; 
-	&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toXDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;100%p&amp;#34;&lt;/span&gt; 
-	&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;350&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-&lt;span class=&#34;o&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;h3 id=&#34;从底部到顶部&#34;&gt;从底部到顶部&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// R.anim.push_up_in
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;xmlns&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-
-    &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;translate&lt;/span&gt;
-        &lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;300&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromYDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;100%p&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toYDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-
-    &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;alpha&lt;/span&gt;
-        &lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;300&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromAlpha&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0.0&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toAlpha&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;1.0&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-
-&lt;span class=&#34;o&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-
-&lt;span class=&#34;c1&#34;&gt;// R.anim.push_up_out
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;xmlns&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-
-    &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;translate&lt;/span&gt;
-        &lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;300&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromYDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toYDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-
-    &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;alpha&lt;/span&gt;
-        &lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;300&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromAlpha&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;1.0&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toAlpha&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;1.0&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-
-&lt;span class=&#34;o&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;h3 id=&#34;从顶部到顶部&#34;&gt;从顶部到顶部&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// R.anim.push_down_in
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;xmlns&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-
-      &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;translate&lt;/span&gt;
-        &lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;300&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromYDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0%&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toYDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0%&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-
-    &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;alpha&lt;/span&gt;
-        &lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;300&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromAlpha&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;1.0&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toAlpha&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;1.0&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-
-&lt;span class=&#34;o&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-
-&lt;span class=&#34;c1&#34;&gt;// R.anim.push_down_out
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;xmlns&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
- &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;translate&lt;/span&gt;
-        &lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;300&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromYDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toYDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;100%p&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-    &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;alpha&lt;/span&gt;
-        &lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;300&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromAlpha&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;1.0&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toAlpha&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;1.0&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-&lt;span class=&#34;o&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;透明度渐变进入&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// R.anim.fade_in
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;xmlns&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-
-    &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;alpha&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromAlpha&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toAlpha&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;1.0&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;300&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-
-&lt;span class=&#34;o&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-
-&lt;span class=&#34;c1&#34;&gt;//  R.anim.fade_out
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;xmlns&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
-
-    &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;alpha&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromAlpha&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;1.0&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toAlpha&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;300&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
-
-&lt;span class=&#34;o&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;h3 id=&#34;使用方式&#34;&gt;使用方式&lt;/h3&gt;
-
-&lt;h4 id=&#34;退出&#34;&gt;退出&lt;/h4&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;n&#34;&gt;finish&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;span class=&#34;c1&#34;&gt;// 在 finish 后调用
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;overridePendingTransition&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;xx_in&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;xx_out&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;h4 id=&#34;进入&#34;&gt;进入&lt;/h4&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;n&#34;&gt;startActivityForResult&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;intent1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;REQUEST_MUSIC_CODE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;span class=&#34;c1&#34;&gt;// 在 startActivity 后调用
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;overridePendingTransition&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;xx__in&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;xx_out&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;h4 id=&#34;或者是在清单文件中配置&#34;&gt;或者是在清单文件中配置&lt;/h4&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&amp;lt;style name=&amp;#34;AppTheme&amp;#34; parent=&amp;#34;Theme.AppCompat.Light.NoActionBar&amp;#34;&amp;gt;
-        &amp;lt;item name=&amp;#34;colorPrimary&amp;#34;&amp;gt;@color/colorPrimary&amp;lt;/item&amp;gt;
-        &amp;lt;item name=&amp;#34;colorPrimaryDark&amp;#34;&amp;gt;@color/colorPrimaryDark&amp;lt;/item&amp;gt;
-        &amp;lt;item name=&amp;#34;colorAccent&amp;#34;&amp;gt;@color/colorAccent&amp;lt;/item&amp;gt;
-        &amp;lt;item name=&amp;#34;android:windowIsTranslucent&amp;#34;&amp;gt;true&amp;lt;/item&amp;gt;
-        &amp;lt;item name=&amp;#34;android:windowAnimationStyle&amp;#34;&amp;gt;@style/AnimActivityOptions&amp;lt;/item&amp;gt;
-&amp;lt;/style&amp;gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&amp;lt;style name=&amp;#34;AnimActivityOptions&amp;#34; parent=&amp;#34;@android:style/Animation.Activity&amp;#34;&amp;gt;
-        &amp;lt;item name=&amp;#34;android:activityOpenEnterAnimation&amp;#34;&amp;gt;@anim/slide_left_in&amp;lt;/item&amp;gt;
-        &amp;lt;item name=&amp;#34;android:activityCloseExitAnimation&amp;#34;&amp;gt;@anim/slide_right_out&amp;lt;/item&amp;gt;
-&amp;lt;/style&amp;gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;android:activityOpenEnterAnimation   一个 activity 创建进入的效果。
-android:activityOpenExitAnimation    一个 activity 进入，另外一个 activity 的退出的效果
-android:activityCloseEnterAnimation  一个 activity 退出，另外一个 activity 进入的效果
-android:activityCloseExitAnimation   一个 activity 退出的效果&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;</description>
-      
-    </item>
-    
-    <item>
-      <title>Android源码之单例设计模式</title>
-      <link>https://midFang.github.io/post/android%E6%BA%90%E7%A0%81%E4%B9%8B%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
-      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/android%E6%BA%90%E7%A0%81%E4%B9%8B%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
-      
-        <description>
-
-&lt;h2 id=&#34;介绍&#34;&gt;介绍&lt;/h2&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&#34;layoutinflater-单例分析&#34;&gt;LayoutInflater 单例分析&lt;/h3&gt;
-
-&lt;p&gt;在 Activity View 加载一个布局的时候, 通常是这样做的&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt; LayoutInflater.from(context).inflate(layout, null, false);&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt; public static LayoutInflater from(Context context) {
-        LayoutInflater LayoutInflater =
-                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (LayoutInflater == null) {
-            throw new AssertionError(&amp;#34;LayoutInflater not found.&amp;#34;);
-        }
-        return LayoutInflater;
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;可以发现这里使用的是 context.getSystemService 获取了一个 LayoutInflater 的实例, 如果继续跟踪的话会发现 Context 是一个抽象类, 需要找到他的具体的实现类&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public abstract class Context {
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;一般情况下一个应用程序的 Context 的数量等于 1 个 Application + Activity 个数 + Service 个数, 这里的话, 我们是加载布局在 Activity 中的, 那么就以 Activity 的 Conttext 来分析一下&lt;/p&gt;
-
-&lt;p&gt;我们知道一个 Activity 的入口是在 ActivityThread 的 mian() 函数当中, 创建 ActivityThrad 对象, 开启 Looper 循环, 创建新的 Activity, Context 对象, 然后将 Context 传递给 Activity, 源码如下&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;33
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;34
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;35
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;36
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;37
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;38
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;39
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;40
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;41
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public static void main(String[] args) {
-        Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &amp;#34;ActivityThreadMain&amp;#34;);
-        SamplingProfilerIntegration.start();
-
-        CloseGuard.setEnabled(false);
-
-        Environment.initForCurrentUser();
-
-        // Set the reporter for event logging in libcore
-        EventLogger.setReporter(new EventLoggingReporter());
-
-        // Make sure TrustedCertificateStore looks in the right place for CA certificates
-        final File configDir = Environment.getUserConfigDirectory(UserHandle.myUserId());
-        TrustedCertificateStore.setDefaultUserDirectory(configDir);
-
-        Process.setArgV0(&amp;#34;&amp;lt;pre-initialized&amp;gt;&amp;#34;);
-
-        // 创建主线程的Looper对象
-        Looper.prepareMainLooper();
-
-        // 创建了一个 ActivityThrad 对象
-        ActivityThread thread = new ActivityThread();
-        // false 代表不是系统应用
-        thread.attach(false);
-
-        if (sMainThreadHandler == null) {
-            sMainThreadHandler = thread.getHandler();
-        }
-
-        if (false) {
-            Looper.myLooper().setMessageLogging(new
-                    LogPrinter(Log.DEBUG, &amp;#34;ActivityThread&amp;#34;));
-        }
-
-        // End of event ActivityThreadMain.
-        Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
-        // 开启消息循环
-        Looper.loop();
-
-        throw new RuntimeException(&amp;#34;Main thread loop unexpectedly exited&amp;#34;);
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;33
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;34
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;35
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;36
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;37
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;38
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;39
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;40
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;41
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;42
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;43
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;44
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;45
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;46
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;47
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;48
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;49
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;50
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt; private void attach(boolean system) {
-        sCurrentActivityThread = this;
-        mSystemThread = system;
-        if (!system) {
-            ViewRootImpl.addFirstDrawHandler(new Runnable() {
-                @Override
-                public void run() {
-                    ensureJitEnabled();
-                }
-            });
-            android.ddm.DdmHandleAppName.setAppName(&amp;#34;&amp;lt;pre-initialized&amp;gt;&amp;#34;,
-                                                    UserHandle.myUserId());
-            RuntimeInit.setApplicationObject(mAppThread.asBinder());
-            // 这里是 Binder 机制与  ActivityManagerService 进行通信
-            final IActivityManager mgr = ActivityManager.getService();
-            try {
-                // 关联 application
-                mgr.attachApplication(mAppThread);
-            } catch (RemoteException ex) {
-                throw ex.rethrowFromSystemServer();
-            }
-            // Watch for getting close to heap limit.
-            BinderInternal.addGcWatcher(new Runnable() {
-                @Override public void run() {
-                    if (!mSomeActivitiesChanged) {
-                        return;
-                    }
-                    Runtime runtime = Runtime.getRuntime();
-                    long dalvikMax = runtime.maxMemory();
-                    long dalvikUsed = runtime.totalMemory() - runtime.freeMemory();
-                    if (dalvikUsed &amp;gt; ((3*dalvikMax)/4)) {
-                        if (DEBUG_MEMORY_TRIM) Slog.d(TAG, &amp;#34;Dalvik max=&amp;#34; + (dalvikMax/1024)
-                                + &amp;#34; total=&amp;#34; + (runtime.totalMemory()/1024)
-                                + &amp;#34; used=&amp;#34; + (dalvikUsed/1024));
-                        mSomeActivitiesChanged = false;
-                        try {
-                            mgr.releaseSomeActivities(mAppThread);
-                        } catch (RemoteException e) {
-                            throw e.rethrowFromSystemServer();
-                        }
-                    }
-                }
-            });
-        } else {
-            // 这里是 false 不是系统应用的时候不会被调用
-        }
-
-    // 代码省略
-     
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;在 main() 方法中, 创建了一个 ActivityThread 对象后, 调用其 attach(false) 其中参数为false, 参数为 false 的情况下(即为非系统应用), 然后会通过 Binder 机制与 ActivityManagerService 通信, 最终会调用到 handleLaunchActivity 具体看看这里是如何实现的&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt; private void handleLaunchActivity(ActivityClientRecord r, Intent customIntent, String reason) {
-        unscheduleGcIdler();
-        mSomeActivitiesChanged = true;
-
-        if (r.profilerInfo != null) {
-            mProfiler.setProfiler(r.profilerInfo);
-            mProfiler.startProfiling();
-        }
-        
-        handleConfigurationChanged(null, null);
-
-        if (localLOGV) Slog.v(
-            TAG, &amp;#34;Handling launch of &amp;#34; + r);
-
-        // Initialize before creating the activity
-        WindowManagerGlobal.initialize();
-        
-        // 调用了启动了一个 Activity 方法
-        Activity a = performLaunchActivity(r, customIntent);
-
-        // 代码省略...
-     
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;  1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;  2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;  3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;  4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;  5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;  6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;  7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;  8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;  9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 24
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 25
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 26
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 27
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 28
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 29
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 30
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 31
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 32
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 33
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 34
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 35
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 36
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 37
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 38
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 39
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 40
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 41
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 42
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 43
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 44
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 45
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 46
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 47
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 48
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 49
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 50
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 51
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 52
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 53
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 54
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 55
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 56
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 57
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 58
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 59
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 60
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 61
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 62
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 63
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 64
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 65
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 66
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 67
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 68
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 69
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 70
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 71
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 72
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 73
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 74
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 75
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 76
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 77
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 78
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 79
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 80
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 81
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 82
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 83
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 84
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 85
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 86
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 87
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 88
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 89
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 90
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 91
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 92
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 93
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 94
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 95
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 96
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 97
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 98
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 99
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;100
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;101
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;102
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;103
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;104
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;105
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;106
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;107
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;108
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;109
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;110
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;111
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;112
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;113
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;114
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;115
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;116
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;117
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;118
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;119
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;120
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;121
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;122
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;123
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;124
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;125
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;126
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;127
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;128
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;129
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;130
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;131
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;132
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;133
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;134
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;135
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;136
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;137
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;138
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;139
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;140
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;141
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;142
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;143
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;144
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;145
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;146
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt; private Activity performLaunchActivity(ActivityClientRecord r, Intent customIntent) {
-        // System.out.println(&amp;#34;##### [&amp;#34; + System.currentTimeMillis() + &amp;#34;] ActivityThread.performLaunchActivity(&amp;#34; + r + &amp;#34;)&amp;#34;);
-
-        ActivityInfo aInfo = r.activityInfo;
-        if (r.packageInfo == null) {
-            r.packageInfo = getPackageInfo(aInfo.applicationInfo, r.compatInfo,
-                    Context.CONTEXT_INCLUDE_CODE);
-        }
-
-        ComponentName component = r.intent.getComponent();
-        if (component == null) {
-            component = r.intent.resolveActivity(
-                mInitialApplication.getPackageManager());
-            r.intent.setComponent(component);
-        }
-
-        if (r.activityInfo.targetActivity != null) {
-            component = new ComponentName(r.activityInfo.packageName,
-                    r.activityInfo.targetActivity);
-        }
-
-        // 这里创建了一个 ContextImpl 对象
-        ContextImpl appContext = createBaseContextForActivity(r);
-        Activity activity = null;
-        try {
-            // 获取了一个 ClassLoader
-            java.lang.ClassLoader cl = appContext.getClassLoader();
-            // 反射创建了一个 Activity
-            activity = mInstrumentation.newActivity(
-                    cl, component.getClassName(), r.intent);
-            StrictMode.incrementExpectedActivityCount(activity.getClass());
-            r.intent.setExtrasClassLoader(cl);
-            r.intent.prepareToEnterProcess();
-            if (r.state != null) {
-                r.state.setClassLoader(cl);
-            }
-        } catch (Exception e) {
-            if (!mInstrumentation.onException(activity, e)) {
-                throw new RuntimeException(
-                    &amp;#34;Unable to instantiate activity &amp;#34; + component
-                    + &amp;#34;: &amp;#34; + e.toString(), e);
-            }
-        }
-
-        try {
-            Application app = r.packageInfo.makeApplication(false, mInstrumentation);
-
-            if (localLOGV) Slog.v(TAG, &amp;#34;Performing launch of &amp;#34; + r);
-            if (localLOGV) Slog.v(
-                    TAG, r + &amp;#34;: app=&amp;#34; + app
-                    + &amp;#34;, appName=&amp;#34; + app.getPackageName()
-                    + &amp;#34;, pkg=&amp;#34; + r.packageInfo.getPackageName()
-                    + &amp;#34;, comp=&amp;#34; + r.intent.getComponent().toShortString()
-                    + &amp;#34;, dir=&amp;#34; + r.packageInfo.getAppDir());
-
-            if (activity != null) {
-                CharSequence title = r.activityInfo.loadLabel(appContext.getPackageManager());
-                Configuration config = new Configuration(mCompatConfiguration);
-                if (r.overrideConfig != null) {
-                    config.updateFrom(r.overrideConfig);
-                }
-                if (DEBUG_CONFIGURATION) Slog.v(TAG, &amp;#34;Launching activity &amp;#34;
-                        + r.activityInfo.name + &amp;#34; with config &amp;#34; + config);
-                Window window = null;
-                if (r.mPendingRemoveWindow != null &amp;amp;&amp;amp; r.mPreserveWindow) {
-                    window = r.mPendingRemoveWindow;
-                    r.mPendingRemoveWindow = null;
-                    r.mPendingRemoveWindowManager = null;
-                }
-                appContext.setOuterContext(activity);
-                // 将创建好的 context 对象, 传递给 Activity
-                activity.attach(appContext, this, getInstrumentation(), r.token,
-                        r.ident, app, r.intent, r.activityInfo, title, r.parent,
-                        r.embeddedID, r.lastNonConfigurationInstances, config,
-                        r.referrer, r.voiceInteractor, window, r.configCallback);
-
-                if (customIntent != null) {
-                    activity.mIntent = customIntent;
-                }
-                r.lastNonConfigurationInstances = null;
-                checkAndBlockForNetworkAccess();
-                activity.mStartedActivity = false;
-                int theme = r.activityInfo.getThemeResource();
-                if (theme != 0) {
-                    activity.setTheme(theme);
-                }
-
-                activity.mCalled = false;
-                if (r.isPersistable()) {
-                   // 调用Activity 的 onCreate 方法 mInstrumentation.callActivityOnCreate(activity, r.state, r.persistentState);
-                } else {
-                    mInstrumentation.callActivityOnCreate(activity, r.state);
-                }
-                if (!activity.mCalled) {
-                    throw new SuperNotCalledException(
-                        &amp;#34;Activity &amp;#34; + r.intent.getComponent().toShortString() +
-                        &amp;#34; did not call through to super.onCreate()&amp;#34;);
-                }
-                r.activity = activity;
-                r.stopped = true;
-                if (!r.activity.mFinished) {
-                    activity.performStart();
-                    r.stopped = false;
-                }
-                if (!r.activity.mFinished) {
-                    if (r.isPersistable()) {
-                        if (r.state != null || r.persistentState != null) {
-                            mInstrumentation.callActivityOnRestoreInstanceState(activity, r.state,
-                                    r.persistentState);
-                        }
-                    } else if (r.state != null) {
-                        mInstrumentation.callActivityOnRestoreInstanceState(activity, r.state);
-                    }
-                }
-                if (!r.activity.mFinished) {
-                    activity.mCalled = false;
-                    if (r.isPersistable()) {
-                        mInstrumentation.callActivityOnPostCreate(activity, r.state,
-                                r.persistentState);
-                    } else {
-                        mInstrumentation.callActivityOnPostCreate(activity, r.state);
-                    }
-                    if (!activity.mCalled) {
-                        throw new SuperNotCalledException(
-                            &amp;#34;Activity &amp;#34; + r.intent.getComponent().toShortString() +
-                            &amp;#34; did not call through to super.onPostCreate()&amp;#34;);
-                    }
-                }
-            }
-            r.paused = true;
-
-            mActivities.put(r.token, r);
-
-        } catch (SuperNotCalledException e) {
-            throw e;
-
-        } catch (Exception e) {
-            if (!mInstrumentation.onException(activity, e)) {
-                throw new RuntimeException(
-                    &amp;#34;Unable to start activity &amp;#34; + component
-                    + &amp;#34;: &amp;#34; + e.toString(), e);
-            }
-        }
-
-        return activity;
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;通过注释的代码可以知道, context 最终的实现类是 ContextImpl , 最后再看一下一些重要的方法&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;class ContextImpl extends Context { 
-    
-    @Override
-    public String getSystemServiceName(Class&amp;lt;?&amp;gt; serviceClass) {
-        return SystemServiceRegistry.getSystemServiceName(serviceClass);
-    }
-    
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;最终来到了这个类当中 SystemServiceRegistry&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;33
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;34
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;35
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;36
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;37
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;38
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;39
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;40
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;41
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;42
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;43
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;44
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;45
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;46
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;47
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;48
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;49
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;50
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;51
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;52
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;53
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;54
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;55
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;56
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;57
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;58
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;59
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;60
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;61
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;62
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;63
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;64
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;65
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;66
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;67
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;68
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;69
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;70
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;71
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;72
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;73
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;74
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;75
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;76
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;77
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;78
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;79
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;80
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;81
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;82
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;83
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;84
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;85
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;86
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;87
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;88
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;89
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;90
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;final class SystemServiceRegistry {
-
-    // 系统的很多服务都存在了这个集合当中了
-    private static final HashMap&amp;lt;Class&amp;lt;?&amp;gt;, String&amp;gt; SYSTEM_SERVICE_NAMES =
-            new HashMap&amp;lt;Class&amp;lt;?&amp;gt;, String&amp;gt;();
-            
-
-    // Not instantiable.
-    private SystemServiceRegistry() { }
-
-    // 静态代码块的实现,第一次加载类的时候就会被执行
-    static {
-        // LAYOUT_INFLATER_SERVICE 的服务 就在这个时候就已经 注册了
-        registerService(Context.LAYOUT_INFLATER_SERVICE, LayoutInflater.class,
-                new CachedServiceFetcher&amp;lt;LayoutInflater&amp;gt;() {
-            @Override
-            public LayoutInflater createService(ContextImpl ctx) {
-                // 真正的具体的实现类可以发现是 PhoneLayoutInflater
-                return new PhoneLayoutInflater(ctx.getOuterContext());
-            }});
-            
-            // 软键盘的一个服务
-             registerService(Context.INPUT_METHOD_SERVICE, InputMethodManager.class,
-                new StaticServiceFetcher&amp;lt;InputMethodManager&amp;gt;() {
-            @Override
-            public InputMethodManager createService() {
-                return InputMethodManager.getInstance();
-            }});
-            
-            // 电量的一个服务
-            registerService(Context.BATTERY_SERVICE, BatteryManager.class,
-                new StaticServiceFetcher&amp;lt;BatteryManager&amp;gt;() {
-            @Override
-            public BatteryManager createService() throws ServiceNotFoundException {
-                IBatteryStats stats = IBatteryStats.Stub.asInterface(
-                        ServiceManager.getServiceOrThrow(BatteryStats.SERVICE_NAME));
-                IBatteryPropertiesRegistrar registrar = IBatteryPropertiesRegistrar.Stub
-                        .asInterface(ServiceManager.getServiceOrThrow(&amp;#34;batteryproperties&amp;#34;));
-                return new BatteryManager(stats, registrar);
-            }});
-
-            
-            //网络的一个服务
-            registerService(Context.NETWORK_POLICY_SERVICE, NetworkPolicyManager.class,
-                new CachedServiceFetcher&amp;lt;NetworkPolicyManager&amp;gt;() {
-            @Override
-            public NetworkPolicyManager createService(ContextImpl ctx) throws ServiceNotFoundException {
-                return new NetworkPolicyManager(ctx, INetworkPolicyManager.Stub.asInterface(
-                        ServiceManager.getServiceOrThrow(Context.NETWORK_POLICY_SERVICE)));
-            }});
-
-        // 通知的一个服务
-        registerService(Context.NOTIFICATION_SERVICE, NotificationManager.class,
-                new CachedServiceFetcher&amp;lt;NotificationManager&amp;gt;() {
-            @Override
-            public NotificationManager createService(ContextImpl ctx) {
-                final Context outerContext = ctx.getOuterContext();
-                return new NotificationManager(
-                    new ContextThemeWrapper(outerContext,
-                            Resources.selectSystemTheme(0,
-                                    outerContext.getApplicationInfo().targetSdkVersion,
-                                    com.android.internal.R.style.Theme_Dialog,
-                                    com.android.internal.R.style.Theme_Holo_Dialog,
-                                    com.android.internal.R.style.Theme_DeviceDefault_Dialog,
-                                    com.android.internal.R.style.Theme_DeviceDefault_Light_Dialog)),
-                    ctx.mMainThread.getHandler());
-            }});
-
-    }
-          
-
-    
-    /**
-     * Gets a system service from a given context.
-     */
-    public static Object getSystemService(ContextImpl ctx, String name) {
-        // 获取系统服务的时候, 就会从这个集合中去拿
-        ServiceFetcher&amp;lt;?&amp;gt; fetcher = SYSTEM_SERVICE_FETCHERS.get(name);
-        return fetcher != null ? fetcher.getService(ctx) : null;
-    }  
-      
-        /**
-     * Gets the name of the system-level service that is represented by the specified class.
-     */
-    public static String getSystemServiceName(Class&amp;lt;?&amp;gt; serviceClass) {
-        return SYSTEM_SERVICE_NAMES.get(serviceClass);
-    }
-      
-
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;至此, 我们可以发送系统的很多服务都是在这里注册的,包括 LayoutInflater 就是使用的是一个单例设计模式, 只不过实现的方式是一个容器而已, 包括很多的一下系统的服务, 具体大家到源码里去看, 这里就省略一部分了&lt;/p&gt;
-
-&lt;p&gt;到这里, 我们发现了 LayoutInflater 的真正的实现类 PhoneLayoutInflater 是, 再简单做个了解吧, 代码很少&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;33
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;34
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;35
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;36
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;37
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;38
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;39
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;40
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;41
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;42
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;43
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;44
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;45
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;46
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;47
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;48
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;49
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;50
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public class PhoneLayoutInflater extends LayoutInflater {
-    // 关键部分, 定义了一些 系统view 的前缀
-    private static final String[] sClassPrefixList = {
-        &amp;#34;android.widget.&amp;#34;,
-        &amp;#34;android.webkit.&amp;#34;,
-        &amp;#34;android.app.&amp;#34;
-    };
-
-    /**
-     * Instead of instantiating directly, you should retrieve an instance
-     * through {@link Context#getSystemService}
-     *
-     * @param context The Context in which in which to find resources and other
-     *                application-specific things.
-     *
-     * @see Context#getSystemService
-     */
-    public PhoneLayoutInflater(Context context) {
-        super(context);
-    }
-
-    protected PhoneLayoutInflater(LayoutInflater original, Context newContext) {
-        super(original, newContext);
-    }
-
-    /** Override onCreateView to instantiate names that correspond to the
-        widgets known to the Widget factory. If we don&amp;#39;t find a match,
-        call through to our super class.
-    */
-    @Override protected View onCreateView(String name, AttributeSet attrs) throws ClassNotFoundException {
-        // 在 View 的名字的前面添加前缀,构造一个View的完整路径, 比如android.widget.TextView
-        for (String prefix : sClassPrefixList) {
-            try {
-                View view = createView(name, prefix, attrs);
-                if (view != null) {
-                    return view;
-                }
-            } catch (ClassNotFoundException e) {
-                // In this case we want to let the base class take a crack
-                // at it.
-            }
-        }
-
-        return super.onCreateView(name, attrs);
-    }
-
-    public LayoutInflater cloneInContext(Context newContext) {
-        return new PhoneLayoutInflater(this, newContext);
-    }
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;这个部分也很好理解, 比如在我们开发的时候, 自己写的自定义的 View, 都是需要写全路径的, 但是我们写系统的 View 就不需要, 其实, 也是做了操作的, 只是说在源码中, 自动给我们添加了前缀&lt;/p&gt;
-</description>
-      
-    </item>
-    
-    <item>
-      <title>ArrayList源码分析</title>
-      <link>https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
-      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
-      
-        <description>
-
-&lt;blockquote&gt;
-&lt;p&gt;开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻松许多&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ol&gt;
-&lt;li&gt;ArrayList 的大小是如何自动增加的？&lt;/li&gt;
-&lt;li&gt;什么情况下你会使用ArrayList？什么时候你会选择LinkedList？&lt;/li&gt;
-&lt;li&gt;ArrayList 的扩容机制&lt;/li&gt;
-&lt;li&gt;几个重要的参数, 以及构造方法&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;ArrayList 是我们在开发中高频率使用到的一个基于数组实现的一个有序的集合类, 那下面就简单的从平常是如何使用的, 做源码分析如下, 也了解一下上面几个经常被问到的问题, 做一个解答&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;   List&amp;lt;String&amp;gt; arrayList = new ArrayList&amp;lt;&amp;gt;();
-
-   arrayList.add(&amp;#34;1&amp;#34;);
-   arrayList.add(&amp;#34;3&amp;#34;);
-   arrayList.add(&amp;#34;2&amp;#34;);
-   arrayList.add(&amp;#34;4&amp;#34;);
-   arrayList.add(&amp;#34;5&amp;#34;);
-   arrayList.get(1);
-   arrayList.remove(2);
-   ArrayList&amp;lt;String&amp;gt; arrayList2 = new ArrayList&amp;lt;&amp;gt;();
-   arrayList2.add(&amp;#34;2&amp;#34;);
-   arrayList2.add(&amp;#34;3&amp;#34;);
-   arrayList.containsAll(arrayList2);
-   arrayList.removeAll(arrayList2);&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;h3 id=&#34;几个重要的构造&#34;&gt;几个重要的构造&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;33
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;34
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;35
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;36
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;37
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;38
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;39
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;40
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;41
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;42
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;43
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;44
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;45
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;46
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;47
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;48
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;49
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;50
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;51
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;52
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;53
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public class ArrayList&amp;lt;E&amp;gt; extends AbstractList&amp;lt;E&amp;gt;
-        implements List&amp;lt;E&amp;gt;, RandomAccess, Cloneable, java.io.Serializable
-        
-    /**
-     * Default initial capacity. 默认大小容量为 10 的大小
-     */
-    private static final int DEFAULT_CAPACITY = 10;
-    
-
-    
-    /**
-     * Shared empty array instance used for default sized empty instances. We
-     * distinguish this from EMPTY_ELEMENTDATA to know how much to inflate when
-     * first element is added.  一个空的数组
-     */
-    private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
-        
-    /**
-     * The size of the ArrayList (the number of elements it contains).
-     *
-     * @serial  当前 ArrayList 的容量实时的容量大小
-     */
-    private int size;
-        
-     /**
-     * Constructs an empty list with the specified initial capacity.
-     *
-     * @param  initialCapacity  the initial capacity of the list
-     * @throws IllegalArgumentException if the specified initial capacity
-     *         is negative
-     */
-    public ArrayList(int initialCapacity) {
-        // 给定初始容量大小的构造
-        if (initialCapacity &amp;gt; 0) {
-            // 创建一个 initialCapacity 大小的 Object 对象数组
-            this.elementData = new Object[initialCapacity];
-        } else if (initialCapacity == 0) {
-            this.elementData = EMPTY_ELEMENTDATA;
-        } else {
-            throw new IllegalArgumentException(&amp;#34;Illegal Capacity: &amp;#34;+
-                                               initialCapacity);
-        }
-    }
-
-    /**
-     * Constructs an empty list with an initial capacity of ten.
-     */
-    public ArrayList() {
-        // 无参数的构造方法
-        this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
-    }
-
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;首先从 ArrayList 的继承的结构体系中, 可以大小了解到一些信息, 继承了一个抽象类 AbstractList, 这里就不展示他的源码了, 其实这个类里面并没有做什么操作, 只是简单的定义了一些方法, 他是一个模板设计模式, 然后实现了 RandomAccess,  Cloneable, java.io.Serializable , 随机访问接口, 可克隆, 序列化接口&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;然后可以发现初始值容量大小为 10,  ArrayList 底层是用 Object 对象数组来实现的, 然后是无参和有参的构造方法, 这个仅仅是对 DEFAULTCAPACITY_EMPTY_ELEMENTDATA 赋值操作, 和创建一个 new Object[initialCapacity] 大小的数组&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;往集合中添加元素&#34;&gt;往集合中添加元素&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;   public boolean add(E e) {
-        // 确保容量大小, (其中扩容机制也在这个方法中实现的)
-        ensureCapacityInternal(size + 1);  // Increments modCount!!
-        // 元素放入 Object 对象数组中
-        elementData[size++] = e;
-        return true;
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;  private void ensureCapacityInternal(int minCapacity) {
-        // 当我们使用无参数构造的时候, 第一次被 add 添加元素的时候, 这个调节是肯定成立的, 因为在上面的无参构造中就是对这个赋值操作
-        if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
-            // 初始化了容量为大小为 10 的大小
-            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
-        }
-
-        // 确保容量大小 
-        ensureExplicitCapacity(minCapacity);
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;  private void ensureExplicitCapacity(int minCapacity) {
-        // 被修改的次数增加, 这个主要是一个并非修改异常, 这个后面会讲到
-        modCount++;
-
-        // overflow-conscious code
-        if (minCapacity - elementData.length &amp;gt; 0)
-            // 扩容
-            grow(minCapacity);
-  }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;假设上面, 我们是第一次 add 添加元素, 那么 elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA 这个条件成立, 然后初始化容量大小为 10 的数组, 那么到了这个条件 if (minCapacity - elementData.length &amp;gt; 0) 只要是小于 10 的就不会触发扩容, 那么如果是再添加一个, 那么传递下来的参数就是 11-10=1 那么这个条件成立, 那么就会触发扩容了&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;private void grow(int minCapacity) {
-        // overflow-conscious code
-        // 假设这里的 minCapacity 为 11 触发扩容机制 
-        // 原数组大小是 10 
-        int oldCapacity = elementData.length;
-        // 赋值新的容量大小, 15 = 10 + (10/2)
-        int newCapacity = oldCapacity + (oldCapacity &amp;gt;&amp;gt; 1);
-        if (newCapacity - minCapacity &amp;lt; 0)
-            newCapacity = minCapacity;
-        if (newCapacity - MAX_ARRAY_SIZE &amp;gt; 0)
-            newCapacity = hugeCapacity(minCapacity);
-        // minCapacity is usually close to size, so this is a win:
-        // 数组的拷贝
-        elementData = Arrays.copyOf(elementData, newCapacity);
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;上面就是扩容机制的代码了, 可以发现很简单, 就是等于 原数组的长度 + 原数组长度 &lt;sup&gt;1&lt;/sup&gt;&amp;frasl;&lt;sub&gt;2&lt;/sub&gt;, 然后就是数组的拷贝了 Arrays.copyOf(elementData, newCapacity)&lt;/p&gt;
-
-&lt;h3 id=&#34;arrays-copyof&#34;&gt;Arrays.copyOf()&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;   public static &amp;lt;T&amp;gt; T[] copyOf(T[] original, int newLength) {
-        return (T[]) copyOf(original, newLength, original.getClass());
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;   public static &amp;lt;T,U&amp;gt; T[] copyOf(U[] original, int newLength, Class&amp;lt;? extends T[]&amp;gt; newType) {
-        @SuppressWarnings(&amp;#34;unchecked&amp;#34;)
-        // 创建一个新的对象
-        T[] copy = ((Object)newType == (Object)Object[].class)
-            ? (T[]) new Object[newLength]
-            : (T[]) Array.newInstance(newType.getComponentType(), newLength);
-        // 系统底层使用 c 实现的数组拷贝
-        System.arraycopy(original, 0, copy, 0,
-                         Math.min(original.length, newLength));
-        // 将对象返回
-        return copy;
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;好了, 添加元素操作的源码到这里基本没有了, 到了这里我们知道了扩容机制其实就是扩容原数组的 1.5 倍的大小, 其实也就是说 ArrayList 是一个动态扩容数据, 然后对创建新的数据, 对老的数组进行copy, 这个是会消耗一部分的性能的, 这里给出一个假设, 假设你当前的数组容量为 100, 那么可想而知, 数组会发生好几次的拷贝, 所以当我们知道了数组的容量大小的时候, 最好是直接给定, 防止多次拷贝&lt;/p&gt;
-
-&lt;h3 id=&#34;获取数据&#34;&gt;获取数据&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt; public E get(int index) {
-        // index 索引值大于当前数组, 抛出越界异常
-        if (index &amp;gt;= size)
-            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
-
-        return (E) elementData[index];
- }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;h3 id=&#34;删除元素&#34;&gt;删除元素&lt;/h3&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;根据下标删除数据&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public E remove(int index) {
-    if (index &amp;gt;= size)
-        throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
-    // 修改次数加1, 这个主要是一个并非修改异常, 这个后面会讲到
-    modCount++;
-    // 需要删除的元素
-    E oldValue = (E) elementData[index];
-
-    // 数组要移动的次数
-    int numMoved = size - index - 1;
-    if (numMoved &amp;gt; 0)
-        // 发生数组移动, 也就是拷贝
-        System.arraycopy(elementData, index+1, elementData, index,
-                         numMoved);
-    // 堆中数据置为 null, 让 GC 可以回收 
-    elementData[--size] = null; // clear to let GC do its work
-
-    return oldValue;
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;根据元素内容删除数据&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public boolean remove(Object o) {
-    if (o == null) {
-        // 删除为 null 的元素
-        for (int index = 0; index &amp;lt; size; index++)
-            if (elementData[index] == null) {
-                 // 删除元素, 本质上是数组拷贝, 位置发生偏移
-                fastRemove(index);
-                return true;
-            }
-    } else {
-        // for 循环遍历查找元素的内容, 将其删除, 位置发生偏移
-        for (int index = 0; index &amp;lt; size; index++)
-            if (o.equals(elementData[index])) {
-                // 删除元素, 本质上是数组拷贝
-                fastRemove(index);
-                return true;
-            }
-    }
-    return false;
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;修改元素&#34;&gt;修改元素&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;  public E set(int index, E element) {
-        // 越界异常检查
-        if (index &amp;gt;= size)
-            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
-        
-        // 旧的元素
-        E oldValue = (E) elementData[index];
-        // 新的元素, 赋值给旧的元素
-        elementData[index] = element;
-        // 然后将旧的元素返回
-        return oldValue;
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;这里, 由于是数组实现的 ArrayList, 内存地址是连续的, 可基于下标直接访问元素, 这里回到文章开头提到的问题, 在什么情况下使用 ArrayList 什么情况下使用 LinkedList, 这就要看我们的需求是元素是访问多, 还是元素删除多, 访问多的用 ArrayList, 由于 LinkedList 是用链表实现的, 内存地址不连续, 当前节点保存上一个节点和下一个节点, 当要删除元素时候, 直接指针改变指向就可以了, 所以删除多用 LinkedList&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;最后看几个比较有意思的, 算法写的很好, 平时在我用开发中也会经常用的到, 可以作为参考&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;提出问题: 假设目前有一个数组 [1,2,3,4,5] 和 [2,3], 要求是移除相同的元素, 或者是保留相同的元素, 不使用下面的方法, 自己手写的话, 你会怎么写?&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;删除相同的元素, 不相同元素的返回&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public boolean removeAll(Collection&amp;lt;?&amp;gt; c) {
-    Objects.requireNonNull(c);
-    return batchRemove(c, false);
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;返回相同的元素, 不相同的元素删除掉&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public boolean retainAll(Collection&amp;lt;?&amp;gt; c) {
-    Objects.requireNonNull(c);
-    return batchRemove(c, true);
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;稍微留意一下, 这两个方法都是相同的, 仅仅是一个参数的不同&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;33
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;34
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;35
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;36
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;37
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;38
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;39
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;40
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;41
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;42
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;43
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;44
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;45
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;46
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;47
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;48
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;49
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;50
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;51
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;52
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;53
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;54
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;55
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;56
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;57
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;private boolean batchRemove(Collection&amp;lt;?&amp;gt; c, boolean complement) {
-    final Object[] elementData = this.elementData;
-    // 类似读(read)指针, 和一个写(write)指针
-    int r = 0, w = 0;
-    boolean modified = false;
-    try {
-        for (; r &amp;lt; size; r++)
-            // for 循环遍历
-                
-            /** 
-             *  1.r 一直自增加, 当 complement 为 true 的时候, 
-             *    条件成立, w++, 当前相同的元素赋值给  w++ 下标元素
-             *    最后完后所有的操作, 最终就是 [2,3] 
-             */
-                 
-             /** 
-              * 2.r 一直自增加, 当 complement 为 false 的时候,
-              *   条件成立, w++, 当前相同的元素赋值给  w++ 下标元素
-              *   最后完后所有的操作, 最终就是 [1,4,5] 
-              */
-                 
-            if (c.contains(elementData[r]) == complement)
-                elementData[w++] = elementData[r];
-                    
-                    
-    } finally {  // 最终一定会被执行
-        // Preserve behavioral compatibility with AbstractCollection,
-        // even if c.contains() throws.
-            
-        // 上面如果执行了操作, 这个值是相等的
-        if (r != size) {
-            System.arraycopy(elementData, r,
-                             elementData, w,
-                             size - r);
-            w += size - r;
-        }
-            
-        // 条件成立
-            
-        /**
-         * 假设是条件 1, w 是 2, 那么就将 2 下标后面的元素都删除
-         * 假设是条件 2, w 是 3, 那么就将 3 下标后面的元素都删除
-         */
-            
-        if (w != size) {
-            // clear to let GC do its work
-            for (int i = w; i &amp;lt; size; i++)
-                elementData[i] = null; // 将元素置为null, 让 GC 可以回收
-            // 被修改的次数
-            modCount += size - w;
-            // 赋值最新的 size 容量大小
-            size = w;
-            modified = true;
-        }
-    }
-    return modified;
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;好了, 源码中写了注释, 用了一个类似, 读指针和写指针的东西, 很巧妙的完成了查找相同元素, 或者是移除相同元素, nice&lt;/p&gt;
 </description>
       
     </item>

@@ -6,10 +6,37 @@
     <description>Recent content in kotlin on Jane - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 20 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 15 Sep 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/categories/kotlin/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Kotlin 中的异常处理</title>
+      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</link>
+      <pubDate>Tue, 15 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</guid>
+      <description>Java 中的异常处理 日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 RetrofitUtil.getInstance().callAppData(call, object : NetListener { override fun onSuccess(message:</description>
+    </item>
+    
+    <item>
+      <title>Kotlin 中的高阶函数</title>
+      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/</link>
+      <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/</guid>
+      <description>定义 如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数 函数类型的定义如下 1 (String, Int) -&amp;gt; Unit 定义一个函数类型</description>
+    </item>
+    
+    <item>
+      <title>Kotlin 中的密封类</title>
+      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/</link>
+      <pubDate>Sun, 30 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/</guid>
+      <description>密封类 密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也</description>
+    </item>
     
     <item>
       <title>kotlin 中的运算符重载</title>

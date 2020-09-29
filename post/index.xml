@@ -6,18 +6,36 @@
     <description>Recent content in Posts on Jane - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 25 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 15 Sep 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Android 中的进程间通信简单使用</title>
-      <link>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</link>
-      <pubDate>Tue, 25 Aug 2020 00:00:00 +0000</pubDate>
+      <title>Kotlin 中的异常处理</title>
+      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</link>
+      <pubDate>Tue, 15 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</guid>
-      <description>Binder 是什么 首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式 为什么需要跨进程通信 因为在 Android 中一个应用相当于一个进程，而一</description>
+      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</guid>
+      <description>Java 中的异常处理 日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 RetrofitUtil.getInstance().callAppData(call, object : NetListener { override fun onSuccess(message:</description>
+    </item>
+    
+    <item>
+      <title>Kotlin 中的高阶函数</title>
+      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/</link>
+      <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/</guid>
+      <description>定义 如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数 函数类型的定义如下 1 (String, Int) -&amp;gt; Unit 定义一个函数类型</description>
+    </item>
+    
+    <item>
+      <title>Kotlin 中的密封类</title>
+      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/</link>
+      <pubDate>Sun, 30 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/</guid>
+      <description>密封类 密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也</description>
     </item>
     
     <item>
@@ -27,6 +45,15 @@
       
       <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/</guid>
       <description>简介 运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 + - * / % ++ &amp;ndash; 。而 Kotlin 中允许我们将这些所有</description>
+    </item>
+    
+    <item>
+      <title>Android 中的进程间通信简单使用</title>
+      <link>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Wed, 19 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</guid>
+      <description>Binder 是什么 首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式 为什么需要跨进程通信 因为在 Android 中一个应用相当于一个进程，而一</description>
     </item>
     
     <item>
@@ -72,33 +99,6 @@
       
       <guid>https://midFang.github.io/post/7.%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</guid>
       <description>动态代理和静态代理一般在设计模式中的定义为代理设计模式 定义： 为其他对象提供一种代理以控制对这个对象的访问 使用场景： 当无法或者不想直接访问某个</description>
-    </item>
-    
-    <item>
-      <title>Activity 从各个方向进入和退出的转场动画</title>
-      <link>https://midFang.github.io/post/activity-%E4%BB%8E%E5%90%84%E4%B8%AA%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/</link>
-      <pubDate>Wed, 02 Oct 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/activity-%E4%BB%8E%E5%90%84%E4%B8%AA%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/</guid>
-      <description>向左推 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 // R.anim.i_slide_in_left &amp;lt;set xmlns:android=&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&amp;gt; &amp;lt;translate android:fromXDelta=&amp;#34;100%p&amp;#34; android:toXDelta=&amp;#34;0&amp;#34; android:duration=&amp;#34;350&amp;#34;/&amp;gt; &amp;lt;/set&amp;gt; // R.anim.i_slide_out_left &amp;lt;?xml version=&amp;#34;1.0&amp;#34; encoding=&amp;#34;utf-8&amp;#34;?&amp;gt; &amp;lt;set xmlns:android=&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&amp;gt; &amp;lt;translate android:fromXDelta=&amp;#34;0&amp;#34; android:toXDelta=&amp;#34;-100%p&amp;#34; android:duration=&amp;#34;350&amp;#34;/&amp;gt; &amp;lt;/set&amp;gt; 向右推 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 // R.anim.i_slide_in_right &amp;lt;set xmlns:android=&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&amp;gt; &amp;lt;translate android:fromXDelta=&amp;#34;-100%p&amp;#34; android:toXDelta=&amp;#34;0&amp;#34; android:duration=&amp;#34;350&amp;#34;/&amp;gt; &amp;lt;/set&amp;gt; // R.anim.i_slide_out_right</description>
-    </item>
-    
-    <item>
-      <title>Android源码之单例设计模式</title>
-      <link>https://midFang.github.io/post/android%E6%BA%90%E7%A0%81%E4%B9%8B%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
-      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/android%E6%BA%90%E7%A0%81%E4%B9%8B%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
-      <description>介绍 单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在 LayoutInflater 单</description>
-    </item>
-    
-    <item>
-      <title>ArrayList源码分析</title>
-      <link>https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
-      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
-      <description>开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻</description>
     </item>
     
   </channel>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>kotlin 中的运算符重载 - Jane - A super concise theme for Hugo</title>
+  <title>Kotlin 中的密封类 - Jane - A super concise theme for Hugo</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -23,7 +23,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="author" content="midFang" />
-  <meta name="description" content="简介 运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 &#43; - * / % &#43;&#43; &amp;ndash; 。而 Kotlin 中允许我们将这些所有" />
+  <meta name="description" content="密封类 密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也" />
 
   <meta name="keywords" content="Hugo, theme, jane" />
 
@@ -35,7 +35,7 @@
 <meta name="generator" content="Hugo 0.58.3" />
 
 
-<link rel="canonical" href="https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" />
+<link rel="canonical" href="https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/" />
 
 
 
@@ -59,26 +59,26 @@
 
 
 
-<meta property="og:title" content="kotlin 中的运算符重载" />
-<meta property="og:description" content="简介 运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 &#43; - * / % &#43;&#43; &ndash; 。而 Kotlin 中允许我们将这些所有" />
+<meta property="og:title" content="Kotlin 中的密封类" />
+<meta property="og:description" content="密封类 密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" />
-<meta property="article:published_time" content="2020-08-20T00:00:00+00:00" />
-<meta property="article:modified_time" content="2020-08-20T00:00:00+00:00" />
-<meta itemprop="name" content="kotlin 中的运算符重载">
-<meta itemprop="description" content="简介 运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 &#43; - * / % &#43;&#43; &ndash; 。而 Kotlin 中允许我们将这些所有">
+<meta property="og:url" content="https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/" />
+<meta property="article:published_time" content="2020-08-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-08-30T00:00:00+00:00" />
+<meta itemprop="name" content="Kotlin 中的密封类">
+<meta itemprop="description" content="密封类 密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也">
 
 
-<meta itemprop="datePublished" content="2020-08-20T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2020-08-20T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="995">
+<meta itemprop="datePublished" content="2020-08-30T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-08-30T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="602">
 
 
 
 <meta itemprop="keywords" content="kotlin," />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="kotlin 中的运算符重载"/>
-<meta name="twitter:description" content="简介 运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 &#43; - * / % &#43;&#43; &ndash; 。而 Kotlin 中允许我们将这些所有"/>
+<meta name="twitter:title" content="Kotlin 中的密封类"/>
+<meta name="twitter:description" content="密封类 密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -336,11 +336,11 @@
           <article class="post bg-white">
     
     <header class="post-header">
-      <h1 class="post-title">kotlin 中的运算符重载</h1>
+      <h1 class="post-title">Kotlin 中的密封类</h1>
       
       <div class="post-meta">
-        <time datetime="2020-08-20" class="post-time">
-          2020-08-20
+        <time datetime="2020-08-30" class="post-time">
+          2020-08-30
         </time>
         <div class="post-category">
             <a href="https://midFang.github.io/categories/kotlin/"> kotlin </a>
@@ -365,21 +365,7 @@
 <ul>
 <li>
 <ul>
-<li><a href="#简介">简介</a></li>
-<li><a href="#运算符重载">运算符重载</a></li>
-<li><a href="#使用">使用</a></li>
-<li><a href="#常见的操作符">常见的操作符</a>
-<ul>
-<li>
-<ul>
-<li><a href="#一元操作符-unary-operators">一元操作符（Unary Operators）</a></li>
-<li><a href="#二元操作符-binary-operators">二元操作符（  Binary Operators）</a></li>
-<li><a href="#数值类型操作符-array-type-operators">数值类型操作符（Array type operators）</a></li>
-<li><a href="#等于和不等于操作符-equals-operation">等于和不等于操作符（Equals Operation）</a></li>
-<li><a href="#比较操作符-comparison-operators">比较操作符（Comparison operators）</a></li>
-<li><a href="#调用操作符-invoke-operator">调用操作符（Invoke operator）</a></li>
-</ul></li>
-</ul></li>
+<li><a href="#密封类">密封类</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -390,18 +376,71 @@
     <div class="post-content">
       
 
-<h2 id="简介">简介</h2>
+<h2 id="密封类">密封类</h2>
 
-<p>运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 + - * / % ++ &ndash; 。而 Kotlin 中允许我们将这些所有的运算符甚至其他的关键字进行重载</p>
+<p>密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也是受限的，但每个枚举常量只存在一个实例，而密封类 的一个子类可以有可包含状态的多个实例。</p>
 
-<p>在 Java 中的运算符基本都是加减乘除那样的，相信每个人肯定都用过。但是在 Kotlin 中的运算符重载允许我们让任意两个对象相加，或者是进行其他更多的功能</p>
+<p>声明一个密封类，使用 <strong>sealed</strong> 修饰类，密封类可以有子类，但是所有的子类都必须要内嵌在密封类中。</p>
 
-<h2 id="运算符重载">运算符重载</h2>
+<p>sealed 不能修饰 interface ,abstract class(会报 warning,但是不会出现编译错误)</p>
 
-<ol>
-<li><p>假如有这么一个例子，在 Kotlin 中运算法重载使用的关键字是使用 operator 修饰，只要在指定函数的前面加上 operator 关键字，就可以实现运算符重载的功能了。但是问题在于这个指定函数是什么呢？ 这是运算符重载里面比较复杂的一个问题，因为不同的运算符对应的重载函数是不同的。比如说加号的运算符是 plus() ，减号的运算符是 minus() ，各自所对应的运算符重载函数名称都不是相同的</p></li>
+<p>密封类一般情况都，都是配合 when 来实用的类，假如有这么一个操作 UI 的类，我们需要操作 UI 的显示和隐藏，</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">sealed</span> <span class="k">class</span> <span class="nc">UIOperator</span> <span class="p">{</span>
+    <span class="k">object</span> <span class="nc">Show</span> <span class="p">:</span> <span class="n">UIOperator</span><span class="p">()</span>
 
-<li><p>这里我们尝试两个钱的对象相加，返回两个对象钱的数量之和。如下代码可以看到这里使用的是 operator 关键字修饰了 plus 函数，这是必须的。同时这里不仅可以进行对象的相加，还可以直接和数字进行相加，因为 Kotlin 中是允许对同一个运算符进行多重重载的。</p>
+    <span class="k">object</span> <span class="nc">Hide</span> <span class="p">:</span> <span class="n">UIOperator</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="k">fun</span> <span class="nf">invoke</span><span class="p">(</span><span class="n">view</span><span class="p">:</span> <span class="n">View</span> <span class="p">,</span><span class="n">uiOperator</span><span class="p">:</span> <span class="n">UIOperator</span><span class="p">)</span> <span class="p">=</span> <span class="k">when</span><span class="p">(</span><span class="n">uiOperator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">UIOperator</span><span class="p">.</span><span class="n">Show</span> <span class="p">-&gt;</span> <span class="n">view</span><span class="p">.</span><span class="n">visibility</span> <span class="p">=</span> <span class="n">View</span><span class="p">.</span><span class="n">VISIBLE</span>
+    <span class="n">UIOperator</span><span class="p">.</span><span class="n">Hide</span> <span class="p">-&gt;</span> <span class="n">view</span><span class="p">.</span><span class="n">visibility</span> <span class="p">=</span> <span class="n">View</span><span class="p">.</span><span class="n">INVISIBLE</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这样的代码，其实用枚举也可以做，但是枚举只能有一个实例，假如这里我们后续要添加平移的方法，还需要一些参数的传入，如果用枚举的话，就不太好实现了。这时密封类就发挥优势了。再给 UIOperator 定义两个方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">sealed</span> <span class="k">class</span> <span class="nc">UIOperator</span> <span class="p">{</span>
+
+    <span class="k">object</span> <span class="nc">Show</span> <span class="p">:</span> <span class="n">UIOperator</span><span class="p">()</span>
+
+    <span class="k">object</span> <span class="nc">Hide</span> <span class="p">:</span> <span class="n">UIOperator</span><span class="p">()</span>
+
+    <span class="k">class</span> <span class="nc">TranslateX</span><span class="p">(</span><span class="k">val</span> <span class="py">px</span><span class="p">:</span> <span class="n">Float</span><span class="p">):</span> <span class="n">UIOperator</span><span class="p">()</span>
+    <span class="k">class</span> <span class="nc">TranslateY</span><span class="p">(</span><span class="k">val</span> <span class="py">px</span><span class="p">:</span> <span class="n">Float</span><span class="p">):</span> <span class="n">UIOperator</span><span class="p">()</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>同时使用密封类有一个好处，不需要我们再实现 else 语句的代码，因为密封类已经知道我们要实现哪些方法了，同时如果在密封类中新增加了方法，原来使用到了的地方就需要强制实现新增加的方法了，也就是像下面图片那样，这样就不用凭借记忆那个地方有调用的地方了。</p>
+
+<p><img src="https://raw.githubusercontent.com/checkFang/img/master/3.gif" alt="" /></p>
+
+<p>完整代码如下</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
@@ -417,307 +456,27 @@
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">class</span> <span class="nc">Money</span><span class="p">(</span><span class="k">val</span> <span class="py">money</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span> <span class="p">{</span>
-			<span class="c1">// 对象直接直接相加
-</span><span class="c1"></span>    <span class="k">operator</span> <span class="k">fun</span> <span class="nf">plus</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="p">:</span> <span class="n">Money</span> <span class="p">{</span>
-        <span class="k">val</span> <span class="py">sum</span> <span class="p">=</span> <span class="n">money</span> <span class="p">+</span> <span class="n">value</span><span class="p">.</span><span class="n">money</span>
-        <span class="k">return</span> <span class="n">Money</span><span class="p">(</span><span class="n">sum</span><span class="p">)</span>
-    <span class="p">}</span>  
-        
-			<span class="c1">// 对象和数字相加
-</span><span class="c1"></span>    <span class="k">operator</span> <span class="k">fun</span> <span class="nf">plus</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Int</span><span class="p">):</span> <span class="n">Money</span> <span class="p">{</span>
-        <span class="k">val</span> <span class="py">sum</span> <span class="p">=</span> <span class="n">money</span> <span class="p">+</span> <span class="n">value</span>
-        <span class="k">return</span> <span class="n">Money</span><span class="p">(</span><span class="n">sum</span><span class="p">)</span>
-    <span class="p">}</span> 
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">sealed</span> <span class="k">class</span> <span class="nc">UIOperator</span> <span class="p">{</span>
+    <span class="k">object</span> <span class="nc">Show</span> <span class="p">:</span> <span class="n">UIOperator</span><span class="p">()</span>
+
+    <span class="k">object</span> <span class="nc">Hide</span> <span class="p">:</span> <span class="n">UIOperator</span><span class="p">()</span>
+
+    <span class="k">class</span> <span class="nc">TranslateX</span><span class="p">(</span><span class="k">val</span> <span class="py">px</span><span class="p">:</span> <span class="n">Float</span><span class="p">)</span> <span class="p">:</span> <span class="n">UIOperator</span><span class="p">()</span>
+    <span class="k">class</span> <span class="nc">TranslateY</span><span class="p">(</span><span class="k">val</span> <span class="py">py</span><span class="p">:</span> <span class="n">Float</span><span class="p">)</span> <span class="p">:</span> <span class="n">UIOperator</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="k">fun</span> <span class="nf">invoke</span><span class="p">(</span><span class="n">view</span><span class="p">:</span> <span class="n">View</span><span class="p">,</span> <span class="n">uiOperator</span><span class="p">:</span> <span class="n">UIOperator</span><span class="p">)</span> <span class="p">=</span> <span class="k">when</span> <span class="p">(</span><span class="n">uiOperator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">UIOperator</span><span class="p">.</span><span class="n">Show</span> <span class="p">-&gt;</span> <span class="n">view</span><span class="p">.</span><span class="n">visibility</span> <span class="p">=</span> <span class="n">View</span><span class="p">.</span><span class="n">VISIBLE</span>
+    <span class="n">UIOperator</span><span class="p">.</span><span class="n">Hide</span> <span class="p">-&gt;</span> <span class="n">view</span><span class="p">.</span><span class="n">visibility</span> <span class="p">=</span> <span class="n">View</span><span class="p">.</span><span class="n">INVISIBLE</span>
+    <span class="k">is</span> <span class="n">UIOperator</span><span class="p">.</span><span class="n">TranslateX</span> <span class="p">-&gt;</span> <span class="n">view</span><span class="p">.</span><span class="n">translationX</span> <span class="p">=</span> <span class="n">uiOperator</span><span class="p">.</span><span class="n">px</span>
+    <span class="k">is</span> <span class="n">UIOperator</span><span class="p">.</span><span class="n">TranslateY</span> <span class="p">-&gt;</span> <span class="n">view</span><span class="p">.</span><span class="n">translationX</span> <span class="p">=</span> <span class="n">uiOperator</span><span class="p">.</span><span class="n">py</span>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
-</div></li>
-</ol>
-
-<h2 id="使用">使用</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">money</span> <span class="p">=</span> <span class="n">Money</span><span class="p">(</span><span class="m">10</span><span class="p">)</span>
-            <span class="k">val</span> <span class="py">money2</span> <span class="p">=</span> <span class="n">Money</span><span class="p">(</span><span class="m">20</span><span class="p">)</span>
-            <span class="k">val</span> <span class="py">money3</span> <span class="p">=</span> <span class="m">40</span>
-
-            <span class="k">val</span> <span class="py">moneySum</span> <span class="p">=</span> <span class="n">money</span> <span class="p">+</span> <span class="n">money2</span>
-            <span class="k">val</span> <span class="py">moneySum2</span> <span class="p">=</span> <span class="n">moneySum</span> <span class="p">+</span> <span class="n">money3</span>
-            
-            <span class="n">println</span><span class="p">(</span><span class="s">&#34;moneySum= ${moneySum.money}&#34;</span><span class="p">)</span> <span class="c1">// 结果等于 30
-</span><span class="c1"></span>            <span class="n">println</span><span class="p">(</span><span class="s">&#34;moneySum= ${moneySum2.money}&#34;</span><span class="p">)</span> <span class="c1">// 结果等于 70
-</span><span class="c1"></span><span class="p">}</span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用方式就像上面那样了。可以和对象相加，也可以和数字相加。Kotlin 中的允许重载的运算符还有很多，如果想要对其他运算符进行重载，或者进行其他的操作，只需要修改对应的指定函数即可</p>
-
-<h2 id="常见的操作符">常见的操作符</h2>
-
-<blockquote>
-<p>以下对应的运算符来自 <a href="https://www.jianshu.com/p/15dc4cef61e0">https://www.jianshu.com/p/15dc4cef61e0</a></p>
-</blockquote>
-
-<p>常见的操作符和对应的方法名：</p>
-
-<h4 id="一元操作符-unary-operators">一元操作符（Unary Operators）</h4>
-
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>方法名</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>+a</td>
-<td>a.unaryPlus()</td>
-</tr>
-
-<tr>
-<td>-a</td>
-<td>a.unaryMinus()</td>
-</tr>
-
-<tr>
-<td>!a</td>
-<td>a.not()</td>
-</tr>
-
-<tr>
-<td>a++</td>
-<td>a.inc()</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="二元操作符-binary-operators">二元操作符（  Binary Operators）</h4>
-
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>方法名</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>a + b</td>
-<td>a.plus(b)</td>
-</tr>
-
-<tr>
-<td>a – b</td>
-<td>a.minus(b)</td>
-</tr>
-
-<tr>
-<td>a * b</td>
-<td>a.times(b)</td>
-</tr>
-
-<tr>
-<td>a / b</td>
-<td>a.div(b)</td>
-</tr>
-
-<tr>
-<td>a % b</td>
-<td>a.mod(b)</td>
-</tr>
-
-<tr>
-<td>a..b</td>
-<td>a.rangeTo(b)</td>
-</tr>
-
-<tr>
-<td>a in b</td>
-<td>b.contains(a)</td>
-</tr>
-
-<tr>
-<td>a !in b</td>
-<td>!b.contains(a)</td>
-</tr>
-
-<tr>
-<td>a += b</td>
-<td>a.plusAssign(b)</td>
-</tr>
-
-<tr>
-<td>a -= b</td>
-<td>a.minusAssign(b)</td>
-</tr>
-
-<tr>
-<td>a *= b</td>
-<td>a.timesAssign(b)</td>
-</tr>
-
-<tr>
-<td>a /= b</td>
-<td>a.divAssign(b)</td>
-</tr>
-
-<tr>
-<td>a %= b</td>
-<td>a.modAssign(b)</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="数值类型操作符-array-type-operators">数值类型操作符（Array type operators）</h4>
-
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>方法名</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>a[i]</td>
-<td>a.get(i)</td>
-</tr>
-
-<tr>
-<td>a[i, j]</td>
-<td>a.get(i, j)</td>
-</tr>
-
-<tr>
-<td>a[i_1, …, i_n]</td>
-<td>a.get(i_1, …, i_n)</td>
-</tr>
-
-<tr>
-<td>a[i] = b</td>
-<td>a.set(i, b)</td>
-</tr>
-
-<tr>
-<td>a[i, j] = b</td>
-<td>a.set(i, j, b)</td>
-</tr>
-
-<tr>
-<td>a[i_1, …, i_n] = b</td>
-<td>a.set(i_1, …, i_n, b)</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="等于和不等于操作符-equals-operation">等于和不等于操作符（Equals Operation）</h4>
-
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>方法名</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>a == b</td>
-<td>a?.equals(b) ?: (b === null)</td>
-</tr>
-
-<tr>
-<td>a != b</td>
-<td>!(a?.equals(b) ?: (b === null))</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="比较操作符-comparison-operators">比较操作符（Comparison operators）</h4>
-
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>方法名</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>a &gt; b</td>
-<td>a.compareTo(b) &gt; 0</td>
-</tr>
-
-<tr>
-<td>a &lt; b</td>
-<td>a.compareTo(b) &lt; 0</td>
-</tr>
-
-<tr>
-<td>a &gt;= b</td>
-<td>a.compareTo(b) &gt;= 0</td>
-</tr>
-
-<tr>
-<td>a &lt;= b</td>
-<td>a.compareTo(b) &lt;= 0</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="调用操作符-invoke-operator">调用操作符（Invoke operator）</h4>
-
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>方法名</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>a()</td>
-<td>a.invoke()</td>
-</tr>
-
-<tr>
-<td>a(i)</td>
-<td>a.invoke(i)</td>
-</tr>
-
-<tr>
-<td>a(i, j)</td>
-<td>a.invoke(i, j)</td>
-</tr>
-
-<tr>
-<td>a(i_1, …, i_n)</td>
-<td>a.invoke(i_1, …, i_n)</td>
-</tr>
-</tbody>
-</table>
-
     </div>
 
     
@@ -730,7 +489,7 @@
   <p class="copyright-item">
     <span class="item-title">LastMod</span>
     <span class="item-content">
-      2020-08-20
+      2020-08-30
       
     </span>
   </p>
@@ -754,7 +513,7 @@
       
       <nav class="post-nav">
         
-          <a class="prev" href="/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/">
+          <a class="prev" href="/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/">
             
             <i class="iconfont">
               <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
@@ -764,12 +523,12 @@
 </svg>
 
             </i>
-            <span class="prev-text nav-default">Kotlin 中的密封类</span>
+            <span class="prev-text nav-default">Kotlin 中的高阶函数</span>
             <span class="prev-text nav-mobile">Prev</span>
           </a>
         
-          <a class="next" href="/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">
-            <span class="next-text nav-default">Android 中的进程间通信简单使用</span>
+          <a class="next" href="/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">
+            <span class="next-text nav-default">kotlin 中的运算符重载</span>
             <span class="prev-text nav-mobile">Next</span>
             
             <i class="iconfont">
