@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>midFang&#39;s Blog</title>
+  <title>Hugo 博客使用 utterances 作为评论系统 - midFang&#39;s Blog</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -23,7 +23,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="author" content="midFang" />
-  <meta name="description" content="Hugo theme jane example site." />
+  <meta name="description" content="utterances 是一款基于 GitHub issues 的评论工具 相比同类的工具 gitment、gitalk 以及 disqus 评论工具，优点如下：
+ 极其轻量 加载非常快 配置比较简单 disqus 这个工具配置也比较简单，也是免费的。但是，广告多，而且加载也比较慢。 utterances 是基于 github issue ，拥有多种主题的开源免费小组件。 " />
+
   <meta name="keywords" content="Hugo, theme, jane" />
 
 
@@ -34,8 +36,8 @@
 <meta name="generator" content="Hugo 0.58.3" />
 
 
-<link rel="canonical" href="https://midFang.github.io/" />
-<link href="/index.xml" rel="alternate" type="application/rss+xml" title="midFang&#39;s Blog" />
+<link rel="canonical" href="https://midFang.github.io/post/hugo-%E5%8D%9A%E5%AE%A2%E4%BD%BF%E7%94%A8-utterances-%E4%BD%9C%E4%B8%BA%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/" />
+
 
 
 
@@ -58,18 +60,56 @@
 
 
 
-<meta property="og:title" content="midFang&#39;s Blog" />
-<meta property="og:description" content="Hugo theme jane example site." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://midFang.github.io/" />
+<meta property="og:title" content="Hugo 博客使用 utterances 作为评论系统" />
+<meta property="og:description" content="utterances 是一款基于 GitHub issues 的评论工具
 
-<meta property="og:updated_time" content="2020-09-16T00:00:00+00:00" />
-<meta itemprop="name" content="midFang&#39;s Blog">
-<meta itemprop="description" content="Hugo theme jane example site.">
+相比同类的工具 gitment、gitalk 以及 disqus 评论工具，优点如下：
 
+
+极其轻量
+加载非常快
+配置比较简单
+disqus 这个工具配置也比较简单，也是免费的。但是，广告多，而且加载也比较慢。
+utterances 是基于 github issue ，拥有多种主题的开源免费小组件。
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/post/hugo-%E5%8D%9A%E5%AE%A2%E4%BD%BF%E7%94%A8-utterances-%E4%BD%9C%E4%B8%BA%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/" />
+<meta property="article:published_time" content="2020-09-16T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-09-16T00:00:00+00:00" />
+<meta itemprop="name" content="Hugo 博客使用 utterances 作为评论系统">
+<meta itemprop="description" content="utterances 是一款基于 GitHub issues 的评论工具
+
+相比同类的工具 gitment、gitalk 以及 disqus 评论工具，优点如下：
+
+
+极其轻量
+加载非常快
+配置比较简单
+disqus 这个工具配置也比较简单，也是免费的。但是，广告多，而且加载也比较慢。
+utterances 是基于 github issue ，拥有多种主题的开源免费小组件。
+">
+
+
+<meta itemprop="datePublished" content="2020-09-16T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-09-16T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="323">
+
+
+
+<meta itemprop="keywords" content="hugo," />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="midFang&#39;s Blog"/>
-<meta name="twitter:description" content="Hugo theme jane example site."/>
+<meta name="twitter:title" content="Hugo 博客使用 utterances 作为评论系统"/>
+<meta name="twitter:description" content="utterances 是一款基于 GitHub issues 的评论工具
+
+相比同类的工具 gitment、gitalk 以及 disqus 评论工具，优点如下：
+
+
+极其轻量
+加载非常快
+配置比较简单
+disqus 这个工具配置也比较简单，也是免费的。但是，广告多，而且加载也比较慢。
+utterances 是基于 github issue ，拥有多种主题的开源免费小组件。
+"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -252,7 +292,7 @@
   <ul id="menu" class="menu">
     
     
-        <li class="menu-item active">
+        <li class="menu-item">
         
           
           
@@ -324,383 +364,176 @@
     <main id="main" class="main bg-llight">
       <div class="content-wrapper">
         <div id="content" class="content container">
-          
-<section id="posts" class="posts">
-  
-  
+          <article class="post bg-white">
     
-  
-  
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
+    <header class="post-header">
+      <h1 class="post-title">Hugo 博客使用 utterances 作为评论系统</h1>
       
-      <a class="post-link" href="/post/wifi%E5%BC%80%E5%8F%91%E6%96%AD%E5%BC%80%E5%BD%93%E5%89%8D%E6%AD%A3%E5%9C%A8%E8%BF%9E%E6%8E%A5%E7%9A%84-wifi/">WiFi开发断开当前正在连接的 WiFi</a>
-    </h1>
+      <div class="post-meta">
+        <time datetime="2020-09-16" class="post-time">
+          2020-09-16
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/hugo/"> hugo </a>
+            
+          </div>
+        
+
+        
+        
+
+        
+        
+      </div>
+    </header>
+
     
-    <div class="post-meta">
-      <time datetime="2019-09-28" class="post-time">
-        2019-09-28
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/android/"> Android </a>
-          
-        </div>
-      
-      
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
     
-    <div class="post-summary">
-      在 WiFi 功能开发的时候，项目中有一个需求是超时逻辑，但是 Android 系统 WiFi 连接的广播只有连接成功，或者是 WiFi 密码错误的广播，并没有定义这种类型。所以我在项目
-    </div>
-    <div class="read-more">
-      <a href="/post/wifi%E5%BC%80%E5%8F%91%E6%96%AD%E5%BC%80%E5%BD%93%E5%89%8D%E6%AD%A3%E5%9C%A8%E8%BF%9E%E6%8E%A5%E7%9A%84-wifi/" class="read-more-link">Read more</a>
-    </div>
-    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#utterances-是一款基于-github-issues-的评论工具">utterances 是一款基于 GitHub issues 的评论工具</a>
+<ul>
+<li><a href="#github上安装-utterances">Github上安装 utterances</a></li>
+</ul></li>
+<li><a href="#github-配置">Github 配置</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
   </div>
-</article>
+</div>
 
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/post/%E4%BD%BF%E7%94%A8-picgo-%E6%90%AD%E5%BB%BA%E5%85%8D%E8%B4%B9%E5%9B%BE%E5%BA%8A/">使用 PicGo 搭建免费图床</a>
-    </h1>
     
-    <div class="post-meta">
-      <time datetime="2019-09-28" class="post-time">
-        2019-09-28
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E5%B7%A5%E5%85%B7/"> 工具 </a>
-          
-        </div>
-      
-      
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      身为程序员的我们, 我相信应该大部分人都喜欢用 markdown 来当作写作工具, 他的语法格式也很简单, 但是当我们要使用图片的使用, 那么就要使用到图床了, 也就是
-    </div>
-    <div class="read-more">
-      <a href="/post/%E4%BD%BF%E7%94%A8-picgo-%E6%90%AD%E5%BB%BA%E5%85%8D%E8%B4%B9%E5%9B%BE%E5%BA%8A/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
+    <div class="post-content">
+      <h3 id="utterances-是一款基于-github-issues-的评论工具">utterances 是一款基于 GitHub issues 的评论工具</h3>
 
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/post/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E5%8D%95%E9%93%BE%E8%A1%A8/">数据结构之单链表</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-09-28" class="post-time">
-        2019-09-28
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"> 数据结构 </a>
-          
-        </div>
-      
-      
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      手写一个简单的单链表的增删改查, 本文不注重代码的严谨格式等, 仅仅是探究其实现的思想 假如我们需要添加一个数据 代码中数据结构是这样的 1 2 3 4 5 6
-    </div>
-    <div class="read-more">
-      <a href="/post/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E5%8D%95%E9%93%BE%E8%A1%A8/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
+<p>相比同类的工具 gitment、gitalk 以及 disqus 评论工具，优点如下：</p>
 
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/post/okhttp-%E6%8B%A6%E6%88%AA%E5%99%A8%E6%B7%BB%E5%8A%A0%E5%85%AC%E5%85%B1%E5%8F%82%E6%95%B0/">OKHttp 拦截器添加公共参数</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-09-22" class="post-time">
-        2019-09-22
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BC%80%E6%BA%90%E5%BA%93/"> 第三方开源库 </a>
-          
-        </div>
-      
-      
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      使用场景 在我们实际的开发中, 比如有很多接口都需要传递版本号, 参数的签名的校验信息, token 信息, 请求头信息等等, 那么我们就可以使用 OKHttp 添加拦截器的方
-    </div>
-    <div class="read-more">
-      <a href="/post/okhttp-%E6%8B%A6%E6%88%AA%E5%99%A8%E6%B7%BB%E5%8A%A0%E5%85%AC%E5%85%B1%E5%8F%82%E6%95%B0/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
+<ol>
+<li>极其轻量</li>
+<li>加载非常快</li>
+<li>配置比较简单</li>
+<li>disqus 这个工具配置也比较简单，也是免费的。但是，广告多，而且加载也比较慢。</li>
+<li>utterances 是基于 github issue ，拥有多种主题的开源免费小组件。</li>
+</ol>
 
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/post/dialog-%E5%BC%B9%E5%87%BA%E9%9A%90%E8%97%8F%E7%8A%B6%E6%80%81%E6%A0%8F%E5%92%8C%E5%AF%BC%E8%88%AA%E6%A0%8F/">Dialog 弹出隐藏状态栏和导航栏</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-08-29" class="post-time">
-        2019-08-29
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E7%AC%94%E8%AE%B0/"> 笔记 </a>
-          
-        </div>
-      
-      
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <h3 id="1-概述">1、概述</h3>
+<h4 id="github上安装-utterances">Github上安装 utterances</h4>
 
-<p>由于我们开发的应用是不需要显示出来导航栏的，避免导航栏显示出来了，无法预估用户做什么操作，直接可能把我们的应用给干掉了。首先我们的 APP 是沉浸式的，所有的 Activity 中已经隐藏掉了导航栏，但是如果弹出一个 Dialog 的话，还是会将导航栏给显示出来，具体原因是因为 Dialog 的 Window 抢走了焦点，Window 中的 DecorView 状态改变导致了又重新把底部导航栏给显示出来了。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/dialog-%E5%BC%B9%E5%87%BA%E9%9A%90%E8%97%8F%E7%8A%B6%E6%80%81%E6%A0%8F%E5%92%8C%E5%AF%BC%E8%88%AA%E6%A0%8F/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
+<ul>
+<li>首先必须在 github 上进行安装 utterances，访问 <a href="https://github.com/apps/utterances">utterances应用程序</a> 然后点击 Install 按钮进行安装。</li>
+<li>在这里可以选择可以关联的存储库，可以选择我们所拥有的库(也包括未来建立的库)或者某一个仓库，这里只选择某一个需要进行评论的库，这样比较好。</li>
+</ul>
 
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/post/%E8%93%9D%E7%89%99%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">蓝牙基础知识</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-06-24" class="post-time">
-        2019-06-24
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/android/"> Android </a>
-          <a href="https://midFang.github.io/categories/%E8%93%9D%E7%89%99/"> 蓝牙 </a>
-          
-        </div>
-      
-      
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <h2 id="a2dp">A2DP</h2>
+<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20200929154923.png" alt="" /></p>
 
-<p>Advanced Audio Distribution Profile。高质量音频数据传输的协议，其定义了传送单声道或立体声等高质量音频信息的协议和过程。A2DP的典型应用是将音乐播放器的音频数据发送到耳机或音箱。</p>
+<h3 id="github-配置">Github 配置</h3>
 
-<p>A2DP 定义了两种角色：</p>
-
-<p>Audio Source ：（音频源） 音频的输入端对音频数据进行编码，发送到 Sink 端。
-Audio Sink ：   （音频接收器） 接收到音频数据后，进行解码操作还原出音频。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/%E8%93%9D%E7%89%99%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/post/hugo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">hugo常用命令.md</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-06-20" class="post-time">
-        2019-06-20
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E7%AC%94%E8%AE%B0/"> 笔记 </a>
-          <a href="https://midFang.github.io/categories/hugo/"> Hugo </a>
-          
-        </div>
-      
-      
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <h2 id="hugo-常用命令">Hugo 常用命令</h2>
+<p>最后再 hugo 的 config.toml 文件中进行配置即可</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></pre></td>
+<pre class="chroma"><code class="language-toml" data-lang="toml"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">#查看版本
-hugo version
-
-#创建文章
-hugo new xxx.md 
-
-#编译生成静态文件
-hugo
-
-#编译生成静态文件并启动web服务
-hugo server</pre></td></tr></table>
+<pre class="chroma"><code class="language-toml" data-lang="toml"><span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">utteranc</span><span class="p">]</span>         <span class="c"># utteranc is a comment system based on GitHub issues. see https://utteranc.es</span>
+    <span class="nx">enable</span> <span class="p">=</span> <span class="kc">true</span>
+    <span class="nx">repo</span> <span class="p">=</span> <span class="s2">&#34;github用户名/创建的仓库名&#34;</span>    <span class="c"># The repo to store comments</span>
+    <span class="nx">issueTerm</span> <span class="p">=</span> <span class="s2">&#34;pathname&#34;</span></code></pre></td></tr></table>
 </div>
 </div>
     </div>
-    <div class="read-more">
-      <a href="/post/hugo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="read-more-link">Read more</a>
-    </div>
+
     
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2020-09-16
       
-      <a class="post-link" href="/post/%E6%B8%85%E7%A9%BA-git-%E6%8F%90%E4%BA%A4%E7%9A%84%E4%BB%A5%E5%BE%80%E6%89%80%E6%9C%89%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95/">清空 git 提交的以往所有历史记录</a>
-    </h1>
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
     
-    <div class="post-meta">
-      <time datetime="2019-06-20" class="post-time">
-        2019-06-20
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/git/"> Git </a>
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/hugo/">hugo</a>
           
         </div>
+
       
-      
-      
-    </div>
-  </header>
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/">
+            <span class="next-text nav-default">Kotlin 中的异常处理</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
   
-  <div class="post-content">
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
     
-    <div class="post-summary">
-      <h2 id="前言">前言</h2>
-
-<p>为什么要清空提交的历史记录呢 ？</p>
-
-<p>在使用 Git 进行仓库代码管理的时候，难免不注意会提交一些隐私的信息，即使是后面删除了，但还是能够从 Git 的历史记录可以找的到以往提交的信息。而且大部分开发者都是使用 Public Repository 公开的仓库，别人 clone 下来的话，那么就会造成隐式信息的直接暴露。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/%E6%B8%85%E7%A9%BA-git-%E6%8F%90%E4%BA%A4%E7%9A%84%E4%BB%A5%E5%BE%80%E6%89%80%E6%9C%89%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
 
   
-</section>
-
-
-
-
-
-
-  
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-  <nav class="pagination">
-    <ul>
-      
-      <li >
-        <a href="/">1</a>
-      </li>
-      
-      <li >
-        <a href="/page/2/">2</a>
-      </li>
-      
-      <li >
-        <a href="/page/3/">3</a>
-      </li>
-      
-      <li  class="active" >
-        <a href="/page/4/">4</a>
-      </li>
-      
-      <li >
-        <a href="/page/5/">5</a>
-      </li>
-      
-    </ul>
-  </nav>
-
-  
-  
-
-
-
-
 
         </div>
       </div>
