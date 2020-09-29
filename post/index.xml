@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Jane - A super concise theme for Hugo</title>
+    <title>Posts on midFang&#39;s Blog</title>
     <link>https://midFang.github.io/post/</link>
-    <description>Recent content in Posts on Jane - A super concise theme for Hugo</description>
+    <description>Recent content in Posts on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Tue, 15 Sep 2020 00:00:00 +0000</lastBuildDate>
@@ -131,6 +131,143 @@
       
       <guid>https://midFang.github.io/post/7.%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</guid>
       <description>动态代理和静态代理一般在设计模式中的定义为代理设计模式 定义： 为其他对象提供一种代理以控制对这个对象的访问 使用场景： 当无法或者不想直接访问某个</description>
+    </item>
+    
+    <item>
+      <title>Activity 从各个方向进入和退出的转场动画</title>
+      <link>https://midFang.github.io/post/activity-%E4%BB%8E%E5%90%84%E4%B8%AA%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/</link>
+      <pubDate>Wed, 02 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/activity-%E4%BB%8E%E5%90%84%E4%B8%AA%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/</guid>
+      <description>&lt;h3 id=&#34;向左推&#34;&gt;向左推&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// R.anim.i_slide_in_left
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;xmlns&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
+	&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;translate&lt;/span&gt; 
+	&lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromXDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;100%p&amp;#34;&lt;/span&gt;
+	&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toXDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt;
+	&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;350&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;// R.anim.i_slide_out_left
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;?&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;xml&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;version&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;1.0&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;encoding&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;utf-8&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?&amp;gt;&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;xmlns&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;http://schemas.android.com/apk/res/android&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;
+	&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;translate&lt;/span&gt; 
+	&lt;span class=&#34;nf&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromXDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt;
+	&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toXDelta&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;-100%p&amp;#34;&lt;/span&gt;
+	&lt;span class=&#34;n&#34;&gt;android&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;350&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 id=&#34;向右推&#34;&gt;向右推&lt;/h3&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android源码之单例设计模式</title>
+      <link>https://midFang.github.io/post/android%E6%BA%90%E7%A0%81%E4%B9%8B%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/android%E6%BA%90%E7%A0%81%E4%B9%8B%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description>&lt;h2 id=&#34;介绍&#34;&gt;介绍&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&#34;layoutinflater-单例分析&#34;&gt;LayoutInflater 单例分析&lt;/h3&gt;
+
+&lt;p&gt;在 Activity View 加载一个布局的时候, 通常是这样做的&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>ArrayList源码分析</title>
+      <link>https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻</description>
+    </item>
+    
+    <item>
+      <title>EventBus 源码分析</title>
+      <link>https://midFang.github.io/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>大致流程 EventBus 是一种用于 Android 的事件发布-订阅总线, 是一个可以实现组件间通信的一个第三方框架, 使用起来非常的简单, 一共也就是 4 个步骤, 注册订阅, 发送</description>
+    </item>
+    
+    <item>
+      <title>HashMap源码分析</title>
+      <link>https://midFang.github.io/post/hashmap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/hashmap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>HashMap 可以说是我们在开发中经常使用的到, 在 Java 的数据结构基础里，HashMap 无疑是一个非常重要的数据结构 现在看看源码里面的方法具体都干了一下什么</description>
+    </item>
+    
+    <item>
+      <title>Java 中的泛型</title>
+      <link>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84%E6%B3%9B%E5%9E%8B/</link>
+      <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84%E6%B3%9B%E5%9E%8B/</guid>
+      <description>假设有 3 个类, 他们的继承关系是这样的 1 2 public class Person { } 1 2 public class Gril extends Person { } 1 2 public class Boy extends Person { } 1 2 public class Father { } 在类上指定的泛型, 那么在当前类, 使用的都</description>
+    </item>
+    
+    <item>
+      <title>Kotlin 扩展函数 let with run apply also 的使用初探</title>
+      <link>https://midFang.github.io/post/kotlin-%E6%89%A9%E5%B1%95%E5%87%BD%E6%95%B0-let-with-run-apply-also-%E7%9A%84%E4%BD%BF%E7%94%A8%E5%88%9D%E6%8E%A2/</link>
+      <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/kotlin-%E6%89%A9%E5%B1%95%E5%87%BD%E6%95%B0-let-with-run-apply-also-%E7%9A%84%E4%BD%BF%E7%94%A8%E5%88%9D%E6%8E%A2/</guid>
+      <description>最近的项目中也是基本处于是逐渐切换 Kotlin 的状态, 以下是在项目中经常使用到的几个扩展函数, 做一个记录, 不得不说有的时候真的比 Java 方便很多 内联扩展函数</description>
+    </item>
+    
+    <item>
+      <title>View 的 draw 过程</title>
+      <link>https://midFang.github.io/post/view-%E7%9A%84-draw-%E8%BF%87%E7%A8%8B/</link>
+      <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/view-%E7%9A%84-draw-%E8%BF%87%E7%A8%8B/</guid>
+      <description>Draw 过程 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个顶点的位置, draw 则是将布局绘制在屏</description>
+    </item>
+    
+    <item>
+      <title>View 的 Layout 摆放过程</title>
+      <link>https://midFang.github.io/post/view-%E7%9A%84-layout-%E6%91%86%E6%94%BE%E8%BF%87%E7%A8%8B/</link>
+      <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/view-%E7%9A%84-layout-%E6%91%86%E6%94%BE%E8%BF%87%E7%A8%8B/</guid>
+      <description>Layout 过程 layout 的作用是 ViewGroup 用来确定子元素的位置 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个</description>
+    </item>
+    
+    <item>
+      <title>View 的 measure 测量过程</title>
+      <link>https://midFang.github.io/post/view-%E7%9A%84-measure-%E6%B5%8B%E9%87%8F%E8%BF%87%E7%A8%8B/</link>
+      <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/view-%E7%9A%84-measure-%E6%B5%8B%E9%87%8F%E8%BF%87%E7%A8%8B/</guid>
+      <description>View 的测量过程 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个顶点的位置, draw 则是将布局绘</description>
     </item>
     
   </channel>
