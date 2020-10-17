@@ -63,7 +63,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://midFang.github.io/" />
 
-<meta property="og:updated_time" content="2020-09-21T00:00:00+00:00" />
+<meta property="og:updated_time" content="2020-10-17T00:00:00+00:00" />
 <meta itemprop="name" content="midFang&#39;s Blog">
 <meta itemprop="description" content="Hugo theme jane example site.">
 
@@ -331,6 +331,50 @@
     
   
   
+  
+    <article class="post bg-white">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/post/%E5%8D%8E%E4%B8%BA-android-10.0-%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E5%A4%B1%E8%B4%A5/">华为 Android 10.0 启动服务失败</a>
+    </h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-10-17" class="post-time">
+        2020-10-17
+      </time>
+      <div class="post-category">
+          <a href="https://midFang.github.io/categories/android/"> android </a>
+          
+        </div>
+      
+      
+      
+    </div>
+  </header>
+  
+  <div class="post-content">
+    
+    <div class="post-summary">
+      <p>最近调研了一个音乐服务的 App 以及相关功能的库。发现使用的时候，开启了一个音乐服务，在其他的手机上面暂时没有发现其他什么问题，但是在华为 Android 10 手机上每次 run 的时候，服务正常启动也是没有问题的， 但是如果关闭掉 App ，重新启动 App 服务就起不来了。我尝试如下两种方式启动服务：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">bindService</span><span class="p">(</span><span class="n">Service</span><span class="p">,</span> <span class="n">mConnection</span><span class="p">,</span> <span class="n">Context</span><span class="p">.</span><span class="na">BIND_AUTO_CREATE</span><span class="p">)</span>
+<span class="n">startService</span><span class="p">(</span><span class="n">Service</span><span class="p">);</span></code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+    <div class="read-more">
+      <a href="/post/%E5%8D%8E%E4%B8%BA-android-10.0-%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E5%A4%B1%E8%B4%A5/" class="read-more-link">Read more</a>
+    </div>
+    
+  </div>
+</article>
+
   
     <article class="post bg-white">
   <header class="post-header">
@@ -692,40 +736,6 @@
     </div>
     <div class="read-more">
       <a href="/post/git-%E7%AE%A1%E7%90%86-.gitignore-file-%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/post/google%E5%B7%A5%E4%BD%9C%E6%B3%95%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">《Google工作法》读书笔记</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2020-07-05" class="post-time">
-        2020-07-05
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E9%98%85%E8%AF%BB/"> 阅读 </a>
-          
-        </div>
-      
-      
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      一次结束，避免过度推迟 避免过度推迟只会浪费更多人的时间， 在一场会议之前，需要考虑会议的目标，明确会议的目的，最终要会议要取得的结果才是真正的
-    </div>
-    <div class="read-more">
-      <a href="/post/google%E5%B7%A5%E4%BD%9C%E6%B3%95%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" class="read-more-link">Read more</a>
     </div>
     
   </div>
