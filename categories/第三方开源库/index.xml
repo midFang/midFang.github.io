@@ -13,10 +13,10 @@
     
     <item>
       <title>OKHttp 拦截器添加公共参数</title>
-      <link>https://midFang.github.io/post/okhttp-%E6%8B%A6%E6%88%AA%E5%99%A8%E6%B7%BB%E5%8A%A0%E5%85%AC%E5%85%B1%E5%8F%82%E6%95%B0/</link>
+      <link>https://midFang.github.io/post/okhttp-add-common-params-intercept/</link>
       <pubDate>Sun, 22 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/okhttp-%E6%8B%A6%E6%88%AA%E5%99%A8%E6%B7%BB%E5%8A%A0%E5%85%AC%E5%85%B1%E5%8F%82%E6%95%B0/</guid>
+      <guid>https://midFang.github.io/post/okhttp-add-common-params-intercept/</guid>
       <description>使用场景 在我们实际的开发中, 比如有很多接口都需要传递版本号, 参数的签名的校验信息, token 信息, 请求头信息等等, 那么我们就可以使用 OKHttp 添加拦截器的方</description>
     </item>
     

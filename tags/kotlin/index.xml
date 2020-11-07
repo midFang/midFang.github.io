@@ -13,10 +13,10 @@
     
     <item>
       <title>Kotlin 中的异常处理</title>
-      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</link>
+      <link>https://midFang.github.io/post/kotlin-catch-exception/</link>
       <pubDate>Tue, 15 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</guid>
+      <guid>https://midFang.github.io/post/kotlin-catch-exception/</guid>
       <description>&lt;h3 id=&#34;java-中的异常处理&#34;&gt;Java 中的异常处理&lt;/h3&gt;
 
 &lt;p&gt;日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理：&lt;/p&gt;</description>
@@ -24,10 +24,10 @@
     
     <item>
       <title>Kotlin 中的高阶函数</title>
-      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/</link>
+      <link>https://midFang.github.io/post/kotlin-higher-order-functions/</link>
       <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/</guid>
+      <guid>https://midFang.github.io/post/kotlin-higher-order-functions/</guid>
       <description>&lt;h3 id=&#34;定义&#34;&gt;定义&lt;/h3&gt;
 
 &lt;p&gt;如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数&lt;/p&gt;
@@ -45,10 +45,10 @@
     
     <item>
       <title>Kotlin 中的密封类</title>
-      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/</link>
+      <link>https://midFang.github.io/post/kotlin-sealed-class/</link>
       <pubDate>Sun, 30 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/</guid>
+      <guid>https://midFang.github.io/post/kotlin-sealed-class/</guid>
       <description>&lt;h2 id=&#34;密封类&#34;&gt;密封类&lt;/h2&gt;
 
 &lt;p&gt;密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也是受限的，但每个枚举常量只存在一个实例，而密封类 的一个子类可以有可包含状态的多个实例。&lt;/p&gt;</description>
@@ -56,10 +56,10 @@
     
     <item>
       <title>kotlin 中的运算符重载</title>
-      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/</link>
+      <link>https://midFang.github.io/post/kotlin-operator-overloading/</link>
       <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/</guid>
+      <guid>https://midFang.github.io/post/kotlin-operator-overloading/</guid>
       <description>&lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
 
 &lt;p&gt;运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 + - * / % ++ &amp;ndash; 。而 Kotlin 中允许我们将这些所有的运算符甚至其他的关键字进行重载&lt;/p&gt;</description>
@@ -67,10 +67,10 @@
     
     <item>
       <title>Kotlin 扩展函数 let with run apply also 的使用初探</title>
-      <link>https://midFang.github.io/post/kotlin-%E6%89%A9%E5%B1%95%E5%87%BD%E6%95%B0-let-with-run-apply-also-%E7%9A%84%E4%BD%BF%E7%94%A8%E5%88%9D%E6%8E%A2/</link>
+      <link>https://midFang.github.io/post/kotlin-extension-function-base-use/</link>
       <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-%E6%89%A9%E5%B1%95%E5%87%BD%E6%95%B0-let-with-run-apply-also-%E7%9A%84%E4%BD%BF%E7%94%A8%E5%88%9D%E6%8E%A2/</guid>
+      <guid>https://midFang.github.io/post/kotlin-extension-function-base-use/</guid>
       <description>最近的项目中也是基本处于是逐渐切换 Kotlin 的状态, 以下是在项目中经常使用到的几个扩展函数, 做一个记录, 不得不说有的时候真的比 Java 方便很多 内联扩展函数</description>
     </item>
     

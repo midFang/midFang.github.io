@@ -13,10 +13,10 @@
     
     <item>
       <title>Android 转场动画之揭露动画的使用</title>
-      <link>https://midFang.github.io/post/android-%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E4%B9%8B%E6%8F%AD%E9%9C%B2%E5%8A%A8%E7%94%BB%E7%9A%84%E4%BD%BF%E7%94%A8/</link>
+      <link>https://midFang.github.io/post/android-animation-revealing-transitions/</link>
       <pubDate>Mon, 21 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E4%B9%8B%E6%8F%AD%E9%9C%B2%E5%8A%A8%E7%94%BB%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
+      <guid>https://midFang.github.io/post/android-animation-revealing-transitions/</guid>
       <description>&lt;h3 id=&#34;配置-activity-的转场动画&#34;&gt;配置 Activity 的转场动画&lt;/h3&gt;
 
 &lt;p&gt;使用揭露动画，主要是使用到了 ViewAnimationUtils.createCircularReveal()  这个 API ，官方已经给我们封装好了，我们具体看下各个参数是什么意思，就知道如何使用了&lt;/p&gt;
@@ -38,10 +38,10 @@
     
     <item>
       <title>Activity 从各个方向进入和退出的转场动画</title>
-      <link>https://midFang.github.io/post/activity-%E4%BB%8E%E5%90%84%E4%B8%AA%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/</link>
+      <link>https://midFang.github.io/post/activity-animation-transfer/</link>
       <pubDate>Wed, 02 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/activity-%E4%BB%8E%E5%90%84%E4%B8%AA%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/</guid>
+      <guid>https://midFang.github.io/post/activity-animation-transfer/</guid>
       <description>&lt;h3 id=&#34;向左推&#34;&gt;向左推&lt;/h3&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;

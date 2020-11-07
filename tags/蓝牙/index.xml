@@ -13,10 +13,10 @@
     
     <item>
       <title>蓝牙基础知识</title>
-      <link>https://midFang.github.io/post/%E8%93%9D%E7%89%99%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+      <link>https://midFang.github.io/post/bluetooth-base/</link>
       <pubDate>Mon, 24 Jun 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/%E8%93%9D%E7%89%99%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+      <guid>https://midFang.github.io/post/bluetooth-base/</guid>
       <description>&lt;h2 id=&#34;a2dp&#34;&gt;A2DP&lt;/h2&gt;
 
 &lt;p&gt;Advanced Audio Distribution Profile。高质量音频数据传输的协议，其定义了传送单声道或立体声等高质量音频信息的协议和过程。A2DP的典型应用是将音乐播放器的音频数据发送到耳机或音箱。&lt;/p&gt;

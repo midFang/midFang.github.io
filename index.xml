@@ -182,10 +182,10 @@
     
     <item>
       <title>华为 Android 10.0 启动服务失败</title>
-      <link>https://midFang.github.io/post/%E5%8D%8E%E4%B8%BA-android-10.0-%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E5%A4%B1%E8%B4%A5/</link>
+      <link>https://midFang.github.io/post/huawei-android-api-29-startservice-fail/</link>
       <pubDate>Sat, 17 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/%E5%8D%8E%E4%B8%BA-android-10.0-%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E5%A4%B1%E8%B4%A5/</guid>
+      <guid>https://midFang.github.io/post/huawei-android-api-29-startservice-fail/</guid>
       
         <description>&lt;p&gt;最近调研了一个音乐服务的 App 以及相关功能的库。发现使用的时候，开启了一个音乐服务，在其他的手机上面暂时没有发现其他什么问题，但是在华为 Android 10 手机上每次 run 的时候，服务正常启动也是没有问题的， 但是如果关闭掉 App ，重新启动 App 服务就起不来了。我尝试如下两种方式启动服务：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
@@ -219,10 +219,10 @@
     
     <item>
       <title>Android 转场动画之揭露动画的使用</title>
-      <link>https://midFang.github.io/post/android-%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E4%B9%8B%E6%8F%AD%E9%9C%B2%E5%8A%A8%E7%94%BB%E7%9A%84%E4%BD%BF%E7%94%A8/</link>
+      <link>https://midFang.github.io/post/android-animation-revealing-transitions/</link>
       <pubDate>Mon, 21 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E4%B9%8B%E6%8F%AD%E9%9C%B2%E5%8A%A8%E7%94%BB%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
+      <guid>https://midFang.github.io/post/android-animation-revealing-transitions/</guid>
       
         <description>&lt;h3 id=&#34;配置-activity-的转场动画&#34;&gt;配置 Activity 的转场动画&lt;/h3&gt;
 
@@ -613,10 +613,10 @@
     
     <item>
       <title>Hugo 博客使用 utterances 作为评论系统</title>
-      <link>https://midFang.github.io/post/hugo-%E5%8D%9A%E5%AE%A2%E4%BD%BF%E7%94%A8-utterances-%E4%BD%9C%E4%B8%BA%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/</link>
+      <link>https://midFang.github.io/post/hugo-utterances-comment-system/</link>
       <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/hugo-%E5%8D%9A%E5%AE%A2%E4%BD%BF%E7%94%A8-utterances-%E4%BD%9C%E4%B8%BA%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/</guid>
+      <guid>https://midFang.github.io/post/hugo-utterances-comment-system/</guid>
       
         <description>&lt;h3 id=&#34;utterances-是一款基于-github-issues-的评论工具&#34;&gt;utterances 是一款基于 GitHub issues 的评论工具&lt;/h3&gt;
 
@@ -661,10 +661,10 @@
     
     <item>
       <title>Kotlin 中的异常处理</title>
-      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</link>
+      <link>https://midFang.github.io/post/kotlin-catch-exception/</link>
       <pubDate>Tue, 15 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</guid>
+      <guid>https://midFang.github.io/post/kotlin-catch-exception/</guid>
       
         <description>&lt;h3 id=&#34;java-中的异常处理&#34;&gt;Java 中的异常处理&lt;/h3&gt;
 
@@ -901,10 +901,10 @@
     
     <item>
       <title>Kotlin 中的高阶函数</title>
-      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/</link>
+      <link>https://midFang.github.io/post/kotlin-higher-order-functions/</link>
       <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/</guid>
+      <guid>https://midFang.github.io/post/kotlin-higher-order-functions/</guid>
       
         <description>&lt;h3 id=&#34;定义&#34;&gt;定义&lt;/h3&gt;
 
@@ -1148,10 +1148,10 @@ public static void main(){
     
     <item>
       <title>Kotlin 中的密封类</title>
-      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/</link>
+      <link>https://midFang.github.io/post/kotlin-sealed-class/</link>
       <pubDate>Sun, 30 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E5%AF%86%E5%B0%81%E7%B1%BB/</guid>
+      <guid>https://midFang.github.io/post/kotlin-sealed-class/</guid>
       
         <description>&lt;h2 id=&#34;密封类&#34;&gt;密封类&lt;/h2&gt;
 
@@ -1259,10 +1259,10 @@ public static void main(){
     
     <item>
       <title>kotlin 中的运算符重载</title>
-      <link>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/</link>
+      <link>https://midFang.github.io/post/kotlin-operator-overloading/</link>
       <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/</guid>
+      <guid>https://midFang.github.io/post/kotlin-operator-overloading/</guid>
       
         <description>&lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
 
@@ -1596,10 +1596,10 @@ public static void main(){
     
     <item>
       <title>Android 中的进程间通信简单使用</title>
-      <link>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</link>
+      <link>https://midFang.github.io/post/android-process-base-use/</link>
       <pubDate>Wed, 19 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</guid>
+      <guid>https://midFang.github.io/post/android-process-base-use/</guid>
       
         <description>&lt;h3 id=&#34;binder-是什么&#34;&gt;Binder 是什么&lt;/h3&gt;
 
@@ -2714,10 +2714,10 @@ public float verticalWeight;
     
     <item>
       <title>Git 管理 .gitignore file 文件的使用</title>
-      <link>https://midFang.github.io/post/git-%E7%AE%A1%E7%90%86-.gitignore-file-%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/</link>
+      <link>https://midFang.github.io/post/git-gitignore-file-use/</link>
       <pubDate>Sun, 05 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/git-%E7%AE%A1%E7%90%86-.gitignore-file-%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
+      <guid>https://midFang.github.io/post/git-gitignore-file-use/</guid>
       
         <description>&lt;h2 id=&#34;git-忽略文件的原则&#34;&gt;Git 忽略文件的原则&lt;/h2&gt;
 
@@ -2917,10 +2917,10 @@ git push origin master&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&
     
     <item>
       <title>《Google工作法》读书笔记</title>
-      <link>https://midFang.github.io/post/google%E5%B7%A5%E4%BD%9C%E6%B3%95%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</link>
+      <link>https://midFang.github.io/post/books-google-work/</link>
       <pubDate>Sun, 05 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/google%E5%B7%A5%E4%BD%9C%E6%B3%95%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</guid>
+      <guid>https://midFang.github.io/post/books-google-work/</guid>
       
         <description>
 
@@ -2959,10 +2959,10 @@ git push origin master&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&
     
     <item>
       <title>关于8.0以下出现Only fullscreen opaque activities can request orientation问题的解决方案</title>
-      <link>https://midFang.github.io/post/%E5%85%B3%E4%BA%8E8.0%E4%BB%A5%E4%B8%8B%E5%87%BA%E7%8E%B0only-fullscreen-opaque-activities-can-request-orientation%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</link>
+      <link>https://midFang.github.io/post/bug-only-fullscreen-opaque-activities-can-request-orientation/</link>
       <pubDate>Sat, 04 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/%E5%85%B3%E4%BA%8E8.0%E4%BB%A5%E4%B8%8B%E5%87%BA%E7%8E%B0only-fullscreen-opaque-activities-can-request-orientation%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</guid>
+      <guid>https://midFang.github.io/post/bug-only-fullscreen-opaque-activities-can-request-orientation/</guid>
       
         <description>
 
@@ -3243,10 +3243,10 @@ git push origin master&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&
     
     <item>
       <title>Java 动态代理</title>
-      <link>https://midFang.github.io/post/7.%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</link>
+      <link>https://midFang.github.io/post/java-dynamic-proxy-design-patterns/</link>
       <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/7.%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</guid>
+      <guid>https://midFang.github.io/post/java-dynamic-proxy-design-patterns/</guid>
       
         <description>
 
@@ -4130,10 +4130,10 @@ iBank.applyBank();&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
     
     <item>
       <title>Activity 从各个方向进入和退出的转场动画</title>
-      <link>https://midFang.github.io/post/activity-%E4%BB%8E%E5%90%84%E4%B8%AA%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/</link>
+      <link>https://midFang.github.io/post/activity-animation-transfer/</link>
       <pubDate>Wed, 02 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/activity-%E4%BB%8E%E5%90%84%E4%B8%AA%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E5%92%8C%E9%80%80%E5%87%BA%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/</guid>
+      <guid>https://midFang.github.io/post/activity-animation-transfer/</guid>
       
         <description>&lt;h3 id=&#34;向左推&#34;&gt;向左推&lt;/h3&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
@@ -4455,10 +4455,10 @@ android:activityCloseExitAnimation   一个 activity 退出的效果&lt;/pre&gt;
     
     <item>
       <title>Android源码之单例设计模式</title>
-      <link>https://midFang.github.io/post/android%E6%BA%90%E7%A0%81%E4%B9%8B%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <link>https://midFang.github.io/post/android-source-code-design-patterns/</link>
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android%E6%BA%90%E7%A0%81%E4%B9%8B%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <guid>https://midFang.github.io/post/android-source-code-design-patterns/</guid>
       
         <description>&lt;h2 id=&#34;介绍&#34;&gt;介绍&lt;/h2&gt;
 
@@ -5381,10 +5381,10 @@ android:activityCloseExitAnimation   一个 activity 退出的效果&lt;/pre&gt;
     
     <item>
       <title>ArrayList源码分析</title>
-      <link>https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <link>https://midFang.github.io/post/arraylist-source-code-analysis/</link>
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/arraylist%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <guid>https://midFang.github.io/post/arraylist-source-code-analysis/</guid>
       
         <description>
 
@@ -6028,10 +6028,10 @@ android:activityCloseExitAnimation   一个 activity 退出的效果&lt;/pre&gt;
     
     <item>
       <title>EventBus 源码分析</title>
-      <link>https://midFang.github.io/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <link>https://midFang.github.io/post/eventbus-source-code-analysis/</link>
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/eventbus-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <guid>https://midFang.github.io/post/eventbus-source-code-analysis/</guid>
       
         <description>
 
@@ -6876,10 +6876,10 @@ android:activityCloseExitAnimation   一个 activity 退出的效果&lt;/pre&gt;
     
     <item>
       <title>HashMap源码分析</title>
-      <link>https://midFang.github.io/post/hashmap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <link>https://midFang.github.io/post/hashmap-source-code-analysis/</link>
       <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/hashmap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <guid>https://midFang.github.io/post/hashmap-source-code-analysis/</guid>
       
         <description>
 
@@ -7584,10 +7584,10 @@ transient int modCount;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
     
     <item>
       <title>Java 中的泛型</title>
-      <link>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84%E6%B3%9B%E5%9E%8B/</link>
+      <link>https://midFang.github.io/post/java-generics-common/</link>
       <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/java-%E4%B8%AD%E7%9A%84%E6%B3%9B%E5%9E%8B/</guid>
+      <guid>https://midFang.github.io/post/java-generics-common/</guid>
       
         <description>&lt;p&gt;假设有 3 个类, 他们的继承关系是这样的&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;

@@ -30,10 +30,10 @@
     
     <item>
       <title>华为 Android 10.0 启动服务失败</title>
-      <link>https://midFang.github.io/post/%E5%8D%8E%E4%B8%BA-android-10.0-%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E5%A4%B1%E8%B4%A5/</link>
+      <link>https://midFang.github.io/post/huawei-android-api-29-startservice-fail/</link>
       <pubDate>Sat, 17 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/%E5%8D%8E%E4%B8%BA-android-10.0-%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E5%A4%B1%E8%B4%A5/</guid>
+      <guid>https://midFang.github.io/post/huawei-android-api-29-startservice-fail/</guid>
       <description>&lt;p&gt;最近调研了一个音乐服务的 App 以及相关功能的库。发现使用的时候，开启了一个音乐服务，在其他的手机上面暂时没有发现其他什么问题，但是在华为 Android 10 手机上每次 run 的时候，服务正常启动也是没有问题的， 但是如果关闭掉 App ，重新启动 App 服务就起不来了。我尝试如下两种方式启动服务：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -49,10 +49,10 @@
     
     <item>
       <title>Android 转场动画之揭露动画的使用</title>
-      <link>https://midFang.github.io/post/android-%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E4%B9%8B%E6%8F%AD%E9%9C%B2%E5%8A%A8%E7%94%BB%E7%9A%84%E4%BD%BF%E7%94%A8/</link>
+      <link>https://midFang.github.io/post/android-animation-revealing-transitions/</link>
       <pubDate>Mon, 21 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E4%B9%8B%E6%8F%AD%E9%9C%B2%E5%8A%A8%E7%94%BB%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
+      <guid>https://midFang.github.io/post/android-animation-revealing-transitions/</guid>
       <description>&lt;h3 id=&#34;配置-activity-的转场动画&#34;&gt;配置 Activity 的转场动画&lt;/h3&gt;
 
 &lt;p&gt;使用揭露动画，主要是使用到了 ViewAnimationUtils.createCircularReveal()  这个 API ，官方已经给我们封装好了，我们具体看下各个参数是什么意思，就知道如何使用了&lt;/p&gt;
@@ -74,10 +74,10 @@
     
     <item>
       <title>Android 中的进程间通信简单使用</title>
-      <link>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</link>
+      <link>https://midFang.github.io/post/android-process-base-use/</link>
       <pubDate>Wed, 19 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</guid>
+      <guid>https://midFang.github.io/post/android-process-base-use/</guid>
       <description>&lt;h3 id=&#34;binder-是什么&#34;&gt;Binder 是什么&lt;/h3&gt;
 
 &lt;p&gt;首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式&lt;/p&gt;
@@ -100,19 +100,19 @@
     
     <item>
       <title>WiFi开发断开当前正在连接的 WiFi</title>
-      <link>https://midFang.github.io/post/wifi%E5%BC%80%E5%8F%91%E6%96%AD%E5%BC%80%E5%BD%93%E5%89%8D%E6%AD%A3%E5%9C%A8%E8%BF%9E%E6%8E%A5%E7%9A%84-wifi/</link>
+      <link>https://midFang.github.io/post/disconnect-current-wifi/</link>
       <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/wifi%E5%BC%80%E5%8F%91%E6%96%AD%E5%BC%80%E5%BD%93%E5%89%8D%E6%AD%A3%E5%9C%A8%E8%BF%9E%E6%8E%A5%E7%9A%84-wifi/</guid>
+      <guid>https://midFang.github.io/post/disconnect-current-wifi/</guid>
       <description>在 WiFi 功能开发的时候，项目中有一个需求是超时逻辑，但是 Android 系统 WiFi 连接的广播只有连接成功，或者是 WiFi 密码错误的广播，并没有定义这种类型。所以我在项目</description>
     </item>
     
     <item>
       <title>蓝牙基础知识</title>
-      <link>https://midFang.github.io/post/%E8%93%9D%E7%89%99%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+      <link>https://midFang.github.io/post/bluetooth-base/</link>
       <pubDate>Mon, 24 Jun 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/%E8%93%9D%E7%89%99%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+      <guid>https://midFang.github.io/post/bluetooth-base/</guid>
       <description>&lt;h2 id=&#34;a2dp&#34;&gt;A2DP&lt;/h2&gt;
 
 &lt;p&gt;Advanced Audio Distribution Profile。高质量音频数据传输的协议，其定义了传送单声道或立体声等高质量音频信息的协议和过程。A2DP的典型应用是将音乐播放器的音频数据发送到耳机或音箱。&lt;/p&gt;

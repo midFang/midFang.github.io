@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Android 中的进程间通信简单使用 - midFang&#39;s Blog</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="midFang" />
+  <meta name="description" content="Binder 是什么 首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式
+为什么需要跨进程通信 因为在 Android 中一个应用相当于一个进程，而一个进程中有一个独立的用户空间，而用户空间都是独立的，进程之间是隔离的。也就是说，两个进程之间不可进行直接的通信，需要通过一个桥梁，这个就是 Binder
+" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<link rel="canonical" href="https://midFang.github.io/post/android-process-base-use/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="Android 中的进程间通信简单使用" />
+<meta property="og:description" content="Binder 是什么
+
+首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式
+
+为什么需要跨进程通信
+
+因为在 Android 中一个应用相当于一个进程，而一个进程中有一个独立的用户空间，而用户空间都是独立的，进程之间是隔离的。也就是说，两个进程之间不可进行直接的通信，需要通过一个桥梁，这个就是 Binder
+
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/post/android-process-base-use/" />
+<meta property="article:published_time" content="2020-08-19T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-08-19T00:00:00+00:00" />
+<meta itemprop="name" content="Android 中的进程间通信简单使用">
+<meta itemprop="description" content="Binder 是什么
+
+首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式
+
+为什么需要跨进程通信
+
+因为在 Android 中一个应用相当于一个进程，而一个进程中有一个独立的用户空间，而用户空间都是独立的，进程之间是隔离的。也就是说，两个进程之间不可进行直接的通信，需要通过一个桥梁，这个就是 Binder
+
+">
+
+
+<meta itemprop="datePublished" content="2020-08-19T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-08-19T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="2462">
+
+
+
+<meta itemprop="keywords" content="Android,IPC," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android 中的进程间通信简单使用"/>
+<meta name="twitter:description" content="Binder 是什么
+
+首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式
+
+为什么需要跨进程通信
+
+因为在 Android 中一个应用相当于一个进程，而一个进程中有一个独立的用户空间，而用户空间都是独立的，进程之间是隔离的。也就是说，两个进程之间不可进行直接的通信，需要通过一个桥梁，这个就是 Binder
+
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">midFang's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+        
+      </li>
+    
+
+    
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+    
+
+
+
+
+
+
+  <link rel="stylesheet" href="/lib/photoswipe/photoswipe.min.css" />
+  <link rel="stylesheet" href="/lib/photoswipe/default-skin/default-skin.min.css" />
+
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+  
+
+  
+    
+<div class="modal-dialog">
+    
+    <div class="modal-content">
+      <div id="closeSearch" title="Close" class="close">X</div>
+      <div class="modal-header">
+        <div class="modal-title">Search</div>
+      </div>
+      <div class="modal-body">
+          <script>
+            (function() {
+              var cx = '57787f7f4d21d54fc';
+              var gcse = document.createElement('script');
+              gcse.type = 'text/javascript';
+              gcse.async = true;
+              gcse.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//cse.google.com/cse.js?cx=' + cx;
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(gcse, s);
+            })();
+          </script>
+          <gcse:search></gcse:search>
+      </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      midFang's Blog
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+      <li class="menu-item">
+        <a id="openSearch" class="menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">Android 中的进程间通信简单使用</h1>
+      
+      <div class="post-meta">
+        <time datetime="2020-08-19" class="post-time">
+          2020-08-19
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/android/"> Android </a>
+            <a href="https://midFang.github.io/categories/ipc/"> IPC </a>
+            
+          </div>
+        
+
+        
+        
+
+        
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#binder-是什么">Binder 是什么</a></li>
+<li><a href="#为什么需要跨进程通信">为什么需要跨进程通信</a></li>
+<li><a href="#android-为什么要使用-binder">Android 为什么要使用 Binder</a></li>
+<li><a href="#binder-通信过程">Binder 通信过程</a></li>
+<li><a href="#binder-与传统-ipc-优缺点">Binder 与传统 IPC 优缺点</a></li>
+<li><a href="#aidl-实现">AIDL 实现</a>
+<ul>
+<li>
+<ul>
+<li><a href="#person-aidl">Person.aidl</a></li>
+</ul></li>
+<li><a href="#idefaultaidlinterface">IDefaultAidlInterface</a></li>
+<li><a href="#定义服务端-service">定义服务端 service</a></li>
+<li><a href="#定义客户端代码">定义客户端代码</a></li>
+<li><a href="#绑定服务">绑定服务</a></li>
+</ul></li>
+<li><a href="#源码分析">源码分析</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      <h3 id="binder-是什么">Binder 是什么</h3>
+
+<p>首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式</p>
+
+<h3 id="为什么需要跨进程通信">为什么需要跨进程通信</h3>
+
+<p>因为在 Android 中一个应用相当于一个进程，而一个进程中有一个独立的用户空间，而用户空间都是独立的，进程之间是隔离的。也就是说，两个进程之间不可进行直接的通信，需要通过一个桥梁，这个就是 Binder</p>
+
+<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20200924223216.png" alt="" /></p>
+
+<h3 id="android-为什么要使用-binder">Android 为什么要使用 Binder</h3>
+
+<p>在跨进程通信的方式中，有几种方式，为什么要在 Android 中使用 Binder 机制呢 ？</p>
+
+<p>首先通过一个图来看看传统的 IPC 的通信机制的方式</p>
+
+<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20200924223432.png" alt="" /></p>
+
+<p>传统的 IPC 通信方式需要通过用户空间发送数据，通过系统调用 copy_form_user 将数据复制到内核缓存区，而另外一个进程还需要使用的话，则还需要再将内核空间的数据再次拷贝到另外一个进程的用户空间上去，这里拷贝了两次。而如果相较于 Binder 的话， Binder 只拷贝了一次，Binder 的效率会比传统的 IPC 通信效率更高，下面图示 Binder 的通信过程</p>
+
+<h3 id="binder-通信过程">Binder 通信过程</h3>
+
+<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20200924224217.png" alt="" /></p>
+
+<p>Binder 通信方式的过程中，是只需要拷贝一次数据的，将用户空间的数据拷贝到内核缓存区中。而由于存在内存映射的关系 （mmap）内核缓冲区和数据接收缓存区存在内存映射的关系，无需拷贝，可对对象直接引用</p>
+
+<h3 id="binder-与传统-ipc-优缺点">Binder 与传统 IPC 优缺点</h3>
+
+<p>一共有如下的 3 种 IPC 通信方式</p>
+
+<ul>
+<li>共享内存</li>
+<li>Socket</li>
+<li>Binder</li>
+</ul>
+
+<p>Binder 基于 C/S 架构，客户端（Client）有什么需求就丢给服务端（Server）去完成，架构清晰、职责明确又相互独立，自然稳定性更好。共享内存虽然无需拷贝，但是控制负责，难以使用。从稳定性的角度讲，Binder 机制是优于内存共享的。</p>
+
+<p>另一方面就是安全性。Android 作为一个开放性的平台，市场上有各类海量的应用供用户选择安装，因此安全性对于 Android 平台而言极其重要。作为用户当然不希望我们下载的 APP 偷偷读取我的通信录，上传我的隐私数据，后台偷跑流量、消耗手机电量。传统的 IPC 没有任何安全措施，完全依赖上层协议来确保。首先传统的 IPC 接收方无法获得对方可靠的进程用户ID/进程ID（UID/PID），从而无法鉴别对方身份。Android 为每个安装好的 APP 分配了自己的 UID，故而进程的 UID 是鉴别进程身份的重要标志。传统的 IPC 只能由用户在数据包中填入 UID/PID，但这样不可靠，容易被恶意程序利用。可靠的身份标识只有由 IPC 机制在内核中添加。其次传统的 IPC 访问接入点是开放的，只要知道这些接入点的程序都可以和对端建立连接，不管怎样都无法阻止恶意程序通过猜测接收方地址获得连接。同时 Binder 既支持实名 Binder，又支持匿名 Binder，安全性高。</p>
+
+<h3 id="aidl-实现">AIDL 实现</h3>
+
+<blockquote>
+<p>ADDL Android 接口定义语言，主要起辅助作用，在 Android studio 中编译的时候会为我们生成一些 Binder 通信的代码，避免开发者手写大量的 Binder 通信代码</p>
+</blockquote>
+
+<p>首先在服务端中先定义一个 Person 对象，需要实现序列化</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">class</span> <span class="n">Person</span> <span class="nf">implements</span> <span class="n">Parcelable</span> <span class="p">{</span>
+
+    <span class="kd">private</span> <span class="nf">String</span> <span class="n">name</span><span class="p">;</span>
+
+    <span class="kd">private</span> <span class="nf">int</span> <span class="n">age</span><span class="p">;</span>
+
+    <span class="kd">public</span> <span class="nf">Person</span><span class="p">(</span><span class="n">String</span> <span class="nf">name</span><span class="p">,</span> <span class="kt">int</span> <span class="nf">age</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="p">;</span>
+    <span class="p">}</span>
+
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nf">String</span> <span class="n">toString</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s">&#34;Person{&#34;</span> <span class="o">+</span>
+                <span class="s">&#34;name=&#39;&#34;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="sc">&#39;\&#39;&#39;</span> <span class="o">+</span>
+                <span class="s">&#34;, age=&#34;</span> <span class="o">+</span> <span class="n">age</span> <span class="o">+</span>
+                <span class="sc">&#39;}&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nf">int</span> <span class="n">describeContents</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">0</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nf">void</span> <span class="n">writeToParcel</span><span class="p">(</span><span class="n">Parcel</span> <span class="nf">dest</span><span class="p">,</span> <span class="kt">int</span> <span class="nf">flags</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">dest</span><span class="p">.</span><span class="na">writeString</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="na">name</span><span class="p">);</span>
+        <span class="n">dest</span><span class="p">.</span><span class="na">writeInt</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="na">age</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kd">protected</span> <span class="nf">Person</span><span class="p">(</span><span class="n">Parcel</span> <span class="nf">in</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">in</span><span class="p">.</span><span class="na">readString</span><span class="p">();</span>
+        <span class="k">this</span><span class="p">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">in</span><span class="p">.</span><span class="na">readInt</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">Creator</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="nf">CREATOR</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Creator</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="nf">Person</span> <span class="n">createFromParcel</span><span class="p">(</span><span class="n">Parcel</span> <span class="nf">source</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">Person</span><span class="p">(</span><span class="n">source</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="nf">Person</span><span class="p">[]</span> <span class="n">newArray</span><span class="p">(</span><span class="kt">int</span> <span class="nf">size</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">Person</span><span class="p">[</span><span class="n">size</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>然后再定义通信接口 AIDL 文件，注意如果是使用到了自定义的 Person 类，需要在 AIDL 文件中先声明</p>
+
+<h5 id="person-aidl">Person.aidl</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma"><span class="c1">// Person.aidl
+</span><span class="c1"></span><span class="kn">package</span> <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">bean</span><span class="p">;</span>
+
+<span class="c1">// Declare any non-default types here with import statements
+</span><span class="c1"></span>
+<span class="nx">parcelable</span> <span class="nx">Person</span><span class="p">;</span> <span class="o">//</span> <span class="nx">声明</span></pre></td></tr></table>
+</div>
+</div>
+<h4 id="idefaultaidlinterface">IDefaultAidlInterface</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma"><span class="kn">package</span> <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">;</span>
+
+<span class="c1">// Declare any non-default types here with import statements
+</span><span class="c1"></span>
+<span class="c1">// 自定义的类，需要手动导入
+</span><span class="c1"></span><span class="kn">import</span> <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">bean</span><span class="p">.</span><span class="nx">Person</span><span class="p">;</span>
+
+<span class="kd">interface</span> <span class="nx">IDefaultAidlInterface</span> <span class="p">{</span>
+
+     <span class="c1">// in 表示数据只能由客户端流向服务端
+</span><span class="c1"></span>     <span class="c1">// out 表示数据只能由服务端流向客户端
+</span><span class="c1"></span>     <span class="c1">// inout 则表示数据可以在服务端与客户端之间双向流通
+</span><span class="c1"></span>     <span class="nx">void</span> <span class="nf">addPerson</span><span class="p">(</span><span class="nx">in</span> <span class="nx">Person</span> <span class="nx">person</span><span class="p">);</span>
+
+     <span class="nx">List</span><span class="p">&lt;</span><span class="nx">Person</span><span class="p">&gt;</span> <span class="nf">getPersonList</span><span class="p">();</span>
+<span class="p">}</span></pre></td></tr></table>
+</div>
+</div>
+<h4 id="定义服务端-service">定义服务端 service</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class MyService : Service() {
+
+    private val TAG = &#34;MyService&#34;
+
+    private val mutableList = mutableListOf&lt;Person&gt;()
+
+    override fun onBind(p0: Intent?): IBinder? {
+        Log.d(TAG, &#34;onBind() called with: iBinder = $iBinder&#34;)
+        return iBinder
+    }
+
+    private val iBinder = object : IDefaultAidlInterface.Stub() {
+        override fun addPerson(person: Person) {
+            Log.d(TAG, &#34;addPerson() called with: person = ${person.toString()}&#34;)
+            mutableList.add(person)
+        }
+
+        override fun getPersonList(): MutableList&lt;Person&gt; {
+            Log.d(TAG, &#34;getPersonList() called ${mutableList.toString()}&#34;)
+            return mutableList
+        }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        Log.d(TAG, &#34;onCreate() called&#34;)
+
+    }
+}</pre></td></tr></table>
+</div>
+</div>
+<h4 id="定义客户端代码">定义客户端代码</h4>
+
+<p>客户端的代码，一样需要定义同样一套 AIDL 接口协议， 注意包名路径需要一致</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma"><span class="c1">// Person.aidl
+</span><span class="c1"></span><span class="kn">package</span> <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">bean</span><span class="p">;</span>
+
+<span class="c1">// Declare any non-default types here with import statements
+</span><span class="c1"></span>
+<span class="nx">parcelable</span> <span class="nx">Person</span><span class="p">;</span></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma"><span class="kn">package</span> <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">;</span>
+
+<span class="c1">// Declare any non-default types here with import statements
+</span><span class="c1"></span>
+<span class="kn">import</span> <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">bean</span><span class="p">.</span><span class="nx">Person</span><span class="p">;</span>
+
+<span class="kd">interface</span> <span class="nx">IDefaultAidlInterface</span> <span class="p">{</span>
+
+     <span class="c1">// in 表示数据只能由客户端流向服务端
+</span><span class="c1"></span>     <span class="c1">// out 表示数据只能由服务端流向客户端
+</span><span class="c1"></span>     <span class="c1">// inout 则表示数据可以在服务端与客户端之间双向流通
+</span><span class="c1"></span>     <span class="nx">void</span> <span class="nf">addPerson</span><span class="p">(</span><span class="nx">in</span> <span class="nx">Person</span> <span class="nx">person</span><span class="p">);</span>
+
+     <span class="nx">List</span><span class="p">&lt;</span><span class="nx">Person</span><span class="p">&gt;</span> <span class="nf">getPersonList</span><span class="p">();</span>
+<span class="p">}</span></pre></td></tr></table>
+</div>
+</div>
+<p>这两个类的定义，其实和服务端中的一模一样</p>
+
+<h4 id="绑定服务">绑定服务</h4>
+
+<p>然后在定义客户端中的和服务端通信的代码， 绑定服务</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">val</span> <span class="py">intent</span> <span class="p">=</span> <span class="n">Intent</span><span class="p">()</span>
+<span class="n">intent</span><span class="p">.</span><span class="n">component</span> <span class="p">=</span> <span class="n">ComponentName</span><span class="p">(</span>
+        <span class="s">&#34;com.midfang.aidl_service&#34;</span><span class="p">,</span>
+        <span class="s">&#34;com.midfang.service.MyService&#34;</span>
+<span class="p">)</span>
+<span class="n">bindService</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">serviceConnection</span><span class="p">,</span> <span class="n">Context</span><span class="p">.</span><span class="n">BIND_AUTO_CREATE</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>获得句柄，拿到服务端中 onBinder 返回的对象</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">private</span> <span class="k">var</span> <span class="py">iBinder</span><span class="p">:</span> <span class="n">IDefaultAidlInterface</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+
+    <span class="k">private</span> <span class="k">val</span> <span class="py">serviceConnection</span> <span class="p">=</span> <span class="k">object</span> <span class="err">: </span><span class="nc">ServiceConnection</span> <span class="p">{</span>
+        <span class="k">override</span> <span class="k">fun</span> <span class="nf">onServiceDisconnected</span><span class="p">(</span><span class="n">p0</span><span class="p">:</span> <span class="n">ComponentName</span><span class="p">?)</span> <span class="p">{</span>
+            <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&#34;onServiceDisconnected() called with: p0 = $p0&#34;</span><span class="p">)</span>
+            <span class="n">iBinder</span> <span class="p">=</span> <span class="k">null</span>
+        <span class="p">}</span>
+
+        <span class="k">override</span> <span class="k">fun</span> <span class="nf">onServiceConnected</span><span class="p">(</span><span class="n">p0</span><span class="p">:</span> <span class="n">ComponentName</span><span class="p">?,</span> <span class="n">p1</span><span class="p">:</span> <span class="n">IBinder</span><span class="p">?)</span> <span class="p">{</span>
+            <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&#34;onServiceConnected() called with: p0 = $p0, p1 = $p1&#34;</span><span class="p">)</span>
+
+						<span class="c1">// 服务连接成功后，会返回实例对象
+</span><span class="c1"></span>            <span class="n">iBinder</span> <span class="p">=</span> <span class="n">IDefaultAidlInterface</span><span class="p">.</span><span class="n">Stub</span><span class="p">.</span><span class="n">asInterface</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="源码分析">源码分析</h3>
+
+<p>大致看看 IDefaultAidlInterface 里面都做了什么操作</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma"><span class="cm">/*
+</span><span class="cm"> * This file is auto-generated.  DO NOT MODIFY.
+</span><span class="cm"> * Original file: /Users/apple/asDemo/aidl_client/src/main/aidl/com/midfang/service/IDefaultAidlInterface.aidl
+</span><span class="cm"> */</span>
+<span class="kn">package</span> <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">;</span>
+
+<span class="nx">public</span> <span class="kd">interface</span> <span class="nx">IDefaultAidlInterface</span> <span class="nx">extends</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">IInterface</span> <span class="p">{</span>
+    <span class="cm">/**
+</span><span class="cm">     * Local-side IPC implementation stub class.
+</span><span class="cm">     */</span>
+    <span class="nx">public</span> <span class="nx">static</span> <span class="nx">abstract</span> <span class="nx">class</span> <span class="nx">Stub</span> <span class="nx">extends</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">Binder</span> <span class="nx">implements</span> <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">IDefaultAidlInterface</span> <span class="p">{</span>
+        <span class="nx">private</span> <span class="nx">static</span> <span class="nx">final</span> <span class="nx">java</span><span class="p">.</span><span class="nx">lang</span><span class="p">.</span><span class="nx">String</span> <span class="nx">DESCRIPTOR</span> <span class="p">=</span> <span class="s">&#34;com.midfang.service.IDefaultAidlInterface&#34;</span><span class="p">;</span>
+
+        <span class="cm">/**
+</span><span class="cm">         * Construct the stub at attach it to the interface.
+</span><span class="cm">         */</span>
+        <span class="nx">public</span> <span class="nf">Stub</span><span class="p">()</span> <span class="p">{</span>
+        		<span class="c1">// 设置了一个 描述符，后续可以根据描述符查询对应的服务，或者校验
+</span><span class="c1"></span>            <span class="nx">this</span><span class="p">.</span><span class="nf">attachInterface</span><span class="p">(</span><span class="nx">this</span><span class="p">,</span> <span class="nx">DESCRIPTOR</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="cm">/**
+</span><span class="cm">         * Cast an IBinder object into an com.midfang.service.IDefaultAidlInterface interface,
+</span><span class="cm">         * generating a proxy if needed.
+</span><span class="cm">         */</span>
+        <span class="nx">public</span> <span class="nx">static</span> <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">IDefaultAidlInterface</span> <span class="nf">asInterface</span><span class="p">(</span><span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">IBinder</span> <span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">((</span><span class="nx">obj</span> <span class="o">==</span> <span class="nx">null</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">null</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="c1">// 查询关于这个描述符的 服务
+</span><span class="c1"></span>            <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">IInterface</span> <span class="nx">iin</span> <span class="p">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nf">queryLocalInterface</span><span class="p">(</span><span class="nx">DESCRIPTOR</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(((</span><span class="nx">iin</span> <span class="o">!=</span> <span class="nx">null</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">iin</span> <span class="nx">instanceof</span> <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">IDefaultAidlInterface</span><span class="p">)))</span> <span class="p">{</span>
+            		<span class="c1">// 不属于进程间通信，直接建立通信
+</span><span class="c1"></span>                <span class="k">return</span> <span class="p">((</span><span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">IDefaultAidlInterface</span><span class="p">)</span> <span class="nx">iin</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="c1">// 属于进程间通信，开启 proxy 的代理
+</span><span class="c1"></span>            <span class="k">return</span> <span class="nx">new</span> <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">IDefaultAidlInterface</span><span class="p">.</span><span class="nx">Stub</span><span class="p">.</span><span class="nf">Proxy</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="err">@</span><span class="nx">Override</span>
+        <span class="nx">public</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">IBinder</span> <span class="nf">asBinder</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">this</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="err">@</span><span class="nx">Override</span>
+        <span class="nx">public</span> <span class="nx">boolean</span> <span class="nf">onTransact</span><span class="p">(</span><span class="kt">int</span> <span class="nx">code</span><span class="p">,</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">Parcel</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">Parcel</span> <span class="nx">reply</span><span class="p">,</span> <span class="kt">int</span> <span class="nx">flags</span><span class="p">)</span> <span class="nx">throws</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">RemoteException</span> <span class="p">{</span>
+            <span class="k">switch</span> <span class="p">(</span><span class="nx">code</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">case</span> <span class="nx">INTERFACE_TRANSACTION</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="nx">reply</span><span class="p">.</span><span class="nf">writeString</span><span class="p">(</span><span class="nx">DESCRIPTOR</span><span class="p">);</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="c1">// 定义好的 addPerson 方法
+</span><span class="c1"></span>                <span class="k">case</span> <span class="nx">TRANSACTION_addPerson</span><span class="p">:</span> <span class="p">{</span>
+                		<span class="c1">// 检验
+</span><span class="c1"></span>                    <span class="nx">data</span><span class="p">.</span><span class="nf">enforceInterface</span><span class="p">(</span><span class="nx">DESCRIPTOR</span><span class="p">);</span>
+                    <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">bean</span><span class="p">.</span><span class="nx">Person</span> <span class="nx">_arg0</span><span class="p">;</span>
+                    <span class="k">if</span> <span class="p">((</span><span class="mi">0</span> <span class="o">!=</span> <span class="nx">data</span><span class="p">.</span><span class="nf">readInt</span><span class="p">()))</span> <span class="p">{</span>
+                        <span class="nx">_arg0</span> <span class="p">=</span> <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">bean</span><span class="p">.</span><span class="nx">Person</span><span class="p">.</span><span class="nx">CREATOR</span><span class="p">.</span><span class="nf">createFromParcel</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                        <span class="nx">_arg0</span> <span class="p">=</span> <span class="nx">null</span><span class="p">;</span>
+                    <span class="p">}</span>
+                    <span class="c1">// 写入数据
+</span><span class="c1"></span>                    <span class="nx">this</span><span class="p">.</span><span class="nf">addPerson</span><span class="p">(</span><span class="nx">_arg0</span><span class="p">);</span>
+                    <span class="nx">reply</span><span class="p">.</span><span class="nf">writeNoException</span><span class="p">();</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="k">case</span> <span class="nx">TRANSACTION_getPersonList</span><span class="p">:</span> <span class="p">{</span>
+                <span class="c1">// 校验
+</span><span class="c1"></span>                    <span class="nx">data</span><span class="p">.</span><span class="nf">enforceInterface</span><span class="p">(</span><span class="nx">DESCRIPTOR</span><span class="p">);</span>
+                    <span class="c1">// 获取了 personList
+</span><span class="c1"></span>        
+                    <span class="nx">java</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">List</span><span class="p">&lt;</span><span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">bean</span><span class="p">.</span><span class="nx">Person</span><span class="p">&gt;</span> <span class="nx">_result</span> <span class="p">=</span> <span class="nx">this</span><span class="p">.</span><span class="nf">getPersonList</span><span class="p">();</span>
+                    <span class="nx">reply</span><span class="p">.</span><span class="nf">writeNoException</span><span class="p">();</span>
+                    <span class="nx">reply</span><span class="p">.</span><span class="nf">writeTypedList</span><span class="p">(</span><span class="nx">_result</span><span class="p">);</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="nx">super</span><span class="p">.</span><span class="nf">onTransact</span><span class="p">(</span><span class="nx">code</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">reply</span><span class="p">,</span> <span class="nx">flags</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="nx">private</span> <span class="nx">static</span> <span class="nx">class</span> <span class="nx">Proxy</span> <span class="nx">implements</span> <span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">IDefaultAidlInterface</span> <span class="p">{</span>
+            <span class="nx">private</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">IBinder</span> <span class="nx">mRemote</span><span class="p">;</span>
+
+            <span class="nf">Proxy</span><span class="p">(</span><span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">IBinder</span> <span class="nx">remote</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">mRemote</span> <span class="p">=</span> <span class="nx">remote</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="err">@</span><span class="nx">Override</span>
+            <span class="nx">public</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">IBinder</span> <span class="nf">asBinder</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">mRemote</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="nx">public</span> <span class="nx">java</span><span class="p">.</span><span class="nx">lang</span><span class="p">.</span><span class="nx">String</span> <span class="nf">getInterfaceDescriptor</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">DESCRIPTOR</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="err">@</span><span class="nx">Override</span>
+            <span class="nx">public</span> <span class="nx">void</span> <span class="nf">addPerson</span><span class="p">(</span><span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">bean</span><span class="p">.</span><span class="nx">Person</span> <span class="nx">person</span><span class="p">)</span> <span class="nx">throws</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">RemoteException</span> <span class="p">{</span>
+                <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">Parcel</span> <span class="nx">_data</span> <span class="p">=</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">Parcel</span><span class="p">.</span><span class="nf">obtain</span><span class="p">();</span>
+                <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">Parcel</span> <span class="nx">_reply</span> <span class="p">=</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">Parcel</span><span class="p">.</span><span class="nf">obtain</span><span class="p">();</span>
+                <span class="nx">try</span> <span class="p">{</span>
+                		<span class="c1">// 校验
+</span><span class="c1"></span>                    <span class="nx">_data</span><span class="p">.</span><span class="nf">writeInterfaceToken</span><span class="p">(</span><span class="nx">DESCRIPTOR</span><span class="p">);</span>
+                    <span class="k">if</span> <span class="p">((</span><span class="nx">person</span> <span class="o">!=</span> <span class="nx">null</span><span class="p">))</span> <span class="p">{</span>
+                        <span class="nx">_data</span><span class="p">.</span><span class="nf">writeInt</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+                        <span class="nx">person</span><span class="p">.</span><span class="nf">writeToParcel</span><span class="p">(</span><span class="nx">_data</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                        <span class="nx">_data</span><span class="p">.</span><span class="nf">writeInt</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+                    <span class="p">}</span>
+                    <span class="c1">// 调用 Stub 类中的 Stub.TRANSACTION_addPerson 方法
+</span><span class="c1"></span>                    <span class="nx">mRemote</span><span class="p">.</span><span class="nf">transact</span><span class="p">(</span><span class="nx">Stub</span><span class="p">.</span><span class="nx">TRANSACTION_addPerson</span><span class="p">,</span> <span class="nx">_data</span><span class="p">,</span> <span class="nx">_reply</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+                    <span class="nx">_reply</span><span class="p">.</span><span class="nf">readException</span><span class="p">();</span>
+                <span class="p">}</span> <span class="nx">finally</span> <span class="p">{</span>
+                    <span class="nx">_reply</span><span class="p">.</span><span class="nf">recycle</span><span class="p">();</span>
+                    <span class="nx">_data</span><span class="p">.</span><span class="nf">recycle</span><span class="p">();</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+
+            <span class="err">@</span><span class="nx">Override</span>
+            <span class="nx">public</span> <span class="nx">java</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">List</span><span class="p">&lt;</span><span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">bean</span><span class="p">.</span><span class="nx">Person</span><span class="p">&gt;</span> <span class="nf">getPersonList</span><span class="p">()</span> <span class="nx">throws</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">RemoteException</span> <span class="p">{</span>
+                <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">Parcel</span> <span class="nx">_data</span> <span class="p">=</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">Parcel</span><span class="p">.</span><span class="nf">obtain</span><span class="p">();</span>
+                <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">Parcel</span> <span class="nx">_reply</span> <span class="p">=</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">Parcel</span><span class="p">.</span><span class="nf">obtain</span><span class="p">();</span>
+                <span class="nx">java</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">List</span><span class="p">&lt;</span><span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">bean</span><span class="p">.</span><span class="nx">Person</span><span class="p">&gt;</span> <span class="nx">_result</span><span class="p">;</span>
+                <span class="nx">try</span> <span class="p">{</span>
+                <span class="c1">// 校验
+</span><span class="c1"></span>                    <span class="nx">_data</span><span class="p">.</span><span class="nf">writeInterfaceToken</span><span class="p">(</span><span class="nx">DESCRIPTOR</span><span class="p">);</span>
+                    <span class="c1">// 调用 stub 中的方法
+</span><span class="c1"></span>                    <span class="nx">mRemote</span><span class="p">.</span><span class="nf">transact</span><span class="p">(</span><span class="nx">Stub</span><span class="p">.</span><span class="nx">TRANSACTION_getPersonList</span><span class="p">,</span> <span class="nx">_data</span><span class="p">,</span> <span class="nx">_reply</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+                    <span class="nx">_reply</span><span class="p">.</span><span class="nf">readException</span><span class="p">();</span>
+                    <span class="nx">_result</span> <span class="p">=</span> <span class="nx">_reply</span><span class="p">.</span><span class="nf">createTypedArrayList</span><span class="p">(</span><span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">bean</span><span class="p">.</span><span class="nx">Person</span><span class="p">.</span><span class="nx">CREATOR</span><span class="p">);</span>
+                <span class="p">}</span> <span class="nx">finally</span> <span class="p">{</span>
+                    <span class="nx">_reply</span><span class="p">.</span><span class="nf">recycle</span><span class="p">();</span>
+                    <span class="nx">_data</span><span class="p">.</span><span class="nf">recycle</span><span class="p">();</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="nx">_result</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+<span class="c1">// 定义的方法的序号，依次累加的
+</span><span class="c1"></span>        <span class="nx">static</span> <span class="nx">final</span> <span class="kt">int</span> <span class="nx">TRANSACTION_addPerson</span> <span class="p">=</span> <span class="p">(</span><span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">IBinder</span><span class="p">.</span><span class="nx">FIRST_CALL_TRANSACTION</span> <span class="o">+</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="nx">static</span> <span class="nx">final</span> <span class="kt">int</span> <span class="nx">TRANSACTION_getPersonList</span> <span class="p">=</span> <span class="p">(</span><span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">IBinder</span><span class="p">.</span><span class="nx">FIRST_CALL_TRANSACTION</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+    <span class="nx">public</span> <span class="nx">void</span> <span class="nf">addPerson</span><span class="p">(</span><span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">bean</span><span class="p">.</span><span class="nx">Person</span> <span class="nx">person</span><span class="p">)</span> <span class="nx">throws</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">RemoteException</span><span class="p">;</span>
+
+    <span class="nx">public</span> <span class="nx">java</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">List</span><span class="p">&lt;</span><span class="nx">com</span><span class="p">.</span><span class="nx">midfang</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">bean</span><span class="p">.</span><span class="nx">Person</span><span class="p">&gt;</span> <span class="nf">getPersonList</span><span class="p">()</span> <span class="nx">throws</span> <span class="nx">android</span><span class="p">.</span><span class="nx">os</span><span class="p">.</span><span class="nx">RemoteException</span><span class="p">;</span>
+<span class="p">}</span></pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2020-08-19
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/android/">Android</a>
+          <a href="https://midFang.github.io/tags/ipc/">IPC</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/post/kotlin-operator-overloading/">
+            
+            <i class="iconfont">
+              <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M691.908486 949.511495l75.369571-89.491197c10.963703-12.998035 10.285251-32.864502-1.499144-44.378743L479.499795 515.267417 757.434875 204.940602c11.338233-12.190647 11.035334-32.285311-0.638543-44.850487l-80.46666-86.564541c-11.680017-12.583596-30.356378-12.893658-41.662889-0.716314L257.233596 494.235404c-11.332093 12.183484-11.041474 32.266891 0.657986 44.844348l80.46666 86.564541c1.772366 1.910513 3.706415 3.533476 5.750981 4.877077l306.620399 321.703933C662.505829 963.726242 680.945807 962.528973 691.908486 949.511495z"></path>
+</svg>
+
+            </i>
+            <span class="prev-text nav-default">kotlin 中的运算符重载</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        
+          <a class="next" href="/post/window.layoutparams/">
+            <span class="next-text nav-default">WindowManager.LayoutParams 参数详解</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://midFang.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    2020
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        midFang
+        
+      </span></span>
+
+  
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <script type="text/javascript" src="/js/load-photoswipe.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe.min.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe-ui-default.min.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <script>
+    $("#openSearch, #openSearchMobile").click(function(){
+      $(".modal-dialog").addClass("visible");
+    });
+
+    $("#closeSearch").click(function(){
+      $(".modal-dialog").removeClass("visible");
+    });
+
+    $(document).click(function(event) {
+    
+      if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
+        $("body").find(".modal-dialog").removeClass("visible");
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>
