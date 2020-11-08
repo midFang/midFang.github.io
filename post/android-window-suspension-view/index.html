@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>理解 Android 中的 window 与悬浮窗的实现 - midFang&#39;s Blog</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="midFang" />
+  <meta name="description" content="Window 是什么  Window 是一个相对概念上的载体，他并不是一个真正的容器，仅仅负责管理依赖 window 上面的 View 的一个类，充当管理者。 Window 是一个抽象类，在源码实现中，只有一个具体的实现类，phoneWindow 创建 Window 需要通过 WindowManager 创建 WindowManager 是外界访问 Window 的入口 Window 具体实现位于 WindowManagerService 中 WindowManager 和 WindowManagerService 的交互是通过 IPC 完成  Activity 和 Window 之间的关系" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<link rel="canonical" href="https://midFang.github.io/post/android-window-suspension-view/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="理解 Android 中的 window 与悬浮窗的实现" />
+<meta property="og:description" content="Window 是什么
+
+
+Window 是一个相对概念上的载体，他并不是一个真正的容器，仅仅负责管理依赖 window 上面的 View 的一个类，充当管理者。
+Window 是一个抽象类，在源码实现中，只有一个具体的实现类，phoneWindow
+创建 Window 需要通过 WindowManager 创建
+WindowManager 是外界访问 Window 的入口
+Window 具体实现位于 WindowManagerService 中
+WindowManager 和 WindowManagerService 的交互是通过 IPC 完成
+
+
+Activity 和 Window 之间的关系" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/post/android-window-suspension-view/" />
+<meta property="article:published_time" content="2020-11-07T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-11-07T00:00:00+00:00" />
+<meta itemprop="name" content="理解 Android 中的 window 与悬浮窗的实现">
+<meta itemprop="description" content="Window 是什么
+
+
+Window 是一个相对概念上的载体，他并不是一个真正的容器，仅仅负责管理依赖 window 上面的 View 的一个类，充当管理者。
+Window 是一个抽象类，在源码实现中，只有一个具体的实现类，phoneWindow
+创建 Window 需要通过 WindowManager 创建
+WindowManager 是外界访问 Window 的入口
+Window 具体实现位于 WindowManagerService 中
+WindowManager 和 WindowManagerService 的交互是通过 IPC 完成
+
+
+Activity 和 Window 之间的关系">
+
+
+<meta itemprop="datePublished" content="2020-11-07T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-11-07T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="3497">
+
+
+
+<meta itemprop="keywords" content="Android,view," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="理解 Android 中的 window 与悬浮窗的实现"/>
+<meta name="twitter:description" content="Window 是什么
+
+
+Window 是一个相对概念上的载体，他并不是一个真正的容器，仅仅负责管理依赖 window 上面的 View 的一个类，充当管理者。
+Window 是一个抽象类，在源码实现中，只有一个具体的实现类，phoneWindow
+创建 Window 需要通过 WindowManager 创建
+WindowManager 是外界访问 Window 的入口
+Window 具体实现位于 WindowManagerService 中
+WindowManager 和 WindowManagerService 的交互是通过 IPC 完成
+
+
+Activity 和 Window 之间的关系"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">midFang's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+        
+      </li>
+    
+
+    
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+    
+
+
+
+
+
+
+  <link rel="stylesheet" href="/lib/photoswipe/photoswipe.min.css" />
+  <link rel="stylesheet" href="/lib/photoswipe/default-skin/default-skin.min.css" />
+
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+  
+
+  
+    
+<div class="modal-dialog">
+    
+    <div class="modal-content">
+      <div id="closeSearch" title="Close" class="close">X</div>
+      <div class="modal-header">
+        <div class="modal-title">Search</div>
+      </div>
+      <div class="modal-body">
+          <script>
+            (function() {
+              var cx = '57787f7f4d21d54fc';
+              var gcse = document.createElement('script');
+              gcse.type = 'text/javascript';
+              gcse.async = true;
+              gcse.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//cse.google.com/cse.js?cx=' + cx;
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(gcse, s);
+            })();
+          </script>
+          <gcse:search></gcse:search>
+      </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      midFang's Blog
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+      <li class="menu-item">
+        <a id="openSearch" class="menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">理解 Android 中的 window 与悬浮窗的实现</h1>
+      
+      <div class="post-meta">
+        <time datetime="2020-11-07" class="post-time">
+          2020-11-07
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/android/"> Android </a>
+            <a href="https://midFang.github.io/categories/view/"> view </a>
+            
+          </div>
+        
+
+        
+        
+
+        
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#window-是什么">Window 是什么</a></li>
+<li><a href="#activity-和-window-之间的关系">Activity 和 Window 之间的关系</a></li>
+<li><a href="#windowmanager">WindowManager</a></li>
+<li><a href="#windowmanagerservice">WindowManagerService</a></li>
+<li><a href="#token">Token</a></li>
+<li><a href="#window-中的-type">Window 中的 Type</a></li>
+<li><a href="#悬浮窗案例实现">悬浮窗案例实现</a></li>
+<li><a href="#添加-view">添加 View</a></li>
+<li><a href="#更新视图">更新视图</a></li>
+<li><a href="#删除视图">删除视图</a></li>
+<li><a href="#完整代码">完整代码</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      <h3 id="window-是什么">Window 是什么</h3>
+
+<ul>
+<li>Window 是一个相对概念上的载体，他并不是一个真正的容器，仅仅负责管理依赖 window 上面的 View 的一个类，充当管理者。</li>
+<li>Window 是一个抽象类，在源码实现中，只有一个具体的实现类，phoneWindow</li>
+<li>创建 Window 需要通过 WindowManager 创建</li>
+<li>WindowManager 是外界访问 Window 的入口</li>
+<li>Window 具体实现位于 WindowManagerService 中</li>
+<li>WindowManager 和 WindowManagerService 的交互是通过 IPC 完成</li>
+</ul>
+
+<h3 id="activity-和-window-之间的关系">Activity 和 Window 之间的关系</h3>
+
+<ul>
+<li>Activity 只负责生命周期和事件处理</li>
+<li>Window 只控制视图</li>
+<li>一个 Activity 包含一个 Window ，如果 Activity 没有 Window ，那就相当于 Service</li>
+<li>AMS 统一调度所有应用程序的 Activity</li>
+<li>WMS 控制所有 Window 的显示与隐藏以及要显示的位置</li>
+</ul>
+
+<h3 id="windowmanager">WindowManager</h3>
+
+<p>用来在应用与window之间的管理接口，管理窗口顺序，消息等。</p>
+
+<h3 id="windowmanagerservice">WindowManagerService</h3>
+
+<p>简称 Wms，WindowManagerService 管理窗口的创建、更新和删除，显示顺序等，是 WindowManager 真正的实现类。它运行在 System_server 进程，作为服务端，客户端（应用程序）通过IPC调用和它进行交互。</p>
+
+<h3 id="token">Token</h3>
+
+<p>这里提到的Token主是指窗口令牌（Window Token），是一种特殊的Binder令牌，Wms用它唯一标识系统中的一个窗口。</p>
+
+<h3 id="window-中的-type">Window 中的 Type</h3>
+
+<table>
+<thead>
+<tr>
+<th align="center">Window 类型</th>
+<th align="center">含义</th>
+<th align="center">Window 层级</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center">应用 Window</td>
+<td align="center">对应着一个 Activity</td>
+<td align="center">1-99</td>
+</tr>
+
+<tr>
+<td align="center">子 Window</td>
+<td align="center">不能单独存在，需要附属在父 Window 中（比如 Dialog 就是子 Window）</td>
+<td align="center">1000-1999</td>
+</tr>
+
+<tr>
+<td align="center">系统 Window</td>
+<td align="center">需要声明权限才能创建 Window ，比如 Toast 、状态栏、悬浮窗</td>
+<td align="center">2000-2999</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li><p>应用窗口（1~99）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//第一个应用窗口
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FIRST_APPLICATION_WINDOW</span> <span class="o">=</span> <span class="n">1</span><span class="p">;</span>
+<span class="c1">//所有程序窗口的base窗口，其他应用程序窗口都显示在它上面
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_BASE_APPLICATION</span>   <span class="o">=</span> <span class="n">1</span><span class="p">;</span>
+<span class="c1">//所有Activity的窗口，只能配合Activity在当前APP使用
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_APPLICATION</span>        <span class="o">=</span> <span class="n">2</span><span class="p">;</span>
+<span class="c1">//目标应用窗口未启动之前的那个窗口
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_APPLICATION_STARTING</span> <span class="o">=</span> <span class="n">3</span><span class="p">;</span>
+<span class="c1">//最后一个应用窗口
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">LAST_APPLICATION_WINDOW</span> <span class="o">=</span> <span class="n">99</span><span class="p">;</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>子窗口（1000~1999）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//第一个子窗口
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FIRST_SUB_WINDOW</span>        <span class="o">=</span> <span class="n">1000</span><span class="p">;</span>
+<span class="c1">// 面板窗口，显示于宿主窗口的上层,只能配合Activity在当前APP使用
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_APPLICATION_PANEL</span>  <span class="o">=</span> <span class="n">FIRST_SUB_WINDOW</span><span class="p">;</span>
+<span class="c1">// 媒体窗口（例如视频），显示于宿主窗口下层
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_APPLICATION_MEDIA</span>  <span class="o">=</span> <span class="n">FIRST_SUB_WINDOW</span><span class="o">+</span><span class="n">1</span><span class="p">;</span>
+<span class="c1">// 应用程序窗口的子面板，只能配合Activity在当前APP使用(PopupWindow默认就是这个Type)
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_APPLICATION_SUB_PANEL</span> <span class="o">=</span> <span class="n">FIRST_SUB_WINDOW</span><span class="o">+</span><span class="n">2</span><span class="p">;</span>
+<span class="c1">// 对话框窗口,只能配合Activity在当前APP使用
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_APPLICATION_ATTACHED_DIALOG</span> <span class="o">=</span> <span class="n">FIRST_SUB_WINDOW</span><span class="o">+</span><span class="n">3</span><span class="p">;</span>
+<span class="c1">// 在媒体窗口上显示叠加的窗口
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_APPLICATION_MEDIA_OVERLAY</span>  <span class="o">=</span> <span class="n">FIRST_SUB_WINDOW</span><span class="o">+</span><span class="n">4</span><span class="p">;</span>
+<span class="c1">// 最后一个子窗口
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">LAST_SUB_WINDOW</span>         <span class="o">=</span> <span class="n">1999</span><span class="p">;</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>系统窗口（2000~2999）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span><span class="lnt">88
+</span><span class="lnt">89
+</span><span class="lnt">90
+</span><span class="lnt">91
+</span><span class="lnt">92
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">    <span class="c1">//系统窗口，非应用程序创建
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FIRST_SYSTEM_WINDOW</span>     <span class="o">=</span> <span class="n">2000</span><span class="p">;</span>
+    <span class="c1">//状态栏，只能有一个状态栏，位于屏幕顶端，其他窗口都位于它下方
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_STATUS_BAR</span>         <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="p">;</span>
+    <span class="c1">//搜索栏，只能有一个搜索栏，位于屏幕上方
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_SEARCH_BAR</span>         <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">1</span><span class="p">;</span> 
+        
+    <span class="c1">//电话窗口，它用于电话交互（特别是呼入），置于所有应用程序之上，状态栏之下,属于悬浮窗(并且给一个Activity的话按下HOME键会出现看不到桌面上的图标异常情况)
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_PHONE</span>              <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">2</span><span class="p">;</span>
+        
+    <span class="c1">//系统警告提示窗口，出现在应用程序窗口之上,属于悬浮窗, 但是会被禁止
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_SYSTEM_ALERT</span>       <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">3</span><span class="p">;</span>
+        
+    <span class="c1">//信息窗口，用于显示Toast, 不属于悬浮窗, 但有悬浮窗的功能, 缺点是在Android2.3上无法接收点击事件
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_TOAST</span>              <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">5</span><span class="p">;</span>
+    <span class="c1">//
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_KEYGUARD</span>           <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">4</span><span class="p">;</span>
+    <span class="c1">//锁屏窗口
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_KEYGUARD</span>           <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">4</span><span class="p">;</span>
+    <span class="c1">//系统顶层窗口，显示在其他一切内容之上，此窗口不能获得输入焦点，否则影响锁屏
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_SYSTEM_OVERLAY</span>     <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">6</span><span class="p">;</span>
+    <span class="c1">//电话优先，当锁屏时显示，此窗口不能获得输入焦点，否则影响锁屏
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_PRIORITY_PHONE</span>     <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">7</span><span class="p">;</span>
+    <span class="c1">//系统对话框窗口
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_SYSTEM_DIALOG</span>      <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">8</span><span class="p">;</span>
+    <span class="c1">//锁屏时显示的对话框
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_KEYGUARD_DIALOG</span>    <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">9</span><span class="p">;</span>
+    <span class="c1">//系统内部错误提示，显示在任何窗口之上
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_SYSTEM_ERROR</span>       <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">10</span><span class="p">;</span>
+    <span class="c1">//内部输入法窗口，显示于普通UI之上，应用程序可重新布局以免被此窗口覆盖
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_INPUT_METHOD</span>       <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">11</span><span class="p">;</span>
+    <span class="c1">//内部输入法对话框，显示于当前输入法窗口之上
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_INPUT_METHOD_DIALOG</span><span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">12</span><span class="p">;</span>
+    <span class="c1">//墙纸窗口
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_WALLPAPER</span>          <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">13</span><span class="p">;</span>
+    <span class="c1">//状态栏的滑动面板
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_STATUS_BAR_PANEL</span>   <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">14</span><span class="p">;</span>
+    <span class="c1">//安全系统覆盖窗口，这些窗户必须不带输入焦点，否则会干扰键盘
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">TYPE_SECURE_SYSTEM_OVERLAY</span> <span class="o">=</span> <span class="n">FIRST_SYSTEM_WINDOW</span><span class="o">+</span><span class="n">15</span><span class="p">;</span>
+    <span class="c1">//最后一个系统窗口
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">LAST_SYSTEM_WINDOW</span>      <span class="o">=</span> <span class="n">2999</span><span class="p">;</span>
+
+<span class="n">2</span><span class="p">.</span><span class="na">窗口flags显示属性在WindowManager中也有定义</span><span class="err">：</span>
+
+    <span class="c1">//窗口特征标记
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">int</span> <span class="n">flags</span><span class="p">;</span>
+    <span class="c1">//当该window对用户可见的时候，允许锁屏
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_ALLOW_LOCK_WHILE_SCREEN_ON</span>     <span class="o">=</span> <span class="n">0x00000001</span><span class="p">;</span>
+    <span class="c1">//窗口后面的所有内容都变暗
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_DIM_BEHIND</span>        <span class="o">=</span> <span class="n">0x00000002</span><span class="p">;</span>
+    <span class="c1">//Flag：窗口后面的所有内容都变模糊
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_BLUR_BEHIND</span>        <span class="o">=</span> <span class="n">0x00000004</span><span class="p">;</span>
+    <span class="c1">//窗口不能获得焦点
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_NOT_FOCUSABLE</span>      <span class="o">=</span> <span class="n">0x00000008</span><span class="p">;</span>
+    <span class="c1">//窗口不接受触摸屏事件
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_NOT_TOUCHABLE</span>      <span class="o">=</span> <span class="n">0x00000010</span><span class="p">;</span>
+    <span class="c1">//即使在该window在可获得焦点情况下，允许该窗口之外的点击事件传递到当前窗口后面的的窗口去
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_NOT_TOUCH_MODAL</span>    <span class="o">=</span> <span class="n">0x00000020</span><span class="p">;</span>
+    <span class="c1">//当手机处于睡眠状态时，如果屏幕被按下，那么该window将第一个收到触摸事件
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_TOUCHABLE_WHEN_WAKING</span> <span class="o">=</span> <span class="n">0x00000040</span><span class="p">;</span>
+    <span class="c1">//当该window对用户可见时，屏幕处于常亮状态
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_KEEP_SCREEN_ON</span>     <span class="o">=</span> <span class="n">0x00000080</span><span class="p">;</span>
+    <span class="c1">//让window占满整个手机屏幕，不留任何边界
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_LAYOUT_IN_SCREEN</span>   <span class="o">=</span> <span class="n">0x00000100</span><span class="p">;</span>
+    <span class="c1">//允许窗口超出整个手机屏幕
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_LAYOUT_NO_LIMITS</span>   <span class="o">=</span> <span class="n">0x00000200</span><span class="p">;</span>
+    <span class="c1">//window全屏显示
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_FULLSCREEN</span>      <span class="o">=</span> <span class="n">0x00000400</span><span class="p">;</span>
+    <span class="c1">//恢复window非全屏显示
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_FORCE_NOT_FULLSCREEN</span>   <span class="o">=</span> <span class="n">0x00000800</span><span class="p">;</span>
+    <span class="c1">//开启窗口抖动
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_DITHER</span>             <span class="o">=</span> <span class="n">0x00001000</span><span class="p">;</span>
+    <span class="c1">//安全内容窗口，该窗口显示时不允许截屏
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_SECURE</span>             <span class="o">=</span> <span class="n">0x00002000</span><span class="p">;</span>
+    <span class="c1">//锁屏时显示该窗口
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_SHOW_WHEN_LOCKED</span> <span class="o">=</span> <span class="n">0x00080000</span><span class="p">;</span>
+    <span class="c1">//系统的墙纸显示在该窗口之后
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_SHOW_WALLPAPER</span> <span class="o">=</span> <span class="n">0x00100000</span><span class="p">;</span>
+    <span class="c1">//当window被显示的时候，系统将把它当做一个用户活动事件，以点亮手机屏幕
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_TURN_SCREEN_ON</span> <span class="o">=</span> <span class="n">0x00200000</span><span class="p">;</span>
+    <span class="c1">//该窗口显示，消失键盘
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_DISMISS_KEYGUARD</span> <span class="o">=</span> <span class="n">0x00400000</span><span class="p">;</span>
+    <span class="c1">//当该window在可以接受触摸屏情况下，让因在该window之外，而发送到后面的window的触摸屏可以支持split touch
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_SPLIT_TOUCH</span> <span class="o">=</span> <span class="n">0x00800000</span><span class="p">;</span>
+    <span class="c1">//对该window进行硬件加速，该flag必须在Activity或Dialog的Content View之前进行设置
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_HARDWARE_ACCELERATED</span> <span class="o">=</span> <span class="n">0x01000000</span><span class="p">;</span>
+    <span class="c1">//让window占满整个手机屏幕，不留任何边界
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_LAYOUT_IN_OVERSCAN</span> <span class="o">=</span> <span class="n">0x02000000</span><span class="p">;</span>
+    <span class="c1">//透明状态栏
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_TRANSLUCENT_STATUS</span> <span class="o">=</span> <span class="n">0x04000000</span><span class="p">;</span>
+    <span class="c1">//透明导航栏
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">FLAG_TRANSLUCENT_NAVIGATION</span> <span class="o">=</span> <span class="n">0x08000000</span><span class="p">;</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+
+<h3 id="悬浮窗案例实现">悬浮窗案例实现</h3>
+
+<blockquote>
+<p>控制 Window 主要是通过 ViewManager 这个类来管理的，看看该类有什么方法</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">interface</span> <span class="n">ViewManager</span>
+<span class="p">{</span>
+    <span class="kd">public</span> <span class="nf">void</span> <span class="n">addView</span><span class="p">(</span><span class="n">View</span> <span class="nf">view</span><span class="p">,</span> <span class="n">ViewGroup</span><span class="p">.</span><span class="na">LayoutParams</span> <span class="nf">params</span><span class="p">);</span>
+    <span class="kd">public</span> <span class="nf">void</span> <span class="n">updateViewLayout</span><span class="p">(</span><span class="n">View</span> <span class="nf">view</span><span class="p">,</span> <span class="n">ViewGroup</span><span class="p">.</span><span class="na">LayoutParams</span> <span class="nf">params</span><span class="p">);</span>
+    <span class="kd">public</span> <span class="nf">void</span> <span class="n">removeView</span><span class="p">(</span><span class="n">View</span> <span class="nf">view</span><span class="p">);</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="添加-view">添加 View</h3>
+
+<blockquote>
+<p>可以看到该类只有这 3 个方法，添加 View 的视图，更新 View 视图，移除视图等方法。首先看看代码具体是如何实现的，从上面代码得知，添加 View 和更新视图都需要 ViewGroup.LayoutParams ，和一个 View，看看具体代码是如何实现的</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">				<span class="c1">//创建suspensionview
+</span><span class="c1"></span>        <span class="n">suspensionView</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SuspensionView</span><span class="p">(</span><span class="n">mContext</span><span class="p">);</span>
+
+        <span class="c1">//创建一个布局参数
+</span><span class="c1"></span>        <span class="n">layoutParams</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WindowManager</span><span class="p">.</span><span class="na">LayoutParams</span><span class="p">();</span>
+        <span class="n">layoutParams</span><span class="p">.</span><span class="na">width</span> <span class="o">=</span> <span class="n">suspensionView</span><span class="p">.</span><span class="na">width</span><span class="p">;</span>
+        <span class="n">layoutParams</span><span class="p">.</span><span class="na">height</span> <span class="o">=</span> <span class="n">suspensionView</span><span class="p">.</span><span class="na">height</span><span class="p">;</span>
+
+        <span class="c1">// gravity 设置对其方式
+</span><span class="c1"></span>        <span class="n">layoutParams</span><span class="p">.</span><span class="na">x</span> <span class="o">+=</span> <span class="n">ScreenSizeUtil</span><span class="p">.</span><span class="na">getScreenWidth</span><span class="p">();</span>
+        <span class="n">layoutParams</span><span class="p">.</span><span class="na">y</span> <span class="o">+=</span> <span class="n">ScreenSizeUtil</span><span class="p">.</span><span class="na">getScreenHeight</span><span class="p">()</span> <span class="o">-</span> <span class="n">ScreenSizeUtil</span><span class="p">.</span><span class="na">dp2px</span><span class="p">(</span><span class="n">10</span><span class="p">);</span>
+        <span class="n">layoutParams</span><span class="p">.</span><span class="na">gravity</span> <span class="o">=</span> <span class="n">Gravity</span><span class="p">.</span><span class="na">TOP</span> <span class="o">|</span> <span class="n">Gravity</span><span class="p">.</span><span class="na">LEFT</span><span class="p">;</span>
+
+        <span class="c1">// 设置 Window type
+</span><span class="c1"></span>        <span class="n">layoutParams</span><span class="p">.</span><span class="na">type</span> <span class="o">=</span> <span class="n">WindowManager</span><span class="p">.</span><span class="na">LayoutParams</span><span class="p">.</span><span class="na">TYPE_APPLICATION</span><span class="p">;</span>
+        <span class="c1">// 设置 flags 窗口不能获得焦点 | 即使在该window在可获得焦点情况下，允许该窗口之外的点击事件传递到当前窗口后面的的窗口去
+</span><span class="c1"></span>        <span class="n">layoutParams</span><span class="p">.</span><span class="na">flags</span> <span class="o">=</span> <span class="n">WindowManager</span><span class="p">.</span><span class="na">LayoutParams</span><span class="p">.</span><span class="na">FLAG_NOT_FOCUSABLE</span> <span class="o">|</span> 				 <span class="n">WindowManager</span><span class="p">.</span><span class="na">LayoutParams</span><span class="p">.</span><span class="na">FLAG_NOT_TOUCH_MODAL</span><span class="p">;</span>
+
+        <span class="c1">//添加view
+</span><span class="c1"></span>        <span class="n">windowManager</span><span class="p">.</span><span class="na">addView</span><span class="p">(</span><span class="n">suspensionView</span><span class="p">,</span> <span class="n">layoutParams</span><span class="p">);</span></code></pre></td></tr></table>
+</div>
+</div>
+<ol>
+<li>其中有几种参数是<strong>必须要设置</strong>：layoutParams 、gravity、type、flags</li>
+<li>这里最重要的就是 type 类型的参数，设置不同 type 类型相对应不一样的层级，比如可以设置全局的悬浮窗，悬浮在其他应用之上，Android 8.0 以上是 TYPE_APPLICATION_OVERLAY 类型，8.0 以下是 TYPE_SYSTEM_ALERT 类型，还需要申请对应的悬浮窗权限</li>
+</ol>
+
+<h3 id="更新视图">更新视图</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="k">case</span> <span class="n">MotionEvent</span><span class="p">.</span><span class="na">ACTION_MOVE</span><span class="o">:</span>
+     <span class="kt">float</span> <span class="nf">x</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawX</span><span class="p">()</span> <span class="o">-</span> <span class="n">moveX</span><span class="p">;</span>
+     <span class="kt">float</span> <span class="nf">y</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawY</span><span class="p">()</span> <span class="o">-</span> <span class="n">moveY</span><span class="p">;</span>
+     <span class="c1">//计算偏移量，刷新视图
+</span><span class="c1"></span>     <span class="n">layoutParams</span><span class="p">.</span><span class="na">x</span> <span class="o">+=</span> <span class="n">x</span><span class="p">;</span>
+     <span class="n">layoutParams</span><span class="p">.</span><span class="na">y</span> <span class="o">+=</span> <span class="n">y</span><span class="p">;</span>
+
+     <span class="n">windowManager</span><span class="p">.</span><span class="na">updateViewLayout</span><span class="p">(</span><span class="n">suspensionView</span><span class="p">,</span> <span class="n">layoutParams</span><span class="p">);</span>
+     <span class="n">moveX</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawX</span><span class="p">();</span>
+     <span class="n">moveY</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawY</span><span class="p">();</span>
+          <span class="k">break</span><span class="p">;</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>更新视图主要修改 x，y 的值，然后调用 updateViewLayout 即可</p>
+
+<h3 id="删除视图">删除视图</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"> <span class="n">windowManager</span><span class="p">.</span><span class="na">removeView</span><span class="p">(</span><span class="n">suspensionView</span><span class="p">);</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="完整代码">完整代码</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">class</span> <span class="n">SuspensionWindowUtil</span> <span class="p">{</span>
+
+    <span class="kd">private</span> <span class="nf">SuspensionView</span> <span class="n">suspensionView</span><span class="p">;</span>
+    <span class="kd">private</span> <span class="nf">WindowManager</span> <span class="n">windowManager</span><span class="p">;</span>
+    <span class="kd">private</span> <span class="nf">WindowManager</span><span class="p">.</span><span class="na">LayoutParams</span> <span class="n">layoutParams</span><span class="p">;</span>
+    <span class="kd">private</span> <span class="nf">Context</span> <span class="n">mContext</span><span class="p">;</span>
+    <span class="kd">private</span> <span class="nf">ValueAnimator</span> <span class="n">valueAnimator</span><span class="p">;</span>
+    <span class="kd">private</span> <span class="nf">int</span> <span class="n">direction</span><span class="p">;</span>
+    <span class="kd">private</span> <span class="nf">final</span> <span class="kt">int</span> <span class="nf">LEFT</span> <span class="o">=</span> <span class="n">0</span><span class="p">;</span>
+    <span class="kd">private</span> <span class="nf">final</span> <span class="kt">int</span> <span class="nf">RIGHT</span> <span class="o">=</span> <span class="n">1</span><span class="p">;</span>
+
+    <span class="kd">public</span> <span class="nf">SuspensionWindowUtil</span><span class="p">(</span><span class="n">Context</span> <span class="nf">context</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mContext</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
+        <span class="n">windowManager</span> <span class="o">=</span> <span class="p">(</span><span class="n">WindowManager</span><span class="p">)</span> <span class="n">mContext</span><span class="p">.</span><span class="na">getSystemService</span><span class="p">(</span><span class="n">Context</span><span class="p">.</span><span class="na">WINDOW_SERVICE</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kd">public</span> <span class="nf">void</span> <span class="n">showSuspensionView</span><span class="p">()</span> <span class="p">{</span>
+
+        <span class="c1">//创建suspensionview
+</span><span class="c1"></span>        <span class="n">suspensionView</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SuspensionView</span><span class="p">(</span><span class="n">mContext</span><span class="p">);</span>
+
+        <span class="c1">//创建一个布局参数
+</span><span class="c1"></span>        <span class="n">layoutParams</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WindowManager</span><span class="p">.</span><span class="na">LayoutParams</span><span class="p">();</span>
+        <span class="n">layoutParams</span><span class="p">.</span><span class="na">width</span> <span class="o">=</span> <span class="n">suspensionView</span><span class="p">.</span><span class="na">width</span><span class="p">;</span>
+        <span class="n">layoutParams</span><span class="p">.</span><span class="na">height</span> <span class="o">=</span> <span class="n">suspensionView</span><span class="p">.</span><span class="na">height</span><span class="p">;</span>
+
+        <span class="c1">//gravity
+</span><span class="c1"></span>        <span class="n">layoutParams</span><span class="p">.</span><span class="na">x</span> <span class="o">+=</span> <span class="n">ScreenSizeUtil</span><span class="p">.</span><span class="na">getScreenWidth</span><span class="p">();</span>
+        <span class="n">layoutParams</span><span class="p">.</span><span class="na">y</span> <span class="o">+=</span> <span class="n">ScreenSizeUtil</span><span class="p">.</span><span class="na">getScreenHeight</span><span class="p">()</span> <span class="o">-</span> <span class="n">ScreenSizeUtil</span><span class="p">.</span><span class="na">dp2px</span><span class="p">(</span><span class="n">10</span><span class="p">);</span>
+        <span class="n">layoutParams</span><span class="p">.</span><span class="na">gravity</span> <span class="o">=</span> <span class="n">Gravity</span><span class="p">.</span><span class="na">TOP</span> <span class="o">|</span> <span class="n">Gravity</span><span class="p">.</span><span class="na">LEFT</span><span class="p">;</span>
+
+        <span class="c1">// 设置 Window type
+</span><span class="c1"></span>        <span class="n">layoutParams</span><span class="p">.</span><span class="na">type</span> <span class="o">=</span> <span class="n">WindowManager</span><span class="p">.</span><span class="na">LayoutParams</span><span class="p">.</span><span class="na">TYPE_APPLICATION</span><span class="p">;</span>
+        <span class="c1">// 设置 flags
+</span><span class="c1"></span>        <span class="n">layoutParams</span><span class="p">.</span><span class="na">flags</span> <span class="o">=</span> <span class="n">WindowManager</span><span class="p">.</span><span class="na">LayoutParams</span><span class="p">.</span><span class="na">FLAG_NOT_FOCUSABLE</span> <span class="o">|</span> <span class="n">WindowManager</span><span class="p">.</span><span class="na">LayoutParams</span><span class="p">.</span><span class="na">FLAG_NOT_TOUCH_MODAL</span><span class="p">;</span>
+        <span class="c1">// 设置 format
+</span><span class="c1"></span>         <span class="n">layoutParams</span><span class="p">.</span><span class="na">format</span> <span class="o">=</span> <span class="n">PixelFormat</span><span class="p">.</span><span class="na">RGBA_8888</span><span class="p">;</span>
+
+        <span class="n">suspensionView</span><span class="p">.</span><span class="na">setOnTouchListener</span><span class="p">(</span><span class="n">touchListener</span><span class="p">);</span>
+
+        <span class="c1">//添加view
+</span><span class="c1"></span>        <span class="n">windowManager</span><span class="p">.</span><span class="na">addView</span><span class="p">(</span><span class="n">suspensionView</span><span class="p">,</span> <span class="n">layoutParams</span><span class="p">);</span>
+    <span class="p">}</span>
+
+
+    <span class="kd">public</span> <span class="nf">void</span> <span class="n">hideSuspensionView</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">suspensionView</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">windowManager</span><span class="p">.</span><span class="na">removeView</span><span class="p">(</span><span class="n">suspensionView</span><span class="p">);</span>
+            <span class="n">stopAnim</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+
+    <span class="n">View</span><span class="p">.</span><span class="na">OnTouchListener</span> <span class="nf">touchListener</span> <span class="o">=</span> <span class="k">new</span> <span class="n">View</span><span class="p">.</span><span class="na">OnTouchListener</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kt">float</span> <span class="nf">startX</span><span class="p">;</span>
+        <span class="kt">float</span> <span class="nf">startY</span><span class="p">;</span>
+        <span class="kt">float</span> <span class="nf">moveX</span><span class="p">;</span>
+        <span class="kt">float</span> <span class="nf">moveY</span><span class="p">;</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="nf">boolean</span> <span class="n">onTouch</span><span class="p">(</span><span class="n">View</span> <span class="nf">v</span><span class="p">,</span> <span class="n">MotionEvent</span> <span class="nf">event</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">switch</span> <span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="na">getAction</span><span class="p">())</span> <span class="p">{</span>
+                <span class="k">case</span> <span class="n">MotionEvent</span><span class="p">.</span><span class="na">ACTION_DOWN</span><span class="o">:</span>
+                    <span class="n">startX</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawX</span><span class="p">();</span>
+                    <span class="n">startY</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawY</span><span class="p">();</span>
+
+                    <span class="n">moveX</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawX</span><span class="p">();</span>
+                    <span class="n">moveY</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawY</span><span class="p">();</span>
+                    <span class="k">break</span><span class="p">;</span>
+                <span class="k">case</span> <span class="n">MotionEvent</span><span class="p">.</span><span class="na">ACTION_MOVE</span><span class="o">:</span>
+                    <span class="kt">float</span> <span class="nf">x</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawX</span><span class="p">()</span> <span class="o">-</span> <span class="n">moveX</span><span class="p">;</span>
+                    <span class="kt">float</span> <span class="nf">y</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawY</span><span class="p">()</span> <span class="o">-</span> <span class="n">moveY</span><span class="p">;</span>
+                    <span class="c1">//计算偏移量，刷新视图
+</span><span class="c1"></span>                    <span class="n">layoutParams</span><span class="p">.</span><span class="na">x</span> <span class="o">+=</span> <span class="n">x</span><span class="p">;</span>
+                    <span class="n">layoutParams</span><span class="p">.</span><span class="na">y</span> <span class="o">+=</span> <span class="n">y</span><span class="p">;</span>
+                    <span class="n">windowManager</span><span class="p">.</span><span class="na">updateViewLayout</span><span class="p">(</span><span class="n">suspensionView</span><span class="p">,</span> <span class="n">layoutParams</span><span class="p">);</span>
+                    <span class="n">moveX</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawX</span><span class="p">();</span>
+                    <span class="n">moveY</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawY</span><span class="p">();</span>
+                    <span class="k">break</span><span class="p">;</span>
+                <span class="k">case</span> <span class="n">MotionEvent</span><span class="p">.</span><span class="na">ACTION_UP</span><span class="o">:</span>
+                    <span class="c1">//判断松手时View的横坐标是靠近屏幕哪一侧，将View移动到依靠屏幕
+</span><span class="c1"></span>                    <span class="kt">float</span> <span class="nf">endX</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawX</span><span class="p">();</span>
+                    <span class="kt">float</span> <span class="nf">endY</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="na">getRawY</span><span class="p">();</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">endX</span> <span class="o">&lt;</span> <span class="n">ScreenSizeUtil</span><span class="p">.</span><span class="na">getScreenWidth</span><span class="p">()</span> <span class="o">/</span> <span class="n">2</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">direction</span> <span class="o">=</span> <span class="n">LEFT</span><span class="p">;</span>
+                        <span class="n">endX</span> <span class="o">=</span> <span class="n">0</span><span class="p">;</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                        <span class="n">direction</span> <span class="o">=</span> <span class="n">RIGHT</span><span class="p">;</span>
+                        <span class="n">endX</span> <span class="o">=</span> <span class="n">ScreenSizeUtil</span><span class="p">.</span><span class="na">getScreenWidth</span><span class="p">()</span> <span class="o">-</span> <span class="n">suspensionView</span><span class="p">.</span><span class="na">width</span><span class="p">;</span>
+                    <span class="p">}</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">moveX</span> <span class="o">!=</span> <span class="n">startX</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">starAnim</span><span class="p">((</span><span class="kt">int</span><span class="p">)</span> <span class="n">moveX</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">endX</span><span class="p">,</span> <span class="n">direction</span><span class="p">);</span>
+                    <span class="p">}</span>
+                    <span class="c1">//如果初始落点与松手落点的坐标差值超过5个像素，则拦截该点击事件
+</span><span class="c1"></span>                    <span class="c1">//否则继续传递，将事件交给OnClickListener函数处理
+</span><span class="c1"></span>                    <span class="k">if</span> <span class="p">(</span><span class="n">Math</span><span class="p">.</span><span class="na">abs</span><span class="p">(</span><span class="n">startX</span> <span class="o">-</span> <span class="n">moveX</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">5</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                    <span class="p">}</span>
+                    <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+
+
+    <span class="kd">private</span> <span class="nf">void</span> <span class="n">starAnim</span><span class="p">(</span><span class="kt">int</span> <span class="nf">startX</span><span class="p">,</span> <span class="kt">int</span> <span class="nf">endX</span><span class="p">,</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">direction</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">valueAnimator</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">valueAnimator</span><span class="p">.</span><span class="na">cancel</span><span class="p">();</span>
+            <span class="n">valueAnimator</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">valueAnimator</span> <span class="o">=</span> <span class="n">ValueAnimator</span><span class="p">.</span><span class="na">ofInt</span><span class="p">(</span><span class="n">startX</span><span class="p">,</span> <span class="n">endX</span><span class="p">);</span>
+        <span class="n">valueAnimator</span><span class="p">.</span><span class="na">setDuration</span><span class="p">(</span><span class="n">500</span><span class="p">);</span>
+        <span class="n">valueAnimator</span><span class="p">.</span><span class="na">setRepeatCount</span><span class="p">(</span><span class="n">0</span><span class="p">);</span>
+        <span class="n">valueAnimator</span><span class="p">.</span><span class="na">addUpdateListener</span><span class="p">(</span><span class="k">new</span> <span class="n">ValueAnimator</span><span class="p">.</span><span class="na">AnimatorUpdateListener</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="nf">void</span> <span class="n">onAnimationUpdate</span><span class="p">(</span><span class="n">ValueAnimator</span> <span class="nf">animation</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">direction</span> <span class="o">==</span> <span class="n">LEFT</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">layoutParams</span><span class="p">.</span><span class="na">x</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">animation</span><span class="p">.</span><span class="na">getAnimatedValue</span><span class="p">()</span> <span class="o">-</span> <span class="n">suspensionView</span><span class="p">.</span><span class="na">width</span> <span class="o">/</span> <span class="n">2</span><span class="p">;</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="n">layoutParams</span><span class="p">.</span><span class="na">x</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">animation</span><span class="p">.</span><span class="na">getAnimatedValue</span><span class="p">();</span>
+                <span class="p">}</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">suspensionView</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">windowManager</span><span class="p">.</span><span class="na">updateViewLayout</span><span class="p">(</span><span class="n">suspensionView</span><span class="p">,</span> <span class="n">layoutParams</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+        <span class="n">valueAnimator</span><span class="p">.</span><span class="na">setInterpolator</span><span class="p">(</span><span class="k">new</span> <span class="n">LinearInterpolator</span><span class="p">());</span>
+        <span class="n">valueAnimator</span><span class="p">.</span><span class="na">start</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="nf">void</span> <span class="n">stopAnim</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">valueAnimator</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">valueAnimator</span><span class="p">.</span><span class="na">cancel</span><span class="p">();</span>
+            <span class="n">valueAnimator</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2020-11-07
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/android/">Android</a>
+          <a href="https://midFang.github.io/tags/view/">view</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/post/java-decodeunicode/">
+            <span class="next-text nav-default">解决日志打印 Unicode 编码问题</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://midFang.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    2020
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        midFang
+        
+      </span></span>
+
+  
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <script type="text/javascript" src="/js/load-photoswipe.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe.min.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe-ui-default.min.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <script>
+    $("#openSearch, #openSearchMobile").click(function(){
+      $(".modal-dialog").addClass("visible");
+    });
+
+    $("#closeSearch").click(function(){
+      $(".modal-dialog").removeClass("visible");
+    });
+
+    $(document).click(function(event) {
+    
+      if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
+        $("body").find(".modal-dialog").removeClass("visible");
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>

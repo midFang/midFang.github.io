@@ -6,7 +6,7 @@
     <description>Recent content in Categories on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 01 Nov 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 07 Nov 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,9 +14,18 @@
     <item>
       <title>Android</title>
       <link>https://midFang.github.io/categories/android/</link>
-      <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 07 Nov 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/categories/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>view</title>
+      <link>https://midFang.github.io/categories/view/</link>
+      <pubDate>Sat, 07 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/categories/view/</guid>
       <description></description>
     </item>
     
@@ -107,15 +116,6 @@
       <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>View</title>
-      <link>https://midFang.github.io/categories/view/</link>
-      <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/categories/view/</guid>
       <description></description>
     </item>
     
