@@ -6,10 +6,21 @@
     <description>Recent content in Posts on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 07 Nov 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 08 Nov 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Java 可变参数可能引发的性能问题</title>
+      <link>https://midFang.github.io/post/java-varargs-performance/</link>
+      <pubDate>Sun, 08 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/java-varargs-performance/</guid>
+      <description>&lt;h3 id=&#34;java-可变参数可能引发的性能问题&#34;&gt;Java 可变参数可能引发的性能问题&lt;/h3&gt;
+
+&lt;p&gt;在这里先看一下我们项目中之前写的日志打印工具&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>理解 Android 中的 window 与悬浮窗的实现</title>
@@ -314,15 +325,6 @@
       
       <guid>https://midFang.github.io/post/eventbus-source-code-analysis/</guid>
       <description>大致流程 EventBus 是一种用于 Android 的事件发布-订阅总线, 是一个可以实现组件间通信的一个第三方框架, 使用起来非常的简单, 一共也就是 4 个步骤, 注册订阅, 发送</description>
-    </item>
-    
-    <item>
-      <title>HashMap源码分析</title>
-      <link>https://midFang.github.io/post/hashmap-source-code-analysis/</link>
-      <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/hashmap-source-code-analysis/</guid>
-      <description>HashMap 可以说是我们在开发中经常使用的到, 在 Java 的数据结构基础里，HashMap 无疑是一个非常重要的数据结构 现在看看源码里面的方法具体都干了一下什么</description>
     </item>
     
   </channel>

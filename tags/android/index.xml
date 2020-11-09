@@ -6,10 +6,21 @@
     <description>Recent content in Android on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 07 Nov 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 08 Nov 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/android/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Java 可变参数可能引发的性能问题</title>
+      <link>https://midFang.github.io/post/java-varargs-performance/</link>
+      <pubDate>Sun, 08 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/post/java-varargs-performance/</guid>
+      <description>&lt;h3 id=&#34;java-可变参数可能引发的性能问题&#34;&gt;Java 可变参数可能引发的性能问题&lt;/h3&gt;
+
+&lt;p&gt;在这里先看一下我们项目中之前写的日志打印工具&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>理解 Android 中的 window 与悬浮窗的实现</title>
@@ -280,17 +291,6 @@
       
       <guid>https://midFang.github.io/post/android-handler-source-code-analysis/</guid>
       <description>Handler 主要讲的就是 Android 中的消息机制, 其实讲到 Handler 就少不了几个重要的对象, 也就是 Looper , ThreadLocal , MessageQueue 首先看看是如何使用的吧, 我们就简单的从以下入手, Handler 应该也是做</description>
-    </item>
-    
-    <item>
-      <title>Java 中的 Monitor</title>
-      <link>https://midFang.github.io/post/java-thread-monitor/</link>
-      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/post/java-thread-monitor/</guid>
-      <description>&lt;p&gt;什么是 Monitor?&lt;/p&gt;
-
-&lt;p&gt;Java 虚拟机给每个对象和 class 字节码都设置了一个监听器 Monitor，用于检测并发代码的重入，同时在 Object 类中还提供了 notify 和 wait 方法来对线程进行控制&lt;/p&gt;</description>
     </item>
     
   </channel>
