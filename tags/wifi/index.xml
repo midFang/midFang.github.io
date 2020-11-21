@@ -13,10 +13,10 @@
     
     <item>
       <title>WiFi开发断开当前正在连接的 WiFi</title>
-      <link>https://midFang.github.io/post/disconnect-current-wifi/</link>
+      <link>https://midFang.github.io/disconnect-current-wifi/</link>
       <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/disconnect-current-wifi/</guid>
+      <guid>https://midFang.github.io/disconnect-current-wifi/</guid>
       <description>在 WiFi 功能开发的时候，项目中有一个需求是超时逻辑，但是 Android 系统 WiFi 连接的广播只有连接成功，或者是 WiFi 密码错误的广播，并没有定义这种类型。所以我在项目</description>
     </item>
     

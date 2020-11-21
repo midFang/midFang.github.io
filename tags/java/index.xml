@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>java on midFang&#39;s Blog</title>
+    <title>Java on midFang&#39;s Blog</title>
     <link>https://midFang.github.io/tags/java/</link>
-    <description>Recent content in java on midFang&#39;s Blog</description>
+    <description>Recent content in Java on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sun, 01 Nov 2020 00:00:00 +0000</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>解决日志打印 Unicode 编码问题</title>
-      <link>https://midFang.github.io/post/java-decodeunicode/</link>
+      <link>https://midFang.github.io/java-decodeunicode/</link>
       <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/java-decodeunicode/</guid>
+      <guid>https://midFang.github.io/java-decodeunicode/</guid>
       <description>&lt;p&gt;最近接入了一个第三方的网络接口，他们的日志都被 Unicode 编码了，全都是这样很多反斜杠类似的：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -30,10 +30,10 @@
     
     <item>
       <title>Java 中的泛型</title>
-      <link>https://midFang.github.io/post/java-generics-common/</link>
+      <link>https://midFang.github.io/java-generics-common/</link>
       <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/java-generics-common/</guid>
+      <guid>https://midFang.github.io/java-generics-common/</guid>
       <description>假设有 3 个类, 他们的继承关系是这样的 1 2 public class Person { } 1 2 public class Gril extends Person { } 1 2 public class Boy extends Person { } 1 2 public class Father { } 在类上指定的泛型, 那么在当前类, 使用的都</description>
     </item>
     

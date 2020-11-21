@@ -13,10 +13,10 @@
     
     <item>
       <title>Java 可变参数可能引发的性能问题</title>
-      <link>https://midFang.github.io/post/java-varargs-performance/</link>
+      <link>https://midFang.github.io/java-varargs-performance/</link>
       <pubDate>Sun, 08 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/java-varargs-performance/</guid>
+      <guid>https://midFang.github.io/java-varargs-performance/</guid>
       <description>&lt;h3 id=&#34;java-可变参数可能引发的性能问题&#34;&gt;Java 可变参数可能引发的性能问题&lt;/h3&gt;
 
 &lt;p&gt;在这里先看一下我们项目中之前写的日志打印工具&lt;/p&gt;</description>
@@ -24,10 +24,10 @@
     
     <item>
       <title>理解 Android 中的 window 与悬浮窗的实现</title>
-      <link>https://midFang.github.io/post/android-window-suspension-view/</link>
+      <link>https://midFang.github.io/android-window-suspension-view/</link>
       <pubDate>Sat, 07 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-window-suspension-view/</guid>
+      <guid>https://midFang.github.io/android-window-suspension-view/</guid>
       <description>&lt;h3 id=&#34;window-是什么&#34;&gt;Window 是什么&lt;/h3&gt;
 
 &lt;ul&gt;
@@ -44,10 +44,10 @@
     
     <item>
       <title>解决日志打印 Unicode 编码问题</title>
-      <link>https://midFang.github.io/post/java-decodeunicode/</link>
+      <link>https://midFang.github.io/java-decodeunicode/</link>
       <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/java-decodeunicode/</guid>
+      <guid>https://midFang.github.io/java-decodeunicode/</guid>
       <description>&lt;p&gt;最近接入了一个第三方的网络接口，他们的日志都被 Unicode 编码了，全都是这样很多反斜杠类似的：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -61,10 +61,10 @@
     
     <item>
       <title>华为 Android 10.0 启动服务失败</title>
-      <link>https://midFang.github.io/post/huawei-android-api-29-startservice-fail/</link>
+      <link>https://midFang.github.io/huawei-android-api-29-startservice-fail/</link>
       <pubDate>Sat, 17 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/huawei-android-api-29-startservice-fail/</guid>
+      <guid>https://midFang.github.io/huawei-android-api-29-startservice-fail/</guid>
       <description>&lt;p&gt;最近调研了一个音乐服务的 App 以及相关功能的库。发现使用的时候，开启了一个音乐服务，在其他的手机上面暂时没有发现其他什么问题，但是在华为 Android 10 手机上每次 run 的时候，服务正常启动也是没有问题的， 但是如果关闭掉 App ，重新启动 App 服务就起不来了。我尝试如下两种方式启动服务：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -80,10 +80,10 @@
     
     <item>
       <title>Android 转场动画之揭露动画的使用</title>
-      <link>https://midFang.github.io/post/android-animation-revealing-transitions/</link>
+      <link>https://midFang.github.io/android-animation-revealing-transitions/</link>
       <pubDate>Mon, 21 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-animation-revealing-transitions/</guid>
+      <guid>https://midFang.github.io/android-animation-revealing-transitions/</guid>
       <description>&lt;h3 id=&#34;配置-activity-的转场动画&#34;&gt;配置 Activity 的转场动画&lt;/h3&gt;
 
 &lt;p&gt;使用揭露动画，主要是使用到了 ViewAnimationUtils.createCircularReveal()  这个 API ，官方已经给我们封装好了，我们具体看下各个参数是什么意思，就知道如何使用了&lt;/p&gt;
@@ -105,10 +105,10 @@
     
     <item>
       <title>Hugo 博客使用 utterances 作为评论系统</title>
-      <link>https://midFang.github.io/post/hugo-utterances-comment-system/</link>
+      <link>https://midFang.github.io/hugo-utterances-comment-system/</link>
       <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/hugo-utterances-comment-system/</guid>
+      <guid>https://midFang.github.io/hugo-utterances-comment-system/</guid>
       <description>&lt;h3 id=&#34;utterances-是一款基于-github-issues-的评论工具&#34;&gt;utterances 是一款基于 GitHub issues 的评论工具&lt;/h3&gt;
 
 &lt;p&gt;相比同类的工具 gitment、gitalk 以及 disqus 评论工具，优点如下：&lt;/p&gt;
@@ -124,10 +124,10 @@
     
     <item>
       <title>Kotlin 中的异常处理</title>
-      <link>https://midFang.github.io/post/kotlin-catch-exception/</link>
+      <link>https://midFang.github.io/kotlin-catch-exception/</link>
       <pubDate>Tue, 15 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-catch-exception/</guid>
+      <guid>https://midFang.github.io/kotlin-catch-exception/</guid>
       <description>&lt;h3 id=&#34;java-中的异常处理&#34;&gt;Java 中的异常处理&lt;/h3&gt;
 
 &lt;p&gt;日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理：&lt;/p&gt;</description>
@@ -135,10 +135,10 @@
     
     <item>
       <title>Kotlin 中的高阶函数</title>
-      <link>https://midFang.github.io/post/kotlin-higher-order-functions/</link>
+      <link>https://midFang.github.io/kotlin-higher-order-functions/</link>
       <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-higher-order-functions/</guid>
+      <guid>https://midFang.github.io/kotlin-higher-order-functions/</guid>
       <description>&lt;h3 id=&#34;定义&#34;&gt;定义&lt;/h3&gt;
 
 &lt;p&gt;如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数&lt;/p&gt;
@@ -156,10 +156,10 @@
     
     <item>
       <title>Kotlin 中的密封类</title>
-      <link>https://midFang.github.io/post/kotlin-sealed-class/</link>
+      <link>https://midFang.github.io/kotlin-sealed-class/</link>
       <pubDate>Sun, 30 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-sealed-class/</guid>
+      <guid>https://midFang.github.io/kotlin-sealed-class/</guid>
       <description>&lt;h2 id=&#34;密封类&#34;&gt;密封类&lt;/h2&gt;
 
 &lt;p&gt;密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也是受限的，但每个枚举常量只存在一个实例，而密封类 的一个子类可以有可包含状态的多个实例。&lt;/p&gt;</description>
@@ -167,10 +167,10 @@
     
     <item>
       <title>kotlin 中的运算符重载</title>
-      <link>https://midFang.github.io/post/kotlin-operator-overloading/</link>
+      <link>https://midFang.github.io/kotlin-operator-overloading/</link>
       <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-operator-overloading/</guid>
+      <guid>https://midFang.github.io/kotlin-operator-overloading/</guid>
       <description>&lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
 
 &lt;p&gt;运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 + - * / % ++ &amp;ndash; 。而 Kotlin 中允许我们将这些所有的运算符甚至其他的关键字进行重载&lt;/p&gt;</description>
@@ -178,10 +178,10 @@
     
     <item>
       <title>Android 中的进程间通信简单使用</title>
-      <link>https://midFang.github.io/post/android-process-base-use/</link>
+      <link>https://midFang.github.io/android-process-base-use/</link>
       <pubDate>Wed, 19 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-process-base-use/</guid>
+      <guid>https://midFang.github.io/android-process-base-use/</guid>
       <description>&lt;h3 id=&#34;binder-是什么&#34;&gt;Binder 是什么&lt;/h3&gt;
 
 &lt;p&gt;首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式&lt;/p&gt;
@@ -195,19 +195,19 @@
     
     <item>
       <title>WindowManager.LayoutParams 参数详解</title>
-      <link>https://midFang.github.io/post/window.layoutparams/</link>
+      <link>https://midFang.github.io/window.layoutparams/</link>
       <pubDate>Sat, 01 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/window.layoutparams/</guid>
+      <guid>https://midFang.github.io/window.layoutparams/</guid>
       <description>&lt;p&gt;WindowManager.LayoutParams 是 WindowManager 接口的嵌套类；继承于 ViewGroup.LayoutParams 。它的内容十分丰富。其实WindowManager.&lt;a href=&#34;http://lib.csdn.net/base/17&#34;&gt;Java&lt;/a&gt;的主要内容就是由这个类定义构成。下面来分析一下这个类。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Git 管理 .gitignore file 文件的使用</title>
-      <link>https://midFang.github.io/post/git-gitignore-file-use/</link>
+      <link>https://midFang.github.io/git-gitignore-file-use/</link>
       <pubDate>Sun, 05 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/git-gitignore-file-use/</guid>
+      <guid>https://midFang.github.io/git-gitignore-file-use/</guid>
       <description>&lt;h2 id=&#34;git-忽略文件的原则&#34;&gt;Git 忽略文件的原则&lt;/h2&gt;
 
 &lt;ul&gt;
@@ -219,37 +219,37 @@
     
     <item>
       <title>《Google工作法》读书笔记</title>
-      <link>https://midFang.github.io/post/books-google-work/</link>
+      <link>https://midFang.github.io/books-google-work/</link>
       <pubDate>Sun, 05 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/books-google-work/</guid>
+      <guid>https://midFang.github.io/books-google-work/</guid>
       <description>一次结束，避免过度推迟 避免过度推迟只会浪费更多人的时间， 在一场会议之前，需要考虑会议的目标，明确会议的目的，最终要会议要取得的结果才是真正的</description>
     </item>
     
     <item>
       <title>关于8.0以下出现Only fullscreen opaque activities can request orientation问题的解决方案</title>
-      <link>https://midFang.github.io/post/bug-only-fullscreen-opaque-activities-can-request-orientation/</link>
+      <link>https://midFang.github.io/bug-only-fullscreen-opaque-activities-can-request-orientation/</link>
       <pubDate>Sat, 04 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/bug-only-fullscreen-opaque-activities-can-request-orientation/</guid>
+      <guid>https://midFang.github.io/bug-only-fullscreen-opaque-activities-can-request-orientation/</guid>
       <description>前言 不得不说 Google 的适配是真的烦。真的是一不小心各种坑，市面上的 Android 版本也很多，各种各样的屏幕也很多。最近做的项目在自己手上测试的都还行，直接丢给</description>
     </item>
     
     <item>
       <title>Java 动态代理</title>
-      <link>https://midFang.github.io/post/java-dynamic-proxy-design-patterns/</link>
+      <link>https://midFang.github.io/java-dynamic-proxy-design-patterns/</link>
       <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/java-dynamic-proxy-design-patterns/</guid>
+      <guid>https://midFang.github.io/java-dynamic-proxy-design-patterns/</guid>
       <description>动态代理和静态代理一般在设计模式中的定义为代理设计模式 定义： 为其他对象提供一种代理以控制对这个对象的访问 使用场景： 当无法或者不想直接访问某个</description>
     </item>
     
     <item>
       <title>Activity 从各个方向进入和退出的转场动画</title>
-      <link>https://midFang.github.io/post/activity-animation-transfer/</link>
+      <link>https://midFang.github.io/activity-animation-transfer/</link>
       <pubDate>Wed, 02 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/activity-animation-transfer/</guid>
+      <guid>https://midFang.github.io/activity-animation-transfer/</guid>
       <description>&lt;h3 id=&#34;向左推&#34;&gt;向左推&lt;/h3&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -294,10 +294,10 @@
     
     <item>
       <title>Android源码之单例设计模式</title>
-      <link>https://midFang.github.io/post/android-source-code-design-patterns/</link>
+      <link>https://midFang.github.io/android-source-code-design-patterns/</link>
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-source-code-design-patterns/</guid>
+      <guid>https://midFang.github.io/android-source-code-design-patterns/</guid>
       <description>&lt;h2 id=&#34;介绍&#34;&gt;介绍&lt;/h2&gt;
 
 &lt;blockquote&gt;
@@ -311,19 +311,19 @@
     
     <item>
       <title>ArrayList源码分析</title>
-      <link>https://midFang.github.io/post/arraylist-source-code-analysis/</link>
+      <link>https://midFang.github.io/arraylist-source-code-analysis/</link>
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/arraylist-source-code-analysis/</guid>
+      <guid>https://midFang.github.io/arraylist-source-code-analysis/</guid>
       <description>开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻</description>
     </item>
     
     <item>
       <title>EventBus 源码分析</title>
-      <link>https://midFang.github.io/post/eventbus-source-code-analysis/</link>
+      <link>https://midFang.github.io/eventbus-source-code-analysis/</link>
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/eventbus-source-code-analysis/</guid>
+      <guid>https://midFang.github.io/eventbus-source-code-analysis/</guid>
       <description>大致流程 EventBus 是一种用于 Android 的事件发布-订阅总线, 是一个可以实现组件间通信的一个第三方框架, 使用起来非常的简单, 一共也就是 4 个步骤, 注册订阅, 发送</description>
     </item>
     

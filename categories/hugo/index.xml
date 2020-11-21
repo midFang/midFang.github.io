@@ -13,10 +13,10 @@
     
     <item>
       <title>Hugo 博客使用 utterances 作为评论系统</title>
-      <link>https://midFang.github.io/post/hugo-utterances-comment-system/</link>
+      <link>https://midFang.github.io/hugo-utterances-comment-system/</link>
       <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/hugo-utterances-comment-system/</guid>
+      <guid>https://midFang.github.io/hugo-utterances-comment-system/</guid>
       <description>&lt;h3 id=&#34;utterances-是一款基于-github-issues-的评论工具&#34;&gt;utterances 是一款基于 GitHub issues 的评论工具&lt;/h3&gt;
 
 &lt;p&gt;相比同类的工具 gitment、gitalk 以及 disqus 评论工具，优点如下：&lt;/p&gt;
@@ -32,10 +32,10 @@
     
     <item>
       <title>hugo常用命令.md</title>
-      <link>https://midFang.github.io/post/hugo-common-command/</link>
+      <link>https://midFang.github.io/hugo-common-command/</link>
       <pubDate>Thu, 20 Jun 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/hugo-common-command/</guid>
+      <guid>https://midFang.github.io/hugo-common-command/</guid>
       <description>&lt;h2 id=&#34;hugo-常用命令&#34;&gt;Hugo 常用命令&lt;/h2&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;

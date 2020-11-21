@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Kotlin 中的异常处理 - midFang&#39;s Blog</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="midFang" />
+  <meta name="description" content="Java 中的异常处理 日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理：
+" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<link rel="canonical" href="https://midFang.github.io/kotlin-catch-exception/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="Kotlin 中的异常处理" />
+<meta property="og:description" content="Java 中的异常处理
+
+日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/kotlin-catch-exception/" />
+<meta property="article:published_time" content="2020-09-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-09-15T00:00:00+00:00" />
+<meta itemprop="name" content="Kotlin 中的异常处理">
+<meta itemprop="description" content="Java 中的异常处理
+
+日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理：">
+
+
+<meta itemprop="datePublished" content="2020-09-15T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-09-15T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1036">
+
+
+
+<meta itemprop="keywords" content="kotlin," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kotlin 中的异常处理"/>
+<meta name="twitter:description" content="Java 中的异常处理
+
+日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理："/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">midFang's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+        
+      </li>
+    
+
+    
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+    
+
+
+
+
+
+
+  <link rel="stylesheet" href="/lib/photoswipe/photoswipe.min.css" />
+  <link rel="stylesheet" href="/lib/photoswipe/default-skin/default-skin.min.css" />
+
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+  
+
+  
+    
+<div class="modal-dialog">
+    
+    <div class="modal-content">
+      <div id="closeSearch" title="Close" class="close">X</div>
+      <div class="modal-header">
+        <div class="modal-title">Search</div>
+      </div>
+      <div class="modal-body">
+          <script>
+            (function() {
+              var cx = '57787f7f4d21d54fc';
+              var gcse = document.createElement('script');
+              gcse.type = 'text/javascript';
+              gcse.async = true;
+              gcse.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//cse.google.com/cse.js?cx=' + cx;
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(gcse, s);
+            })();
+          </script>
+          <gcse:search></gcse:search>
+      </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      midFang's Blog
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+      <li class="menu-item">
+        <a id="openSearch" class="menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">Kotlin 中的异常处理</h1>
+      
+      <div class="post-meta">
+        <time datetime="2020-09-15" class="post-time">
+          2020-09-15
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/kotlin/"> kotlin </a>
+            
+          </div>
+        
+
+        
+        
+          <span id="busuanzi_container_page_pv">
+            | 阅读 <span id="busuanzi_value_page_pv"></span>
+          </span>
+        
+
+        
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#java-中的异常处理">Java 中的异常处理</a></li>
+<li><a href="#kotlin-中的异常处理">Kotlin 中的异常处理</a></li>
+<li><a href="#源码分析">源码分析</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      <h3 id="java-中的异常处理">Java 中的异常处理</h3>
+
+<p>日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理：</p>
+
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">RetrofitUtil</span><span class="p">.</span><span class="n">getInstance</span><span class="p">().</span><span class="n">callAppData</span><span class="p">(</span><span class="n">call</span><span class="p">,</span> <span class="k">object</span> <span class="err">: </span><span class="nc">NetListener</span> <span class="p">{</span>
+            <span class="k">override</span> <span class="k">fun</span> <span class="nf">onSuccess</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&#34;onSuccess() called with: message = $message&#34;</span><span class="p">)</span>
+
+                <span class="k">val</span> <span class="py">bean</span> <span class="p">=</span> <span class="k">try</span> <span class="p">{</span>
+                    <span class="n">GsonUtils</span><span class="p">.</span><span class="n">fromJson</span><span class="p">&lt;</span><span class="n">CollectionBean</span><span class="p">&gt;(</span><span class="n">message</span><span class="p">,</span> <span class="n">CollectionBean</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">)</span>
+                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">Exception</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">null</span>
+                <span class="p">}</span>
+
+                <span class="c1">// showUI
+</span><span class="c1"></span>            <span class="p">}</span>
+
+            <span class="k">override</span> <span class="k">fun</span> <span class="nf">onFailed</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">String</span><span class="p">?)</span> <span class="p">{</span>
+                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&#34;onFailed() called with: message = $message&#34;</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">})</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="kotlin-中的异常处理">Kotlin 中的异常处理</h3>
+
+<p>这是一段 Kotlin 里面的代码，然后我们针对服务器返回的 message Json 进行 Bean 对象的转换，由于服务器返回的数据可能会和原初定义的不一样，所以我们在这里进行的 try catch 的处理。这是 Java 处理异常的方式， 但是我们已经使用 Kotlin 语言， 可以使用 Kotlin 提供的方式，会更加的简便，代码的可读性也会更好，看下是如何实现的，以及可以有哪些扩展：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"> <span class="n">RetrofitUtil</span><span class="p">.</span><span class="n">getInstance</span><span class="p">().</span><span class="n">callAppData</span><span class="p">(</span><span class="n">call</span><span class="p">,</span> <span class="k">object</span> <span class="err">: </span><span class="nc">NetListener</span> <span class="p">{</span>
+            <span class="k">override</span> <span class="k">fun</span> <span class="nf">onSuccess</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&#34;onSuccess() called with: message = $message&#34;</span><span class="p">)</span>
+              
+                <span class="k">val</span> <span class="py">result</span> <span class="p">=</span> <span class="n">message</span><span class="p">.</span><span class="n">runCatching</span> <span class="p">{</span>
+                    <span class="k">val</span> <span class="py">bean</span> <span class="p">=</span> <span class="n">GsonUtils</span><span class="p">.</span><span class="n">fromJson</span><span class="p">&lt;</span><span class="n">CollectionBean</span><span class="p">&gt;(</span><span class="n">message</span><span class="p">,</span> <span class="n">CollectionBean</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">)</span>
+                    <span class="k">return</span><span class="n">@runCatching</span> <span class="n">bean</span>
+                <span class="p">}.</span><span class="n">onSuccess</span> <span class="p">{</span>
+                    <span class="n">Log</span><span class="p">.</span><span class="n">i</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&#34;onSuccess: &#34;</span><span class="p">)</span>
+                <span class="p">}.</span><span class="n">onFailure</span> <span class="p">{</span>
+                    <span class="n">Log</span><span class="p">.</span><span class="n">i</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&#34;onFailure: &#34;</span><span class="p">)</span>
+                <span class="p">}</span>
+
+                <span class="k">val</span> <span class="py">orNull</span> <span class="p">=</span> <span class="n">result</span><span class="p">.</span><span class="n">getOrNull</span><span class="p">()</span>
+                <span class="k">val</span> <span class="py">defaultValue</span> <span class="p">=</span> <span class="n">result</span><span class="p">.</span><span class="n">getOrDefault</span><span class="p">(</span><span class="n">CollectionBean</span><span class="p">())</span>
+
+                <span class="k">val</span> <span class="py">orThrow</span> <span class="p">=</span> <span class="n">result</span><span class="p">.</span><span class="n">getOrThrow</span><span class="p">()</span>
+                <span class="k">val</span> <span class="py">result3</span> <span class="p">=</span> <span class="n">result</span><span class="p">.</span><span class="n">getOrElse</span> <span class="p">{</span>
+                    <span class="n">Log</span><span class="p">.</span><span class="n">i</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&#34;onFail: 异常了&#34;</span><span class="p">)</span>
+                <span class="p">}</span>
+
+            <span class="p">}</span>
+
+            <span class="k">override</span> <span class="k">fun</span> <span class="nf">onFailed</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">String</span><span class="p">?)</span> <span class="p">{</span>
+                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&#34;onFailed() called with: message = $message&#34;</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">})</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>在 Kotlin 中使用异常处理的方式是使用 <strong>runCatching</strong> 函数，这其实是一个高阶函数。这里先简单介绍一下这些 API 稍后看下源码具体是如何实现的这个部分。首先在 runCatching 高阶函数的代码块中，这个部分就已经进行了  try catch 包裹的处理，同时还实现了 onSuccess 和 onFailure 高阶函数，实际业务需求可以在这里做成功和失败的逻辑处理，这里我只是做了日志的打印。</p>
+
+<p><strong>runCatching</strong> 函数返回的是一个 Result 类，Result 类中，一共定义了如上述的 4 个方法：</p>
+
+<ul>
+<li>其中 getOrNull 返回的是 runCatching 中处理的结果，是一个可空类型的，比如这里我返回的是 CollectionBean 类</li>
+<li>getOrDefault 返回的是一个不可空的类型，调用的时候需要传递默认值，为 null 的时候会返回默认值</li>
+<li>getOrThrow  未发生的异常返回的是 runCatching 中处理的结果，如果 runCatching 中发生了异常，调用这个 API 会抛出异常</li>
+<li>getOrElse 返回处理的结果，或者是异常自己处理</li>
+</ul>
+
+<h3 id="源码分析">源码分析</h3>
+
+<p>1.runCatching 的实现</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@InlineOnly</span>
+<span class="n">@SinceKotlin</span><span class="p">(</span><span class="s">&#34;1.3&#34;</span><span class="p">)</span>
+<span class="k">public</span> <span class="k">inline</span> <span class="k">fun</span> &lt;T, R&gt; <span class="nf">T</span><span class="p">.</span><span class="n">runCatching</span><span class="p">(</span><span class="n">block</span><span class="p">:</span> <span class="n">T</span><span class="p">.()</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">Result</span><span class="p">&lt;</span><span class="n">R</span><span class="p">&gt;</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">try</span> <span class="p">{</span>
+        <span class="n">Result</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="n">block</span><span class="p">())</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">Throwable</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Result</span><span class="p">.</span><span class="n">failure</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>runCatching 是一个内联的高阶函数，返回了一个 Result 类，函数里面对回调出去的 lambda 表达式进行了 try catch 的处理。返回的内容使用 Result.success 和 Result.failure 进行的包裹</p>
+
+<p>2.getOrNull</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@InlineOnly</span>
+<span class="k">public</span> <span class="k">inline</span> <span class="k">fun</span> <span class="nf">getOrNull</span><span class="p">():</span> <span class="n">T</span><span class="p">?</span> <span class="p">=</span>
+       <span class="k">when</span> <span class="p">{</span>
+            <span class="n">isFailure</span> <span class="p">-&gt;</span> <span class="k">null</span>
+            <span class="k">else</span> <span class="p">-&gt;</span> <span class="n">value</span> <span class="k">as</span> <span class="n">T</span>
+       <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>异常的情况返回 null ，要么就是返回 value， value 是 Result 的一个属性，也就是上面使用 Result.success(block())  中返回的结果</p>
+
+<p>3.getOrDefault</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">public</span> <span class="k">inline</span> <span class="k">fun</span> &lt;R, T : R&gt; <span class="nf">Result</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;.</span><span class="n">getOrDefault</span><span class="p">(</span><span class="n">defaultValue</span><span class="p">:</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">isFailure</span><span class="p">)</span> <span class="k">return</span> <span class="n">defaultValue</span>
+    <span class="k">return</span> <span class="n">value</span> <span class="k">as</span> <span class="n">T</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>如果是异常的情况返回默认值，要么返回的是 value</p>
+
+<p>4.getOrElse</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">public</span> <span class="k">inline</span> <span class="k">fun</span> &lt;R, T : R&gt; <span class="nf">Result</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;.</span><span class="n">getOrElse</span><span class="p">(</span><span class="n">onFailure</span><span class="p">:</span> <span class="p">(</span><span class="n">exception</span><span class="p">:</span> <span class="n">Throwable</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">{</span>
+    <span class="n">contract</span> <span class="p">{</span>
+        <span class="n">callsInPlace</span><span class="p">(</span><span class="n">onFailure</span><span class="p">,</span> <span class="n">InvocationKind</span><span class="p">.</span><span class="n">AT_MOST_ONCE</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="k">when</span> <span class="p">(</span><span class="k">val</span> <span class="py">exception</span> <span class="p">=</span> <span class="n">exceptionOrNull</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">null</span> <span class="p">-&gt;</span> <span class="n">value</span> <span class="k">as</span> <span class="n">T</span>
+        <span class="k">else</span> <span class="p">-&gt;</span> <span class="n">onFailure</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>先看看 exceptionOrNull 处理的是什么：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">public</span> <span class="k">fun</span> <span class="nf">exceptionOrNull</span><span class="p">():</span> <span class="n">Throwable</span><span class="p">?</span> <span class="p">=</span>
+        <span class="k">when</span> <span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">is</span> <span class="n">Failure</span> <span class="p">-&gt;</span> <span class="n">value</span><span class="p">.</span><span class="n">exception</span>
+            <span class="k">else</span> <span class="p">-&gt;</span> <span class="k">null</span>
+        <span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>exceptionOrNull 返回的是： 如果是发生了异常返回异常类， 否则返回 null， 所以 getOrElse 里面返回的是： 异常情况下，返回异常类，否则返回处理的结果 value</p>
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2020-09-15
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/kotlin/">kotlin</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/hugo-utterances-comment-system/">
+            
+            <i class="iconfont">
+              <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M691.908486 949.511495l75.369571-89.491197c10.963703-12.998035 10.285251-32.864502-1.499144-44.378743L479.499795 515.267417 757.434875 204.940602c11.338233-12.190647 11.035334-32.285311-0.638543-44.850487l-80.46666-86.564541c-11.680017-12.583596-30.356378-12.893658-41.662889-0.716314L257.233596 494.235404c-11.332093 12.183484-11.041474 32.266891 0.657986 44.844348l80.46666 86.564541c1.772366 1.910513 3.706415 3.533476 5.750981 4.877077l306.620399 321.703933C662.505829 963.726242 680.945807 962.528973 691.908486 949.511495z"></path>
+</svg>
+
+            </i>
+            <span class="prev-text nav-default">Hugo 博客使用 utterances 作为评论系统</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        
+          <a class="next" href="/kotlin-higher-order-functions/">
+            <span class="next-text nav-default">Kotlin 中的高阶函数</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://midFang.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    2020
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        midFang
+        
+      </span></span>
+
+  
+  
+    <span id="busuanzi_container">
+      访客数/访问量：<span id="busuanzi_value_site_uv"></span>/<span id="busuanzi_value_site_pv"></span>
+    </span>
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <script type="text/javascript" src="/js/load-photoswipe.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe.min.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe-ui-default.min.js"></script>
+  
+
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+  <script>
+    $("#openSearch, #openSearchMobile").click(function(){
+      $(".modal-dialog").addClass("visible");
+    });
+
+    $("#closeSearch").click(function(){
+      $(".modal-dialog").removeClass("visible");
+    });
+
+    $(document).click(function(event) {
+    
+      if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
+        $("body").find(".modal-dialog").removeClass("visible");
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>

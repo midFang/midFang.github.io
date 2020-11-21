@@ -13,19 +13,19 @@
     
     <item>
       <title>使用 PicGo 搭建免费图床</title>
-      <link>https://midFang.github.io/post/tools-picgo-images-use/</link>
+      <link>https://midFang.github.io/tools-picgo-images-use/</link>
       <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/tools-picgo-images-use/</guid>
+      <guid>https://midFang.github.io/tools-picgo-images-use/</guid>
       <description>身为程序员的我们, 我相信应该大部分人都喜欢用 markdown 来当作写作工具, 他的语法格式也很简单, 但是当我们要使用图片的使用, 那么就要使用到图床了, 也就是</description>
     </item>
     
     <item>
       <title>git使用代理加速，修改代理方式</title>
-      <link>https://midFang.github.io/post/git-use-proxy/</link>
+      <link>https://midFang.github.io/git-use-proxy/</link>
       <pubDate>Mon, 10 Jun 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/git-use-proxy/</guid>
+      <guid>https://midFang.github.io/git-use-proxy/</guid>
       <description>&lt;p&gt;最近 git clone 一个项目真的是太慢了，每秒 7kb。。。电脑上也刚好有 ti 子，试试能不能让 git 工具走代理的方式，能不能更快些，实测效果好了很多，设置如下&lt;/p&gt;
 
 &lt;h3 id=&#34;设置使用代理&#34;&gt;设置使用代理&lt;/h3&gt;
@@ -35,10 +35,10 @@
     
     <item>
       <title>关闭 Sublime Text 3 自动更新</title>
-      <link>https://midFang.github.io/post/colse-sublime-text-3-auto-update/</link>
+      <link>https://midFang.github.io/colse-sublime-text-3-auto-update/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/colse-sublime-text-3-auto-update/</guid>
+      <guid>https://midFang.github.io/colse-sublime-text-3-auto-update/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;在 Mac 中使用 Sublime Text 3 的时候，每次打开软件的时候，总是提示自动更新，那么要怎么样可以取消自动更新呢？ 有如下两个步骤&lt;/p&gt;
 &lt;/blockquote&gt;

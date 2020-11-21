@@ -13,19 +13,19 @@
     
     <item>
       <title>关于8.0以下出现Only fullscreen opaque activities can request orientation问题的解决方案</title>
-      <link>https://midFang.github.io/post/bug-only-fullscreen-opaque-activities-can-request-orientation/</link>
+      <link>https://midFang.github.io/bug-only-fullscreen-opaque-activities-can-request-orientation/</link>
       <pubDate>Sat, 04 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/bug-only-fullscreen-opaque-activities-can-request-orientation/</guid>
+      <guid>https://midFang.github.io/bug-only-fullscreen-opaque-activities-can-request-orientation/</guid>
       <description>前言 不得不说 Google 的适配是真的烦。真的是一不小心各种坑，市面上的 Android 版本也很多，各种各样的屏幕也很多。最近做的项目在自己手上测试的都还行，直接丢给</description>
     </item>
     
     <item>
       <title>Android源码之单例设计模式</title>
-      <link>https://midFang.github.io/post/android-source-code-design-patterns/</link>
+      <link>https://midFang.github.io/android-source-code-design-patterns/</link>
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-source-code-design-patterns/</guid>
+      <guid>https://midFang.github.io/android-source-code-design-patterns/</guid>
       <description>&lt;h2 id=&#34;介绍&#34;&gt;介绍&lt;/h2&gt;
 
 &lt;blockquote&gt;
@@ -39,37 +39,37 @@
     
     <item>
       <title>ArrayList源码分析</title>
-      <link>https://midFang.github.io/post/arraylist-source-code-analysis/</link>
+      <link>https://midFang.github.io/arraylist-source-code-analysis/</link>
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/arraylist-source-code-analysis/</guid>
+      <guid>https://midFang.github.io/arraylist-source-code-analysis/</guid>
       <description>开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻</description>
     </item>
     
     <item>
       <title>EventBus 源码分析</title>
-      <link>https://midFang.github.io/post/eventbus-source-code-analysis/</link>
+      <link>https://midFang.github.io/eventbus-source-code-analysis/</link>
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/eventbus-source-code-analysis/</guid>
+      <guid>https://midFang.github.io/eventbus-source-code-analysis/</guid>
       <description>大致流程 EventBus 是一种用于 Android 的事件发布-订阅总线, 是一个可以实现组件间通信的一个第三方框架, 使用起来非常的简单, 一共也就是 4 个步骤, 注册订阅, 发送</description>
     </item>
     
     <item>
       <title>HashMap源码分析</title>
-      <link>https://midFang.github.io/post/hashmap-source-code-analysis/</link>
+      <link>https://midFang.github.io/hashmap-source-code-analysis/</link>
       <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/hashmap-source-code-analysis/</guid>
+      <guid>https://midFang.github.io/hashmap-source-code-analysis/</guid>
       <description>HashMap 可以说是我们在开发中经常使用的到, 在 Java 的数据结构基础里，HashMap 无疑是一个非常重要的数据结构 现在看看源码里面的方法具体都干了一下什么</description>
     </item>
     
     <item>
       <title>Handler 源码分析</title>
-      <link>https://midFang.github.io/post/android-handler-source-code-analysis/</link>
+      <link>https://midFang.github.io/android-handler-source-code-analysis/</link>
       <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-handler-source-code-analysis/</guid>
+      <guid>https://midFang.github.io/android-handler-source-code-analysis/</guid>
       <description>Handler 主要讲的就是 Android 中的消息机制, 其实讲到 Handler 就少不了几个重要的对象, 也就是 Looper , ThreadLocal , MessageQueue 首先看看是如何使用的吧, 我们就简单的从以下入手, Handler 应该也是做</description>
     </item>
     

@@ -13,10 +13,10 @@
     
     <item>
       <title>理解 Android 中的 window 与悬浮窗的实现</title>
-      <link>https://midFang.github.io/post/android-window-suspension-view/</link>
+      <link>https://midFang.github.io/android-window-suspension-view/</link>
       <pubDate>Sat, 07 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-window-suspension-view/</guid>
+      <guid>https://midFang.github.io/android-window-suspension-view/</guid>
       <description>&lt;h3 id=&#34;window-是什么&#34;&gt;Window 是什么&lt;/h3&gt;
 
 &lt;ul&gt;
@@ -33,37 +33,37 @@
     
     <item>
       <title>View 的 draw 过程</title>
-      <link>https://midFang.github.io/post/view-draw-process/</link>
+      <link>https://midFang.github.io/view-draw-process/</link>
       <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/view-draw-process/</guid>
+      <guid>https://midFang.github.io/view-draw-process/</guid>
       <description>Draw 过程 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个顶点的位置, draw 则是将布局绘制在屏</description>
     </item>
     
     <item>
       <title>View 的 Layout 摆放过程</title>
-      <link>https://midFang.github.io/post/view-layout-process/</link>
+      <link>https://midFang.github.io/view-layout-process/</link>
       <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/view-layout-process/</guid>
+      <guid>https://midFang.github.io/view-layout-process/</guid>
       <description>Layout 过程 layout 的作用是 ViewGroup 用来确定子元素的位置 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个</description>
     </item>
     
     <item>
       <title>View 的 measure 测量过程</title>
-      <link>https://midFang.github.io/post/view-measure-process/</link>
+      <link>https://midFang.github.io/view-measure-process/</link>
       <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/view-measure-process/</guid>
+      <guid>https://midFang.github.io/view-measure-process/</guid>
       <description>View 的测量过程 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个顶点的位置, draw 则是将布局绘</description>
     </item>
     
     <item>
       <title>Android 测量规格 MeasureSpec</title>
-      <link>https://midFang.github.io/post/android-custom-view-measurespec/</link>
+      <link>https://midFang.github.io/android-custom-view-measurespec/</link>
       <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-custom-view-measurespec/</guid>
+      <guid>https://midFang.github.io/android-custom-view-measurespec/</guid>
       <description>MeasureSpec MeasureSpec 代表的是一个 32 位的 int 值，高2位代表 SpecMode，低 30 位代表 SpecSize，SpecMode 指的测量模式，SpecSize 是指在某种</description>
     </item>
     

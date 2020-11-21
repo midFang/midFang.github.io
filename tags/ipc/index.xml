@@ -13,10 +13,10 @@
     
     <item>
       <title>Android 中的进程间通信简单使用</title>
-      <link>https://midFang.github.io/post/android-process-base-use/</link>
+      <link>https://midFang.github.io/android-process-base-use/</link>
       <pubDate>Wed, 19 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-process-base-use/</guid>
+      <guid>https://midFang.github.io/android-process-base-use/</guid>
       <description>&lt;h3 id=&#34;binder-是什么&#34;&gt;Binder 是什么&lt;/h3&gt;
 
 &lt;p&gt;首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式&lt;/p&gt;

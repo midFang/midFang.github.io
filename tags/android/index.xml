@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>android on midFang&#39;s Blog</title>
+    <title>Android on midFang&#39;s Blog</title>
     <link>https://midFang.github.io/tags/android/</link>
-    <description>Recent content in android on midFang&#39;s Blog</description>
+    <description>Recent content in Android on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sun, 08 Nov 2020 00:00:00 +0000</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>Java 可变参数可能引发的性能问题</title>
-      <link>https://midFang.github.io/post/java-varargs-performance/</link>
+      <link>https://midFang.github.io/java-varargs-performance/</link>
       <pubDate>Sun, 08 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/java-varargs-performance/</guid>
+      <guid>https://midFang.github.io/java-varargs-performance/</guid>
       <description>&lt;h3 id=&#34;java-可变参数可能引发的性能问题&#34;&gt;Java 可变参数可能引发的性能问题&lt;/h3&gt;
 
 &lt;p&gt;在这里先看一下我们项目中之前写的日志打印工具&lt;/p&gt;</description>
@@ -24,10 +24,10 @@
     
     <item>
       <title>理解 Android 中的 window 与悬浮窗的实现</title>
-      <link>https://midFang.github.io/post/android-window-suspension-view/</link>
+      <link>https://midFang.github.io/android-window-suspension-view/</link>
       <pubDate>Sat, 07 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-window-suspension-view/</guid>
+      <guid>https://midFang.github.io/android-window-suspension-view/</guid>
       <description>&lt;h3 id=&#34;window-是什么&#34;&gt;Window 是什么&lt;/h3&gt;
 
 &lt;ul&gt;
@@ -44,10 +44,10 @@
     
     <item>
       <title>解决日志打印 Unicode 编码问题</title>
-      <link>https://midFang.github.io/post/java-decodeunicode/</link>
+      <link>https://midFang.github.io/java-decodeunicode/</link>
       <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/java-decodeunicode/</guid>
+      <guid>https://midFang.github.io/java-decodeunicode/</guid>
       <description>&lt;p&gt;最近接入了一个第三方的网络接口，他们的日志都被 Unicode 编码了，全都是这样很多反斜杠类似的：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -61,10 +61,10 @@
     
     <item>
       <title>华为 Android 10.0 启动服务失败</title>
-      <link>https://midFang.github.io/post/huawei-android-api-29-startservice-fail/</link>
+      <link>https://midFang.github.io/huawei-android-api-29-startservice-fail/</link>
       <pubDate>Sat, 17 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/huawei-android-api-29-startservice-fail/</guid>
+      <guid>https://midFang.github.io/huawei-android-api-29-startservice-fail/</guid>
       <description>&lt;p&gt;最近调研了一个音乐服务的 App 以及相关功能的库。发现使用的时候，开启了一个音乐服务，在其他的手机上面暂时没有发现其他什么问题，但是在华为 Android 10 手机上每次 run 的时候，服务正常启动也是没有问题的， 但是如果关闭掉 App ，重新启动 App 服务就起不来了。我尝试如下两种方式启动服务：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -80,10 +80,10 @@
     
     <item>
       <title>Android 转场动画之揭露动画的使用</title>
-      <link>https://midFang.github.io/post/android-animation-revealing-transitions/</link>
+      <link>https://midFang.github.io/android-animation-revealing-transitions/</link>
       <pubDate>Mon, 21 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-animation-revealing-transitions/</guid>
+      <guid>https://midFang.github.io/android-animation-revealing-transitions/</guid>
       <description>&lt;h3 id=&#34;配置-activity-的转场动画&#34;&gt;配置 Activity 的转场动画&lt;/h3&gt;
 
 &lt;p&gt;使用揭露动画，主要是使用到了 ViewAnimationUtils.createCircularReveal()  这个 API ，官方已经给我们封装好了，我们具体看下各个参数是什么意思，就知道如何使用了&lt;/p&gt;
@@ -105,10 +105,10 @@
     
     <item>
       <title>Android 中的进程间通信简单使用</title>
-      <link>https://midFang.github.io/post/android-process-base-use/</link>
+      <link>https://midFang.github.io/android-process-base-use/</link>
       <pubDate>Wed, 19 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-process-base-use/</guid>
+      <guid>https://midFang.github.io/android-process-base-use/</guid>
       <description>&lt;h3 id=&#34;binder-是什么&#34;&gt;Binder 是什么&lt;/h3&gt;
 
 &lt;p&gt;首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式&lt;/p&gt;
@@ -122,37 +122,37 @@
     
     <item>
       <title>WindowManager.LayoutParams 参数详解</title>
-      <link>https://midFang.github.io/post/window.layoutparams/</link>
+      <link>https://midFang.github.io/window.layoutparams/</link>
       <pubDate>Sat, 01 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/window.layoutparams/</guid>
+      <guid>https://midFang.github.io/window.layoutparams/</guid>
       <description>&lt;p&gt;WindowManager.LayoutParams 是 WindowManager 接口的嵌套类；继承于 ViewGroup.LayoutParams 。它的内容十分丰富。其实WindowManager.&lt;a href=&#34;http://lib.csdn.net/base/17&#34;&gt;Java&lt;/a&gt;的主要内容就是由这个类定义构成。下面来分析一下这个类。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>关于8.0以下出现Only fullscreen opaque activities can request orientation问题的解决方案</title>
-      <link>https://midFang.github.io/post/bug-only-fullscreen-opaque-activities-can-request-orientation/</link>
+      <link>https://midFang.github.io/bug-only-fullscreen-opaque-activities-can-request-orientation/</link>
       <pubDate>Sat, 04 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/bug-only-fullscreen-opaque-activities-can-request-orientation/</guid>
+      <guid>https://midFang.github.io/bug-only-fullscreen-opaque-activities-can-request-orientation/</guid>
       <description>前言 不得不说 Google 的适配是真的烦。真的是一不小心各种坑，市面上的 Android 版本也很多，各种各样的屏幕也很多。最近做的项目在自己手上测试的都还行，直接丢给</description>
     </item>
     
     <item>
       <title>Java 动态代理</title>
-      <link>https://midFang.github.io/post/java-dynamic-proxy-design-patterns/</link>
+      <link>https://midFang.github.io/java-dynamic-proxy-design-patterns/</link>
       <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/java-dynamic-proxy-design-patterns/</guid>
+      <guid>https://midFang.github.io/java-dynamic-proxy-design-patterns/</guid>
       <description>动态代理和静态代理一般在设计模式中的定义为代理设计模式 定义： 为其他对象提供一种代理以控制对这个对象的访问 使用场景： 当无法或者不想直接访问某个</description>
     </item>
     
     <item>
       <title>Activity 从各个方向进入和退出的转场动画</title>
-      <link>https://midFang.github.io/post/activity-animation-transfer/</link>
+      <link>https://midFang.github.io/activity-animation-transfer/</link>
       <pubDate>Wed, 02 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/activity-animation-transfer/</guid>
+      <guid>https://midFang.github.io/activity-animation-transfer/</guid>
       <description>&lt;h3 id=&#34;向左推&#34;&gt;向左推&lt;/h3&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -197,10 +197,10 @@
     
     <item>
       <title>Android源码之单例设计模式</title>
-      <link>https://midFang.github.io/post/android-source-code-design-patterns/</link>
+      <link>https://midFang.github.io/android-source-code-design-patterns/</link>
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-source-code-design-patterns/</guid>
+      <guid>https://midFang.github.io/android-source-code-design-patterns/</guid>
       <description>&lt;h2 id=&#34;介绍&#34;&gt;介绍&lt;/h2&gt;
 
 &lt;blockquote&gt;
@@ -214,82 +214,82 @@
     
     <item>
       <title>ArrayList源码分析</title>
-      <link>https://midFang.github.io/post/arraylist-source-code-analysis/</link>
+      <link>https://midFang.github.io/arraylist-source-code-analysis/</link>
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/arraylist-source-code-analysis/</guid>
+      <guid>https://midFang.github.io/arraylist-source-code-analysis/</guid>
       <description>开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻</description>
     </item>
     
     <item>
       <title>EventBus 源码分析</title>
-      <link>https://midFang.github.io/post/eventbus-source-code-analysis/</link>
+      <link>https://midFang.github.io/eventbus-source-code-analysis/</link>
       <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/eventbus-source-code-analysis/</guid>
+      <guid>https://midFang.github.io/eventbus-source-code-analysis/</guid>
       <description>大致流程 EventBus 是一种用于 Android 的事件发布-订阅总线, 是一个可以实现组件间通信的一个第三方框架, 使用起来非常的简单, 一共也就是 4 个步骤, 注册订阅, 发送</description>
     </item>
     
     <item>
       <title>HashMap源码分析</title>
-      <link>https://midFang.github.io/post/hashmap-source-code-analysis/</link>
+      <link>https://midFang.github.io/hashmap-source-code-analysis/</link>
       <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/hashmap-source-code-analysis/</guid>
+      <guid>https://midFang.github.io/hashmap-source-code-analysis/</guid>
       <description>HashMap 可以说是我们在开发中经常使用的到, 在 Java 的数据结构基础里，HashMap 无疑是一个非常重要的数据结构 现在看看源码里面的方法具体都干了一下什么</description>
     </item>
     
     <item>
       <title>Kotlin 扩展函数 let with run apply also 的使用初探</title>
-      <link>https://midFang.github.io/post/kotlin-extension-function-base-use/</link>
+      <link>https://midFang.github.io/kotlin-extension-function-base-use/</link>
       <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/kotlin-extension-function-base-use/</guid>
+      <guid>https://midFang.github.io/kotlin-extension-function-base-use/</guid>
       <description>最近的项目中也是基本处于是逐渐切换 Kotlin 的状态, 以下是在项目中经常使用到的几个扩展函数, 做一个记录, 不得不说有的时候真的比 Java 方便很多 内联扩展函数</description>
     </item>
     
     <item>
       <title>View 的 draw 过程</title>
-      <link>https://midFang.github.io/post/view-draw-process/</link>
+      <link>https://midFang.github.io/view-draw-process/</link>
       <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/view-draw-process/</guid>
+      <guid>https://midFang.github.io/view-draw-process/</guid>
       <description>Draw 过程 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个顶点的位置, draw 则是将布局绘制在屏</description>
     </item>
     
     <item>
       <title>View 的 Layout 摆放过程</title>
-      <link>https://midFang.github.io/post/view-layout-process/</link>
+      <link>https://midFang.github.io/view-layout-process/</link>
       <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/view-layout-process/</guid>
+      <guid>https://midFang.github.io/view-layout-process/</guid>
       <description>Layout 过程 layout 的作用是 ViewGroup 用来确定子元素的位置 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个</description>
     </item>
     
     <item>
       <title>View 的 measure 测量过程</title>
-      <link>https://midFang.github.io/post/view-measure-process/</link>
+      <link>https://midFang.github.io/view-measure-process/</link>
       <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/view-measure-process/</guid>
+      <guid>https://midFang.github.io/view-measure-process/</guid>
       <description>View 的测量过程 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个顶点的位置, draw 则是将布局绘</description>
     </item>
     
     <item>
       <title>Android 测量规格 MeasureSpec</title>
-      <link>https://midFang.github.io/post/android-custom-view-measurespec/</link>
+      <link>https://midFang.github.io/android-custom-view-measurespec/</link>
       <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-custom-view-measurespec/</guid>
+      <guid>https://midFang.github.io/android-custom-view-measurespec/</guid>
       <description>MeasureSpec MeasureSpec 代表的是一个 32 位的 int 值，高2位代表 SpecMode，低 30 位代表 SpecSize，SpecMode 指的测量模式，SpecSize 是指在某种</description>
     </item>
     
     <item>
       <title>Handler 源码分析</title>
-      <link>https://midFang.github.io/post/android-handler-source-code-analysis/</link>
+      <link>https://midFang.github.io/android-handler-source-code-analysis/</link>
       <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/android-handler-source-code-analysis/</guid>
+      <guid>https://midFang.github.io/android-handler-source-code-analysis/</guid>
       <description>Handler 主要讲的就是 Android 中的消息机制, 其实讲到 Handler 就少不了几个重要的对象, 也就是 Looper , ThreadLocal , MessageQueue 首先看看是如何使用的吧, 我们就简单的从以下入手, Handler 应该也是做</description>
     </item>
     

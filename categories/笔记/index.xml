@@ -13,10 +13,10 @@
     
     <item>
       <title>Dialog 弹出隐藏状态栏和导航栏</title>
-      <link>https://midFang.github.io/post/dialog-hide-navigation-statusbar/</link>
+      <link>https://midFang.github.io/dialog-hide-navigation-statusbar/</link>
       <pubDate>Thu, 29 Aug 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/dialog-hide-navigation-statusbar/</guid>
+      <guid>https://midFang.github.io/dialog-hide-navigation-statusbar/</guid>
       <description>&lt;h3 id=&#34;1-概述&#34;&gt;1、概述&lt;/h3&gt;
 
 &lt;p&gt;由于我们开发的应用是不需要显示出来导航栏的，避免导航栏显示出来了，无法预估用户做什么操作，直接可能把我们的应用给干掉了。首先我们的 APP 是沉浸式的，所有的 Activity 中已经隐藏掉了导航栏，但是如果弹出一个 Dialog 的话，还是会将导航栏给显示出来，具体原因是因为 Dialog 的 Window 抢走了焦点，Window 中的 DecorView 状态改变导致了又重新把底部导航栏给显示出来了。&lt;/p&gt;</description>
@@ -24,10 +24,10 @@
     
     <item>
       <title>hugo常用命令.md</title>
-      <link>https://midFang.github.io/post/hugo-common-command/</link>
+      <link>https://midFang.github.io/hugo-common-command/</link>
       <pubDate>Thu, 20 Jun 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/post/hugo-common-command/</guid>
+      <guid>https://midFang.github.io/hugo-common-command/</guid>
       <description>&lt;h2 id=&#34;hugo-常用命令&#34;&gt;Hugo 常用命令&lt;/h2&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
