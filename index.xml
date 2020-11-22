@@ -6,7 +6,7 @@
     <description>Recent content on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 08 Nov 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 22 Nov 2020 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://midFang.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -41,6 +41,726 @@
 &lt;li&gt;文章通常都开放评论（基于 utterances，请自备 GitHub 帐号），接受各种建议，但不要评论主题无关内容&lt;/li&gt;
 &lt;/ul&gt;
 </description>
+      
+    </item>
+    
+    <item>
+      <title>Android 协程编写高效的并发程序</title>
+      <link>https://midFang.github.io/android-kotlin-thread-coroutine/</link>
+      <pubDate>Sun, 22 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/android-kotlin-thread-coroutine/</guid>
+      
+        <description>&lt;p&gt;如何开启一个协程，最简单的方式就是使用 GlobalScope.launch 函数，如下所示：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;GlobalScope&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;launch&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;hello world-top-level-coroutine&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;GlobalScope.launch （高阶）函数可以创建出一个协程的作用域，这样在 launch 函数中运行的代码就是在协程中运行的代码了。但是上述代码如果你运行一下就会发现，什么也打印不出来。&lt;/p&gt;
+
+&lt;p&gt;这是因为 GlobalScope.launch 每次创建的是一个&lt;strong&gt;顶级协程&lt;/strong&gt;，这种协程有一个特点，就是应用程序结束了，协程也结束了。之所以无法打印出来，是因为代码还没有来得及执行。那么要如何改善呢，只需要延迟一下就可以了，如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun main() {
+    GlobalScope.launch {
+        println(&amp;#34;hello world&amp;#34;)
+    }
+    Thread.sleep(1000)
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;运行程序后，如下所示：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;hello world&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;但是这样的代码仍然还是有问题的，那就是可能 launch 函数中的代码还没有执行完，应用程序结束，就被强制给中断了&lt;/p&gt;
+
+&lt;h3 id=&#34;delay-函数&#34;&gt;delay 函数&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun main() {
+    GlobalScope.launch {
+        println(&amp;#34;hello world&amp;#34;)
+        delay(1500)
+        println(&amp;#34;code run in coroutine scope finished&amp;#34;)
+    }
+
+    Thread.sleep(1000)
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;如上所示， 我在 launch 函数中增加了 delay 函数延迟 1.5s 后执行，并在最后一行也打印了一段日志。delay 函数可以指定当前的协程在指定的时间后再运行，但他和 sleep 函数不同，sleep 函数会阻塞当前的线程，而 delay 函数只会挂起当前的协程，并不会阻塞线程，也不会影响到其他协程的运行。需要注意的是 delay 函数只能作用与&lt;strong&gt;协程的作用域&lt;/strong&gt;中或者&lt;strong&gt;挂起函数中&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;运行这段代码会发现，最后一行日志没有被打印，理由也基本是一样的。&lt;/p&gt;
+
+&lt;h3 id=&#34;runblocking-函数&#34;&gt;runBlocking 函数&lt;/h3&gt;
+
+&lt;p&gt;之所以上述代码日志没有被打印，是因为协程中的代码还没有来得及执行，就被强制给中断了，主程序就已经执行完了，那么有没有办法可以让它执行完毕呢 ？只需要借助 runBlocking 函数就可以了，代码如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun main() {
+   runBlocking {
+       println(&amp;#34;hello world&amp;#34;)
+       delay(1500)
+       println(&amp;#34;code run in coroutine scope finished&amp;#34;)
+   }
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;runBlocking 函数同样会创建一个协程的作用域，但是他可以保证协程作用域内的所有代码和子协程没有执行完之前一直阻塞当前线程。需要注意的是，由于 runBlocking  会阻塞当前的线程，所以一般只在测试环境中使用，在正式环境上容易引发性能问题&lt;/p&gt;
+
+&lt;p&gt;运行代码后：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;hello world
+code run in coroutine scope finished&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 id=&#34;协程的并发&#34;&gt;协程的并发&lt;/h3&gt;
+
+&lt;p&gt;虽然说上述的代码已经是在协程中运行了，好像并没有体会到什么特别之处，即使使用单个线程也能做到，这是因为上述目前所有的代码都是在同一个协程中运行的。事实情况并非如此，一旦涉及到高并发的场景，协程相对与线程的优势就会很明显了。&lt;/p&gt;
+
+&lt;p&gt;创建多个协程：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun main() {
+   runBlocking {
+       launch {
+           println(&amp;#34;协程1&amp;#34;)
+           delay(1500)
+           println(&amp;#34;协程1执行完毕&amp;#34;)
+       }
+
+       launch {
+           println(&amp;#34;协程2&amp;#34;)
+           delay(1500)
+           println(&amp;#34;协程2执行完毕&amp;#34;)
+       }
+   }
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;这里的 launch 函数和刚才的 GlobalScope.launch 函数不同，首先 launch 函数必须要在协程作用域下才能够使用，其次他会在当前的协程作用域下创建子协程，子协程有一个特点就是如果外层作用域的协程结束了，那么子协程也就结束了。&lt;/p&gt;
+
+&lt;p&gt;运行代码后，打印结果如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;协程1
+协程2
+协程1执行完毕
+协程2执行完毕&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;可以看到，两个子协程中的日志是交替打印的，说明他们确实像多线程中那样并发的运行的。然而两个子协程实际却运行在同一个线程中，只是由 kotlin 编程语言来决定如何在多个协程中进行调度，让谁运行，让谁挂起，调度过程完全不需要操作系统的参与，这也就使得协程并发效率出奇的高。&lt;/p&gt;
+
+&lt;h3 id=&#34;suspend-关键字&#34;&gt;suspend 关键字&lt;/h3&gt;
+
+&lt;p&gt;随着 launch 函数里面的代码越来越复杂，这个时候可能需要抽取成一个方法了，但是这个时候就会有一个问题了，那就是 launch 函数中是有协程作用域的，抽取成方法后，就没有协程作用域了，是无法调用 delay 这样的&lt;strong&gt;挂起函数&lt;/strong&gt;的，不过 kotlin 为此提供了一个挂起函数关键字，只需要将函数添加 suspend 即可。这样&lt;strong&gt;挂起函数&lt;/strong&gt;就可以相互调用了&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;suspend fun println(){ // 声明成挂起函数
+ 			 println(&amp;#34;协程1&amp;#34;)
+       delay(1500)  // delay 是一个挂起函数
+       println(&amp;#34;协程1执行完毕&amp;#34;)
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 id=&#34;coroutinescope-函数&#34;&gt;coroutineScope 函数&lt;/h3&gt;
+
+&lt;p&gt;这里的 suspend 只是将函数声明成了挂起函数而已，而这个函数仍然是没有协程作用域的，如果这个时候，我们想再开启一个协程任务，就无法开启了。因为该函数没有协程作用域，解决方法，就是使用一个 coroutineScope （挂起）&lt;strong&gt;函数&lt;/strong&gt;。这个函数有一个特点就是会继承外部的协程作用域并创建一个子协程，这样就可以给任意挂起函数提供协程作用域了。如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;suspend fun println() = coroutineScope {
+    launch {
+        println(&amp;#34;协程1&amp;#34;)
+        delay(1500)
+        println(&amp;#34;协程1执行完毕&amp;#34;)
+    }
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;需要注意的是 coroutineScope 函数和 runBlocking 函数有点类似，他可以保证其作用域内的所有代码和子协程在全部执行完之前，会一直阻塞当前协程，看如下代码：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun main() {
+    runBlocking {
+        coroutineScope {
+            launch {
+                repeat(10) {
+                    println(it.toString())
+                    delay(1000)
+                }
+            }
+        }
+        println(&amp;#34;coroutineScope is finish&amp;#34;)
+    }
+    println(&amp;#34;runBlocking is finish&amp;#34;)
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;这里先是使用了 runBlocking 创建了一个协程作用域，然后又使用 coroutineScope 创建了一个子协程作用域，然后又用 launch 函数创建了一个子线程，如果按照上述并发的示例中，会不会是日志交替打印呢，运行代码后如下所示，可以发现数字一行一行的打印，最有才打印 coroutineScope 的日志，所以可以发现 coroutineScope 确实是将当前协程给阻塞了&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+coroutineScope is finish
+runBlocking is finish&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;看上去 coroutineScope 和 runBlocking 函数作用非常相似，需要注意的是，coroutineScope 会阻塞当前协程，但不影响其他协程，也不影响线程，所以是不会引发线程问题的。但是 runBlocking 是会阻塞当前线程的。如果你恰好在主线程调用的话，可能会导致主线程卡死，实际项目中基本不推荐使用 runBlocking 函数，这里也就是 main 函数测试的时候用了下而已&lt;/p&gt;
+
+&lt;h3 id=&#34;更多的作用域构建器&#34;&gt;更多的作用域构建器&lt;/h3&gt;
+
+&lt;p&gt;在前面中我们使用了 Global.launch  runBlocking  launch  coroutineScope 这几种作用域构建器，他们都可以创建一个协程作用域，区别就是 Global.launch 和 runBlocking 可以在任意地方调用的，coroutineScope 需要再挂起函数中调用，launch 需要在协程作用域中调用。&lt;/p&gt;
+
+&lt;h4 id=&#34;如何取消协程&#34;&gt;如何取消协程&lt;/h4&gt;
+
+&lt;p&gt;由于 runBlocking 会阻塞主线程，所以不建议使用，Global.launch 会创建一个顶级协程，其实也不太推荐使用。为什么不推荐使用呢 ？主要是因为管理起来会有些麻烦，假如说你开启了一个协程正在请求网络，由于请求网络是耗时的，假如这个时候你关掉 Activity 了，这个时候，就不应该回调网络相关的数据了，而是要取消这个协程。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun main() {
+    val job = GlobalScope.launch {
+    }
+
+    job.cancel()
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;取消的话，只需要如上述代码所示调用 job.cancel() 就可以了。到了这里，如果我们每次创建都是顶级协程，创建的协程太多，那结束掉 Activity 的话，每个都需要调用一下。就会有点麻烦了。&lt;/p&gt;
+
+&lt;p&gt;实际项目中，推荐如下的方式：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun main() {
+    val job = Job()
+    val scope = CoroutineScope(job)
+    
+    scope.launch {
+
+    }
+    
+    job.cancel()
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;这里创建了一个 job 对象，然后创建了一个 CoroutineScope 函数，这个函数会返回一个 CoroutineScope 对象，这里将我们创建好的 job 对象传入其中。 这样的话所有使用 CoroutineScope 创建的协程，都会被关联在 job 对象中，如果 Activity 结束，就只需要调用一次 cancel 方法就可以了&lt;/p&gt;
+
+&lt;h3 id=&#34;协程获取执行的结果&#34;&gt;协程获取执行的结果&lt;/h3&gt;
+
+&lt;p&gt;协程给开发者带来极大便利的一个特性就是可以直接获取到执行的结果，上述示例中返回的都是 job 对象，那如果要获取到执行结果要怎么办呢 ？只需要使用 anync 函数就可以。&lt;/p&gt;
+
+&lt;p&gt;anync 函数必须要在协程作用域中才能够调用，他会创建一个新的子协程并返回一个 deferred 对象，如果我们想要获取到函数代码块中的执行结果，只需要调用 deferred 对象的 await 方法即可。代码如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun main() {
+    runBlocking { 
+        val result = async { 
+            9+9
+        }.await()
+        println(result) // 打印的是 18
+    }
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;在调用 async 的时候，代码块中的代码会&lt;strong&gt;立即执行&lt;/strong&gt;，当调用 await 方法的时候，如果代码块中的代码还没有执行完，会将当前的协程阻塞，知道可以获得 async 函数的执行结果&lt;/p&gt;
+
+&lt;p&gt;为了证实这一点，看如下代码&lt;/p&gt;
+
+&lt;h3 id=&#34;串行任务&#34;&gt;串行任务&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun main() {
+    runBlocking {
+        val start = System.currentTimeMillis()
+        val result = async {
+            delay(1000)
+            9+9
+
+        }.await()
+
+        val result2 = async {
+            delay(1000)
+            9+10
+
+        }.await()
+
+
+        println(&amp;#34;$result  ----  $result2&amp;#34;)
+        val end = System.currentTimeMillis()
+        println(&amp;#34;cost - ${end - start}&amp;#34;)
+    }
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;这里连续使用了两个 anync 函数来执行任务，并在代码块中调用 delay 方法进行延时，按照刚才的理论，await 方法会在 async 方法执行完之前一直阻塞当前协程，为了验证，这里记录了下方法执行的耗时，运行结果如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;18  ----  19
+cost - 2019&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;可以看到整段代码运行耗时是 2019 毫秒，说明两个 async 函数确实是一种串行的关系，前一个执行完，后一个才能执行，这种方式明显是非常低效的，因为两个 async 是可以同时执行的，只需要不在调用 async 函数的时候立刻调用 await 即可。修改后的代码如下：&lt;/p&gt;
+
+&lt;h3 id=&#34;并行任务&#34;&gt;并行任务&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun main() {
+    runBlocking {
+        val start = System.currentTimeMillis()
+        val result = async {
+            delay(1000)
+            9+9
+        }
+
+        val result2 = async {
+            delay(1000)
+            9+10
+        }
+
+        println(&amp;#34;${result.await()}  ----  ${result2.await()}&amp;#34;)
+        val end = System.currentTimeMillis()
+        println(&amp;#34;cost - ${end - start}&amp;#34;)
+    }
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;打印如下&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;18  ----  19
+cost - 1015&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;可以看到运行耗时为 1015 效率提升是非常明显的。&lt;/p&gt;
+
+&lt;h3 id=&#34;withcontext-函数&#34;&gt;withContext 函数&lt;/h3&gt;
+
+&lt;p&gt;withContext 也是一个挂起函数，它可以认为是 anync 的一种简化版写法，写法如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun main() {
+    runBlocking {
+        val result = withContext(Dispatchers.Default) {
+            9+9
+        }
+        println(result)
+    }
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;当调用 withContext 挂起函数后，会阻塞当前的协程，当代码块中的所有代码执行完成后，会将最后一行的执行结果返回回去， 基本上就相当于 val result = async{ 9 +9 }.await() 的写法。唯一不同的是，withContext 需要指定一个线程参数。这个参数的作用就是指定当前的协程作用域在哪一个线程中执行， 如上面的很多代码中，我们都没有指定线程参数，需要注意的是，并不是在子线程中执行的，如果在主线程中创建的，那就是主线程中的协程。&lt;/p&gt;
+
+&lt;h3 id=&#34;协程中的线程参数&#34;&gt;协程中的线程参数&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Dispatchers.Default   默认低并发的线程策略&lt;/li&gt;
+&lt;li&gt;Dispatchers.IO  高并发线程策略&lt;/li&gt;
+&lt;li&gt;Dispatchers.Main  主线程中执行&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;suspendcoroutine-协程简化回调写法&#34;&gt;suspendCoroutine 协程简化回调写法&lt;/h3&gt;
+
+&lt;p&gt;这里先看下我们以前写的网络请求方式是怎么写的&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;fun main(args: Array&amp;lt;String&amp;gt;) {
+        placeService.searchPlaces(&amp;#34;midFang&amp;#34;).enqueue(object : Callback&amp;lt;PlaceResponse?&amp;gt; {
+            override fun onResponse(call: Call&amp;lt;PlaceResponse?&amp;gt;, response: Response&amp;lt;PlaceResponse?&amp;gt;) {
+                // update UI
+            }
+
+            override fun onFailure(call: Call&amp;lt;PlaceResponse?&amp;gt;, t: Throwable) {
+                
+            }
+        })
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;以前我们这是这样通过这样回调接口的方式，在 onResponse 方法中拿到网络请求的结果再去更新 UI，这么一看好像也没有什么问题，因为以前我们一直也是这么做的，其实如果是单个接口的话，好像这样也可以接受，但是问题来了，假如这个时候，你请求完一个接口，还需要根据上一个接口的返回值请求下一个接口，或者是有更多的接口有这种类似的依赖关系，那么你的代码看起来就会嵌套很多层，不是很可观了。&lt;/p&gt;
+
+&lt;p&gt;我们再看看 Kotlin 可以怎么实现，其实用 suspendCoroutine 函数就可以实现。suspendCoroutine 函数必须要在挂起函数或者是协程作用域中调用，它接受一个 Lambda 表达式参数，主要作用就是将当前的协程挂起，然后在一个普通的线程中执行执行 Lambda 表达式中的代码，Lambda 表达式的参数列表会传入一个 Continuation 参数，调用它的 resume 或者 resumeWithException 方法可以让协程恢复运行。&lt;/p&gt;
+
+&lt;p&gt;看下如下代码的具体实现：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;suspend fun main(args: Array&amp;lt;String&amp;gt;) {
+     val suspendSearchPlaces = suspendSearchPlaces(&amp;#34;midFang&amp;#34;)
+     // 更新 UI
+}
+
+suspend fun suspendSearchPlaces(query: String): String {
+        return suspendCoroutine {
+            placeService.searchPlaces(&amp;#34;midFang&amp;#34;).enqueue(object : Callback&amp;lt;PlaceResponse?&amp;gt; {
+                override fun onResponse(call: Call&amp;lt;PlaceResponse?&amp;gt;, response: Response&amp;lt;PlaceResponse?&amp;gt;) {
+                    it.resume(&amp;#34;&amp;#34;)
+                }
+
+                override fun onFailure(call: Call&amp;lt;PlaceResponse?&amp;gt;, t: Throwable) {
+                    it.resumeWithException(t)
+                }
+            })
+        }
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;可以看到上述代码中，我们在 suspendSearchPlaces 方法中使用 suspendCoroutine 函数实现了匿名类接口中将结果直接返回，然后我们就可以直接拿到请求结果去更新 UI 了，是不是方便了很多。&lt;/p&gt;
+
+&lt;p&gt;类似的网络请求的代码有非常多，我们可以再看一个拓展，我们每调用一个接口都可以直接拿到请求的结果值，直接去更新 UI，这样就少写了很多回调的代码，假设我现在有这几个接口如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;interface PlaceService {
+    @GET(&amp;#34;v2/place/searchPlaces&amp;#34;)
+    fun searchPlaces(@Query(&amp;#34;query&amp;#34;) query: String): Call&amp;lt;PlaceResponse&amp;gt;
+
+    @GET(&amp;#34;v2/place/getCode&amp;#34;)
+    fun getCode(@Query(&amp;#34;query&amp;#34;) query: String): Call&amp;lt;PlaceResponse&amp;gt;
+    
+    
+    @GET(&amp;#34;v2/place/location&amp;#34;)
+    fun location(@Query(&amp;#34;query&amp;#34;) query: String): Call&amp;lt;PlaceResponse&amp;gt;
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;封装我们的请求：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;private suspend fun &amp;lt;T&amp;gt; Call&amp;lt;T&amp;gt;.await(): T {
+        return suspendCoroutine { continuation -&amp;gt;
+            enqueue(object : Callback&amp;lt;T&amp;gt; {
+                override fun onFailure(call: Call&amp;lt;T&amp;gt;, t: Throwable) {
+                    continuation.resumeWithException(t)
+                }
+
+                override fun onResponse(call: Call&amp;lt;T&amp;gt;, response: Response&amp;lt;T&amp;gt;) {
+                    val body = response.body()
+                    if (body != null) {
+                        continuation.resume(body)
+                    } else {
+                        continuation.resumeWithException(RuntimeException(&amp;#34;response body is null&amp;#34;))
+                    }
+                }
+            })
+        }
+    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;原理还是和上面是一样的，就不再重复解释了。这样的话，我们请求网络接口就会方便了很多，直接拿到结果更新 UI 就可以了。代码量也少了很多，至于异常是如何处理的，这里先不展开描述，代码如下&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;suspend fun main() {
+      val places = placeService.searchPlaces(&amp;#34;midFang&amp;#34;).await()
+      val code = placeService.getCode(&amp;#34;midFang&amp;#34;).await()
+      val location = placeService.location(&amp;#34;midFang&amp;#34;).await()
+      // 拿到请求结果，直接更新 UI
+      println(&amp;#34;$places   $code   $location &amp;#34;)
+}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;GlobalScope.launch 是一个顶级协程，可以在任意地方调用，项目中用到的比较少，因为比较难管理，比如取消协程&lt;/li&gt;
+&lt;li&gt;launch 函数会启动一个子协程，必须要在协程作用域下才能够使用，其次他会在当前的协程作用域下创建子协程，子协程有一个特点就是如果外层作用域的协程结束了，那么子协程也就结束了&lt;/li&gt;
+&lt;li&gt;delay 是一个挂起函数，指定当前的协程在指定的时间后再运行，可以在挂起函数中调用或者是协程作用域中调用&lt;/li&gt;
+&lt;li&gt;suspend 修饰的方法为挂起函数&lt;/li&gt;
+&lt;li&gt;runBlocking 可以在任意地方调用，但是用到的比较少，因为会阻塞当前线程，可能会引发性能问题&lt;/li&gt;
+&lt;li&gt;coroutineScope 是一个挂起函数，会继承外部的协程作用域并创建一个子协程，会阻塞当前协程，保证作用域内的所有代码和子协程代码都能够执行完毕，不会阻塞线程&lt;/li&gt;
+&lt;li&gt;withContext 是一个挂起函数，会阻塞当前的协程，可以认为是 anync 的一种简化版写法，需要强制指定线程参数&lt;/li&gt;
+&lt;li&gt;协程的取消是 job.cancel 方法&lt;/li&gt;
+&lt;li&gt;suspendCoroutine 必须要在挂起函数或者是协程作用域中调用，会将当前的协程挂起，接受一个 Lambda 表达式，通过 resume 或 resumeWithException 可以让协程恢复运行，可以拿到返回值&lt;/li&gt;
+&lt;/ul&gt;</description>
       
     </item>
     
@@ -6279,653 +6999,6 @@ android:activityCloseExitAnimation   一个 activity 退出的效果&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;这个部分也很好理解, 比如在我们开发的时候, 自己写的自定义的 View, 都是需要写全路径的, 但是我们写系统的 View 就不需要, 其实, 也是做了操作的, 只是说在源码中, 自动给我们添加了前缀&lt;/p&gt;</description>
-      
-    </item>
-    
-    <item>
-      <title>ArrayList源码分析</title>
-      <link>https://midFang.github.io/arraylist-source-code-analysis/</link>
-      <pubDate>Tue, 01 Oct 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/arraylist-source-code-analysis/</guid>
-      
-        <description>
-
-&lt;blockquote&gt;
-&lt;p&gt;开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻松许多&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ol&gt;
-&lt;li&gt;ArrayList 的大小是如何自动增加的？&lt;/li&gt;
-&lt;li&gt;什么情况下你会使用ArrayList？什么时候你会选择LinkedList？&lt;/li&gt;
-&lt;li&gt;ArrayList 的扩容机制&lt;/li&gt;
-&lt;li&gt;几个重要的参数, 以及构造方法&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;ArrayList 是我们在开发中高频率使用到的一个基于数组实现的一个有序的集合类, 那下面就简单的从平常是如何使用的, 做源码分析如下, 也了解一下上面几个经常被问到的问题, 做一个解答&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;   List&amp;lt;String&amp;gt; arrayList = new ArrayList&amp;lt;&amp;gt;();
-
-   arrayList.add(&amp;#34;1&amp;#34;);
-   arrayList.add(&amp;#34;3&amp;#34;);
-   arrayList.add(&amp;#34;2&amp;#34;);
-   arrayList.add(&amp;#34;4&amp;#34;);
-   arrayList.add(&amp;#34;5&amp;#34;);
-   arrayList.get(1);
-   arrayList.remove(2);
-   ArrayList&amp;lt;String&amp;gt; arrayList2 = new ArrayList&amp;lt;&amp;gt;();
-   arrayList2.add(&amp;#34;2&amp;#34;);
-   arrayList2.add(&amp;#34;3&amp;#34;);
-   arrayList.containsAll(arrayList2);
-   arrayList.removeAll(arrayList2);&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;h3 id=&#34;几个重要的构造&#34;&gt;几个重要的构造&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;33
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;34
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;35
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;36
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;37
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;38
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;39
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;40
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;41
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;42
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;43
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;44
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;45
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;46
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;47
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;48
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;49
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;50
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;51
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;52
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;53
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public class ArrayList&amp;lt;E&amp;gt; extends AbstractList&amp;lt;E&amp;gt;
-        implements List&amp;lt;E&amp;gt;, RandomAccess, Cloneable, java.io.Serializable
-        
-    /**
-     * Default initial capacity. 默认大小容量为 10 的大小
-     */
-    private static final int DEFAULT_CAPACITY = 10;
-    
-
-    
-    /**
-     * Shared empty array instance used for default sized empty instances. We
-     * distinguish this from EMPTY_ELEMENTDATA to know how much to inflate when
-     * first element is added.  一个空的数组
-     */
-    private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
-        
-    /**
-     * The size of the ArrayList (the number of elements it contains).
-     *
-     * @serial  当前 ArrayList 的容量实时的容量大小
-     */
-    private int size;
-        
-     /**
-     * Constructs an empty list with the specified initial capacity.
-     *
-     * @param  initialCapacity  the initial capacity of the list
-     * @throws IllegalArgumentException if the specified initial capacity
-     *         is negative
-     */
-    public ArrayList(int initialCapacity) {
-        // 给定初始容量大小的构造
-        if (initialCapacity &amp;gt; 0) {
-            // 创建一个 initialCapacity 大小的 Object 对象数组
-            this.elementData = new Object[initialCapacity];
-        } else if (initialCapacity == 0) {
-            this.elementData = EMPTY_ELEMENTDATA;
-        } else {
-            throw new IllegalArgumentException(&amp;#34;Illegal Capacity: &amp;#34;+
-                                               initialCapacity);
-        }
-    }
-
-    /**
-     * Constructs an empty list with an initial capacity of ten.
-     */
-    public ArrayList() {
-        // 无参数的构造方法
-        this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
-    }
-
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;首先从 ArrayList 的继承的结构体系中, 可以大小了解到一些信息, 继承了一个抽象类 AbstractList, 这里就不展示他的源码了, 其实这个类里面并没有做什么操作, 只是简单的定义了一些方法, 他是一个模板设计模式, 然后实现了 RandomAccess,  Cloneable, java.io.Serializable , 随机访问接口, 可克隆, 序列化接口&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;然后可以发现初始值容量大小为 10,  ArrayList 底层是用 Object 对象数组来实现的, 然后是无参和有参的构造方法, 这个仅仅是对 DEFAULTCAPACITY_EMPTY_ELEMENTDATA 赋值操作, 和创建一个 new Object[initialCapacity] 大小的数组&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;往集合中添加元素&#34;&gt;往集合中添加元素&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;   public boolean add(E e) {
-        // 确保容量大小, (其中扩容机制也在这个方法中实现的)
-        ensureCapacityInternal(size + 1);  // Increments modCount!!
-        // 元素放入 Object 对象数组中
-        elementData[size++] = e;
-        return true;
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;  private void ensureCapacityInternal(int minCapacity) {
-        // 当我们使用无参数构造的时候, 第一次被 add 添加元素的时候, 这个调节是肯定成立的, 因为在上面的无参构造中就是对这个赋值操作
-        if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
-            // 初始化了容量为大小为 10 的大小
-            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
-        }
-
-        // 确保容量大小 
-        ensureExplicitCapacity(minCapacity);
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;  private void ensureExplicitCapacity(int minCapacity) {
-        // 被修改的次数增加, 这个主要是一个并非修改异常, 这个后面会讲到
-        modCount++;
-
-        // overflow-conscious code
-        if (minCapacity - elementData.length &amp;gt; 0)
-            // 扩容
-            grow(minCapacity);
-  }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;假设上面, 我们是第一次 add 添加元素, 那么 elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA 这个条件成立, 然后初始化容量大小为 10 的数组, 那么到了这个条件 if (minCapacity - elementData.length &amp;gt; 0) 只要是小于 10 的就不会触发扩容, 那么如果是再添加一个, 那么传递下来的参数就是 11-10=1 那么这个条件成立, 那么就会触发扩容了&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;private void grow(int minCapacity) {
-        // overflow-conscious code
-        // 假设这里的 minCapacity 为 11 触发扩容机制 
-        // 原数组大小是 10 
-        int oldCapacity = elementData.length;
-        // 赋值新的容量大小, 15 = 10 + (10/2)
-        int newCapacity = oldCapacity + (oldCapacity &amp;gt;&amp;gt; 1);
-        if (newCapacity - minCapacity &amp;lt; 0)
-            newCapacity = minCapacity;
-        if (newCapacity - MAX_ARRAY_SIZE &amp;gt; 0)
-            newCapacity = hugeCapacity(minCapacity);
-        // minCapacity is usually close to size, so this is a win:
-        // 数组的拷贝
-        elementData = Arrays.copyOf(elementData, newCapacity);
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;上面就是扩容机制的代码了, 可以发现很简单, 就是等于 原数组的长度 + 原数组长度 &lt;sup&gt;1&lt;/sup&gt;&amp;frasl;&lt;sub&gt;2&lt;/sub&gt;, 然后就是数组的拷贝了 Arrays.copyOf(elementData, newCapacity)&lt;/p&gt;
-
-&lt;h3 id=&#34;arrays-copyof&#34;&gt;Arrays.copyOf()&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;   public static &amp;lt;T&amp;gt; T[] copyOf(T[] original, int newLength) {
-        return (T[]) copyOf(original, newLength, original.getClass());
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;   public static &amp;lt;T,U&amp;gt; T[] copyOf(U[] original, int newLength, Class&amp;lt;? extends T[]&amp;gt; newType) {
-        @SuppressWarnings(&amp;#34;unchecked&amp;#34;)
-        // 创建一个新的对象
-        T[] copy = ((Object)newType == (Object)Object[].class)
-            ? (T[]) new Object[newLength]
-            : (T[]) Array.newInstance(newType.getComponentType(), newLength);
-        // 系统底层使用 c 实现的数组拷贝
-        System.arraycopy(original, 0, copy, 0,
-                         Math.min(original.length, newLength));
-        // 将对象返回
-        return copy;
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;好了, 添加元素操作的源码到这里基本没有了, 到了这里我们知道了扩容机制其实就是扩容原数组的 1.5 倍的大小, 其实也就是说 ArrayList 是一个动态扩容数据, 然后对创建新的数据, 对老的数组进行copy, 这个是会消耗一部分的性能的, 这里给出一个假设, 假设你当前的数组容量为 100, 那么可想而知, 数组会发生好几次的拷贝, 所以当我们知道了数组的容量大小的时候, 最好是直接给定, 防止多次拷贝&lt;/p&gt;
-
-&lt;h3 id=&#34;获取数据&#34;&gt;获取数据&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt; public E get(int index) {
-        // index 索引值大于当前数组, 抛出越界异常
-        if (index &amp;gt;= size)
-            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
-
-        return (E) elementData[index];
- }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;h3 id=&#34;删除元素&#34;&gt;删除元素&lt;/h3&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;根据下标删除数据&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public E remove(int index) {
-    if (index &amp;gt;= size)
-        throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
-    // 修改次数加1, 这个主要是一个并非修改异常, 这个后面会讲到
-    modCount++;
-    // 需要删除的元素
-    E oldValue = (E) elementData[index];
-
-    // 数组要移动的次数
-    int numMoved = size - index - 1;
-    if (numMoved &amp;gt; 0)
-        // 发生数组移动, 也就是拷贝
-        System.arraycopy(elementData, index+1, elementData, index,
-                         numMoved);
-    // 堆中数据置为 null, 让 GC 可以回收 
-    elementData[--size] = null; // clear to let GC do its work
-
-    return oldValue;
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;根据元素内容删除数据&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public boolean remove(Object o) {
-    if (o == null) {
-        // 删除为 null 的元素
-        for (int index = 0; index &amp;lt; size; index++)
-            if (elementData[index] == null) {
-                 // 删除元素, 本质上是数组拷贝, 位置发生偏移
-                fastRemove(index);
-                return true;
-            }
-    } else {
-        // for 循环遍历查找元素的内容, 将其删除, 位置发生偏移
-        for (int index = 0; index &amp;lt; size; index++)
-            if (o.equals(elementData[index])) {
-                // 删除元素, 本质上是数组拷贝
-                fastRemove(index);
-                return true;
-            }
-    }
-    return false;
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;修改元素&#34;&gt;修改元素&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;  public E set(int index, E element) {
-        // 越界异常检查
-        if (index &amp;gt;= size)
-            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
-        
-        // 旧的元素
-        E oldValue = (E) elementData[index];
-        // 新的元素, 赋值给旧的元素
-        elementData[index] = element;
-        // 然后将旧的元素返回
-        return oldValue;
-    }&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;这里, 由于是数组实现的 ArrayList, 内存地址是连续的, 可基于下标直接访问元素, 这里回到文章开头提到的问题, 在什么情况下使用 ArrayList 什么情况下使用 LinkedList, 这就要看我们的需求是元素是访问多, 还是元素删除多, 访问多的用 ArrayList, 由于 LinkedList 是用链表实现的, 内存地址不连续, 当前节点保存上一个节点和下一个节点, 当要删除元素时候, 直接指针改变指向就可以了, 所以删除多用 LinkedList&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;最后看几个比较有意思的, 算法写的很好, 平时在我用开发中也会经常用的到, 可以作为参考&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;提出问题: 假设目前有一个数组 [1,2,3,4,5] 和 [2,3], 要求是移除相同的元素, 或者是保留相同的元素, 不使用下面的方法, 自己手写的话, 你会怎么写?&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;删除相同的元素, 不相同元素的返回&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public boolean removeAll(Collection&amp;lt;?&amp;gt; c) {
-    Objects.requireNonNull(c);
-    return batchRemove(c, false);
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;返回相同的元素, 不相同的元素删除掉&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;public boolean retainAll(Collection&amp;lt;?&amp;gt; c) {
-    Objects.requireNonNull(c);
-    return batchRemove(c, true);
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;稍微留意一下, 这两个方法都是相同的, 仅仅是一个参数的不同&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;33
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;34
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;35
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;36
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;37
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;38
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;39
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;40
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;41
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;42
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;43
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;44
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;45
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;46
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;47
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;48
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;49
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;50
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;51
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;52
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;53
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;54
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;55
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;56
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;57
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;private boolean batchRemove(Collection&amp;lt;?&amp;gt; c, boolean complement) {
-    final Object[] elementData = this.elementData;
-    // 类似读(read)指针, 和一个写(write)指针
-    int r = 0, w = 0;
-    boolean modified = false;
-    try {
-        for (; r &amp;lt; size; r++)
-            // for 循环遍历
-                
-            /** 
-             *  1.r 一直自增加, 当 complement 为 true 的时候, 
-             *    条件成立, w++, 当前相同的元素赋值给  w++ 下标元素
-             *    最后完后所有的操作, 最终就是 [2,3] 
-             */
-                 
-             /** 
-              * 2.r 一直自增加, 当 complement 为 false 的时候,
-              *   条件成立, w++, 当前相同的元素赋值给  w++ 下标元素
-              *   最后完后所有的操作, 最终就是 [1,4,5] 
-              */
-                 
-            if (c.contains(elementData[r]) == complement)
-                elementData[w++] = elementData[r];
-                    
-                    
-    } finally {  // 最终一定会被执行
-        // Preserve behavioral compatibility with AbstractCollection,
-        // even if c.contains() throws.
-            
-        // 上面如果执行了操作, 这个值是相等的
-        if (r != size) {
-            System.arraycopy(elementData, r,
-                             elementData, w,
-                             size - r);
-            w += size - r;
-        }
-            
-        // 条件成立
-            
-        /**
-         * 假设是条件 1, w 是 2, 那么就将 2 下标后面的元素都删除
-         * 假设是条件 2, w 是 3, 那么就将 3 下标后面的元素都删除
-         */
-            
-        if (w != size) {
-            // clear to let GC do its work
-            for (int i = w; i &amp;lt; size; i++)
-                elementData[i] = null; // 将元素置为null, 让 GC 可以回收
-            // 被修改的次数
-            modCount += size - w;
-            // 赋值最新的 size 容量大小
-            size = w;
-            modified = true;
-        }
-    }
-    return modified;
-}&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;好了, 源码中写了注释, 用了一个类似, 读指针和写指针的东西, 很巧妙的完成了查找相同元素, 或者是移除相同元素, nice&lt;/p&gt;
-</description>
       
     </item>
     
