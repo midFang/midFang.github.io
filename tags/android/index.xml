@@ -6,10 +6,21 @@
     <description>Recent content in Android on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 22 Nov 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 02 Dec 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/android/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Android 事件分发机制源码流程分析</title>
+      <link>https://midFang.github.io/android-motionevent-soruce-code-analysis/</link>
+      <pubDate>Wed, 02 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/android-motionevent-soruce-code-analysis/</guid>
+      <description>&lt;p&gt;假设我们的 Activity 中的布局是这样的&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/checkFang/img/master/20201129231947.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Android 协程编写高效的并发程序</title>
@@ -317,15 +328,6 @@
       
       <guid>https://midFang.github.io/view-measure-process/</guid>
       <description>View 的测量过程 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个顶点的位置, draw 则是将布局绘</description>
-    </item>
-    
-    <item>
-      <title>Android 测量规格 MeasureSpec</title>
-      <link>https://midFang.github.io/android-custom-view-measurespec/</link>
-      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/android-custom-view-measurespec/</guid>
-      <description>MeasureSpec MeasureSpec 代表的是一个 32 位的 int 值，高2位代表 SpecMode，低 30 位代表 SpecSize，SpecMode 指的测量模式，SpecSize 是指在某种</description>
     </item>
     
   </channel>

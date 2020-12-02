@@ -6,10 +6,21 @@
     <description>Recent content in 源码分析 on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 04 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 02 Dec 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Android 事件分发机制源码流程分析</title>
+      <link>https://midFang.github.io/android-motionevent-soruce-code-analysis/</link>
+      <pubDate>Wed, 02 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/android-motionevent-soruce-code-analysis/</guid>
+      <description>&lt;p&gt;假设我们的 Activity 中的布局是这样的&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/checkFang/img/master/20201129231947.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>关于8.0以下出现Only fullscreen opaque activities can request orientation问题的解决方案</title>
