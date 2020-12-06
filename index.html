@@ -63,7 +63,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://midFang.github.io/" />
 
-<meta property="og:updated_time" content="2020-12-02T00:00:00+00:00" />
+<meta property="og:updated_time" content="2020-12-06T00:00:00+00:00" />
 <meta itemprop="name" content="midFang&#39;s Blog">
 <meta itemprop="description" content="Hugo theme jane example site.">
 
@@ -349,6 +349,44 @@
     
   
   
+  
+    <article class="post bg-white">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/android-motionevent-sliding-conflict/">Android 事件分发机制源码流程分析</a>
+    </h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-12-06" class="post-time">
+        2020-12-06
+      </time>
+      <div class="post-category">
+          <a href="https://midFang.github.io/categories/android/"> Android </a>
+          <a href="https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"> 源码分析 </a>
+          <a href="https://midFang.github.io/categories/%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/"> 事件分发 </a>
+          
+        </div>
+      
+      
+      
+    </div>
+  </header>
+  
+  <div class="post-content">
+    
+    <div class="post-summary">
+      <p>阅读本文前，需要对事件分发机制所有了解，建议先阅读  <a href="https://www.midfang.com/android-motionevent-soruce-code-analysis/">Android 事件分发机制源码流程分析</a>，但是解决这个问题之前，首先我们要知道，滑动冲突是怎么来的，为什么会存在滑动冲突呢 ？</p>
+
+<p>其实在 Android 中，只要是在界面中内外两层 View 可以同时滑动的时候，这个时候，就会产生滑动冲突了，或者可以理解在同一方向一个 View 上只能响应一组事件序列。当然了，部分情况下，会看到同时滑动的情况，可能是通过特殊的方式，将自己的事件序列传递给其他 View 上面了。</p>
+    </div>
+    <div class="read-more">
+      <a href="/android-motionevent-sliding-conflict/" class="read-more-link">Read more</a>
+    </div>
+    
+  </div>
+</article>
+
   
     <article class="post bg-white">
   <header class="post-header">
@@ -753,52 +791,6 @@
     </div>
     <div class="read-more">
       <a href="/kotlin-catch-exception/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/kotlin-higher-order-functions/">Kotlin 中的高阶函数</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2020-09-10" class="post-time">
-        2020-09-10
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/kotlin/"> kotlin </a>
-          
-        </div>
-      
-      
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <h3 id="定义">定义</h3>
-
-<p>如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数</p>
-
-<p>函数类型的定义如下</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">(String, Int) -&gt; Unit </pre></td></tr></table>
-</div>
-</div>
-    </div>
-    <div class="read-more">
-      <a href="/kotlin-higher-order-functions/" class="read-more-link">Read more</a>
     </div>
     
   </div>

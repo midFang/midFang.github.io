@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>android on midFang&#39;s Blog</title>
+    <title>Android on midFang&#39;s Blog</title>
     <link>https://midFang.github.io/categories/android/</link>
-    <description>Recent content in android on midFang&#39;s Blog</description>
+    <description>Recent content in Android on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 02 Dec 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 06 Dec 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/categories/android/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Android 事件分发机制源码流程分析</title>
+      <link>https://midFang.github.io/android-motionevent-sliding-conflict/</link>
+      <pubDate>Sun, 06 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/android-motionevent-sliding-conflict/</guid>
+      <description>&lt;p&gt;阅读本文前，需要对事件分发机制所有了解，建议先阅读  &lt;a href=&#34;https://www.midfang.com/android-motionevent-soruce-code-analysis/&#34;&gt;Android 事件分发机制源码流程分析&lt;/a&gt;，但是解决这个问题之前，首先我们要知道，滑动冲突是怎么来的，为什么会存在滑动冲突呢 ？&lt;/p&gt;
+
+&lt;p&gt;其实在 Android 中，只要是在界面中内外两层 View 可以同时滑动的时候，这个时候，就会产生滑动冲突了，或者可以理解在同一方向一个 View 上只能响应一组事件序列。当然了，部分情况下，会看到同时滑动的情况，可能是通过特殊的方式，将自己的事件序列传递给其他 View 上面了。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Android 事件分发机制源码流程分析</title>
