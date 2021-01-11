@@ -45,7 +45,7 @@
     </item>
     
     <item>
-      <title>Android 事件分发机制源码流程分析</title>
+      <title>Android 事件分发的冲突解决方案</title>
       <link>https://midFang.github.io/android-motionevent-sliding-conflict/</link>
       <pubDate>Sun, 06 Dec 2020 00:00:00 +0000</pubDate>
       
