@@ -63,7 +63,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://midFang.github.io/" />
 
-<meta property="og:updated_time" content="2020-12-06T00:00:00+00:00" />
+<meta property="og:updated_time" content="2021-01-28T00:00:00+00:00" />
 <meta itemprop="name" content="midFang&#39;s Blog">
 <meta itemprop="description" content="Hugo theme jane example site.">
 
@@ -349,6 +349,42 @@
     
   
   
+  
+    <article class="post bg-white">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/kotlin-catch-exception/">Kotlin 中的异常处理</a>
+    </h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-09-15" class="post-time">
+        2020-09-15
+      </time>
+      <div class="post-category">
+          <a href="https://midFang.github.io/categories/kotlin/"> kotlin </a>
+          
+        </div>
+      
+      
+      
+    </div>
+  </header>
+  
+  <div class="post-content">
+    
+    <div class="post-summary">
+      <h3 id="java-中的异常处理">Java 中的异常处理</h3>
+
+<p>日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理：</p>
+    </div>
+    <div class="read-more">
+      <a href="/kotlin-catch-exception/" class="read-more-link">Read more</a>
+    </div>
+    
+  </div>
+</article>
+
   
     <article class="post bg-white">
   <header class="post-header">
@@ -682,79 +718,6 @@
     </div>
     <div class="read-more">
       <a href="/java-dynamic-proxy-design-patterns/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/activity-animation-transfer/">Activity 从各个方向进入和退出的转场动画</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-10-02" class="post-time">
-        2019-10-02
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E5%8A%A8%E7%94%BB/"> 动画 </a>
-          
-        </div>
-      
-      
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <h3 id="向左推">向左推</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// R.anim.i_slide_in_left
-</span><span class="c1"></span><span class="o">&lt;</span><span class="n">set</span> <span class="nf">xmlns</span><span class="o">:</span><span class="n">android</span><span class="o">=</span><span class="s">&#34;http://schemas.android.com/apk/res/android&#34;</span><span class="o">&gt;</span>
-	<span class="o">&lt;</span><span class="n">translate</span> 
-	<span class="nf">android</span><span class="o">:</span><span class="n">fromXDelta</span><span class="o">=</span><span class="s">&#34;100%p&#34;</span>
-	<span class="n">android</span><span class="o">:</span><span class="n">toXDelta</span><span class="o">=</span><span class="s">&#34;0&#34;</span>
-	<span class="n">android</span><span class="o">:</span><span class="n">duration</span><span class="o">=</span><span class="s">&#34;350&#34;</span><span class="o">/&gt;</span>
-<span class="o">&lt;/</span><span class="n">set</span><span class="o">&gt;</span>
-
-<span class="c1">// R.anim.i_slide_out_left
-</span><span class="c1"></span><span class="o">&lt;?</span><span class="n">xml</span> <span class="nf">version</span><span class="o">=</span><span class="s">&#34;1.0&#34;</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#34;utf-8&#34;</span><span class="o">?&gt;</span>
-<span class="o">&lt;</span><span class="n">set</span> <span class="nf">xmlns</span><span class="o">:</span><span class="n">android</span><span class="o">=</span><span class="s">&#34;http://schemas.android.com/apk/res/android&#34;</span><span class="o">&gt;</span>
-	<span class="o">&lt;</span><span class="n">translate</span> 
-	<span class="nf">android</span><span class="o">:</span><span class="n">fromXDelta</span><span class="o">=</span><span class="s">&#34;0&#34;</span>
-	<span class="n">android</span><span class="o">:</span><span class="n">toXDelta</span><span class="o">=</span><span class="s">&#34;-100%p&#34;</span>
-	<span class="n">android</span><span class="o">:</span><span class="n">duration</span><span class="o">=</span><span class="s">&#34;350&#34;</span><span class="o">/&gt;</span>
-<span class="o">&lt;/</span><span class="n">set</span><span class="o">&gt;</span></code></pre></td></tr></table>
-</div>
-</div>
-<h3 id="向右推">向右推</h3>
-    </div>
-    <div class="read-more">
-      <a href="/activity-animation-transfer/" class="read-more-link">Read more</a>
     </div>
     
   </div>
