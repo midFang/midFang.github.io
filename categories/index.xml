@@ -6,7 +6,7 @@
     <description>Recent content in Categories on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 28 Jan 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 03 Apr 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,9 +14,27 @@
     <item>
       <title>Android</title>
       <link>https://midFang.github.io/categories/android/</link>
-      <pubDate>Thu, 28 Jan 2021 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/categories/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>性能优化</title>
+      <link>https://midFang.github.io/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</link>
+      <pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>源码分析</title>
+      <link>https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
       <description></description>
     </item>
     
@@ -26,15 +44,6 @@
       <pubDate>Thu, 28 Jan 2021 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/categories/okhttp/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>源码分析</title>
-      <link>https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
-      <pubDate>Thu, 28 Jan 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
       <description></description>
     </item>
     
@@ -66,7 +75,7 @@
     </item>
     
     <item>
-      <title>view</title>
+      <title>View</title>
       <link>https://midFang.github.io/categories/view/</link>
       <pubDate>Sat, 07 Nov 2020 00:00:00 +0000</pubDate>
       
@@ -179,15 +188,6 @@
       <pubDate>Thu, 29 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/categories/%E7%AC%94%E8%AE%B0/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>蓝牙</title>
-      <link>https://midFang.github.io/categories/%E8%93%9D%E7%89%99/</link>
-      <pubDate>Mon, 24 Jun 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/categories/%E8%93%9D%E7%89%99/</guid>
       <description></description>
     </item>
     

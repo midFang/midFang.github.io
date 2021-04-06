@@ -6,10 +6,19 @@
     <description>Recent content in Posts on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 28 Jan 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 03 Apr 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ViewPager &#43; Fragment 源码解析与性能优化</title>
+      <link>https://midFang.github.io/viewpager-fragment-code-analysis-performance-optimization/</link>
+      <pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/viewpager-fragment-code-analysis-performance-optimization/</guid>
+      <description>在很多项目中都有 Banner 广告页或者是 Tab 切换页，如果是如下布局的情况，那么肯定遇到过这个问题，那就是这个 ViewPager 并不会包裹内容填充，而是会填充满整个布局，</description>
+    </item>
     
     <item>
       <title>OkHttp 源码分析及网络优化</title>
@@ -320,15 +329,6 @@
       
       <guid>https://midFang.github.io/bug-only-fullscreen-opaque-activities-can-request-orientation/</guid>
       <description>前言 不得不说 Google 的适配是真的烦。真的是一不小心各种坑，市面上的 Android 版本也很多，各种各样的屏幕也很多。最近做的项目在自己手上测试的都还行，直接丢给</description>
-    </item>
-    
-    <item>
-      <title>Java 动态代理</title>
-      <link>https://midFang.github.io/java-dynamic-proxy-design-patterns/</link>
-      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/java-dynamic-proxy-design-patterns/</guid>
-      <description>动态代理和静态代理一般在设计模式中的定义为代理设计模式 定义： 为其他对象提供一种代理以控制对这个对象的访问 使用场景： 当无法或者不想直接访问某个</description>
     </item>
     
   </channel>

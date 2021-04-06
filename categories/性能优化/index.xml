@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>性能优化 on midFang&#39;s Blog</title>
+    <link>https://midFang.github.io/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</link>
+    <description>Recent content in 性能优化 on midFang&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 03 Apr 2021 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://midFang.github.io/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ViewPager &#43; Fragment 源码解析与性能优化</title>
+      <link>https://midFang.github.io/viewpager-fragment-code-analysis-performance-optimization/</link>
+      <pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/viewpager-fragment-code-analysis-performance-optimization/</guid>
+      <description>在很多项目中都有 Banner 广告页或者是 Tab 切换页，如果是如下布局的情况，那么肯定遇到过这个问题，那就是这个 ViewPager 并不会包裹内容填充，而是会填充满整个布局，</description>
+    </item>
+    
+  </channel>
+</rss>

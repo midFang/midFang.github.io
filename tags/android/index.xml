@@ -6,10 +6,19 @@
     <description>Recent content in Android on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 28 Jan 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 03 Apr 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/android/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ViewPager &#43; Fragment 源码解析与性能优化</title>
+      <link>https://midFang.github.io/viewpager-fragment-code-analysis-performance-optimization/</link>
+      <pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/viewpager-fragment-code-analysis-performance-optimization/</guid>
+      <description>在很多项目中都有 Banner 广告页或者是 Tab 切换页，如果是如下布局的情况，那么肯定遇到过这个问题，那就是这个 ViewPager 并不会包裹内容填充，而是会填充满整个布局，</description>
+    </item>
     
     <item>
       <title>OkHttp 源码分析及网络优化</title>
@@ -333,15 +342,6 @@
       
       <guid>https://midFang.github.io/kotlin-extension-function-base-use/</guid>
       <description>最近的项目中也是基本处于是逐渐切换 Kotlin 的状态, 以下是在项目中经常使用到的几个扩展函数, 做一个记录, 不得不说有的时候真的比 Java 方便很多 内联扩展函数</description>
-    </item>
-    
-    <item>
-      <title>View 的 draw 过程</title>
-      <link>https://midFang.github.io/view-draw-process/</link>
-      <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/view-draw-process/</guid>
-      <description>Draw 过程 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个顶点的位置, draw 则是将布局绘制在屏</description>
     </item>
     
   </channel>
