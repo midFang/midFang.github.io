@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Gradle 自定义 plugin 以及项目优化实践 - midFang&#39;s Blog</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="midFang" />
+  <meta name="description" content="Gradle 是什么？  它是一款强大的构建工具，而不是语⾔ 它使用了 Groovy 这个语言，创造了一种 DSL，但它本身不是语⾔  groovy 是什么 Groovy 是一种动态语言，它和 Java 类似（算是 Java 的升级版，但是又具备脚本语言的特点），都在 Java 虚拟机中运行。当运行 Groovy 脚本时它会先被编译成 Java 类字节码，然后通过 JVM 虚拟机执行这个 Java 字节码类
+Gradle 的 Project 和 Tasks 每次构建（build）至少由一个 project 构成，一个 project 由一到多个 task 构成。每个 task 代表了构建过程当中的一个原子性操作，比如编译，打包，生成javadoc，发布等等这些操作
+Gradle 的构建流程" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<link rel="canonical" href="https://midFang.github.io/gradle-task-plugin/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="Gradle 自定义 plugin 以及项目优化实践" />
+<meta property="og:description" content="Gradle 是什么？
+
+
+它是一款强大的构建工具，而不是语⾔
+它使用了 Groovy 这个语言，创造了一种 DSL，但它本身不是语⾔
+
+
+groovy 是什么
+
+Groovy 是一种动态语言，它和 Java 类似（算是 Java 的升级版，但是又具备脚本语言的特点），都在 Java 虚拟机中运行。当运行 Groovy 脚本时它会先被编译成 Java 类字节码，然后通过 JVM 虚拟机执行这个 Java 字节码类
+
+Gradle 的 Project 和 Tasks
+
+每次构建（build）至少由一个 project 构成，一个 project 由一到多个 task 构成。每个 task 代表了构建过程当中的一个原子性操作，比如编译，打包，生成javadoc，发布等等这些操作
+
+Gradle 的构建流程" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/gradle-task-plugin/" />
+<meta property="article:published_time" content="2021-04-11T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-04-11T00:00:00+00:00" />
+<meta itemprop="name" content="Gradle 自定义 plugin 以及项目优化实践">
+<meta itemprop="description" content="Gradle 是什么？
+
+
+它是一款强大的构建工具，而不是语⾔
+它使用了 Groovy 这个语言，创造了一种 DSL，但它本身不是语⾔
+
+
+groovy 是什么
+
+Groovy 是一种动态语言，它和 Java 类似（算是 Java 的升级版，但是又具备脚本语言的特点），都在 Java 虚拟机中运行。当运行 Groovy 脚本时它会先被编译成 Java 类字节码，然后通过 JVM 虚拟机执行这个 Java 字节码类
+
+Gradle 的 Project 和 Tasks
+
+每次构建（build）至少由一个 project 构成，一个 project 由一到多个 task 构成。每个 task 代表了构建过程当中的一个原子性操作，比如编译，打包，生成javadoc，发布等等这些操作
+
+Gradle 的构建流程">
+
+
+<meta itemprop="datePublished" content="2021-04-11T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2021-04-11T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="3913">
+
+
+
+<meta itemprop="keywords" content="android,gradle," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Gradle 自定义 plugin 以及项目优化实践"/>
+<meta name="twitter:description" content="Gradle 是什么？
+
+
+它是一款强大的构建工具，而不是语⾔
+它使用了 Groovy 这个语言，创造了一种 DSL，但它本身不是语⾔
+
+
+groovy 是什么
+
+Groovy 是一种动态语言，它和 Java 类似（算是 Java 的升级版，但是又具备脚本语言的特点），都在 Java 虚拟机中运行。当运行 Groovy 脚本时它会先被编译成 Java 类字节码，然后通过 JVM 虚拟机执行这个 Java 字节码类
+
+Gradle 的 Project 和 Tasks
+
+每次构建（build）至少由一个 project 构成，一个 project 由一到多个 task 构成。每个 task 代表了构建过程当中的一个原子性操作，比如编译，打包，生成javadoc，发布等等这些操作
+
+Gradle 的构建流程"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">midFang's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+        
+      </li>
+    
+
+    
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+    
+
+
+
+
+
+
+  <link rel="stylesheet" href="/lib/photoswipe/photoswipe.min.css" />
+  <link rel="stylesheet" href="/lib/photoswipe/default-skin/default-skin.min.css" />
+
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+  
+
+  
+    
+<div class="modal-dialog">
+    
+    <div class="modal-content">
+      <div id="closeSearch" title="Close" class="close">X</div>
+      <div class="modal-header">
+        <div class="modal-title">Search</div>
+      </div>
+      <div class="modal-body">
+          <script>
+            (function() {
+              var cx = '57787f7f4d21d54fc';
+              var gcse = document.createElement('script');
+              gcse.type = 'text/javascript';
+              gcse.async = true;
+              gcse.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//cse.google.com/cse.js?cx=' + cx;
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(gcse, s);
+            })();
+          </script>
+          <gcse:search></gcse:search>
+      </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      midFang's Blog
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+      <li class="menu-item">
+        <a id="openSearch" class="menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">Gradle 自定义 plugin 以及项目优化实践</h1>
+      
+      <div class="post-meta">
+        <time datetime="2021-04-11" class="post-time">
+          2021-04-11
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/android/"> android </a>
+            <a href="https://midFang.github.io/categories/gradle/"> gradle </a>
+            
+          </div>
+        
+
+        
+        
+          <span id="busuanzi_container_page_pv">
+            | 阅读 <span id="busuanzi_value_page_pv"></span>
+          </span>
+        
+
+        
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#gradle-是什么">Gradle 是什么？</a></li>
+<li><a href="#groovy-是什么">groovy 是什么</a></li>
+<li><a href="#gradle-的-project-和-tasks">Gradle 的 Project 和 Tasks</a></li>
+<li><a href="#gradle-的构建流程">Gradle 的构建流程</a></li>
+<li><a href="#gradle-的详细构建流程">Gradle 的详细构建流程</a>
+<ul>
+<li><a href="#1-初始化阶段">1.初始化阶段</a></li>
+<li><a href="#2-配置阶段">2.配置阶段</a></li>
+<li><a href="#3-执行阶段">3.执行阶段</a></li>
+</ul></li>
+<li><a href="#buildtype-的使用">BuildType 的使用</a></li>
+<li><a href="#自定义-task">自定义 Task</a></li>
+</ul></li>
+<li><a href="#创建action">创建Action</a>
+<ul>
+<li><a href="#创建-action-相关-api">创建 Action 相关 API</a></li>
+</ul></li>
+<li><a href="#九-系统默认-task">九：系统默认 task</a>
+<ul>
+<li><a href="#例子">例子</a></li>
+<li><a href="#自定义-plugin">自定义 plugin</a></li>
+<li><a href="#修改-build-gradle-文件">修改 build.gradle 文件</a></li>
+<li><a href="#插件的使用">插件的使用</a></li>
+<li><a href="#项目优化">项目优化</a></li>
+<li><a href="#参考链接">参考链接：</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      <h3 id="gradle-是什么">Gradle 是什么？</h3>
+
+<ul>
+<li>它是一款强大的构建工具，而不是语⾔</li>
+<li>它使用了 Groovy 这个语言，创造了一种 DSL，但它本身不是语⾔</li>
+</ul>
+
+<h3 id="groovy-是什么">groovy 是什么</h3>
+
+<p>Groovy 是一种动态语言，它和 Java 类似（算是 Java 的升级版，但是又具备脚本语言的特点），都在 Java 虚拟机中运行。当运行 Groovy 脚本时它会先被编译成 Java 类字节码，然后通过 JVM 虚拟机执行这个 Java 字节码类</p>
+
+<h3 id="gradle-的-project-和-tasks">Gradle 的 Project 和 Tasks</h3>
+
+<p>每次构建（build）至少由一个 project 构成，一个 project 由一到多个 task 构成。每个 task 代表了构建过程当中的一个原子性操作，比如编译，打包，生成javadoc，发布等等这些操作</p>
+
+<h3 id="gradle-的构建流程">Gradle 的构建流程</h3>
+
+<p>通常来说，Gradle 一次完整的构建过程通常分成如下 三个部分：</p>
+
+<ul>
+<li>初始化阶段：首先，在初始化阶段 Gradle 会决定哪些项目模块要参与构建，并且为每个项目模块创建一个与之对应的 Project 实例</li>
+<li>配置阶段：然后，配置工程中每个项目的模块，并执行包含其中的配置脚本</li>
+<li>执行阶段：最后，执行每个参与构建过程的 Gradle task</li>
+</ul>
+
+<h3 id="gradle-的详细构建流程">Gradle 的详细构建流程</h3>
+
+<h4 id="1-初始化阶段">1.初始化阶段</h4>
+
+<ul>
+<li>首先，在这个阶段中，会读取根工程中的 setting.gradle 中的 include 信息，确定有多少工程加入构建，然后，<strong>会为每一个项目（build.gradle 脚本文件）创建一个个与之对应的 Project 实例，最终形成一个项目的层次结构</strong>。 与初始化阶段相关的脚本文件是 <strong>settings.gradle</strong>，而一个 <strong>settings.gradle</strong> 脚本对应一个 <strong>Settings</strong> 对象，我们最常用来声明项目的层次结构的 <strong>include</strong> 就是 <strong>Settings</strong> 对象下的一个方法，<strong>在 Gradle 初始化的时候会构造一个 Settings 实例对象，以执行各个 Project 的初始化配置</strong></li>
+</ul>
+
+<h4 id="2-配置阶段">2.配置阶段</h4>
+
+<ul>
+<li>配置阶段的任务是 <strong>执行各项目下的 build.gradle 脚本，完成 Project 的配置，与此同时，会构造 Task 任务依赖关系图以便在执行阶段按照依赖关系执行 Task</strong>。而在配置阶段执行的代码通常来说都会包括以下三个部分的内容，如下所示：
+
+<ul>
+<li><strong>build.gralde 中的各种语句</strong></li>
+<li><strong>闭包</strong></li>
+<li><strong>Task 中的配置段语句</strong></li>
+</ul></li>
+</ul>
+
+<p>需要注意的是，<strong>执行任何 Gradle 命令，在初始化阶段和配置阶段的代码都会被执行</strong></p>
+
+<h4 id="3-执行阶段">3.执行阶段</h4>
+
+<ul>
+<li><strong>Gradle 会根据各个任务 Task 的来执行对应的任务</strong></li>
+</ul>
+
+<h3 id="buildtype-的使用">BuildType 的使用</h3>
+
+<blockquote>
+<p><code>buildTypes {}</code> 封装此项目的所有构建类型配置</p>
+</blockquote>
+
+<p>这里举一个例子，比如 flutter 的 debug 版本，在右上角会增加一个 debug 的图标，这个如果如果利用 BuildType 来实践的话，可以是这样的，假如如下有这么一个类，其中每个版本都有不一样的标识，那么在输出版本的时候一眼就能够看出这个是什么版本：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">object</span> <span class="nc">BuildTypeUtil</span> <span class="p">{</span>
+    <span class="k">fun</span> <span class="nf">drawBadge</span><span class="p">(</span><span class="n">activity</span><span class="p">:</span> <span class="n">Activity</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">decorView</span><span class="p">:</span> <span class="n">ViewGroup</span> <span class="p">=</span> <span class="n">activity</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">decorView</span> <span class="k">as</span> <span class="n">ViewGroup</span>
+        <span class="k">val</span> <span class="py">view</span> <span class="p">=</span> <span class="n">View</span><span class="p">(</span><span class="n">activity</span><span class="p">)</span>
+        <span class="n">view</span><span class="p">.</span><span class="n">setBackgroundColor</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">RED</span><span class="p">)</span>
+        <span class="n">decorView</span><span class="p">.</span><span class="n">addView</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="m">200</span><span class="p">,</span> <span class="m">200</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>在 MainActivity 的使用</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">class</span> <span class="nc">MainActivity</span> <span class="p">:</span> <span class="n">AppCompatActivity</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
+        <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
+        <span class="n">setContentView</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">activity_main</span><span class="p">)</span>
+
+        <span class="n">BuildTypeUtil</span><span class="p">.</span><span class="n">drawBadge</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>然后可以在相对应的 buildType 的路径下配置自己的逻辑，例如 release 、debug、internal 各种路径下配置的逻辑都各自不相同。其实这样的方式只写一个单独的类也是可以的，这里只是以这个场景举例，只不过这样的方式在打包的时候，只会引入一套源代码，节约一点空间，或者是配置的资源文件会更加的有优势</p>
+
+<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210412234745.png" alt="" /></p>
+
+<p>例如在 buildType 中配置 applicationIdSuffix “.debug” ，会在最终输出包中后面加上后缀，如下</p>
+
+<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210413000655.png" alt="" /></p>
+
+<p>buildConfigField 的配置，例如以下日志的开关，网络 IP，一些特殊的标识，都可以配置，配置的方式如下，需要注意的是，如果是 string 类型的字符串，需要再加上一个双引号，配置如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy">    <span class="n">signingConfigs</span> <span class="o">{</span>
+        <span class="n">debugConfig</span> <span class="o">{</span>
+            <span class="n">keyAlias</span> <span class="s2">&#34;platform-android&#34;</span>
+            <span class="n">keyPassword</span> <span class="s2">&#34;Android&#34;</span>
+            <span class="n">storeFile</span> <span class="nf">file</span><span class="o">(</span><span class="s2">&#34;Android.keystore&#34;</span><span class="o">)</span>
+            <span class="n">storePassword</span> <span class="s2">&#34;Android&#34;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="n">buildTypes</span> <span class="o">{</span>
+        <span class="n">debug</span> <span class="o">{</span>
+            <span class="n">minifyEnabled</span> <span class="kc">false</span> <span class="c1">//是否混淆
+</span><span class="c1"></span>            <span class="c1">// 移除无用的resource文件
+</span><span class="c1"></span>            <span class="n">shrinkResources</span> <span class="kc">false</span>
+            <span class="c1">//设置属性名为BUILD_STRING值为release的属性,注意需要使用\&#34;定义字符串
+</span><span class="c1"></span>            <span class="n">buildConfigField</span> <span class="s2">&#34;String&#34;</span><span class="o">,</span> <span class="s2">&#34;BUILD_STRING&#34;</span><span class="o">,</span> <span class="s2">&#34;\&#34;debug\&#34;&#34;</span>
+            <span class="c1">//定义boolean类型数据
+</span><span class="c1"></span>            <span class="n">buildConfigField</span> <span class="s2">&#34;boolean&#34;</span><span class="o">,</span> <span class="s2">&#34;IS_DEBUG&#34;</span><span class="o">,</span> <span class="s2">&#34;true&#34;</span>
+            <span class="c1">//定义int类型数据
+</span><span class="c1"></span>            <span class="n">buildConfigField</span> <span class="s2">&#34;int&#34;</span><span class="o">,</span> <span class="s2">&#34;NUM&#34;</span><span class="o">,</span> <span class="s2">&#34;0&#34;</span>
+            <span class="n">applicationIdSuffix</span> <span class="s2">&#34;.debug&#34;</span>
+        <span class="o">}</span>
+        <span class="n">release</span> <span class="o">{</span>
+            <span class="n">minifyEnabled</span> <span class="kc">false</span> <span class="c1">//是否混淆
+</span><span class="c1"></span>            <span class="c1">// 移除无用的resource文件
+</span><span class="c1"></span>            <span class="n">shrinkResources</span> <span class="kc">false</span>
+            <span class="c1">//签名
+</span><span class="c1"></span>            <span class="c1">// signingConfig signingConfigs.debugConfig
+</span><span class="c1"></span>            <span class="c1">// 不显示Log
+</span><span class="c1"></span>            <span class="n">buildConfigField</span> <span class="s2">&#34;boolean&#34;</span><span class="o">,</span> <span class="s2">&#34;LOG_DISENABLE&#34;</span><span class="o">,</span> <span class="s2">&#34;true&#34;</span>
+            <span class="c1">//设置属性名为BUILD_STRING值为release的属性,注意需要使用\&#34;定义字符串
+</span><span class="c1"></span>            <span class="n">buildConfigField</span> <span class="s2">&#34;String&#34;</span><span class="o">,</span> <span class="s2">&#34;BUILD_STRING&#34;</span><span class="o">,</span> <span class="s2">&#34;\&#34;release\&#34;&#34;</span>
+            <span class="c1">//定义boolean类型数据
+</span><span class="c1"></span>            <span class="n">buildConfigField</span> <span class="s2">&#34;boolean&#34;</span><span class="o">,</span> <span class="s2">&#34;IS_DEBUG&#34;</span><span class="o">,</span> <span class="s2">&#34;false&#34;</span>
+            <span class="c1">//定义int类型数据
+</span><span class="c1"></span>            <span class="n">buildConfigField</span> <span class="s2">&#34;int&#34;</span><span class="o">,</span> <span class="s2">&#34;NUM&#34;</span><span class="o">,</span> <span class="s2">&#34;1&#34;</span>
+            <span class="n">proguardFiles</span> <span class="nf">getDefaultProguardFile</span><span class="o">(</span><span class="s1">&#39;proguard-android-optimize.txt&#39;</span><span class="o">),</span> <span class="s1">&#39;proguard-rules.pro&#39;</span>
+        <span class="o">}</span>
+        <span class="n">internal</span> <span class="o">{</span>
+            <span class="n">initWith</span> <span class="n">debug</span>
+            <span class="n">applicationIdSuffix</span> <span class="s2">&#34;.internal&#34;</span>
+            <span class="c1">//设置属性名为BUILD_STRING值为release的属性,注意需要使用\&#34;定义字符串
+</span><span class="c1"></span>            <span class="n">buildConfigField</span> <span class="s2">&#34;String&#34;</span><span class="o">,</span> <span class="s2">&#34;BUILD_STRING&#34;</span><span class="o">,</span> <span class="s2">&#34;\&#34;internal\&#34;&#34;</span>
+            <span class="c1">//定义boolean类型数据
+</span><span class="c1"></span>            <span class="n">buildConfigField</span> <span class="s2">&#34;boolean&#34;</span><span class="o">,</span> <span class="s2">&#34;IS_DEBUG&#34;</span><span class="o">,</span> <span class="s2">&#34;true&#34;</span>
+            <span class="c1">//定义int类型数据
+</span><span class="c1"></span>            <span class="n">buildConfigField</span> <span class="s2">&#34;int&#34;</span><span class="o">,</span> <span class="s2">&#34;NUM&#34;</span><span class="o">,</span> <span class="s2">&#34;2&#34;</span>
+        <span class="o">}</span>
+    <span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>最终这些配置会生成在 BuildConfig 类当中，直接通过 BuildConfig.xxx 的使用即可</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nf">com</span><span class="p">.</span><span class="na">midfang</span><span class="p">.</span><span class="na">androidgradleplugin</span><span class="p">;</span>
+
+<span class="kd">public</span> <span class="nf">final</span> <span class="kd">class</span> <span class="nf">BuildConfig</span> <span class="p">{</span>
+  <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">boolean</span> <span class="n">DEBUG</span> <span class="o">=</span> <span class="n">Boolean</span><span class="p">.</span><span class="na">parseBoolean</span><span class="p">(</span><span class="s">&#34;true&#34;</span><span class="p">);</span>
+  <span class="c1">// 包名已加后缀
+</span><span class="c1"></span>  <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">String</span> <span class="n">APPLICATION_ID</span> <span class="o">=</span> <span class="s">&#34;com.midfang.androidgradleplugin.debug&#34;</span><span class="p">;</span>
+  <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">String</span> <span class="n">BUILD_TYPE</span> <span class="o">=</span> <span class="s">&#34;debug&#34;</span><span class="p">;</span>
+  <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">VERSION_CODE</span> <span class="o">=</span> <span class="n">1</span><span class="p">;</span>
+  <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">String</span> <span class="n">VERSION_NAME</span> <span class="o">=</span> <span class="s">&#34;1.0&#34;</span><span class="p">;</span>
+  <span class="c1">// Field from build type: debug
+</span><span class="c1"></span>  <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">String</span> <span class="n">BUILD_STRING</span> <span class="o">=</span> <span class="s">&#34;debug&#34;</span><span class="p">;</span>
+  <span class="c1">// Field from build type: debug
+</span><span class="c1"></span>  <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">boolean</span> <span class="n">IS_DEBUG</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="c1">// Field from build type: debug
+</span><span class="c1"></span>  <span class="kd">public</span> <span class="nf">static</span> <span class="kd">final</span> <span class="nf">int</span> <span class="n">NUM</span> <span class="o">=</span> <span class="n">0</span><span class="p">;</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="自定义-task">自定义 Task</h3>
+
+<ul>
+<li><p>格式</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">task</span> <span class="err">任务的名字</span> <span class="o">{</span>
+<span class="c1">//do some things
+</span><span class="c1"></span><span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>例子</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="c1">//定义 task , 名字 hello 
+</span><span class="c1"></span><span class="n">task</span> <span class="n">hello</span><span class="o">{</span>
+<span class="n">println</span> <span class="s2">&#34;hello world&#34;</span>
+<span class="o">}</span>
+
+<span class="c1">//定义 task，名字 hello 
+</span><span class="c1"></span><span class="n">task</span><span class="o">(</span><span class="n">hello2</span><span class="o">){</span>
+<span class="n">println</span> <span class="s2">&#34;hello world2&#34;</span>
+<span class="o">}</span>
+
+<span class="c1">//定义 task，名字 hello3 
+</span><span class="c1"></span><span class="n">task</span> <span class="o">(</span><span class="s1">&#39;hello3&#39;</span><span class="o">){</span>
+<span class="n">println</span> <span class="s2">&#34;hello world3&#34;</span>
+<span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>在终端运行 gradle 命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="c1">//执行 hello task
+</span><span class="c1"></span><span class="n">gradlew</span> <span class="n">hello</span>
+
+<span class="c1">//执行 hello2 task
+</span><span class="c1"></span><span class="n">gradlew</span> <span class="n">hello2</span>
+
+<span class="c1">//执行 hello3 task
+</span><span class="c1"></span><span class="n">gradlew</span> <span class="n">hello3</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+
+<h2 id="创建action">创建Action</h2>
+
+<p>在上面的举例中，是一个非正式的 task , 说非正式是因为创建的 task 里面没有 action 。task 本质上又是由一组被顺序执行的 Action 对象构成，Action 其实是一段代码块，类似于 Java 中的方法</p>
+
+<h3 id="创建-action-相关-api">创建 Action 相关 API</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"> <span class="c1">//在Action 队列头部添加Action
+</span><span class="c1"></span> <span class="n">Task</span> <span class="nf">doFirst</span><span class="o">(</span><span class="n">Action</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">Task</span><span class="o">&gt;</span> <span class="n">action</span><span class="o">);</span>
+ <span class="n">Task</span> <span class="nf">doFirst</span><span class="o">(</span><span class="n">Closure</span> <span class="n">action</span><span class="o">);</span>
+
+ <span class="c1">//在Action 队列尾部添加Action
+</span><span class="c1"></span> <span class="n">Task</span> <span class="nf">doLast</span><span class="o">(</span><span class="n">Action</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">Task</span><span class="o">&gt;</span> <span class="n">action</span><span class="o">);</span>
+ <span class="n">Task</span> <span class="nf">doLast</span><span class="o">(</span><span class="n">Closure</span> <span class="n">action</span><span class="o">);</span>
+    
+ <span class="c1">//已经过时了，建议用 doLast 代替
+</span><span class="c1"></span> <span class="n">Task</span> <span class="nf">leftShift</span><span class="o">(</span><span class="n">Closure</span> <span class="n">action</span><span class="o">);</span>
+
+ <span class="c1">//删除所有的Action
+</span><span class="c1"></span> <span class="n">Task</span> <span class="nf">deleteAllActions</span><span class="o">();</span></code></pre></td></tr></table>
+</div>
+</div>
+<ul>
+<li><p>例子</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">task</span> <span class="n">hello</span> <span class="o">{</span>
+<span class="c1">//创建一个 Action , 添加到 Action 列表的头部
+</span><span class="c1"></span><span class="n">doFirst</span><span class="o">(</span><span class="k">new</span> <span class="n">Action</span><span class="o">&lt;</span><span class="n">Task</span><span class="o">&gt;()</span> <span class="o">{</span>
+   <span class="nd">@Override</span>
+   <span class="kt">void</span> <span class="nf">execute</span><span class="o">(</span><span class="n">Task</span> <span class="n">task</span><span class="o">)</span> <span class="o">{</span>
+       <span class="n">println</span> <span class="s2">&#34;action1++++++++++&#34;</span>
+   <span class="o">}</span>
+<span class="o">})</span>
+
+<span class="c1">//创建一个 Action , 添加到 Action 列表的头部
+</span><span class="c1"></span><span class="n">doFirst</span> <span class="o">{</span>
+    <span class="n">println</span> <span class="s2">&#34;action2++++++++++&#34;</span>
+<span class="o">}</span>
+    
+<span class="n">doLast</span><span class="o">{</span>
+	<span class="n">println</span> <span class="s2">&#34;doLast++++++++++&#34;</span>
+<span class="o">}</span>
+<span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+
+<h2 id="九-系统默认-task">九：系统默认 task</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//数据源目录，多个目录
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">AbstractCopyTask</span> <span class="n">from</span><span class="p">(</span><span class="n">Object</span><span class="p">...</span> <span class="nf">sourcePaths</span><span class="p">)</span>  
+
+<span class="c1">//目标目录，单一
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">AbstractCopyTask</span> <span class="n">into</span><span class="p">(</span><span class="n">Object</span> <span class="nf">destDir</span><span class="p">)</span> 
+
+<span class="c1">//过滤文件 包含
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">AbstractCopyTask</span> <span class="n">include</span><span class="p">(</span><span class="n">String</span><span class="p">...</span> <span class="nf">includes</span><span class="p">)</span>
+
+<span class="c1">//过滤文件 排除
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">AbstractCopyTask</span> <span class="n">exclude</span><span class="p">(</span><span class="n">String</span><span class="p">...</span> <span class="nf">excludes</span><span class="p">)</span>
+
+<span class="c1">//重新命名，老名字 新名字
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">AbstractCopyTask</span> <span class="n">rename</span><span class="p">(</span><span class="n">String</span> <span class="nf">sourceRegEx</span><span class="p">,</span> <span class="n">String</span> <span class="nf">replaceWith</span><span class="p">)</span>
+
+<span class="c1">//删除文件 Project 接口
+</span><span class="c1"></span><span class="kt">boolean</span> <span class="nf">delete</span><span class="p">(</span><span class="n">Object</span><span class="p">...</span> <span class="nf">paths</span><span class="p">);</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="例子">例子</h3>
+
+<ul>
+<li><p>复制图片：单一数据源</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">task</span> <span class="nf">copyImage</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Copy</span><span class="o">)</span> <span class="o">{</span>
+<span class="n">from</span> <span class="s1">&#39;C:\\Users\\yiba_zyj\\Desktop\\gradle\\copy&#39;</span>
+<span class="n">into</span> <span class="s1">&#39;C:\\Users\\yiba_zyj\\Desktop&#39;</span>
+<span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>复制图片：多个数据源</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">task</span> <span class="nf">copyImage</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Copy</span><span class="o">)</span> <span class="o">{</span>
+<span class="n">from</span> <span class="s1">&#39;C:\\Users\\yiba_zyj\\Desktop\\gradle\\copy&#39;</span> <span class="o">,</span> 
+     <span class="s1">&#39;C:\\Users\\yiba_zyj\\Desktop\\gradle\\copy&#39;</span>
+    
+<span class="n">into</span> <span class="s1">&#39;C:\\Users\\yiba_zyj\\Desktop&#39;</span>
+<span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>复制图片：过滤文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="err">只会复制后缀为</span> <span class="o">.</span><span class="na">jpg</span> <span class="err">的文件</span>
+<span class="n">task</span> <span class="nf">copyImage</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Copy</span><span class="o">)</span> <span class="o">{</span>
+<span class="n">from</span> <span class="s1">&#39;C:\\Users\\yiba_zyj\\Desktop\\gradle\\copy&#39;</span>
+<span class="n">into</span> <span class="s1">&#39;C:\\Users\\yiba_zyj\\Desktop&#39;</span>
+<span class="n">include</span> <span class="s2">&#34;*.jpg&#34;</span> 
+<span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>复制文件：过滤文件，重命名</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">task</span> <span class="nf">copyImage</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Copy</span><span class="o">)</span> <span class="o">{</span>
+<span class="n">from</span> <span class="s1">&#39;C:\\Users\\yiba_zyj\\Desktop\\gradle\\copy&#39;</span>
+<span class="n">into</span> <span class="s1">&#39;C:\\Users\\yiba_zyj\\Desktop&#39;</span>
+<span class="n">include</span> <span class="s2">&#34;*.jpg&#34;</span>
+<span class="n">exclude</span> <span class="s2">&#34;image1.jpg&#34;</span>
+<span class="n">rename</span><span class="o">(</span><span class="s2">&#34;image2.jpg&#34;</span><span class="o">,</span><span class="s2">&#34;123.jpg&#34;</span><span class="o">)</span>
+<span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>删除文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">task</span> <span class="nf">deleteFile</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Delete</span><span class="o">)</span> <span class="o">{</span>
+<span class="c1">//删除Android 更目录的aaa 文件
+</span><span class="c1"></span><span class="n">delete</span> <span class="s1">&#39;../aaa&#39;</span>  
+<span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+
+<h3 id="自定义-plugin">自定义 plugin</h3>
+
+<ul>
+<li><p>plugin 最基本的写法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="kd">class</span> <span class="nc">pluginDemo</span> <span class="kd">implements</span> <span class="n">Plugin</span><span class="o">&lt;</span><span class="n">Project</span><span class="o">&gt;{</span>
+<span class="nd">@Override</span>
+<span class="kt">void</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Project</span> <span class="n">project</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">println</span><span class="o">(</span><span class="s1">&#39;base pluginDemo &#39;</span><span class="o">)</span>
+<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="n">apply</span> <span class="nl">plugin:</span> <span class="n">pluginDemo</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+
+<p>执行一个打包命令，将会看到如下结果，插件执行成功：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-tex" data-lang="tex"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-tex" data-lang="tex">5:10:23 PM: Executing task &#39;assembleDebug&#39;...
+
+Executing tasks: [assembleDebug] in project /Users/apple/AndroidStudioProject/AndroidGradlePlugin
+
+
+&gt; Configure project :
+hello task 1
+
+&gt; Configure project :app
+base pluginDemo </code></pre></td></tr></table>
+</div>
+</div>
+<p>接下来看下以一个 module 是如何自定义 plugin 的</p>
+
+<ul>
+<li>以创建 java lib 的方式，创建一个工程，并把多余的 test 等等一些多余的文件删除掉，保留像如下格式：</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210413172716.png" alt="" />首先建立 groovy 目录，然后再创建一个 PluginImpl.groovy 的文件，注意这个文件不是 java 文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">midfang</span><span class="o">.</span><span class="na">myplugin</span>
+
+<span class="kn">import</span> <span class="nn">com.android.build.gradle.AppExtension</span>
+<span class="kn">import</span> <span class="nn">org.gradle.api.Plugin</span>
+<span class="kn">import</span> <span class="nn">org.gradle.api.Project</span>
+
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PluginImpl</span> <span class="kd">implements</span> <span class="n">Plugin</span><span class="o">&lt;</span><span class="n">Project</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="kt">void</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Project</span> <span class="n">project</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s2">&#34;========================&#34;</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s2">&#34;hello gradle plugin!&#34;</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s2">&#34;========================&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>然后再创建 <code>resources</code> 资源文件夹，<code>resources</code>目录下新建文件夹<code>META-INF</code>，<code>META-INF</code>文件夹下新建<code>gradle-plugins</code>文件夹，目录结果如上图所示，其中在 <code>gradle-plugins</code>文件夹下的 xxx.properties ，这个 xxx 的命名就是后面 apply plugin：xxx 导入插件的名字，这个 properties 的文件信息如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">implementation-class=com.midfang.myplugin.PluginImpl</pre></td></tr></table>
+</div>
+</div>
+<h3 id="修改-build-gradle-文件">修改 build.gradle 文件</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;groovy&#39;</span>
+<span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;maven&#39;</span>
+
+<span class="n">dependencies</span><span class="o">{</span>
+    <span class="c1">// gradle sdk
+</span><span class="c1"></span>    <span class="n">implementation</span> <span class="nf">gradleApi</span><span class="o">()</span>
+    <span class="c1">// groovy sdk
+</span><span class="c1"></span>    <span class="n">implementation</span> <span class="nf">localGroovy</span><span class="o">()</span>
+    <span class="n">implementation</span> <span class="s1">&#39;com.android.tools.build:gradle:4.1.1&#39;</span>
+<span class="o">}</span>
+
+<span class="n">repositories</span><span class="o">{</span>
+    <span class="n">mavenCentral</span><span class="o">()</span>
+<span class="o">}</span>
+
+<span class="c1">// 配置打包到本地maven库
+</span><span class="c1"></span><span class="n">uploadArchives</span> <span class="o">{</span>
+    <span class="n">repositories</span> <span class="o">{</span>
+        <span class="n">mavenDeployer</span> <span class="o">{</span>
+            <span class="n">pom</span><span class="o">.</span><span class="na">groupId</span> <span class="o">=</span> <span class="s1">&#39;com.midfang.myplugin&#39;</span>
+            <span class="n">pom</span><span class="o">.</span><span class="na">artifactId</span> <span class="o">=</span> <span class="s1">&#39;midfang&#39;</span>
+            <span class="n">pom</span><span class="o">.</span><span class="na">version</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="c1">// maven本地仓库的目录
+</span><span class="c1"></span>            <span class="n">repository</span><span class="o">(</span><span class="nl">url:</span> <span class="n">uri</span><span class="o">(</span><span class="s1">&#39;../myplugin&#39;</span><span class="o">))</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这样配置好之后，这时候，右侧的 gradle Toolbar 就会在 module 下多出一个 task</p>
+
+<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210413173811.png" alt="" /></p>
+
+<p>点击<code>uploadArchives</code>这个 Task，就会在项目下多出一个 myplugin 目录，里面存着这个 gradle 插件</p>
+
+<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210413173916.png" alt="" /></p>
+
+<h3 id="插件的使用">插件的使用</h3>
+
+<p>我们来看下，发布到本地 maven 仓库的插件如何使用，在项目根目录下的<code>gradle.build</code>的文件中加入：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">buildscript {
+    ext.kotlin_version = &#34;1.3.72&#34;
+    repositories {
+        google()
+        jcenter()
+
+        // 导入本地插件库
+        maven{
+            url uri(&#39;myplugin&#39;)
+        }
+    }
+    dependencies {
+        classpath &#34;com.android.tools.build:gradle:4.1.1&#34;
+        classpath &#34;org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version&#34;
+
+        // 自定义的插件
+        classpath &#39;com.midfang.myplugin:midfang:1.0&#39;
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}</pre></td></tr></table>
+</div>
+</div>
+<p>app目录下的build.gradle文件中加入：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">plugins {
+    id &#39;com.android.application&#39;
+    id &#39;kotlin-android&#39;
+    id &#39;com.midfang.myplugin&#39;
+}</pre></td></tr></table>
+</div>
+</div>
+<p>然后我们就可以使用该插件了，执行一次打包命令就可以发现插件已经生效了</p>
+
+<p><img src="/Users/apple/Library/Application Support/typora-user-images/image-20210413174256866.png" alt="image-20210413174256866" /></p>
+
+<h3 id="项目优化">项目优化</h3>
+
+<p>最原始项目中的 build.gradle 中可能是如下这样的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">defaultConfig {
+        applicationId &#34;com.midfang.androidgradleplugin&#34;
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName &#34;1.0&#34;
+
+        testInstrumentationRunner &#34;androidx.test.runner.AndroidJUnitRunner&#34;
+    }
+    
+dependencies {
+    implementation &#34;org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version&#34;
+    implementation &#39;androidx.core:core-ktx:1.2.0&#39;
+    implementation &#39;androidx.appcompat:appcompat:1.1.0&#39;
+    implementation &#39;com.google.android.material:material:1.1.0&#39;
+    implementation &#39;androidx.constraintlayout:constraintlayout:1.1.3&#39;
+    testImplementation &#39;junit:junit:4.+&#39;
+    androidTestImplementation &#39;androidx.test.ext:junit:1.1.1&#39;
+    androidTestImplementation &#39;androidx.test.espresso:espresso-core:3.2.0&#39;
+}</pre></td></tr></table>
+</div>
+</div>
+<p>随着项目进行到后期，那么这里的 implementation xxx 将会越来越多，不太好管理，那么这里可以通过新建一个 config.gradle 文件，将所有的库版本信息都统一管理起来，最终修改后的配置如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def implementationDependencies = rootProject.ext.dependencies
+def testImplementationDependencies = rootProject.ext.testImplementation
+def androidTestImplementationDependencies = rootProject.ext.androidTestImplementation
+
+
+dependencies {
+    implementation fileTree(include: [&#39;*.jar&#39;], dir: &#39;libs&#39;)
+
+    implementationDependencies.each { k, v -&gt; implementation v }
+    testImplementationDependencies.each { k, v -&gt; implementation v }
+    androidTestImplementationDependencies.each { k, v -&gt; implementation v }
+}</pre></td></tr></table>
+</div>
+</div>
+<p>config.gradle</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">ext {
+
+    android = [
+            applicationId    : &#34;com.midfang.androidgradleplugin&#34;,
+            compileSdkVersion: 30,
+            buildToolsVersion: &#34;30.0.3&#34;,
+            minSdkVersion    : 21,
+            targetSdkVersion : 30,
+            versionCode      : 1,
+            versionName      : &#34;1.0.0&#34;
+    ]
+
+    /* 统一管理常用库版本信息 */
+    version = [
+            appcompatVersion    : &#34;1.1.0&#34;,
+            smartrefreshVersion : &#34;1.1.0-alpha-21&#34;,
+            okhttpVersion       : &#34;3.9.0&#34;,
+            retrofitVersion     : &#34;2.3.0&#34;,
+            glideVersion        : &#34;4.0.0&#34;,
+            daggerVersion       : &#34;2.15&#34;,
+            butterknifeVersion  : &#34;8.8.1&#34;,
+            fragmentationVersion: &#34;1.2.4&#34;,
+            leakcanaryVersion   : &#34;1.6.3&#34;
+    ]
+
+    dependencies = [
+            // base
+            &#34;core-ktx&#34;         : &#34;androidx.core:core-ktx:1.2.0&#34;,
+            &#34;kotlin&#34;           : &#34;org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version&#34;,
+            &#34;appcompat&#34;        : &#34;androidx.appcompat:appcompat:${version[&#34;appcompatVersion&#34;]}&#34;,
+            &#34;material&#34;         : &#34;com.google.android.material:material:${version[&#34;appcompatVersion&#34;]}&#34;,
+            &#34;constraint-layout&#34;: &#34;androidx.constraintlayout:constraintlayout:1.1.3&#34;
+
+            // more and more
+
+    ]
+
+    testImplementation = [
+            &#34;junit&#34;: &#34;junit:junit:4.+&#34;
+    ]
+
+    androidTestImplementation = [
+            &#34;androidx-test&#34;: &#34;androidx.test.ext:junit:1.1.1&#34;,
+            &#34;espresso-core&#34;: &#34;androidx.test.espresso:espresso-core:3.2.0&#34;
+    ]
+}</pre></td></tr></table>
+</div>
+</div>
+<p>如果是模块化的话也可以以文件或者是不同的数组进行统一的管理。或者还可以区分的更加细致一些，比如 api 的导入，注解，leakcanaryVersion 在 debug 的时候导入情况，含 exclude 的导入的统一管理，配置如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">    // 处理所有的 implementation 依赖
+    implementationDependencies.each { k, v -&gt; implementation v }
+    debugImplementationDependencies.each { k, v -&gt; debugImplementation v }
+    releaseImplementationDependencies.each { k, v -&gt; releaseImplementation v }
+
+
+    androidTestImplementationDependencies.each { k, v -&gt; androidTestImplementation v }
+    testImplementationDependencies.each { k, v -&gt; testImplementation v }
+    debugApiDependencies.each { k, v -&gt; debugApi v }
+    releaseApiDependencies.each { k, v -&gt; releaseApi v }
+    compileOnlyDependencies.each { k, v -&gt; compileOnly v }
+
+    // 处理 annotationProcessor 依赖
+    processors.each { k, v -&gt; annotationProcessor v }
+
+    // 处理所有包含 exclude 的依赖
+    implementationExcludes.each { entry -&gt;
+        implementation(entry.key) {
+            entry.value.each { childEntry -&gt;
+                exclude(group: childEntry)
+            }
+        }
+    }
+    debugImplementationExcludes.each { entry -&gt;
+        debugImplementation(entry.key) {
+            entry.value.each { childEntry -&gt;
+                exclude(group: childEntry.key, module: childEntry.value)
+            }
+        }
+    }
+    releaseImplementationExcludes.each { entry -&gt;
+        releaseImplementation(entry.key) {
+            entry.value.each { childEntry -&gt;
+                exclude(group: childEntry.key, module: childEntry.value)
+            }
+        }
+    }
+    testImplementationExclude.each { entry -&gt;
+        testImplementation(entry.key) {
+            entry.value.each { childEntry -&gt;
+                exclude(group: childEntry.key, module: childEntry.value)
+            }
+        }
+    }
+    androidTestImplementationExcludes.each { entry -&gt;
+        androidTestImplementation(entry.key) {
+            entry.value.each { childEntry -&gt;
+                exclude(group: childEntry.key, module: childEntry.value)
+            }
+        }
+    }</pre></td></tr></table>
+</div>
+</div>
+<p>更多信息请参考源码地址：<a href="https://github.com/midFang/AndroidGradlePlugin">https://github.com/midFang/AndroidGradlePlugin</a></p>
+
+<h3 id="参考链接">参考链接：</h3>
+
+<ul>
+<li><p><a href="https://www.cnblogs.com/wenjiang/p/6638927.html">https://www.cnblogs.com/wenjiang/p/6638927.html</a></p></li>
+
+<li><p><a href="https://blog.csdn.net/zhaoyanjun6/article/details/76408024">https://blog.csdn.net/zhaoyanjun6/article/details/76408024</a></p></li>
+
+<li><p><a href="https://juejin.cn/user/4318537403878167/posts">https://juejin.cn/user/4318537403878167/posts</a> gradle 系列</p></li>
+</ul>
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2021-04-11
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/android/">android</a>
+          <a href="https://midFang.github.io/tags/gradle/">gradle</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/viewpager-fragment-code-analysis-performance-optimization/">
+            <span class="next-text nav-default">ViewPager &#43; Fragment 源码解析与性能优化</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://midFang.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2020 -
+    2021
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        midFang
+        
+      </span></span>
+
+  
+  
+    <span id="busuanzi_container">
+      访客数/访问量：<span id="busuanzi_value_site_uv"></span>/<span id="busuanzi_value_site_pv"></span>
+    </span>
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <script type="text/javascript" src="/js/load-photoswipe.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe.min.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe-ui-default.min.js"></script>
+  
+
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+  <script>
+    $("#openSearch, #openSearchMobile").click(function(){
+      $(".modal-dialog").addClass("visible");
+    });
+
+    $("#closeSearch").click(function(){
+      $(".modal-dialog").removeClass("visible");
+    });
+
+    $(document).click(function(event) {
+    
+      if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
+        $("body").find(".modal-dialog").removeClass("visible");
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>

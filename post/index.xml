@@ -6,10 +6,34 @@
     <description>Recent content in Posts on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 03 Apr 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 11 Apr 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Gradle 自定义 plugin 以及项目优化实践</title>
+      <link>https://midFang.github.io/gradle-task-plugin/</link>
+      <pubDate>Sun, 11 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/gradle-task-plugin/</guid>
+      <description>&lt;h3 id=&#34;gradle-是什么&#34;&gt;Gradle 是什么？&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;它是一款强大的构建工具，而不是语⾔&lt;/li&gt;
+&lt;li&gt;它使用了 Groovy 这个语言，创造了一种 DSL，但它本身不是语⾔&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;groovy-是什么&#34;&gt;groovy 是什么&lt;/h3&gt;
+
+&lt;p&gt;Groovy 是一种动态语言，它和 Java 类似（算是 Java 的升级版，但是又具备脚本语言的特点），都在 Java 虚拟机中运行。当运行 Groovy 脚本时它会先被编译成 Java 类字节码，然后通过 JVM 虚拟机执行这个 Java 字节码类&lt;/p&gt;
+
+&lt;h3 id=&#34;gradle-的-project-和-tasks&#34;&gt;Gradle 的 Project 和 Tasks&lt;/h3&gt;
+
+&lt;p&gt;每次构建（build）至少由一个 project 构成，一个 project 由一到多个 task 构成。每个 task 代表了构建过程当中的一个原子性操作，比如编译，打包，生成javadoc，发布等等这些操作&lt;/p&gt;
+
+&lt;h3 id=&#34;gradle-的构建流程&#34;&gt;Gradle 的构建流程&lt;/h3&gt;</description>
+    </item>
     
     <item>
       <title>ViewPager &#43; Fragment 源码解析与性能优化</title>
@@ -320,15 +344,6 @@
       
       <guid>https://midFang.github.io/books-google-work/</guid>
       <description>一次结束，避免过度推迟 避免过度推迟只会浪费更多人的时间， 在一场会议之前，需要考虑会议的目标，明确会议的目的，最终要会议要取得的结果才是真正的</description>
-    </item>
-    
-    <item>
-      <title>关于8.0以下出现Only fullscreen opaque activities can request orientation问题的解决方案</title>
-      <link>https://midFang.github.io/bug-only-fullscreen-opaque-activities-can-request-orientation/</link>
-      <pubDate>Sat, 04 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/bug-only-fullscreen-opaque-activities-can-request-orientation/</guid>
-      <description>前言 不得不说 Google 的适配是真的烦。真的是一不小心各种坑，市面上的 Android 版本也很多，各种各样的屏幕也很多。最近做的项目在自己手上测试的都还行，直接丢给</description>
     </item>
     
   </channel>

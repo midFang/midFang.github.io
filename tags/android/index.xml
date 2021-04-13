@@ -6,10 +6,34 @@
     <description>Recent content in Android on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 03 Apr 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 11 Apr 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/android/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Gradle 自定义 plugin 以及项目优化实践</title>
+      <link>https://midFang.github.io/gradle-task-plugin/</link>
+      <pubDate>Sun, 11 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/gradle-task-plugin/</guid>
+      <description>&lt;h3 id=&#34;gradle-是什么&#34;&gt;Gradle 是什么？&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;它是一款强大的构建工具，而不是语⾔&lt;/li&gt;
+&lt;li&gt;它使用了 Groovy 这个语言，创造了一种 DSL，但它本身不是语⾔&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;groovy-是什么&#34;&gt;groovy 是什么&lt;/h3&gt;
+
+&lt;p&gt;Groovy 是一种动态语言，它和 Java 类似（算是 Java 的升级版，但是又具备脚本语言的特点），都在 Java 虚拟机中运行。当运行 Groovy 脚本时它会先被编译成 Java 类字节码，然后通过 JVM 虚拟机执行这个 Java 字节码类&lt;/p&gt;
+
+&lt;h3 id=&#34;gradle-的-project-和-tasks&#34;&gt;Gradle 的 Project 和 Tasks&lt;/h3&gt;
+
+&lt;p&gt;每次构建（build）至少由一个 project 构成，一个 project 由一到多个 task 构成。每个 task 代表了构建过程当中的一个原子性操作，比如编译，打包，生成javadoc，发布等等这些操作&lt;/p&gt;
+
+&lt;h3 id=&#34;gradle-的构建流程&#34;&gt;Gradle 的构建流程&lt;/h3&gt;</description>
+    </item>
     
     <item>
       <title>ViewPager &#43; Fragment 源码解析与性能优化</title>
@@ -333,15 +357,6 @@
       
       <guid>https://midFang.github.io/hashmap-source-code-analysis/</guid>
       <description>HashMap 可以说是我们在开发中经常使用的到, 在 Java 的数据结构基础里，HashMap 无疑是一个非常重要的数据结构 现在看看源码里面的方法具体都干了一下什么</description>
-    </item>
-    
-    <item>
-      <title>Kotlin 扩展函数 let with run apply also 的使用初探</title>
-      <link>https://midFang.github.io/kotlin-extension-function-base-use/</link>
-      <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/kotlin-extension-function-base-use/</guid>
-      <description>最近的项目中也是基本处于是逐渐切换 Kotlin 的状态, 以下是在项目中经常使用到的几个扩展函数, 做一个记录, 不得不说有的时候真的比 Java 方便很多 内联扩展函数</description>
     </item>
     
   </channel>
