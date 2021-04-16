@@ -89,7 +89,7 @@
 
 <meta itemprop="datePublished" content="2020-08-19T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2020-08-19T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="2462">
+<meta itemprop="wordCount" content="2505">
 
 
 
@@ -485,7 +485,7 @@
 <h3 id="aidl-实现">AIDL 实现</h3>
 
 <blockquote>
-<p>ADDL Android 接口定义语言，主要起辅助作用，在 Android studio 中编译的时候会为我们生成一些 Binder 通信的代码，避免开发者手写大量的 Binder 通信代码</p>
+<p>首先创建一个 Service 和一个 AIDL 接口，接着创建一个类继承自 AIDL 接口中的 Stub 类并实现 Stud 中的抽象方法，在 Service 的 onBind 方法中返回这个类的对象，然后客户端就可以绑定服务端的 Service，建立连接后就可以访问远程服务端的方法了</p>
 </blockquote>
 
 <p>首先在服务端中先定义一个 Person 对象，需要实现序列化</p>

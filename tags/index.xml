@@ -6,7 +6,7 @@
     <description>Recent content in Tags on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 11 Apr 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 16 Apr 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,9 +14,18 @@
     <item>
       <title>Android</title>
       <link>https://midFang.github.io/tags/android/</link>
-      <pubDate>Sun, 11 Apr 2021 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 16 Apr 2021 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/tags/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>IPC</title>
+      <link>https://midFang.github.io/tags/ipc/</link>
+      <pubDate>Fri, 16 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/ipc/</guid>
       <description></description>
     </item>
     
@@ -84,7 +93,7 @@
     </item>
     
     <item>
-      <title>view</title>
+      <title>View</title>
       <link>https://midFang.github.io/tags/view/</link>
       <pubDate>Sat, 07 Nov 2020 00:00:00 +0000</pubDate>
       
@@ -111,20 +120,11 @@
     </item>
     
     <item>
-      <title>Hugo</title>
+      <title>hugo</title>
       <link>https://midFang.github.io/tags/hugo/</link>
       <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/tags/hugo/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>IPC</title>
-      <link>https://midFang.github.io/tags/ipc/</link>
-      <pubDate>Wed, 19 Aug 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/tags/ipc/</guid>
       <description></description>
     </item>
     
