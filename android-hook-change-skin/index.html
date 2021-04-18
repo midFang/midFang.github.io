@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>HOOK 插件式一键换肤流程分析 - midFang&#39;s Blog</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="midFang" />
+  <meta name="description" content="换肤流程 首先实现插件式换肤需要知道以下几个流程：
+ 在默认情况下通过 setContentView 设置的资源布局（XML）是如何加载到界面上的 在 Android 5.0 之前的版本和 5.0 之后的版本按钮是不一样的样式，系统是如何做到换肤的 自定义换肤框架，如何知道我们自己的 APK 哪些控件是需要换肤的 如何切换 【皮肤插件 / 默认】的肤色 如何加载资源包插件 重启 APP、进入其他 Activty 如何换肤 " />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<link rel="canonical" href="https://midFang.github.io/android-hook-change-skin/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="HOOK 插件式一键换肤流程分析" />
+<meta property="og:description" content="换肤流程
+
+首先实现插件式换肤需要知道以下几个流程：
+
+
+在默认情况下通过 setContentView 设置的资源布局（XML）是如何加载到界面上的
+在 Android 5.0 之前的版本和 5.0 之后的版本按钮是不一样的样式，系统是如何做到换肤的
+自定义换肤框架，如何知道我们自己的 APK 哪些控件是需要换肤的
+如何切换 【皮肤插件 / 默认】的肤色
+如何加载资源包插件
+重启 APP、进入其他 Activty 如何换肤
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/android-hook-change-skin/" />
+<meta property="article:published_time" content="2021-04-18T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-04-18T00:00:00+00:00" />
+<meta itemprop="name" content="HOOK 插件式一键换肤流程分析">
+<meta itemprop="description" content="换肤流程
+
+首先实现插件式换肤需要知道以下几个流程：
+
+
+在默认情况下通过 setContentView 设置的资源布局（XML）是如何加载到界面上的
+在 Android 5.0 之前的版本和 5.0 之后的版本按钮是不一样的样式，系统是如何做到换肤的
+自定义换肤框架，如何知道我们自己的 APK 哪些控件是需要换肤的
+如何切换 【皮肤插件 / 默认】的肤色
+如何加载资源包插件
+重启 APP、进入其他 Activty 如何换肤
+">
+
+
+<meta itemprop="datePublished" content="2021-04-18T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2021-04-18T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="3805">
+
+
+
+<meta itemprop="keywords" content="Android,View,Hook," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="HOOK 插件式一键换肤流程分析"/>
+<meta name="twitter:description" content="换肤流程
+
+首先实现插件式换肤需要知道以下几个流程：
+
+
+在默认情况下通过 setContentView 设置的资源布局（XML）是如何加载到界面上的
+在 Android 5.0 之前的版本和 5.0 之后的版本按钮是不一样的样式，系统是如何做到换肤的
+自定义换肤框架，如何知道我们自己的 APK 哪些控件是需要换肤的
+如何切换 【皮肤插件 / 默认】的肤色
+如何加载资源包插件
+重启 APP、进入其他 Activty 如何换肤
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">midFang's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+        
+      </li>
+    
+
+    
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+    
+
+
+
+
+
+
+  <link rel="stylesheet" href="/lib/photoswipe/photoswipe.min.css" />
+  <link rel="stylesheet" href="/lib/photoswipe/default-skin/default-skin.min.css" />
+
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+  
+
+  
+    
+<div class="modal-dialog">
+    
+    <div class="modal-content">
+      <div id="closeSearch" title="Close" class="close">X</div>
+      <div class="modal-header">
+        <div class="modal-title">Search</div>
+      </div>
+      <div class="modal-body">
+          <script>
+            (function() {
+              var cx = '57787f7f4d21d54fc';
+              var gcse = document.createElement('script');
+              gcse.type = 'text/javascript';
+              gcse.async = true;
+              gcse.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//cse.google.com/cse.js?cx=' + cx;
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(gcse, s);
+            })();
+          </script>
+          <gcse:search></gcse:search>
+      </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      midFang's Blog
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+      <li class="menu-item">
+        <a id="openSearch" class="menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">HOOK 插件式一键换肤流程分析</h1>
+      
+      <div class="post-meta">
+        <time datetime="2021-04-18" class="post-time">
+          2021-04-18
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/android/"> Android </a>
+            <a href="https://midFang.github.io/categories/view/"> View </a>
+            <a href="https://midFang.github.io/categories/hook/"> Hook </a>
+            
+          </div>
+        
+
+        
+        
+          <span id="busuanzi_container_page_pv">
+            | 阅读 <span id="busuanzi_value_page_pv"></span>
+          </span>
+        
+
+        
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#换肤流程">换肤流程</a></li>
+<li><a href="#setcontentview-源码分析">setContentView 源码分析</a></li>
+<li><a href="#xml-布局解析">XML 布局解析</a></li>
+<li><a href="#资源加载">资源加载</a></li>
+<li><a href="#源码">源码</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      <h3 id="换肤流程">换肤流程</h3>
+
+<p>首先实现插件式换肤需要知道以下几个流程：</p>
+
+<ul>
+<li>在默认情况下通过 setContentView 设置的资源布局（XML）是如何加载到界面上的</li>
+<li>在 Android 5.0 之前的版本和 5.0 之后的版本按钮是不一样的样式，系统是如何做到换肤的</li>
+<li>自定义换肤框架，如何知道我们自己的 APK 哪些控件是需要换肤的</li>
+<li>如何切换 【皮肤插件 / 默认】的肤色</li>
+<li>如何加载资源包插件</li>
+<li>重启 APP、进入其他 Activty 如何换肤</li>
+</ul>
+
+<h3 id="setcontentview-源码分析">setContentView 源码分析</h3>
+
+<p>我们都知道我们在 Activity 中是通过 setContentView 来设置一个布局资源，最终会显示到界面上的，那么先看下这个 xml 是如何解析加载到布局上的，假设这里我们继承的是 <strong>Activity</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// 继承的是 **Activity**
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">class</span> <span class="n">Main2Activity</span> <span class="nf">extends</span> <span class="n">Activity</span> <span class="p">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="nf">void</span> <span class="n">onCreate</span><span class="p">(</span><span class="n">Bundle</span> <span class="nf">savedInstanceState</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">super</span><span class="p">.</span><span class="na">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">);</span>
+        <span class="n">setContentView</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="na">layout</span><span class="p">.</span><span class="na">activity_main2</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>最终会调用到 Activity#setContentView 方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">void</span> <span class="n">setContentView</span><span class="p">(</span><span class="nd">@LayoutRes</span> <span class="kt">int</span> <span class="nf">layoutResID</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">getWindow</span><span class="p">().</span><span class="na">setContentView</span><span class="p">(</span><span class="n">layoutResID</span><span class="p">);</span>
+    <span class="n">initWindowDecorActionBar</span><span class="p">();</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">/**
+ * Abstract base class for a top-level window look and behavior policy.  An
+ * instance of this class should be used as the top-level view added to the
+ * window manager. It provides standard UI policies such as a background, title
+ * area, default key processing, etc.
+ *
+ * &lt;p&gt;The only existing implementation of this abstract class is
+ * android.view.PhoneWindow, which you should instantiate when needing a
+ * Window.
+ */
+public abstract class Window {</pre></td></tr></table>
+</div>
+</div>
+<p>通过 getWindow() 获取了一个 window，这个 window 其实就是 PhoneWindow ，源码中就只有这一个实现，可以看源码的注释有这个说明，然后就会在 PhoneWindow 中调用的 setContentView</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Override</span>
+<span class="kd">public</span> <span class="nf">void</span> <span class="n">setContentView</span><span class="p">(</span><span class="kt">int</span> <span class="nf">layoutResID</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">mContentParent</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">installDecor</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">hasFeature</span><span class="p">(</span><span class="n">FEATURE_CONTENT_TRANSITIONS</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">mContentParent</span><span class="p">.</span><span class="na">removeAllViews</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">hasFeature</span><span class="p">(</span><span class="n">FEATURE_CONTENT_TRANSITIONS</span><span class="p">))</span> <span class="p">{</span>
+        <span class="kd">final</span> <span class="nf">Scene</span> <span class="n">newScene</span> <span class="o">=</span> <span class="n">Scene</span><span class="p">.</span><span class="na">getSceneForLayout</span><span class="p">(</span><span class="n">mContentParent</span><span class="p">,</span> <span class="n">layoutResID</span><span class="p">,</span>
+                <span class="n">getContext</span><span class="p">());</span>
+        <span class="n">transitionTo</span><span class="p">(</span><span class="n">newScene</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">mLayoutInflater</span><span class="p">.</span><span class="na">inflate</span><span class="p">(</span><span class="n">layoutResID</span><span class="p">,</span> <span class="n">mContentParent</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">mContentParent</span><span class="p">.</span><span class="na">requestApplyInsets</span><span class="p">();</span>
+    <span class="kd">final</span> <span class="nf">Callback</span> <span class="n">cb</span> <span class="o">=</span> <span class="n">getCallback</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">cb</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">isDestroyed</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">cb</span><span class="p">.</span><span class="na">onContentChanged</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="n">mContentParentExplicitlySet</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="xml-布局解析">XML 布局解析</h3>
+
+<p>上面部分比较重要的地方就是 installDecor 方法，和第 14 行的 mLayoutInflater.inflate(layoutResID, mContentParent); 方法。</p>
+
+<p>其中 installDecor 内部就是创建了 decorView，然后加载了一个系统样式主题的布局，然后再返回了一个 mContentParent 。然后才会通过 mLayoutInflater.inflate(layoutResID, mContentParent); 方法解析我们的 xml 布局，最终加载到 mContentParent 上，所以我们的 xml 布局也就是在 mLayoutInflater.inflate 这个方法中进行解析的了，看看都做了什么：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">View</span> <span class="n">inflate</span><span class="p">(</span><span class="n">XmlPullParser</span> <span class="nf">parser</span><span class="p">,</span> <span class="nd">@Nullable</span> <span class="n">ViewGroup</span> <span class="nf">root</span><span class="p">,</span> <span class="kt">boolean</span> <span class="nf">attachToRoot</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">synchronized</span> <span class="p">(</span><span class="n">mConstructorArgs</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">final</span> <span class="nf">Context</span> <span class="n">inflaterContext</span> <span class="o">=</span> <span class="n">mContext</span><span class="p">;</span>
+            <span class="kd">final</span> <span class="nf">AttributeSet</span> <span class="n">attrs</span> <span class="o">=</span> <span class="n">Xml</span><span class="p">.</span><span class="na">asAttributeSet</span><span class="p">(</span><span class="n">parser</span><span class="p">);</span>
+            <span class="n">Context</span> <span class="nf">lastContext</span> <span class="o">=</span> <span class="p">(</span><span class="n">Context</span><span class="p">)</span> <span class="n">mConstructorArgs</span><span class="p">[</span><span class="n">0</span><span class="p">];</span>
+            <span class="n">mConstructorArgs</span><span class="p">[</span><span class="n">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">inflaterContext</span><span class="p">;</span>
+            <span class="n">View</span> <span class="nf">result</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span>
+
+            <span class="k">try</span> <span class="p">{</span>
+                <span class="c1">// Look for the root node.
+</span><span class="c1"></span>                <span class="kt">int</span> <span class="nf">type</span><span class="p">;</span>
+                <span class="k">while</span> <span class="p">((</span><span class="n">type</span> <span class="o">=</span> <span class="n">parser</span><span class="p">.</span><span class="na">next</span><span class="p">())</span> <span class="o">!=</span> <span class="n">XmlPullParser</span><span class="p">.</span><span class="na">START_TAG</span> <span class="o">&amp;&amp;</span>
+                        <span class="n">type</span> <span class="o">!=</span> <span class="n">XmlPullParser</span><span class="p">.</span><span class="na">END_DOCUMENT</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="c1">// Empty
+</span><span class="c1"></span>                <span class="p">}</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">type</span> <span class="o">!=</span> <span class="n">XmlPullParser</span><span class="p">.</span><span class="na">START_TAG</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">throw</span> <span class="k">new</span> <span class="n">InflateException</span><span class="p">(</span><span class="n">parser</span><span class="p">.</span><span class="na">getPositionDescription</span><span class="p">()</span>
+                            <span class="o">+</span> <span class="s">&#34;: No start tag found!&#34;</span><span class="p">);</span>
+                <span class="p">}</span>
+
+                <span class="kd">final</span> <span class="nf">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">parser</span><span class="p">.</span><span class="na">getName</span><span class="p">();</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">TAG_MERGE</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="n">name</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="o">!</span><span class="n">attachToRoot</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">throw</span> <span class="k">new</span> <span class="n">InflateException</span><span class="p">(</span><span class="s">&#34;&lt;merge /&gt; can be used only with a valid &#34;</span>
+                                <span class="o">+</span> <span class="s">&#34;ViewGroup root and attachToRoot=true&#34;</span><span class="p">);</span>
+                    <span class="p">}</span>
+
+                    <span class="n">rInflate</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">inflaterContext</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="kd">final</span> <span class="nf">View</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">createViewFromTag</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">inflaterContext</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+
+                    <span class="n">ViewGroup</span><span class="p">.</span><span class="na">LayoutParams</span> <span class="nf">params</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">params</span> <span class="o">=</span> <span class="n">root</span><span class="p">.</span><span class="na">generateLayoutParams</span><span class="p">(</span><span class="n">attrs</span><span class="p">);</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">attachToRoot</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="n">temp</span><span class="p">.</span><span class="na">setLayoutParams</span><span class="p">(</span><span class="n">params</span><span class="p">);</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                    <span class="n">rInflateChildren</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+
+                    <span class="c1">// to root. Do that now.
+</span><span class="c1"></span>                    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">attachToRoot</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">root</span><span class="p">.</span><span class="na">addView</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">params</span><span class="p">);</span>
+                    <span class="p">}</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="o">!</span><span class="n">attachToRoot</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+
+            <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">XmlPullParserException</span> <span class="nf">e</span><span class="p">)</span> <span class="p">{</span>
+             		 <span class="c1">// ... 
+</span><span class="c1"></span>            <span class="p">}</span>
+
+            <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+        <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>我们通常是这么调用的，有 3 个参数，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">View</span> <span class="n">inflate</span><span class="p">(</span><span class="nd">@LayoutRes</span> <span class="kt">int</span> <span class="nf">resource</span><span class="p">,</span> <span class="nd">@Nullable</span> <span class="n">ViewGroup</span> <span class="nf">root</span><span class="p">,</span> <span class="kt">boolean</span> <span class="nf">attachToRoot</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>那这几个参数有什么区别呢，在使用上，总是会模糊不清到底要不要传入 root，attachToRoot 到底是传入 true 还是 false ，那么这 3 个参数的区别就在上面源码部分完全体现了，总结如下：</p>
+
+<ul>
+<li>resource 不为 null，root 为 null ，attachToRoot 为 [false/true]
+
+<ul>
+<li>直接将 resource 转换成一个 View ，将其返回，并无其他操作</li>
+</ul></li>
+<li>resource 不为 null，root 不为 null ，attachToRoot 为 false
+
+<ul>
+<li>会获取 root ViewGroup 布局的 LayoutParams 参数，将 resource 转换成 View 后设置为 root 获取的 LayoutParams</li>
+</ul></li>
+<li>resource 不为 null，root 不为 null ，attachToRoot 为 true
+
+<ul>
+<li>会将 resource 转换成 View 后，将这个 View 作为子 View 添加到 root 中，并设置为 root 的 LayoutParams 参数</li>
+</ul></li>
+</ul>
+
+<p>这 3 个参数的区别就是这些，刚才我们说到 resource 会转换成一个 View ，然后将其返回。到这里还是没发现 XML 是在哪里解析的，那么 XML 又是在哪里解析的呢 ？其实他就是通过上面的 createViewFromTag 内部进行解析的，看如下源码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">View</span> <span class="nf">createViewFromTag</span><span class="p">(</span><span class="n">View</span> <span class="nf">parent</span><span class="p">,</span> <span class="n">String</span> <span class="nf">name</span><span class="p">,</span> <span class="n">Context</span> <span class="nf">context</span><span class="p">,</span> <span class="n">AttributeSet</span> <span class="nf">attrs</span><span class="p">,</span>
+            <span class="kt">boolean</span> <span class="nf">ignoreThemeAttr</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&#34;view&#34;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">.</span><span class="na">getAttributeValue</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="s">&#34;class&#34;</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="c1">// Apply a theme wrapper, if allowed and one is specified.
+</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">ignoreThemeAttr</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">final</span> <span class="nf">TypedArray</span> <span class="n">ta</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="na">obtainStyledAttributes</span><span class="p">(</span><span class="n">attrs</span><span class="p">,</span> <span class="n">ATTRS_THEME</span><span class="p">);</span>
+            <span class="kd">final</span> <span class="nf">int</span> <span class="n">themeResId</span> <span class="o">=</span> <span class="n">ta</span><span class="p">.</span><span class="na">getResourceId</span><span class="p">(</span><span class="n">0</span><span class="p">,</span> <span class="n">0</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">themeResId</span> <span class="o">!=</span> <span class="n">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ContextThemeWrapper</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">themeResId</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="n">ta</span><span class="p">.</span><span class="na">recycle</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="n">TAG_1995</span><span class="p">))</span> <span class="p">{</span>
+            <span class="c1">// Let&#39;s party like it&#39;s 1995!
+</span><span class="c1"></span>            <span class="k">return</span> <span class="k">new</span> <span class="n">BlinkLayout</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">try</span> <span class="p">{</span>
+            <span class="n">View</span> <span class="nf">view</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">mFactory2</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+              	<span class="c1">// 开始默认为空
+</span><span class="c1"></span>                <span class="n">view</span> <span class="o">=</span> <span class="n">mFactory2</span><span class="p">.</span><span class="na">onCreateView</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">mFactory</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">view</span> <span class="o">=</span> <span class="n">mFactory</span><span class="p">.</span><span class="na">onCreateView</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="n">view</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">view</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">mPrivateFactory</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">view</span> <span class="o">=</span> <span class="n">mPrivateFactory</span><span class="p">.</span><span class="na">onCreateView</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">view</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">final</span> <span class="nf">Object</span> <span class="n">lastContext</span> <span class="o">=</span> <span class="n">mConstructorArgs</span><span class="p">[</span><span class="n">0</span><span class="p">];</span>
+                <span class="n">mConstructorArgs</span><span class="p">[</span><span class="n">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
+                <span class="k">try</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="o">-</span><span class="n">1</span> <span class="o">==</span> <span class="n">name</span><span class="p">.</span><span class="na">indexOf</span><span class="p">(</span><span class="sc">&#39;.&#39;</span><span class="p">))</span> <span class="p">{</span>
+                      	<span class="c1">// 解析自定义的 View，也就是 XML 定义的 xxx.xxx.xxxView  
+</span><span class="c1"></span>                        <span class="n">view</span> <span class="o">=</span> <span class="n">onCreateView</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                      	<span class="c1">// 解析系统的布局，会自己拼装 android.view.xxxView
+</span><span class="c1"></span>                        <span class="n">view</span> <span class="o">=</span> <span class="n">createView</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+                    <span class="p">}</span>
+                <span class="p">}</span> <span class="k">finally</span> <span class="p">{</span>
+                    <span class="n">mConstructorArgs</span><span class="p">[</span><span class="n">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">lastContext</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+
+            <span class="k">return</span> <span class="n">view</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">InflateException</span> <span class="nf">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// .... 
+</span><span class="c1"></span>    <span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>最终调用就是这个地方了，并返回了一个 View ，其中最重要的地方是这个方法 mFactory2.onCreateView() ，这个地方目前默认为空，也就是要收集我们解析的 xml 的 View ，就需要通过这个方法。接下来我们看看 Android 5.0 以上的很多控件都是 MD 风格的，看看系统是如何做的。</p>
+
+<p>注意：假设这个时候我们继承的是 <strong>AppCompatActivity</strong> ，来看看做了什么，有什么区别：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Override</span>
+<span class="kd">protected</span> <span class="nf">void</span> <span class="n">onCreate</span><span class="p">(</span><span class="nd">@Nullable</span> <span class="n">Bundle</span> <span class="nf">savedInstanceState</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">final</span> <span class="nf">AppCompatDelegate</span> <span class="n">delegate</span> <span class="o">=</span> <span class="n">getDelegate</span><span class="p">();</span>
+    <span class="n">delegate</span><span class="p">.</span><span class="na">installViewFactory</span><span class="p">();</span>
+    <span class="n">delegate</span><span class="p">.</span><span class="na">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">delegate</span><span class="p">.</span><span class="na">applyDayNight</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="n">mThemeId</span> <span class="o">!=</span> <span class="n">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// If DayNight has been applied, we need to re-apply the theme for
+</span><span class="c1"></span>        <span class="c1">// the changes to take effect. On API 23+, we should bypass
+</span><span class="c1"></span>        <span class="c1">// setTheme(), which will no-op if the theme ID is identical to the
+</span><span class="c1"></span>        <span class="c1">// current theme ID.
+</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">Build</span><span class="p">.</span><span class="na">VERSION</span><span class="p">.</span><span class="na">SDK_INT</span> <span class="o">&gt;=</span> <span class="n">23</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">onApplyThemeResource</span><span class="p">(</span><span class="n">getTheme</span><span class="p">(),</span> <span class="n">mThemeId</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">setTheme</span><span class="p">(</span><span class="n">mThemeId</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="kd">super</span><span class="p">.</span><span class="na">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">);</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>可以看到这里在 super.onCreate 方法前面，调用了 installViewFactory 和 onCreate ，看看这个干了什么，其中这里的 getDelegate 如果你看继承体现的话，最终会发现这个实现是在 AppCompatDelegateImplV9 中</p>
+
+<p>AppCompatDelegateImplV9#installViewFactory</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Override</span>
+<span class="kd">public</span> <span class="nf">void</span> <span class="n">installViewFactory</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">LayoutInflater</span> <span class="nf">layoutInflater</span> <span class="o">=</span> <span class="n">LayoutInflater</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">mContext</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">layoutInflater</span><span class="p">.</span><span class="na">getFactory</span><span class="p">()</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">LayoutInflaterCompat</span><span class="p">.</span><span class="na">setFactory2</span><span class="p">(</span><span class="n">layoutInflater</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">layoutInflater</span><span class="p">.</span><span class="na">getFactory2</span><span class="p">()</span> <span class="k">instanceof</span> <span class="n">AppCompatDelegateImplV9</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">Log</span><span class="p">.</span><span class="na">i</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&#34;The Activity&#39;s LayoutInflater already has a Factory installed&#34;</span>
+                    <span class="o">+</span> <span class="s">&#34; so we can not install AppCompat&#39;s&#34;</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>可以看到这里设置了一个 setFactory2 ，也就是刚才我们分析的继承自 Activity 的时候，这个是为空的，那么继承自 AppCompatActivity 这个时候就不为空了，而且是在 Super.onCreate 方法之前设置的。以刚才分析的流程那么还是会经过 createViewFromTag 方法，然后这个时候 mFactory2 就不为空了，然后就会调用 mFactory2.onCreateView 方法了, 这个方法的实现也是在  AppCompatDelegateImplV9 类中，看看做了什么：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nf">View</span> <span class="n">createView</span><span class="p">(</span><span class="n">View</span> <span class="nf">parent</span><span class="p">,</span> <span class="kd">final</span> <span class="nf">String</span> <span class="n">name</span><span class="p">,</span> <span class="nd">@NonNull</span> <span class="n">Context</span> <span class="nf">context</span><span class="p">,</span>
+            <span class="nd">@NonNull</span> <span class="n">AttributeSet</span> <span class="nf">attrs</span><span class="p">)</span> <span class="p">{</span>
+       
+				<span class="c1">// 省略部分代码，最终会调用 mAppCompatViewInflater.createView 方法
+</span><span class="c1"></span>        <span class="k">return</span> <span class="n">mAppCompatViewInflater</span><span class="p">.</span><span class="na">createView</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">inheritContext</span><span class="p">,</span>
+                <span class="n">IS_PRE_LOLLIPOP</span><span class="p">,</span> <span class="cm">/* Only read android:theme pre-L (L+ handles this anyway) */</span>
+                <span class="kc">true</span><span class="p">,</span> <span class="cm">/* Read read app:theme as a fallback at all times for legacy reasons */</span>
+                <span class="n">VectorEnabledTintResources</span><span class="p">.</span><span class="na">shouldBeUsed</span><span class="p">()</span> <span class="cm">/* Only tint wrap the context if enabled */</span>
+        <span class="p">);</span>
+    <span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>然后这里最终会调用 mAppCompatViewInflater.createView 方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">final</span> <span class="nf">View</span> <span class="n">createView</span><span class="p">(</span><span class="n">View</span> <span class="nf">parent</span><span class="p">,</span> <span class="kd">final</span> <span class="nf">String</span> <span class="n">name</span><span class="p">,</span> <span class="nd">@NonNull</span> <span class="n">Context</span> <span class="nf">context</span><span class="p">,</span>
+        <span class="nd">@NonNull</span> <span class="n">AttributeSet</span> <span class="nf">attrs</span><span class="p">,</span> <span class="kt">boolean</span> <span class="nf">inheritContext</span><span class="p">,</span>
+        <span class="kt">boolean</span> <span class="nf">readAndroidTheme</span><span class="p">,</span> <span class="kt">boolean</span> <span class="nf">readAppTheme</span><span class="p">,</span> <span class="kt">boolean</span> <span class="nf">wrapContext</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">final</span> <span class="nf">Context</span> <span class="n">originalContext</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
+
+    <span class="n">View</span> <span class="nf">view</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="s">&#34;TextView&#34;</span><span class="o">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">createTextView</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="n">verifyNotNull</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s">&#34;ImageView&#34;</span><span class="o">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">createImageView</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="n">verifyNotNull</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s">&#34;Button&#34;</span><span class="o">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">createButton</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="n">verifyNotNull</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s">&#34;EditText&#34;</span><span class="o">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">createEditText</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="n">verifyNotNull</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s">&#34;Spinner&#34;</span><span class="o">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">createSpinner</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="n">verifyNotNull</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s">&#34;ImageButton&#34;</span><span class="o">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">createImageButton</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="n">verifyNotNull</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s">&#34;CheckBox&#34;</span><span class="o">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">createCheckBox</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="n">verifyNotNull</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s">&#34;RadioButton&#34;</span><span class="o">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">createRadioButton</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="n">verifyNotNull</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s">&#34;CheckedTextView&#34;</span><span class="o">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">createCheckedTextView</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="n">verifyNotNull</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s">&#34;AutoCompleteTextView&#34;</span><span class="o">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">createAutoCompleteTextView</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="n">verifyNotNull</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s">&#34;MultiAutoCompleteTextView&#34;</span><span class="o">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">createMultiAutoCompleteTextView</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="n">verifyNotNull</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s">&#34;RatingBar&#34;</span><span class="o">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">createRatingBar</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="n">verifyNotNull</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s">&#34;SeekBar&#34;</span><span class="o">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">createSeekBar</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+            <span class="n">verifyNotNull</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">view</span><span class="p">;</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>可以看到这里 case 中，对很多控件名称做了判断，来看看一个基础的 textView 的 case 中：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@NonNull</span>
+<span class="kd">protected</span> <span class="nf">AppCompatTextView</span> <span class="n">createTextView</span><span class="p">(</span><span class="n">Context</span> <span class="nf">context</span><span class="p">,</span> <span class="n">AttributeSet</span> <span class="nf">attrs</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">AppCompatTextView</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">attrs</span><span class="p">);</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>可以看到创建了一个 AppCompatTextView 进行返回，到这里就可以发现在 Android 5.0 以上，会设置一个 mFactory2 ，然后就可以拦截到 View 的创建流程了，5.0 之上都返回了带 AppCompatXXX 的一些兼容 View。这也是造成 MD 风格的原因之一，也即是系统在这个部分是如何做到换肤的</p>
+
+<p>这里需要注意的是，到这里我们已经知道了系统是如何拦截 View 的创建流程了，那么如果是我们自己实现插件式换肤的话，那么这个时候我们需要加载的是一个外部的资源包，并不像系统那样已经内嵌在 APK 里面了，同时换肤的话，一般也就是 setBackground，setColor，setXXX 等等方法，所以这里我们需要考虑的问题有：</p>
+
+<ul>
+<li>资源如何加载</li>
+<li>设置资源</li>
+</ul>
+
+<h3 id="资源加载">资源加载</h3>
+
+<p>我们都知道，平常我们都是使用 context.getResources().getDrawable(resId) 这样来获取资源 Id 的， 那我们就以这个为例子，看看是如何获取资源的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">Drawable</span> <span class="n">getDrawable</span><span class="p">(</span><span class="nd">@DrawableRes</span> <span class="kt">int</span> <span class="nf">id</span><span class="p">)</span> <span class="kd">throws</span> <span class="nf">NotFoundException</span> <span class="p">{</span>
+    <span class="kd">final</span> <span class="nf">Drawable</span> <span class="n">d</span> <span class="o">=</span> <span class="n">getDrawable</span><span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">d</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">d</span><span class="p">.</span><span class="na">canApplyTheme</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">Log</span><span class="p">.</span><span class="na">w</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&#34;Drawable &#34;</span> <span class="o">+</span> <span class="n">getResourceName</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#34; has unresolved theme &#34;</span>
+                <span class="o">+</span> <span class="s">&#34;attributes! Consider using Resources.getDrawable(int, Theme) or &#34;</span>
+                <span class="o">+</span> <span class="s">&#34;Context.getDrawable(int).&#34;</span><span class="p">,</span> <span class="k">new</span> <span class="n">RuntimeException</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">d</span><span class="p">;</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>继续看 getDrawable(id, null); 方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">Drawable</span> <span class="n">getDrawable</span><span class="p">(</span><span class="nd">@DrawableRes</span> <span class="kt">int</span> <span class="nf">id</span><span class="p">,</span> <span class="nd">@Nullable</span> <span class="n">Theme</span> <span class="nf">theme</span><span class="p">)</span>
+        <span class="kd">throws</span> <span class="nf">NotFoundException</span> <span class="p">{</span>
+    <span class="kd">final</span> <span class="nf">TypedValue</span> <span class="n">value</span> <span class="o">=</span> <span class="n">obtainTempTypedValue</span><span class="p">();</span>
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="kd">final</span> <span class="nf">ResourcesImpl</span> <span class="n">impl</span> <span class="o">=</span> <span class="n">mResourcesImpl</span><span class="p">;</span>
+        <span class="n">impl</span><span class="p">.</span><span class="na">getValue</span><span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">impl</span><span class="p">.</span><span class="na">loadDrawable</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">id</span><span class="p">,</span> <span class="n">theme</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">finally</span> <span class="p">{</span>
+        <span class="n">releaseTempTypedValue</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里可以发现使用的是 mResourcesImpl 这个实现类，最终通过这个实现类调用 loadDrawable 加载资源 id，那么我们再看看 mResourcesImpl 在哪里创建的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">Resources</span><span class="p">(</span><span class="n">AssetManager</span> <span class="nf">assets</span><span class="p">,</span> <span class="n">DisplayMetrics</span> <span class="nf">metrics</span><span class="p">,</span> <span class="n">Configuration</span> <span class="nf">config</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+    <span class="n">mResourcesImpl</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ResourcesImpl</span><span class="p">(</span><span class="n">assets</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="k">new</span> <span class="n">DisplayAdjustments</span><span class="p">());</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里可以看到传入了一个 AssetManager ，其中 AssetManager 就是用来提供资源包路径的，所以我们这里就是要创建我们自己的 Resources 然后设置我们自己的资源包路径的 AssetManager 即可，不过需要注意的是，由于设置路径的 addAssetPath 方法是 hide 的，所以需要反射。关于反射设置包路径，和获取资源信息，这里就直接提供下代码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">class</span> <span class="n">SkinResource</span> <span class="p">{</span>
+    <span class="c1">// 获取资源
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="nf">Resources</span> <span class="n">mResources</span><span class="p">;</span>
+
+    <span class="kd">private</span> <span class="nf">String</span> <span class="n">mPackageName</span><span class="p">;</span>
+
+
+    <span class="kd">public</span> <span class="nf">SkinResource</span><span class="p">(</span><span class="n">Context</span> <span class="nf">context</span><span class="p">,</span> <span class="n">String</span> <span class="nf">skinPath</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">try</span> <span class="p">{</span>
+            <span class="n">AssetManager</span> <span class="nf">assetManager</span> <span class="o">=</span> <span class="n">AssetManager</span><span class="p">.</span><span class="na">class</span><span class="p">.</span><span class="na">newInstance</span><span class="p">();</span>
+            <span class="c1">// assetManager 最重要的是要添加 path 路径
+</span><span class="c1"></span>            <span class="n">Method</span> <span class="nf">addPathMethod</span> <span class="o">=</span> <span class="n">AssetManager</span><span class="p">.</span><span class="na">class</span><span class="p">.</span><span class="na">getDeclaredMethod</span><span class="p">(</span><span class="s">&#34;addAssetPath&#34;</span><span class="p">,</span> <span class="n">String</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+            <span class="n">addPathMethod</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+
+            <span class="c1">// addAssetPath 注入皮肤包
+</span><span class="c1"></span>            <span class="n">addPathMethod</span><span class="p">.</span><span class="na">invoke</span><span class="p">(</span><span class="n">assetManager</span><span class="p">,</span> <span class="n">skinPath</span><span class="p">);</span>
+
+            <span class="c1">// 获取内存中已经在运行的 对象
+</span><span class="c1"></span>            <span class="n">Resources</span> <span class="nf">superResource</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="na">getResources</span><span class="p">();</span>
+
+            <span class="n">mResources</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Resources</span><span class="p">(</span><span class="n">assetManager</span><span class="p">,</span>
+                    <span class="n">superResource</span><span class="p">.</span><span class="na">getDisplayMetrics</span><span class="p">(),</span> <span class="n">superResource</span><span class="p">.</span><span class="na">getConfiguration</span><span class="p">());</span>
+
+            <span class="c1">// 获取skinPath 路径下的包名
+</span><span class="c1"></span>            <span class="n">mPackageName</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="na">getPackageManager</span><span class="p">().</span><span class="na">getPackageArchiveInfo</span><span class="p">(</span><span class="n">skinPath</span><span class="p">,</span> <span class="n">PackageManager</span><span class="p">.</span><span class="na">GET_ACTIVITIES</span><span class="p">)</span>
+                    <span class="p">.</span><span class="na">packageName</span><span class="p">;</span>
+
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="nf">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 通过设置资源的名称获取drawable drawable=&#34;名称&#34;
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="nf">Drawable</span> <span class="n">getDrawableByResName</span><span class="p">(</span><span class="n">String</span> <span class="nf">resName</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="nf">resId</span><span class="p">;</span>
+        <span class="k">try</span> <span class="p">{</span>
+            <span class="n">resId</span> <span class="o">=</span> <span class="n">mResources</span><span class="p">.</span><span class="na">getIdentifier</span><span class="p">(</span><span class="n">resName</span><span class="p">,</span> <span class="s">&#34;mipmap&#34;</span><span class="p">,</span> <span class="n">mPackageName</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">mResources</span><span class="p">.</span><span class="na">getDrawable</span><span class="p">(</span><span class="n">resId</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="nf">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+            <span class="k">try</span> <span class="p">{</span>
+                <span class="n">resId</span> <span class="o">=</span> <span class="n">mResources</span><span class="p">.</span><span class="na">getIdentifier</span><span class="p">(</span><span class="n">resName</span><span class="p">,</span> <span class="s">&#34;drawable&#34;</span><span class="p">,</span> <span class="n">mPackageName</span><span class="p">);</span>
+                <span class="k">return</span> <span class="n">mResources</span><span class="p">.</span><span class="na">getDrawable</span><span class="p">(</span><span class="n">resId</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="nf">e1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">e1</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="p">}</span>
+
+    <span class="p">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 通过设置资源的名称获取颜色 color=&#34;名称&#34;
+</span><span class="cm">     */</span>
+    <span class="kd">public</span> <span class="nf">ColorStateList</span> <span class="n">getColorByResName</span><span class="p">(</span><span class="n">String</span> <span class="nf">resName</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">try</span> <span class="p">{</span>
+            <span class="kt">int</span> <span class="nf">resId</span> <span class="o">=</span> <span class="n">mResources</span><span class="p">.</span><span class="na">getIdentifier</span><span class="p">(</span><span class="n">resName</span><span class="p">,</span> <span class="s">&#34;color&#34;</span><span class="p">,</span> <span class="n">mPackageName</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">mResources</span><span class="p">.</span><span class="na">getColorStateList</span><span class="p">(</span><span class="n">resId</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="nf">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="源码">源码</h3>
+
+<p>好了，到这里就差不多结束了，我们换肤需要 Hook 部分就是这些流程了，这里提供下源码：github.com/midFang/EasyJoke 详细部分可以看下源码实现，这里再说明一下源码中实践的一些大体流程：</p>
+
+<ol>
+<li>配置资源包路径，如果没有资源则使用默认的皮肤</li>
+<li>在 super.onCreate 之前设置我们自己的 LayoutInflater.<strong>Factory</strong></li>
+<li>拦截系统创建 View 的流程（需要兼容 Android 5.0 的 MD 效果）</li>
+<li>收集 Activity 中的需要切换皮肤的 View，解析 View 和记录属性值（可自定义是否切换皮肤属性例如： isChangeSkin，自定义 View 配置接口等）</li>
+<li>默认检测是否需要切换皮肤 （保证重启 APP，进入其他 Activity 可以加载皮肤）</li>
+
+<li><p>切换皮肤（通过我们自己的设置过皮肤路径的 Resources 类来获取资源 id，需要传入 package）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">Drawable</span> <span class="n">getDrawableByResName</span><span class="p">(</span><span class="n">String</span> <span class="nf">resName</span><span class="p">)</span> <span class="p">{</span>
+<span class="kt">int</span> <span class="nf">resId</span><span class="p">;</span>
+<span class="k">try</span> <span class="p">{</span>
+  	<span class="c1">// mResources 拥有插件包的路径信息，mPackageName 传入的是插件包的名称
+</span><span class="c1"></span>    <span class="n">resId</span> <span class="o">=</span> <span class="n">mResources</span><span class="p">.</span><span class="na">getIdentifier</span><span class="p">(</span><span class="n">resName</span><span class="p">,</span> <span class="s">&#34;mipmap&#34;</span><span class="p">,</span> <span class="n">mPackageName</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">mResources</span><span class="p">.</span><span class="na">getDrawable</span><span class="p">(</span><span class="n">resId</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="nf">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="n">resId</span> <span class="o">=</span> <span class="n">mResources</span><span class="p">.</span><span class="na">getIdentifier</span><span class="p">(</span><span class="n">resName</span><span class="p">,</span> <span class="s">&#34;drawable&#34;</span><span class="p">,</span> <span class="n">mPackageName</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">mResources</span><span class="p">.</span><span class="na">getDrawable</span><span class="p">(</span><span class="n">resId</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="nf">e1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">e1</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>可配置一个 skinModule 来专门配置我们的皮肤插件，该 module 并没有类信息，只有皮肤资源，最终生成一个皮肤 APK 提供给主 APK 使用，需要注意的是这个 skinModule 的版本信息最好和主 APK 的版本信息一致</p></li>
+</ol>
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2021-04-18
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/android/">Android</a>
+          <a href="https://midFang.github.io/tags/view/">View</a>
+          <a href="https://midFang.github.io/tags/hook/">Hook</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/gradle-task-plugin/">
+            <span class="next-text nav-default">Gradle 自定义 plugin 以及项目优化实践</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://midFang.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2020 -
+    2021
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        midFang
+        
+      </span></span>
+
+  
+  
+    <span id="busuanzi_container">
+      访客数/访问量：<span id="busuanzi_value_site_uv"></span>/<span id="busuanzi_value_site_pv"></span>
+    </span>
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <script type="text/javascript" src="/js/load-photoswipe.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe.min.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe-ui-default.min.js"></script>
+  
+
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+  <script>
+    $("#openSearch, #openSearchMobile").click(function(){
+      $(".modal-dialog").addClass("visible");
+    });
+
+    $("#closeSearch").click(function(){
+      $(".modal-dialog").removeClass("visible");
+    });
+
+    $(document).click(function(event) {
+    
+      if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
+        $("body").find(".modal-dialog").removeClass("visible");
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>

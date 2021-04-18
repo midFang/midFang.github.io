@@ -63,7 +63,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://midFang.github.io/" />
 
-<meta property="og:updated_time" content="2021-04-16T00:00:00+00:00" />
+<meta property="og:updated_time" content="2021-04-18T00:00:00+00:00" />
 <meta itemprop="name" content="midFang&#39;s Blog">
 <meta itemprop="description" content="Hugo theme jane example site.">
 
@@ -354,16 +354,17 @@
   <header class="post-header">
     <h1 class="post-title">
       
-      <a class="post-link" href="/android-process-ipc/">独立进程通信之悬浮下拉状态栏实践</a>
+      <a class="post-link" href="/android-hook-change-skin/">HOOK 插件式一键换肤流程分析</a>
     </h1>
     
     <div class="post-meta">
-      <time datetime="2021-04-16" class="post-time">
-        2021-04-16
+      <time datetime="2021-04-18" class="post-time">
+        2021-04-18
       </time>
       <div class="post-category">
           <a href="https://midFang.github.io/categories/android/"> Android </a>
-          <a href="https://midFang.github.io/categories/ipc/"> IPC </a>
+          <a href="https://midFang.github.io/categories/view/"> View </a>
+          <a href="https://midFang.github.io/categories/hook/"> Hook </a>
           
         </div>
       
@@ -375,14 +376,21 @@
   <div class="post-content">
     
     <div class="post-summary">
-      <h3 id="前言">前言</h3>
+      <h3 id="换肤流程">换肤流程</h3>
 
-<p>我们首先先看下这个效果是怎么样的，如果有人见过百度音箱或者是小米音箱，就应该对这个会清楚一些，也就是图示中我们是自定义了一个下拉状态栏，并没有使用系统原生的，那么我们就可以根据需求实现我们自定义的下拉状态栏 UI，比如音乐通知，时间、天气显示信息等等。不过这种需要自定义的情况一般是针对于 Android 定制化的地方会用到的多一些，但本文更多的是牵扯的是如何将这个下拉状态栏运行在独立进程中，以及进程之间的通信，这样的话即使下拉状态栏崩溃了，也不会影响主进程。</p>
+<p>首先实现插件式换肤需要知道以下几个流程：</p>
 
-<p><img src="https://raw.githubusercontent.com/checkFang/img/master/preview199.gif" alt="" /></p>
+<ul>
+<li>在默认情况下通过 setContentView 设置的资源布局（XML）是如何加载到界面上的</li>
+<li>在 Android 5.0 之前的版本和 5.0 之后的版本按钮是不一样的样式，系统是如何做到换肤的</li>
+<li>自定义换肤框架，如何知道我们自己的 APK 哪些控件是需要换肤的</li>
+<li>如何切换 【皮肤插件 / 默认】的肤色</li>
+<li>如何加载资源包插件</li>
+<li>重启 APP、进入其他 Activty 如何换肤</li>
+</ul>
     </div>
     <div class="read-more">
-      <a href="/android-process-ipc/" class="read-more-link">Read more</a>
+      <a href="/android-hook-change-skin/" class="read-more-link">Read more</a>
     </div>
     
   </div>

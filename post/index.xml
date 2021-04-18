@@ -6,22 +6,29 @@
     <description>Recent content in Posts on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 16 Apr 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 18 Apr 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>独立进程通信之悬浮下拉状态栏实践</title>
-      <link>https://midFang.github.io/android-process-ipc/</link>
-      <pubDate>Fri, 16 Apr 2021 00:00:00 +0000</pubDate>
+      <title>HOOK 插件式一键换肤流程分析</title>
+      <link>https://midFang.github.io/android-hook-change-skin/</link>
+      <pubDate>Sun, 18 Apr 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://midFang.github.io/android-process-ipc/</guid>
-      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+      <guid>https://midFang.github.io/android-hook-change-skin/</guid>
+      <description>&lt;h3 id=&#34;换肤流程&#34;&gt;换肤流程&lt;/h3&gt;
 
-&lt;p&gt;我们首先先看下这个效果是怎么样的，如果有人见过百度音箱或者是小米音箱，就应该对这个会清楚一些，也就是图示中我们是自定义了一个下拉状态栏，并没有使用系统原生的，那么我们就可以根据需求实现我们自定义的下拉状态栏 UI，比如音乐通知，时间、天气显示信息等等。不过这种需要自定义的情况一般是针对于 Android 定制化的地方会用到的多一些，但本文更多的是牵扯的是如何将这个下拉状态栏运行在独立进程中，以及进程之间的通信，这样的话即使下拉状态栏崩溃了，也不会影响主进程。&lt;/p&gt;
+&lt;p&gt;首先实现插件式换肤需要知道以下几个流程：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/checkFang/img/master/preview199.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
+&lt;ul&gt;
+&lt;li&gt;在默认情况下通过 setContentView 设置的资源布局（XML）是如何加载到界面上的&lt;/li&gt;
+&lt;li&gt;在 Android 5.0 之前的版本和 5.0 之后的版本按钮是不一样的样式，系统是如何做到换肤的&lt;/li&gt;
+&lt;li&gt;自定义换肤框架，如何知道我们自己的 APK 哪些控件是需要换肤的&lt;/li&gt;
+&lt;li&gt;如何切换 【皮肤插件 / 默认】的肤色&lt;/li&gt;
+&lt;li&gt;如何加载资源包插件&lt;/li&gt;
+&lt;li&gt;重启 APP、进入其他 Activty 如何换肤&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>

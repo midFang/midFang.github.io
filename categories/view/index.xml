@@ -6,10 +6,30 @@
     <description>Recent content in View on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 07 Nov 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 18 Apr 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/categories/view/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>HOOK 插件式一键换肤流程分析</title>
+      <link>https://midFang.github.io/android-hook-change-skin/</link>
+      <pubDate>Sun, 18 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/android-hook-change-skin/</guid>
+      <description>&lt;h3 id=&#34;换肤流程&#34;&gt;换肤流程&lt;/h3&gt;
+
+&lt;p&gt;首先实现插件式换肤需要知道以下几个流程：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在默认情况下通过 setContentView 设置的资源布局（XML）是如何加载到界面上的&lt;/li&gt;
+&lt;li&gt;在 Android 5.0 之前的版本和 5.0 之后的版本按钮是不一样的样式，系统是如何做到换肤的&lt;/li&gt;
+&lt;li&gt;自定义换肤框架，如何知道我们自己的 APK 哪些控件是需要换肤的&lt;/li&gt;
+&lt;li&gt;如何切换 【皮肤插件 / 默认】的肤色&lt;/li&gt;
+&lt;li&gt;如何加载资源包插件&lt;/li&gt;
+&lt;li&gt;重启 APP、进入其他 Activty 如何换肤&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>理解 Android 中的 window 与悬浮窗的实现</title>
