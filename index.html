@@ -487,6 +487,45 @@
   <header class="post-header">
     <h1 class="post-title">
       
+      <a class="post-link" href="/android-process-ipc/">独立进程通信之悬浮下拉状态栏实践</a>
+    </h1>
+    
+    <div class="post-meta">
+      <time datetime="2021-04-01" class="post-time">
+        2021-04-01
+      </time>
+      <div class="post-category">
+          <a href="https://midFang.github.io/categories/android/"> Android </a>
+          <a href="https://midFang.github.io/categories/ipc/"> IPC </a>
+          
+        </div>
+      
+      
+      
+    </div>
+  </header>
+  
+  <div class="post-content">
+    
+    <div class="post-summary">
+      <h3 id="前言">前言</h3>
+
+<p>我们首先先看下这个效果是怎么样的，如果有人见过百度音箱或者是小米音箱，就应该对这个会清楚一些，也就是图示中我们是自定义了一个下拉状态栏，并没有使用系统原生的，那么我们就可以根据需求实现我们自定义的下拉状态栏 UI，比如音乐通知，时间、天气显示信息等等。不过这种需要自定义的情况一般是针对于 Android 定制化的地方会用到的多一些，但本文更多的是牵扯的是如何将这个下拉状态栏运行在独立进程中，以及进程之间的通信，这样的话即使下拉状态栏崩溃了，也不会影响主进程。</p>
+
+<p><img src="https://raw.githubusercontent.com/checkFang/img/master/preview199.gif" alt="" /></p>
+    </div>
+    <div class="read-more">
+      <a href="/android-process-ipc/" class="read-more-link">Read more</a>
+    </div>
+    
+  </div>
+</article>
+
+  
+    <article class="post bg-white">
+  <header class="post-header">
+    <h1 class="post-title">
+      
       <a class="post-link" href="/okhttp-source-code-analysis/">OkHttp 源码分析及网络优化</a>
     </h1>
     
@@ -754,49 +793,6 @@
     </div>
     <div class="read-more">
       <a href="/android-window-suspension-view/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/java-decodeunicode/">解决日志打印 Unicode 编码问题</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2020-11-01" class="post-time">
-        2020-11-01
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/android/"> android </a>
-          <a href="https://midFang.github.io/categories/java/"> java </a>
-          
-        </div>
-      
-      
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <p>最近接入了一个第三方的网络接口，他们的日志都被 Unicode 编码了，全都是这样很多反斜杠类似的：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="err">\</span><span class="n">u7136</span><span class="err">\</span><span class="n">u540e</span><span class="err">\</span><span class="n">u70b9</span><span class="err">\</span><span class="n">u51fb</span><span class="err">\</span><span class="n">u8981</span><span class="err">\</span><span class="n">u8f6c</span><span class="err">\</span><span class="n">u6362</span><span class="err">\</span><span class="n">u7684</span><span class="err">\</span><span class="n">u7c7b</span><span class="err">\</span><span class="n">u578b</span><span class="err">\</span><span class="n">u6309</span><span class="err">\</span><span class="n">u94ae</span><span class="err">\</span><span class="n">uff0c</span><span class="err">\</span><span class="n">u8f6c</span><span class="err">\</span><span class="n">u6362</span><span class="err">\</span><span class="n">u5b8c</span><span class="err">\</span><span class="n">u6210</span><span class="err">\</span><span class="n">u540e</span><span class="err">\</span><span class="n">u5373</span><span class="err">\</span><span class="n">u53ef</span><span class="err">\</span><span class="n">u770b</span><span class="err">\</span><span class="n">u5230</span><span class="err">\</span><span class="n">u5bf9</span><span class="err">\</span><span class="n">u5e94</span><span class="err">\</span><span class="n">u7684</span><span class="err">\</span><span class="n">u5185</span><span class="err">\</span><span class="n">u5bb9</span><span class="err">\</span><span class="n">u3002</span></code></pre></td></tr></table>
-</div>
-</div>
-    </div>
-    <div class="read-more">
-      <a href="/java-decodeunicode/" class="read-more-link">Read more</a>
     </div>
     
   </div>
