@@ -6,7 +6,7 @@
     <description>Recent content in Categories on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 18 Apr 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 04 May 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,9 +14,27 @@
     <item>
       <title>Android</title>
       <link>https://midFang.github.io/categories/android/</link>
-      <pubDate>Sun, 18 Apr 2021 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 04 May 2021 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/categories/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>IPC</title>
+      <link>https://midFang.github.io/categories/ipc/</link>
+      <pubDate>Tue, 04 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/categories/ipc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Socket</title>
+      <link>https://midFang.github.io/categories/socket/</link>
+      <pubDate>Tue, 04 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/categories/socket/</guid>
       <description></description>
     </item>
     
@@ -66,15 +84,6 @@
     </item>
     
     <item>
-      <title>IPC</title>
-      <link>https://midFang.github.io/categories/ipc/</link>
-      <pubDate>Thu, 01 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/categories/ipc/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>OKHttp</title>
       <link>https://midFang.github.io/categories/okhttp/</link>
       <pubDate>Thu, 28 Jan 2021 00:00:00 +0000</pubDate>
@@ -111,7 +120,7 @@
     </item>
     
     <item>
-      <title>java</title>
+      <title>Java</title>
       <link>https://midFang.github.io/categories/java/</link>
       <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
       
@@ -179,15 +188,6 @@
       <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/categories/%E5%B7%A5%E5%85%B7/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>线程</title>
-      <link>https://midFang.github.io/categories/%E7%BA%BF%E7%A8%8B/</link>
-      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/categories/%E7%BA%BF%E7%A8%8B/</guid>
       <description></description>
     </item>
     

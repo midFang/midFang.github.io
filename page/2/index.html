@@ -63,7 +63,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://midFang.github.io/" />
 
-<meta property="og:updated_time" content="2021-04-18T00:00:00+00:00" />
+<meta property="og:updated_time" content="2021-05-04T00:00:00+00:00" />
 <meta itemprop="name" content="midFang&#39;s Blog">
 <meta itemprop="description" content="Hugo theme jane example site.">
 
@@ -349,6 +349,52 @@
     
   
   
+  
+    <article class="post bg-white">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/android-window-suspension-view/">理解 Android 中的 window 与悬浮窗的实现</a>
+    </h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-11-07" class="post-time">
+        2020-11-07
+      </time>
+      <div class="post-category">
+          <a href="https://midFang.github.io/categories/android/"> Android </a>
+          <a href="https://midFang.github.io/categories/view/"> view </a>
+          
+        </div>
+      
+      
+      
+    </div>
+  </header>
+  
+  <div class="post-content">
+    
+    <div class="post-summary">
+      <h3 id="window-是什么">Window 是什么</h3>
+
+<ul>
+<li>Window 是一个相对概念上的载体，他并不是一个真正的容器，仅仅负责管理依赖 window 上面的 View 的一个类，充当管理者。</li>
+<li>Window 是一个抽象类，在源码实现中，只有一个具体的实现类，phoneWindow</li>
+<li>创建 Window 需要通过 WindowManager 创建</li>
+<li>WindowManager 是外界访问 Window 的入口</li>
+<li>Window 具体实现位于 WindowManagerService 中</li>
+<li>WindowManager 和 WindowManagerService 的交互是通过 IPC 完成</li>
+</ul>
+
+<h3 id="activity-和-window-之间的关系">Activity 和 Window 之间的关系</h3>
+    </div>
+    <div class="read-more">
+      <a href="/android-window-suspension-view/" class="read-more-link">Read more</a>
+    </div>
+    
+  </div>
+</article>
+
   
     <article class="post bg-white">
   <header class="post-header">
@@ -723,40 +769,6 @@
     </div>
     <div class="read-more">
       <a href="/android-process-base-use/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/window.layoutparams/">WindowManager.LayoutParams 参数详解</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2020-08-01" class="post-time">
-        2020-08-01
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/android/"> Android </a>
-          
-        </div>
-      
-      
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <p>WindowManager.LayoutParams 是 WindowManager 接口的嵌套类；继承于 ViewGroup.LayoutParams 。它的内容十分丰富。其实WindowManager.<a href="http://lib.csdn.net/base/17">Java</a>的主要内容就是由这个类定义构成。下面来分析一下这个类。</p>
-    </div>
-    <div class="read-more">
-      <a href="/window.layoutparams/" class="read-more-link">Read more</a>
     </div>
     
   </div>

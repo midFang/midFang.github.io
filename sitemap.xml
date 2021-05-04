@@ -10,21 +10,77 @@
   
   <url>
     <loc>https://midFang.github.io/tags/android/</loc>
-    <lastmod>2021-04-18T00:00:00+00:00</lastmod>
+    <lastmod>2021-05-04T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://midFang.github.io/categories/android/</loc>
-    <lastmod>2021-04-18T00:00:00+00:00</lastmod>
+    <lastmod>2021-05-04T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://midFang.github.io/categories/</loc>
-    <lastmod>2021-04-18T00:00:00+00:00</lastmod>
+    <lastmod>2021-05-04T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/tags/ipc/</loc>
+    <lastmod>2021-05-04T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/categories/ipc/</loc>
+    <lastmod>2021-05-04T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/</loc>
+    <lastmod>2021-05-04T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/post/</loc>
+    <lastmod>2021-05-04T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/categories/socket/</loc>
+    <lastmod>2021-05-04T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/tags/socket/</loc>
+    <lastmod>2021-05-04T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/android-socket-long-connection/</loc>
+    <lastmod>2021-05-04T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://midFang.github.io/tags/</loc>
+    <lastmod>2021-05-04T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -45,27 +101,6 @@
   
   <url>
     <loc>https://midFang.github.io/android-hook-change-skin/</loc>
-    <lastmod>2021-04-18T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://midFang.github.io/</loc>
-    <lastmod>2021-04-18T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://midFang.github.io/post/</loc>
-    <lastmod>2021-04-18T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://midFang.github.io/tags/</loc>
     <lastmod>2021-04-18T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -137,20 +172,6 @@
   <url>
     <loc>https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
     <lastmod>2021-04-03T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://midFang.github.io/categories/ipc/</loc>
-    <lastmod>2021-04-01T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://midFang.github.io/tags/ipc/</loc>
-    <lastmod>2021-04-01T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -233,14 +254,14 @@
   </url>
   
   <url>
-    <loc>https://midFang.github.io/categories/kotlin/</loc>
+    <loc>https://midFang.github.io/tags/kotlin/</loc>
     <lastmod>2020-11-22T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://midFang.github.io/tags/kotlin/</loc>
+    <loc>https://midFang.github.io/categories/kotlin/</loc>
     <lastmod>2020-11-22T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -373,14 +394,14 @@
   </url>
   
   <url>
-    <loc>https://midFang.github.io/tags/git/</loc>
+    <loc>https://midFang.github.io/categories/git/</loc>
     <lastmod>2020-07-05T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://midFang.github.io/categories/git/</loc>
+    <loc>https://midFang.github.io/tags/git/</loc>
     <lastmod>2020-07-05T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -646,14 +667,14 @@
   </url>
   
   <url>
-    <loc>https://midFang.github.io/categories/%E8%93%9D%E7%89%99/</loc>
+    <loc>https://midFang.github.io/tags/%E8%93%9D%E7%89%99/</loc>
     <lastmod>2019-06-24T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://midFang.github.io/tags/%E8%93%9D%E7%89%99/</loc>
+    <loc>https://midFang.github.io/categories/%E8%93%9D%E7%89%99/</loc>
     <lastmod>2019-06-24T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
