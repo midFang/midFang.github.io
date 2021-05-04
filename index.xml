@@ -296,8 +296,7 @@
 
 &lt;p&gt;socket 长连接可能需要注意的地方就是这些了，接下来看下源码如何实现长连接，注意我在这里是开启了多进程&lt;/p&gt;
 
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;服务端 ServerSocket 实现&lt;/p&gt;
+&lt;h4 id=&#34;服务端-serversocket-实现&#34;&gt;服务端 ServerSocket 实现&lt;/h4&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -345,51 +344,50 @@
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class=&#34;lntd&#34;&gt;
 &lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-&lt;span class=&#34;c1&#34;&gt;// 指定端口号
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;serviceSocket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ServerSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;12377&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;c1&#34;&gt;// 指定端口号
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;serviceSocket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ServerSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;12377&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 
-&lt;span class=&#34;c1&#34;&gt;// 会发生阻塞
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;开始连接...&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;socket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;serviceSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;accept&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;已连接--${socket.localAddress.hostAddress}:${socket.localPort}&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;c1&#34;&gt;// 会发生阻塞
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;开始连接...&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;socket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;serviceSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;accept&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;已连接--${socket.localAddress.hostAddress}:${socket.localPort}&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 
-&lt;span class=&#34;c1&#34;&gt;// 获取客户端发送过来的消息
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;inputStream&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getInputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;inn&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;InputStreamReader&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;inputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;bufferedReader&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;BufferedReader&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;inn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;
+    &lt;span class=&#34;c1&#34;&gt;// 获取客户端发送过来的消息
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;inputStream&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getInputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;inn&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;InputStreamReader&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;inputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;bufferedReader&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;BufferedReader&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;inn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;
 
-&lt;span class=&#34;c1&#34;&gt;// 回复客户端
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;outputStream&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getOutputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;c1&#34;&gt;// 回复客户端
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;outputStream&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getOutputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 
-&lt;span class=&#34;k&#34;&gt;while&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bufferedReader&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;readLine&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;also&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;it&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;客户端发送过来的信息: $data&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bufferedReader&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;readLine&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;also&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;it&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;客户端发送过来的信息: $data&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 
-    &lt;span class=&#34;k&#34;&gt;when&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;s&#34;&gt;&amp;#34;HeartBeat&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-            &lt;span class=&#34;c1&#34;&gt;// 检测到心跳包
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;            &lt;span class=&#34;n&#34;&gt;outputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;write&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;ok&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toByteArray&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;outputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;when&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;s&#34;&gt;&amp;#34;HeartBeat&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;c1&#34;&gt;// 检测到心跳包
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                &lt;span class=&#34;n&#34;&gt;outputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;write&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;ok&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toByteArray&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;outputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 
-        &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-            &lt;span class=&#34;c1&#34;&gt;// 回复给客户端
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;DateFormat&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SimpleDateFormat&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;HH:mm:ss&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;${df.format(Date())}: 收到消息&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;outputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;write&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;${df.format(Date())}: $data&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toByteArray&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;outputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;c1&#34;&gt;// 回复给客户端
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;DateFormat&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SimpleDateFormat&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;HH:mm:ss&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;${df.format(Date())}: 收到消息&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;outputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;write&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;${df.format(Date())}: $data&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toByteArray&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;outputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
         &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 
-&lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;关闭连接&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;shutdownInput&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;关闭连接&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;shutdownInput&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;客户端 socket 通信连接&lt;/p&gt;
+&lt;/div&gt;
+&lt;h4 id=&#34;客户端-socket-通信连接&#34;&gt;客户端 socket 通信连接&lt;/h4&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;  1
@@ -594,208 +592,206 @@
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class=&#34;lntd&#34;&gt;
 &lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;cm&#34;&gt;/**
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;* desc: 维护长连接的服务
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;*
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;* 1. 该 service 需要开启多进程, 需要考虑进程报活
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;* 2. 需要考虑 NAT 超时情况, 需要维护长连接
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;* 3. 可以理解该服务就是连接远程服务端 socket 并和远程服务端进行消息通信
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;*
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;* @author midFang
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;*
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;*/&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; * desc: 维护长连接的服务
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; *
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; * 1. 该 service 需要开启多进程, 需要考虑进程报活
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; * 2. 需要考虑 NAT 超时情况, 需要维护长连接
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; * 3. 可以理解该服务就是连接远程服务端 socket 并和远程服务端进行消息通信
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; *
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; * @author midFang
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; *
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; */&lt;/span&gt;
 &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;RemoteSocketService&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Service&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 
-	&lt;span class=&#34;c1&#34;&gt;// 多进程下使用的 List，防止移除失败
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;remoteCallbackList&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;by&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lazy&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;RemoteCallbackList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;IMessageCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+  	&lt;span class=&#34;c1&#34;&gt;// 多进程下使用的 List，防止移除失败
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;remoteCallbackList&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;by&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lazy&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;RemoteCallbackList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;IMessageCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 
-&lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;sendTime&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;0L&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;mSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;WeakReference&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;?&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;mReaderThread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ReaderThread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;sendTime&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;0L&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;mSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;WeakReference&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;?&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;mReaderThread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ReaderThread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;
 
 
-&lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;mHandler&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Handler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Looper&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getMainLooper&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;mHandler&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Handler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Looper&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getMainLooper&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
 
-&lt;span class=&#34;cm&#34;&gt;/**心跳任务，不断重复检测心跳 **/&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;heartBeatRunnable&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;: &lt;/span&gt;&lt;span class=&#34;nc&#34;&gt;Runnable&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;currentTimeMillis&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sendTime&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HEART_BEAT_RATE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;isSuccess&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sendMsg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;HeartBeat&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 发送心跳
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isSuccess&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-                &lt;span class=&#34;c1&#34;&gt;// 如果发送失败，就重新建立 socket
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                &lt;span class=&#34;n&#34;&gt;mHandler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;removeCallbacks&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-                &lt;span class=&#34;n&#34;&gt;mReaderThread&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;release&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-                &lt;span class=&#34;n&#34;&gt;releaseLastSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-                &lt;span class=&#34;n&#34;&gt;InitSocketThread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;().&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;start&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;cm&#34;&gt;/**心跳任务，不断重复检测心跳 **/&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;heartBeatRunnable&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;: &lt;/span&gt;&lt;span class=&#34;nc&#34;&gt;Runnable&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;currentTimeMillis&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sendTime&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HEART_BEAT_RATE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;isSuccess&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sendMsg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;HeartBeat&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 发送心跳
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isSuccess&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                    &lt;span class=&#34;c1&#34;&gt;// 如果发送失败，就重新建立 socket
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                    &lt;span class=&#34;n&#34;&gt;mHandler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;removeCallbacks&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                    &lt;span class=&#34;n&#34;&gt;mReaderThread&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;release&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+                    &lt;span class=&#34;n&#34;&gt;releaseLastSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                    &lt;span class=&#34;n&#34;&gt;InitSocketThread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;().&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;start&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+                &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;mHandler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;postDelayed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HEART_BEAT_RATE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;companion&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;cm&#34;&gt;/**
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;         * 可设置比 NAT 超时的时间少, 一般各大运营商的时间都各不相同
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;         * 长链接的核心本质就是避免 NAT 超时时间
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;         * 因为即使 TCP 的时间并没有中断, 但是还是会因为通信双方并发发生任何数据交互,从而运行商会主动关闭连接,这个就是 NAT 超时
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;         */&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;HEART_BEAT_RATE&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1000.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toLong&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+
+        &lt;span class=&#34;c1&#34;&gt;// 本机电脑的 ip
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;HOST&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;192.168.1.172&amp;#34;&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;PORT&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Int&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;12377&lt;/span&gt;
+
+        &lt;span class=&#34;cm&#34;&gt;/**
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;         * 连接服务
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;         */&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;serviceConnection&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ServiceConnection&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;Intent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;applicationContext&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;RemoteSocketService&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;java&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;also&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;applicationContext&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bindService&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;it&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;serviceConnection&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;BIND_AUTO_CREATE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
             &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
         &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;mHandler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;postDelayed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HEART_BEAT_RATE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 
-&lt;span class=&#34;k&#34;&gt;companion&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-    &lt;span class=&#34;cm&#34;&gt;/**
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     * 可设置比 NAT 超时的时间少, 一般各大运营商的时间都各不相同
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     * 长链接的核心本质就是避免 NAT 超时时间
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     * 因为即使 TCP 的时间并没有中断, 但是还是会因为通信双方并发发生任何数据交互,从而运行商会主动关闭连接,这个就是 NAT 超时
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     */&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;HEART_BEAT_RATE&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1000.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toLong&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-
-    &lt;span class=&#34;c1&#34;&gt;// 本机电脑的 ip
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;HOST&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;192.168.1.172&amp;#34;&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;PORT&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Int&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;12377&lt;/span&gt;
 
     &lt;span class=&#34;cm&#34;&gt;/**
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     * 连接服务
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     * 客户端调用服务端的方法.
 &lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     */&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;serviceConnection&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ServiceConnection&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;Intent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;applicationContext&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;RemoteSocketService&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;java&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;also&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;applicationContext&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bindService&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;it&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;serviceConnection&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;BIND_AUTO_CREATE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;mRemoteService&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;: &lt;/span&gt;&lt;span class=&#34;nc&#34;&gt;ISocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Stub&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;cm&#34;&gt;/**
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;         * @throws RemoteSocketService
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;         */&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;sendMessage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sendMsg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;addMessageCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;back&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;IMessageCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;remoteCallbackList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;register&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;back&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+        &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;removeMessageCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;back&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;IMessageCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;remoteCallbackList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;unregister&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;back&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
         &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;onBind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;intent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Intent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;IBinder&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mRemoteService&lt;/span&gt;
 
-&lt;span class=&#34;cm&#34;&gt;/**
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; * 客户端调用服务端的方法.
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; */&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;mRemoteService&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;: &lt;/span&gt;&lt;span class=&#34;nc&#34;&gt;ISocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Stub&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
     &lt;span class=&#34;cm&#34;&gt;/**
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     * @throws RemoteSocketService
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     * 大致的步骤有:
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     * 1. 连接 socket 服务
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     * 2. 解析数据
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     * 3. 返回给外部数据
 &lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     */&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;sendMessage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sendMsg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;addMessageCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;back&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;IMessageCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;remoteCallbackList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;register&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;back&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;onCreate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;super&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;onCreate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;// 开始连接 socket 服务
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;n&#34;&gt;InitSocketThread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;().&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;start&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 
-    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;removeMessageCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;back&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;IMessageCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;remoteCallbackList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;unregister&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;back&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;inner&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;InitSocketThread&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Thread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;super&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;initSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 
-&lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;onBind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;intent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Intent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;IBinder&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mRemoteService&lt;/span&gt;
-
-&lt;span class=&#34;cm&#34;&gt;/**
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; * 大致的步骤有:
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; * 1. 连接 socket 服务
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; * 2. 解析数据
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; * 3. 返回给外部数据
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; */&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;onCreate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;super&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;onCreate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-    &lt;span class=&#34;c1&#34;&gt;// 开始连接 socket 服务
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;n&#34;&gt;InitSocketThread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;().&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;start&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-
-&lt;span class=&#34;k&#34;&gt;inner&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;InitSocketThread&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Thread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;super&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;initSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;onDestroy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;super&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;onDestroy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;mHandler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;removeCallbacks&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;heartBeatRunnable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;mReaderThread&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;release&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;releaseLastSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 
-&lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;onDestroy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;super&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;onDestroy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;mHandler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;removeCallbacks&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;heartBeatRunnable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;mReaderThread&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;release&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;releaseLastSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-
-&lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;initSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;端口$HOST:$PORT&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;socket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;HOST&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;PORT&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;c1&#34;&gt;// 2 小时内探测对方, 并无法保证 NAT 超时，也无法保活
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;initSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;端口$HOST:$PORT&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;socket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;HOST&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;PORT&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;// 2 小时内探测对方, 并无法保证 NAT 超时，也无法保活
 &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//        socket.keepAlive = true
 &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;mSocket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;WeakReference&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;c1&#34;&gt;// 开启读写线程
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;n&#34;&gt;mReaderThread&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ReaderThread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;mReaderThread&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;start&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;mSocket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;WeakReference&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;// 开启读写线程
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;n&#34;&gt;mReaderThread&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ReaderThread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;mReaderThread&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;start&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 
-    &lt;span class=&#34;n&#34;&gt;mHandler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;postDelayed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;heartBeatRunnable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HEART_BEAT_RATE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-
-&lt;span class=&#34;k&#34;&gt;inner&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;ReaderThread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Thread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;isStart&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;true&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;mWeakSocket&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;by&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lazy&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;WeakReference&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-
-    &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;release&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;isStart&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;false&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;releaseLastSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mWeakSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;mHandler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;postDelayed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;heartBeatRunnable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HEART_BEAT_RATE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 
-    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;super&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;inner&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;ReaderThread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Thread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 
-        &lt;span class=&#34;n&#34;&gt;kotlin&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;runCatching&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;mWeakSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;let&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt;
-                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;inputStream&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getInputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;byteArray&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ByteArray&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1024&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-                &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;length&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;isStart&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;true&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;mWeakSocket&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;by&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lazy&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;WeakReference&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 
-                &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isClosed&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isInputShutdown&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;isStart&lt;/span&gt;
-                    &lt;span class=&#34;p&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;inputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;byteArray&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;also&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;length&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;it&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;
-                &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-                    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;length&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-                        &lt;span class=&#34;c1&#34;&gt;// 解析数据
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                        &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;message&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;byteArray&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;copyOf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;length&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
-                        &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;接收到的消息 $message&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;release&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;isStart&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;false&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;releaseLastSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mWeakSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 
-                        &lt;span class=&#34;c1&#34;&gt;// 回复数据
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                        &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;size&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;remoteCallbackList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;beginBroadcast&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-                        &lt;span class=&#34;n&#34;&gt;repeat&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;size&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-                            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;item&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;remoteCallbackList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getBroadcastItem&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;it&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-                            &lt;span class=&#34;n&#34;&gt;item&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;receiverMessage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;super&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+
+            &lt;span class=&#34;n&#34;&gt;kotlin&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;runCatching&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;mWeakSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;let&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt;
+                    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;inputStream&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getInputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+                    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;byteArray&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ByteArray&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1024&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                    &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;length&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
+
+                    &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isClosed&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isInputShutdown&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;isStart&lt;/span&gt;
+                        &lt;span class=&#34;p&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;inputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;byteArray&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;also&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;length&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;it&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;
+                    &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;length&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                            &lt;span class=&#34;c1&#34;&gt;// 解析数据
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;message&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;byteArray&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;copyOf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;length&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
+                            &lt;span class=&#34;n&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;接收到的消息 $message&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+                            &lt;span class=&#34;c1&#34;&gt;// 回复数据
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                            &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;size&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;remoteCallbackList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;beginBroadcast&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+                            &lt;span class=&#34;n&#34;&gt;repeat&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;size&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;item&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;remoteCallbackList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getBroadcastItem&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;it&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                                &lt;span class=&#34;n&#34;&gt;item&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;receiverMessage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+                            &lt;span class=&#34;n&#34;&gt;remoteCallbackList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;finishBroadcast&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
                         &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-                        &lt;span class=&#34;n&#34;&gt;remoteCallbackList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;finishBroadcast&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
                     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
                 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
             &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
         &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 
-&lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;releaseLastSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;weakSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;WeakReference&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;?)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;kotlin&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;runCatching&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;get&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;weakSocket&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isClosed&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;get&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;
-    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-
-&lt;span class=&#34;cm&#34;&gt;/**
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; * 发送消息
-&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; */&lt;/span&gt;
-&lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;sendMsg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mSocket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;||&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mSocket&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;false&lt;/span&gt;
-
-    &lt;span class=&#34;n&#34;&gt;mSocket&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;let&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt;
-
-        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isClosed&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isOutputShutdown&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-            &lt;span class=&#34;n&#34;&gt;thread&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;outputStream&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getOutputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;message&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;\r\n&amp;#34;&lt;/span&gt;
-                &lt;span class=&#34;n&#34;&gt;kotlin&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;runCatching&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-                    &lt;span class=&#34;n&#34;&gt;outputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;write&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toByteArray&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
-                    &lt;span class=&#34;n&#34;&gt;outputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-                &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;releaseLastSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;weakSocket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;WeakReference&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;?)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;kotlin&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;runCatching&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;get&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;weakSocket&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isClosed&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;close&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
             &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-
-            &lt;span class=&#34;n&#34;&gt;sendTime&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;currentTimeMillis&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 每次发送成数据，就改一下最后成功发送的时间，节省心跳间隔时间
-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
-        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;false&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;get&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 
-    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;true&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;cm&#34;&gt;/**
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     * 发送消息
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt;     */&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;sendMsg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mSocket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;||&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mSocket&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;false&lt;/span&gt;
+
+        &lt;span class=&#34;n&#34;&gt;mSocket&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;let&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt;
+
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isClosed&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isOutputShutdown&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;thread&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;outputStream&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;socket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getOutputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+                    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;message&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;\r\n&amp;#34;&lt;/span&gt;
+                    &lt;span class=&#34;n&#34;&gt;kotlin&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;runCatching&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                        &lt;span class=&#34;n&#34;&gt;outputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;write&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toByteArray&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+                        &lt;span class=&#34;n&#34;&gt;outputStream&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+                    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+                &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+                &lt;span class=&#34;n&#34;&gt;sendTime&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;currentTimeMillis&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 每次发送成数据，就改一下最后成功发送的时间，节省心跳间隔时间
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;false&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;true&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
+&lt;/div&gt;
 &lt;p&gt;主要流程的源码实现就是这些了，具体细节部分可以看下工程项目。&lt;/p&gt;
 
 &lt;p&gt;源码地址： &lt;a href=&#34;https://github.com/midFang/blogSource/tree/main/SocketDemo&#34;&gt;https://github.com/midFang/blogSource/tree/main/SocketDemo&lt;/a&gt;&lt;/p&gt;

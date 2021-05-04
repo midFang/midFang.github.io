@@ -429,7 +429,8 @@ Socket通信模型
 <li><a href="#不可抗拒因素">不可抗拒因素</a></li>
 <li><a href="#长连接源码实现">长连接源码实现</a>
 <ul>
-<li>
+<li><a href="#服务端-serversocket-实现">服务端 ServerSocket 实现</a></li>
+<li><a href="#客户端-socket-通信连接">客户端 socket 通信连接</a>
 <ul>
 <li><a href="#引用链接">引用链接</a></li>
 </ul></li>
@@ -680,8 +681,7 @@ Socket通信模型
 
 <p>socket 长连接可能需要注意的地方就是这些了，接下来看下源码如何实现长连接，注意我在这里是开启了多进程</p>
 
-<ul>
-<li><p>服务端 ServerSocket 实现</p>
+<h4 id="服务端-serversocket-实现">服务端 ServerSocket 实现</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
@@ -729,51 +729,50 @@ Socket通信模型
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-<span class="c1">// 指定端口号
-</span><span class="c1"></span><span class="k">val</span> <span class="py">serviceSocket</span> <span class="p">=</span> <span class="n">ServerSocket</span><span class="p">(</span><span class="m">12377</span><span class="p">)</span>
+    <span class="c1">// 指定端口号
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">serviceSocket</span> <span class="p">=</span> <span class="n">ServerSocket</span><span class="p">(</span><span class="m">12377</span><span class="p">)</span>
 
-<span class="c1">// 会发生阻塞
-</span><span class="c1"></span><span class="n">println</span><span class="p">(</span><span class="s">&#34;开始连接...&#34;</span><span class="p">)</span>
-<span class="k">val</span> <span class="py">socket</span> <span class="p">=</span> <span class="n">serviceSocket</span><span class="p">.</span><span class="n">accept</span><span class="p">()</span>
-<span class="n">println</span><span class="p">(</span><span class="s">&#34;已连接--${socket.localAddress.hostAddress}:${socket.localPort}&#34;</span><span class="p">)</span>
+    <span class="c1">// 会发生阻塞
+</span><span class="c1"></span>    <span class="n">println</span><span class="p">(</span><span class="s">&#34;开始连接...&#34;</span><span class="p">)</span>
+    <span class="k">val</span> <span class="py">socket</span> <span class="p">=</span> <span class="n">serviceSocket</span><span class="p">.</span><span class="n">accept</span><span class="p">()</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">&#34;已连接--${socket.localAddress.hostAddress}:${socket.localPort}&#34;</span><span class="p">)</span>
 
-<span class="c1">// 获取客户端发送过来的消息
-</span><span class="c1"></span><span class="k">val</span> <span class="py">inputStream</span> <span class="p">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">getInputStream</span><span class="p">()</span>
-<span class="k">val</span> <span class="py">inn</span> <span class="p">=</span> <span class="n">InputStreamReader</span><span class="p">(</span><span class="n">inputStream</span><span class="p">)</span>
-<span class="k">val</span> <span class="py">bufferedReader</span> <span class="p">=</span> <span class="n">BufferedReader</span><span class="p">(</span><span class="n">inn</span><span class="p">)</span>
-<span class="k">var</span> <span class="py">data</span> <span class="p">=</span> <span class="s">&#34;&#34;</span>
+    <span class="c1">// 获取客户端发送过来的消息
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">inputStream</span> <span class="p">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">getInputStream</span><span class="p">()</span>
+    <span class="k">val</span> <span class="py">inn</span> <span class="p">=</span> <span class="n">InputStreamReader</span><span class="p">(</span><span class="n">inputStream</span><span class="p">)</span>
+    <span class="k">val</span> <span class="py">bufferedReader</span> <span class="p">=</span> <span class="n">BufferedReader</span><span class="p">(</span><span class="n">inn</span><span class="p">)</span>
+    <span class="k">var</span> <span class="py">data</span> <span class="p">=</span> <span class="s">&#34;&#34;</span>
 
-<span class="c1">// 回复客户端
-</span><span class="c1"></span><span class="k">val</span> <span class="py">outputStream</span> <span class="p">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">getOutputStream</span><span class="p">()</span>
+    <span class="c1">// 回复客户端
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">outputStream</span> <span class="p">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">getOutputStream</span><span class="p">()</span>
 
-<span class="k">while</span> <span class="p">(</span><span class="n">bufferedReader</span><span class="p">.</span><span class="n">readLine</span><span class="p">()</span><span class="o">?.</span><span class="n">also</span> <span class="p">{</span> <span class="k">data</span> <span class="p">=</span> <span class="n">it</span> <span class="p">}</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">&#34;客户端发送过来的信息: $data&#34;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">bufferedReader</span><span class="p">.</span><span class="n">readLine</span><span class="p">()</span><span class="o">?.</span><span class="n">also</span> <span class="p">{</span> <span class="k">data</span> <span class="p">=</span> <span class="n">it</span> <span class="p">}</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">&#34;客户端发送过来的信息: $data&#34;</span><span class="p">)</span>
 
-    <span class="k">when</span> <span class="p">(</span><span class="k">data</span><span class="p">)</span> <span class="p">{</span>
-        <span class="s">&#34;HeartBeat&#34;</span> <span class="p">-&gt;</span> <span class="p">{</span>
-            <span class="c1">// 检测到心跳包
-</span><span class="c1"></span>            <span class="n">outputStream</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#34;ok&#34;</span><span class="p">.</span><span class="n">toByteArray</span><span class="p">())</span>
-            <span class="n">outputStream</span><span class="p">.</span><span class="n">flush</span><span class="p">()</span>
-        <span class="p">}</span>
+        <span class="k">when</span> <span class="p">(</span><span class="k">data</span><span class="p">)</span> <span class="p">{</span>
+            <span class="s">&#34;HeartBeat&#34;</span> <span class="p">-&gt;</span> <span class="p">{</span>
+                <span class="c1">// 检测到心跳包
+</span><span class="c1"></span>                <span class="n">outputStream</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#34;ok&#34;</span><span class="p">.</span><span class="n">toByteArray</span><span class="p">())</span>
+                <span class="n">outputStream</span><span class="p">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="p">}</span>
 
-        <span class="k">else</span> <span class="p">-&gt;</span> <span class="p">{</span>
-            <span class="c1">// 回复给客户端
-</span><span class="c1"></span>            <span class="k">val</span> <span class="py">df</span><span class="p">:</span> <span class="n">DateFormat</span> <span class="p">=</span> <span class="n">SimpleDateFormat</span><span class="p">(</span><span class="s">&#34;HH:mm:ss&#34;</span><span class="p">)</span>
-            <span class="n">println</span><span class="p">(</span><span class="s">&#34;${df.format(Date())}: 收到消息&#34;</span><span class="p">)</span>
-            <span class="n">outputStream</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#34;${df.format(Date())}: $data&#34;</span><span class="p">.</span><span class="n">toByteArray</span><span class="p">())</span>
-            <span class="n">outputStream</span><span class="p">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="k">else</span> <span class="p">-&gt;</span> <span class="p">{</span>
+                <span class="c1">// 回复给客户端
+</span><span class="c1"></span>                <span class="k">val</span> <span class="py">df</span><span class="p">:</span> <span class="n">DateFormat</span> <span class="p">=</span> <span class="n">SimpleDateFormat</span><span class="p">(</span><span class="s">&#34;HH:mm:ss&#34;</span><span class="p">)</span>
+                <span class="n">println</span><span class="p">(</span><span class="s">&#34;${df.format(Date())}: 收到消息&#34;</span><span class="p">)</span>
+                <span class="n">outputStream</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#34;${df.format(Date())}: $data&#34;</span><span class="p">.</span><span class="n">toByteArray</span><span class="p">())</span>
+                <span class="n">outputStream</span><span class="p">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>
-<span class="p">}</span>
 
-<span class="n">println</span><span class="p">(</span><span class="s">&#34;关闭连接&#34;</span><span class="p">)</span>
-<span class="n">socket</span><span class="p">.</span><span class="n">shutdownInput</span><span class="p">()</span>
-<span class="n">socket</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">&#34;关闭连接&#34;</span><span class="p">)</span>
+    <span class="n">socket</span><span class="p">.</span><span class="n">shutdownInput</span><span class="p">()</span>
+    <span class="n">socket</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>客户端 socket 通信连接</p>
+</div>
+<h4 id="客户端-socket-通信连接">客户端 socket 通信连接</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">  1
@@ -978,208 +977,206 @@ Socket通信模型
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="cm">/**
-</span><span class="cm">* desc: 维护长连接的服务
-</span><span class="cm">*
-</span><span class="cm">* 1. 该 service 需要开启多进程, 需要考虑进程报活
-</span><span class="cm">* 2. 需要考虑 NAT 超时情况, 需要维护长连接
-</span><span class="cm">* 3. 可以理解该服务就是连接远程服务端 socket 并和远程服务端进行消息通信
-</span><span class="cm">*
-</span><span class="cm">* @author midFang
-</span><span class="cm">*
-</span><span class="cm">*/</span>
+</span><span class="cm"> * desc: 维护长连接的服务
+</span><span class="cm"> *
+</span><span class="cm"> * 1. 该 service 需要开启多进程, 需要考虑进程报活
+</span><span class="cm"> * 2. 需要考虑 NAT 超时情况, 需要维护长连接
+</span><span class="cm"> * 3. 可以理解该服务就是连接远程服务端 socket 并和远程服务端进行消息通信
+</span><span class="cm"> *
+</span><span class="cm"> * @author midFang
+</span><span class="cm"> *
+</span><span class="cm"> */</span>
 <span class="k">class</span> <span class="nc">RemoteSocketService</span> <span class="p">:</span> <span class="n">Service</span><span class="p">()</span> <span class="p">{</span>
 
-	<span class="c1">// 多进程下使用的 List，防止移除失败
-</span><span class="c1"></span><span class="k">private</span> <span class="k">val</span> <span class="py">remoteCallbackList</span> <span class="k">by</span> <span class="n">lazy</span> <span class="p">{</span> <span class="n">RemoteCallbackList</span><span class="p">&lt;</span><span class="n">IMessageCallback</span><span class="p">&gt;()</span> <span class="p">}</span>
+  	<span class="c1">// 多进程下使用的 List，防止移除失败
+</span><span class="c1"></span>    <span class="k">private</span> <span class="k">val</span> <span class="py">remoteCallbackList</span> <span class="k">by</span> <span class="n">lazy</span> <span class="p">{</span> <span class="n">RemoteCallbackList</span><span class="p">&lt;</span><span class="n">IMessageCallback</span><span class="p">&gt;()</span> <span class="p">}</span>
 
-<span class="k">private</span> <span class="k">var</span> <span class="py">sendTime</span> <span class="p">=</span> <span class="m">0L</span>
-<span class="k">private</span> <span class="k">var</span> <span class="py">mSocket</span><span class="p">:</span> <span class="n">WeakReference</span><span class="p">&lt;</span><span class="n">Socket</span><span class="p">&gt;?</span> <span class="p">=</span> <span class="k">null</span>
-<span class="k">private</span> <span class="k">var</span> <span class="py">mReaderThread</span><span class="p">:</span> <span class="n">ReaderThread</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+    <span class="k">private</span> <span class="k">var</span> <span class="py">sendTime</span> <span class="p">=</span> <span class="m">0L</span>
+    <span class="k">private</span> <span class="k">var</span> <span class="py">mSocket</span><span class="p">:</span> <span class="n">WeakReference</span><span class="p">&lt;</span><span class="n">Socket</span><span class="p">&gt;?</span> <span class="p">=</span> <span class="k">null</span>
+    <span class="k">private</span> <span class="k">var</span> <span class="py">mReaderThread</span><span class="p">:</span> <span class="n">ReaderThread</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
 
 
-<span class="k">private</span> <span class="k">val</span> <span class="py">mHandler</span> <span class="p">=</span> <span class="n">Handler</span><span class="p">(</span><span class="n">Looper</span><span class="p">.</span><span class="n">getMainLooper</span><span class="p">())</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">mHandler</span> <span class="p">=</span> <span class="n">Handler</span><span class="p">(</span><span class="n">Looper</span><span class="p">.</span><span class="n">getMainLooper</span><span class="p">())</span>
 
-<span class="cm">/**心跳任务，不断重复检测心跳 **/</span>
-<span class="k">private</span> <span class="k">val</span> <span class="py">heartBeatRunnable</span> <span class="p">=</span> <span class="k">object</span> <span class="err">: </span><span class="nc">Runnable</span> <span class="p">{</span>
-    <span class="k">override</span> <span class="k">fun</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="n">currentTimeMillis</span><span class="p">()</span> <span class="p">-</span> <span class="n">sendTime</span> <span class="p">&gt;=</span> <span class="n">HEART_BEAT_RATE</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">isSuccess</span> <span class="p">=</span> <span class="n">sendMsg</span><span class="p">(</span><span class="s">&#34;HeartBeat&#34;</span><span class="p">)</span> <span class="c1">// 发送心跳
-</span><span class="c1"></span>            <span class="k">if</span> <span class="p">(!</span><span class="n">isSuccess</span><span class="p">)</span> <span class="p">{</span>
-                <span class="c1">// 如果发送失败，就重新建立 socket
-</span><span class="c1"></span>                <span class="n">mHandler</span><span class="p">.</span><span class="n">removeCallbacks</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
-                <span class="n">mReaderThread</span><span class="o">?.</span><span class="n">release</span><span class="p">()</span>
-                <span class="n">releaseLastSocket</span><span class="p">(</span><span class="n">mSocket</span><span class="p">)</span>
-                <span class="n">InitSocketThread</span><span class="p">().</span><span class="n">start</span><span class="p">()</span>
+    <span class="cm">/**心跳任务，不断重复检测心跳 **/</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">heartBeatRunnable</span> <span class="p">=</span> <span class="k">object</span> <span class="err">: </span><span class="nc">Runnable</span> <span class="p">{</span>
+        <span class="k">override</span> <span class="k">fun</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="n">currentTimeMillis</span><span class="p">()</span> <span class="p">-</span> <span class="n">sendTime</span> <span class="p">&gt;=</span> <span class="n">HEART_BEAT_RATE</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">val</span> <span class="py">isSuccess</span> <span class="p">=</span> <span class="n">sendMsg</span><span class="p">(</span><span class="s">&#34;HeartBeat&#34;</span><span class="p">)</span> <span class="c1">// 发送心跳
+</span><span class="c1"></span>                <span class="k">if</span> <span class="p">(!</span><span class="n">isSuccess</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="c1">// 如果发送失败，就重新建立 socket
+</span><span class="c1"></span>                    <span class="n">mHandler</span><span class="p">.</span><span class="n">removeCallbacks</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+                    <span class="n">mReaderThread</span><span class="o">?.</span><span class="n">release</span><span class="p">()</span>
+                    <span class="n">releaseLastSocket</span><span class="p">(</span><span class="n">mSocket</span><span class="p">)</span>
+                    <span class="n">InitSocketThread</span><span class="p">().</span><span class="n">start</span><span class="p">()</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="n">mHandler</span><span class="p">.</span><span class="n">postDelayed</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">HEART_BEAT_RATE</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">companion</span> <span class="k">object</span> <span class="p">{</span>
+        <span class="cm">/**
+</span><span class="cm">         * 可设置比 NAT 超时的时间少, 一般各大运营商的时间都各不相同
+</span><span class="cm">         * 长链接的核心本质就是避免 NAT 超时时间
+</span><span class="cm">         * 因为即使 TCP 的时间并没有中断, 但是还是会因为通信双方并发发生任何数据交互,从而运行商会主动关闭连接,这个就是 NAT 超时
+</span><span class="cm">         */</span>
+        <span class="k">private</span> <span class="k">const</span> <span class="k">val</span> <span class="py">HEART_BEAT_RATE</span> <span class="p">=</span> <span class="m">3</span> <span class="p">*</span> <span class="m">1000.</span><span class="n">toLong</span><span class="p">()</span>
+
+        <span class="c1">// 本机电脑的 ip
+</span><span class="c1"></span>        <span class="k">private</span> <span class="k">var</span> <span class="py">HOST</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s">&#34;192.168.1.172&#34;</span>
+        <span class="k">private</span> <span class="k">var</span> <span class="py">PORT</span><span class="p">:</span> <span class="n">Int</span> <span class="p">=</span> <span class="m">12377</span>
+
+        <span class="cm">/**
+</span><span class="cm">         * 连接服务
+</span><span class="cm">         */</span>
+        <span class="k">fun</span> <span class="nf">connect</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">serviceConnection</span><span class="p">:</span> <span class="n">ServiceConnection</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">Intent</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">applicationContext</span><span class="p">,</span> <span class="n">RemoteSocketService</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">).</span><span class="n">also</span> <span class="p">{</span>
+                <span class="n">context</span><span class="p">.</span><span class="n">applicationContext</span><span class="p">.</span><span class="n">bindService</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="n">serviceConnection</span><span class="p">,</span><span class="n">Context</span><span class="p">.</span><span class="n">BIND_AUTO_CREATE</span><span class="p">)</span>
             <span class="p">}</span>
         <span class="p">}</span>
-        <span class="n">mHandler</span><span class="p">.</span><span class="n">postDelayed</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">HEART_BEAT_RATE</span><span class="p">)</span>
     <span class="p">}</span>
-<span class="p">}</span>
 
-<span class="k">companion</span> <span class="k">object</span> <span class="p">{</span>
-    <span class="cm">/**
-</span><span class="cm">     * 可设置比 NAT 超时的时间少, 一般各大运营商的时间都各不相同
-</span><span class="cm">     * 长链接的核心本质就是避免 NAT 超时时间
-</span><span class="cm">     * 因为即使 TCP 的时间并没有中断, 但是还是会因为通信双方并发发生任何数据交互,从而运行商会主动关闭连接,这个就是 NAT 超时
-</span><span class="cm">     */</span>
-    <span class="k">private</span> <span class="k">const</span> <span class="k">val</span> <span class="py">HEART_BEAT_RATE</span> <span class="p">=</span> <span class="m">3</span> <span class="p">*</span> <span class="m">1000.</span><span class="n">toLong</span><span class="p">()</span>
-
-    <span class="c1">// 本机电脑的 ip
-</span><span class="c1"></span>    <span class="k">private</span> <span class="k">var</span> <span class="py">HOST</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s">&#34;192.168.1.172&#34;</span>
-    <span class="k">private</span> <span class="k">var</span> <span class="py">PORT</span><span class="p">:</span> <span class="n">Int</span> <span class="p">=</span> <span class="m">12377</span>
 
     <span class="cm">/**
-</span><span class="cm">     * 连接服务
+</span><span class="cm">     * 客户端调用服务端的方法.
 </span><span class="cm">     */</span>
-    <span class="k">fun</span> <span class="nf">connect</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">serviceConnection</span><span class="p">:</span> <span class="n">ServiceConnection</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">Intent</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">applicationContext</span><span class="p">,</span> <span class="n">RemoteSocketService</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">).</span><span class="n">also</span> <span class="p">{</span>
-            <span class="n">context</span><span class="p">.</span><span class="n">applicationContext</span><span class="p">.</span><span class="n">bindService</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="n">serviceConnection</span><span class="p">,</span><span class="n">Context</span><span class="p">.</span><span class="n">BIND_AUTO_CREATE</span><span class="p">)</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">mRemoteService</span> <span class="p">=</span> <span class="k">object</span> <span class="err">: </span><span class="nc">ISocket</span><span class="p">.</span><span class="n">Stub</span><span class="p">()</span> <span class="p">{</span>
+        <span class="cm">/**
+</span><span class="cm">         * @throws RemoteSocketService
+</span><span class="cm">         */</span>
+        <span class="k">override</span> <span class="k">fun</span> <span class="nf">sendMessage</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">String</span><span class="p">?)</span> <span class="p">=</span> <span class="n">sendMsg</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">override</span> <span class="k">fun</span> <span class="nf">addMessageCallback</span><span class="p">(</span><span class="n">back</span><span class="p">:</span> <span class="n">IMessageCallback</span><span class="p">?)</span> <span class="p">{</span>
+            <span class="n">remoteCallbackList</span><span class="p">.</span><span class="n">register</span><span class="p">(</span><span class="n">back</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">override</span> <span class="k">fun</span> <span class="nf">removeMessageCallback</span><span class="p">(</span><span class="n">back</span><span class="p">:</span> <span class="n">IMessageCallback</span><span class="p">?)</span> <span class="p">{</span>
+            <span class="n">remoteCallbackList</span><span class="p">.</span><span class="n">unregister</span><span class="p">(</span><span class="n">back</span><span class="p">)</span>
         <span class="p">}</span>
     <span class="p">}</span>
-<span class="p">}</span>
 
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">onBind</span><span class="p">(</span><span class="n">intent</span><span class="p">:</span> <span class="n">Intent</span><span class="p">?):</span> <span class="n">IBinder</span><span class="p">?</span> <span class="p">=</span> <span class="n">mRemoteService</span>
 
-<span class="cm">/**
-</span><span class="cm"> * 客户端调用服务端的方法.
-</span><span class="cm"> */</span>
-<span class="k">private</span> <span class="k">val</span> <span class="py">mRemoteService</span> <span class="p">=</span> <span class="k">object</span> <span class="err">: </span><span class="nc">ISocket</span><span class="p">.</span><span class="n">Stub</span><span class="p">()</span> <span class="p">{</span>
     <span class="cm">/**
-</span><span class="cm">     * @throws RemoteSocketService
+</span><span class="cm">     * 大致的步骤有:
+</span><span class="cm">     * 1. 连接 socket 服务
+</span><span class="cm">     * 2. 解析数据
+</span><span class="cm">     * 3. 返回给外部数据
 </span><span class="cm">     */</span>
-    <span class="k">override</span> <span class="k">fun</span> <span class="nf">sendMessage</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">String</span><span class="p">?)</span> <span class="p">=</span> <span class="n">sendMsg</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="k">override</span> <span class="k">fun</span> <span class="nf">addMessageCallback</span><span class="p">(</span><span class="n">back</span><span class="p">:</span> <span class="n">IMessageCallback</span><span class="p">?)</span> <span class="p">{</span>
-        <span class="n">remoteCallbackList</span><span class="p">.</span><span class="n">register</span><span class="p">(</span><span class="n">back</span><span class="p">)</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">()</span>
+        <span class="c1">// 开始连接 socket 服务
+</span><span class="c1"></span>        <span class="n">InitSocketThread</span><span class="p">().</span><span class="n">start</span><span class="p">()</span>
     <span class="p">}</span>
 
-    <span class="k">override</span> <span class="k">fun</span> <span class="nf">removeMessageCallback</span><span class="p">(</span><span class="n">back</span><span class="p">:</span> <span class="n">IMessageCallback</span><span class="p">?)</span> <span class="p">{</span>
-        <span class="n">remoteCallbackList</span><span class="p">.</span><span class="n">unregister</span><span class="p">(</span><span class="n">back</span><span class="p">)</span>
+    <span class="k">inner</span> <span class="k">class</span> <span class="nc">InitSocketThread</span> <span class="p">:</span> <span class="n">Thread</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">override</span> <span class="k">fun</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">super</span><span class="p">.</span><span class="n">run</span><span class="p">()</span>
+            <span class="n">initSocket</span><span class="p">()</span>
+        <span class="p">}</span>
     <span class="p">}</span>
-<span class="p">}</span>
 
-<span class="k">override</span> <span class="k">fun</span> <span class="nf">onBind</span><span class="p">(</span><span class="n">intent</span><span class="p">:</span> <span class="n">Intent</span><span class="p">?):</span> <span class="n">IBinder</span><span class="p">?</span> <span class="p">=</span> <span class="n">mRemoteService</span>
-
-<span class="cm">/**
-</span><span class="cm"> * 大致的步骤有:
-</span><span class="cm"> * 1. 连接 socket 服务
-</span><span class="cm"> * 2. 解析数据
-</span><span class="cm"> * 3. 返回给外部数据
-</span><span class="cm"> */</span>
-<span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">()</span>
-    <span class="c1">// 开始连接 socket 服务
-</span><span class="c1"></span>    <span class="n">InitSocketThread</span><span class="p">().</span><span class="n">start</span><span class="p">()</span>
-<span class="p">}</span>
-
-<span class="k">inner</span> <span class="k">class</span> <span class="nc">InitSocketThread</span> <span class="p">:</span> <span class="n">Thread</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">override</span> <span class="k">fun</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">super</span><span class="p">.</span><span class="n">run</span><span class="p">()</span>
-        <span class="n">initSocket</span><span class="p">()</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">onDestroy</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="p">.</span><span class="n">onDestroy</span><span class="p">()</span>
+        <span class="n">mHandler</span><span class="p">.</span><span class="n">removeCallbacks</span><span class="p">(</span><span class="n">heartBeatRunnable</span><span class="p">)</span>
+        <span class="n">mReaderThread</span><span class="o">?.</span><span class="n">release</span><span class="p">()</span>
+        <span class="n">releaseLastSocket</span><span class="p">(</span><span class="n">mSocket</span><span class="p">)</span>
     <span class="p">}</span>
-<span class="p">}</span>
 
-<span class="k">override</span> <span class="k">fun</span> <span class="nf">onDestroy</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">super</span><span class="p">.</span><span class="n">onDestroy</span><span class="p">()</span>
-    <span class="n">mHandler</span><span class="p">.</span><span class="n">removeCallbacks</span><span class="p">(</span><span class="n">heartBeatRunnable</span><span class="p">)</span>
-    <span class="n">mReaderThread</span><span class="o">?.</span><span class="n">release</span><span class="p">()</span>
-    <span class="n">releaseLastSocket</span><span class="p">(</span><span class="n">mSocket</span><span class="p">)</span>
-<span class="p">}</span>
-
-<span class="k">private</span> <span class="k">fun</span> <span class="nf">initSocket</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">&#34;端口$HOST:$PORT&#34;</span><span class="p">)</span>
-    <span class="k">val</span> <span class="py">socket</span> <span class="p">=</span> <span class="n">Socket</span><span class="p">(</span><span class="n">HOST</span><span class="p">,</span> <span class="n">PORT</span><span class="p">)</span>
-    <span class="c1">// 2 小时内探测对方, 并无法保证 NAT 超时，也无法保活
+    <span class="k">private</span> <span class="k">fun</span> <span class="nf">initSocket</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">&#34;端口$HOST:$PORT&#34;</span><span class="p">)</span>
+        <span class="k">val</span> <span class="py">socket</span> <span class="p">=</span> <span class="n">Socket</span><span class="p">(</span><span class="n">HOST</span><span class="p">,</span> <span class="n">PORT</span><span class="p">)</span>
+        <span class="c1">// 2 小时内探测对方, 并无法保证 NAT 超时，也无法保活
 </span><span class="c1">//        socket.keepAlive = true
 </span><span class="c1"></span>
-    <span class="n">mSocket</span> <span class="p">=</span> <span class="n">WeakReference</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
-    <span class="c1">// 开启读写线程
-</span><span class="c1"></span>    <span class="n">mReaderThread</span> <span class="p">=</span> <span class="n">ReaderThread</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
-    <span class="n">mReaderThread</span><span class="o">?.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">mSocket</span> <span class="p">=</span> <span class="n">WeakReference</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
+        <span class="c1">// 开启读写线程
+</span><span class="c1"></span>        <span class="n">mReaderThread</span> <span class="p">=</span> <span class="n">ReaderThread</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
+        <span class="n">mReaderThread</span><span class="o">?.</span><span class="n">start</span><span class="p">()</span>
 
-    <span class="n">mHandler</span><span class="p">.</span><span class="n">postDelayed</span><span class="p">(</span><span class="n">heartBeatRunnable</span><span class="p">,</span> <span class="n">HEART_BEAT_RATE</span><span class="p">)</span>
-<span class="p">}</span>
-
-<span class="k">inner</span> <span class="k">class</span> <span class="nc">ReaderThread</span><span class="p">(</span><span class="n">socket</span><span class="p">:</span> <span class="n">Socket</span><span class="p">)</span> <span class="p">:</span> <span class="n">Thread</span><span class="p">()</span> <span class="p">{</span>
-
-    <span class="k">private</span> <span class="k">var</span> <span class="py">isStart</span> <span class="p">=</span> <span class="k">true</span>
-    <span class="k">private</span> <span class="k">val</span> <span class="py">mWeakSocket</span> <span class="k">by</span> <span class="n">lazy</span> <span class="p">{</span> <span class="n">WeakReference</span><span class="p">&lt;</span><span class="n">Socket</span><span class="p">&gt;(</span><span class="n">socket</span><span class="p">)</span> <span class="p">}</span>
-
-    <span class="k">fun</span> <span class="nf">release</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">isStart</span> <span class="p">=</span> <span class="k">false</span>
-        <span class="n">releaseLastSocket</span><span class="p">(</span><span class="n">mWeakSocket</span><span class="p">)</span>
+        <span class="n">mHandler</span><span class="p">.</span><span class="n">postDelayed</span><span class="p">(</span><span class="n">heartBeatRunnable</span><span class="p">,</span> <span class="n">HEART_BEAT_RATE</span><span class="p">)</span>
     <span class="p">}</span>
 
-    <span class="k">override</span> <span class="k">fun</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">super</span><span class="p">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="k">inner</span> <span class="k">class</span> <span class="nc">ReaderThread</span><span class="p">(</span><span class="n">socket</span><span class="p">:</span> <span class="n">Socket</span><span class="p">)</span> <span class="p">:</span> <span class="n">Thread</span><span class="p">()</span> <span class="p">{</span>
 
-        <span class="n">kotlin</span><span class="p">.</span><span class="n">runCatching</span> <span class="p">{</span>
-            <span class="n">mWeakSocket</span><span class="p">.</span><span class="k">get</span><span class="p">()</span><span class="o">?.</span><span class="n">let</span> <span class="p">{</span> <span class="n">socket</span> <span class="p">-&gt;</span>
-                <span class="k">val</span> <span class="py">inputStream</span> <span class="p">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">getInputStream</span><span class="p">()</span>
-                <span class="k">val</span> <span class="py">byteArray</span> <span class="p">=</span> <span class="n">ByteArray</span><span class="p">(</span><span class="m">1024</span> <span class="p">*</span> <span class="m">4</span><span class="p">)</span>
-                <span class="k">var</span> <span class="py">length</span> <span class="p">=</span> <span class="m">0</span>
+        <span class="k">private</span> <span class="k">var</span> <span class="py">isStart</span> <span class="p">=</span> <span class="k">true</span>
+        <span class="k">private</span> <span class="k">val</span> <span class="py">mWeakSocket</span> <span class="k">by</span> <span class="n">lazy</span> <span class="p">{</span> <span class="n">WeakReference</span><span class="p">&lt;</span><span class="n">Socket</span><span class="p">&gt;(</span><span class="n">socket</span><span class="p">)</span> <span class="p">}</span>
 
-                <span class="k">while</span> <span class="p">(!</span><span class="n">socket</span><span class="p">.</span><span class="n">isClosed</span> <span class="p">&amp;&amp;</span> <span class="p">!</span><span class="n">socket</span><span class="p">.</span><span class="n">isInputShutdown</span> <span class="p">&amp;&amp;</span> <span class="n">isStart</span>
-                    <span class="p">&amp;&amp;</span> <span class="n">inputStream</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">byteArray</span><span class="p">).</span><span class="n">also</span> <span class="p">{</span> <span class="n">length</span> <span class="p">=</span> <span class="n">it</span> <span class="p">}</span> <span class="p">!=</span> <span class="p">-</span><span class="m">1</span>
-                <span class="p">)</span> <span class="p">{</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">length</span> <span class="p">&gt;</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
-                        <span class="c1">// 解析数据
-</span><span class="c1"></span>                        <span class="k">val</span> <span class="py">message</span> <span class="p">=</span> <span class="n">String</span><span class="p">(</span><span class="n">byteArray</span><span class="p">.</span><span class="n">copyOf</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
-                        <span class="n">println</span><span class="p">(</span><span class="s">&#34;接收到的消息 $message&#34;</span><span class="p">)</span>
+        <span class="k">fun</span> <span class="nf">release</span><span class="p">()</span> <span class="p">{</span>
+            <span class="n">isStart</span> <span class="p">=</span> <span class="k">false</span>
+            <span class="n">releaseLastSocket</span><span class="p">(</span><span class="n">mWeakSocket</span><span class="p">)</span>
+        <span class="p">}</span>
 
-                        <span class="c1">// 回复数据
-</span><span class="c1"></span>                        <span class="k">val</span> <span class="py">size</span> <span class="p">=</span> <span class="n">remoteCallbackList</span><span class="p">.</span><span class="n">beginBroadcast</span><span class="p">()</span>
-                        <span class="n">repeat</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span>
-                            <span class="k">val</span> <span class="py">item</span> <span class="p">=</span> <span class="n">remoteCallbackList</span><span class="p">.</span><span class="n">getBroadcastItem</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
-                            <span class="n">item</span><span class="p">.</span><span class="n">receiverMessage</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">override</span> <span class="k">fun</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">super</span><span class="p">.</span><span class="n">run</span><span class="p">()</span>
+
+            <span class="n">kotlin</span><span class="p">.</span><span class="n">runCatching</span> <span class="p">{</span>
+                <span class="n">mWeakSocket</span><span class="p">.</span><span class="k">get</span><span class="p">()</span><span class="o">?.</span><span class="n">let</span> <span class="p">{</span> <span class="n">socket</span> <span class="p">-&gt;</span>
+                    <span class="k">val</span> <span class="py">inputStream</span> <span class="p">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">getInputStream</span><span class="p">()</span>
+                    <span class="k">val</span> <span class="py">byteArray</span> <span class="p">=</span> <span class="n">ByteArray</span><span class="p">(</span><span class="m">1024</span> <span class="p">*</span> <span class="m">4</span><span class="p">)</span>
+                    <span class="k">var</span> <span class="py">length</span> <span class="p">=</span> <span class="m">0</span>
+
+                    <span class="k">while</span> <span class="p">(!</span><span class="n">socket</span><span class="p">.</span><span class="n">isClosed</span> <span class="p">&amp;&amp;</span> <span class="p">!</span><span class="n">socket</span><span class="p">.</span><span class="n">isInputShutdown</span> <span class="p">&amp;&amp;</span> <span class="n">isStart</span>
+                        <span class="p">&amp;&amp;</span> <span class="n">inputStream</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">byteArray</span><span class="p">).</span><span class="n">also</span> <span class="p">{</span> <span class="n">length</span> <span class="p">=</span> <span class="n">it</span> <span class="p">}</span> <span class="p">!=</span> <span class="p">-</span><span class="m">1</span>
+                    <span class="p">)</span> <span class="p">{</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">length</span> <span class="p">&gt;</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="c1">// 解析数据
+</span><span class="c1"></span>                            <span class="k">val</span> <span class="py">message</span> <span class="p">=</span> <span class="n">String</span><span class="p">(</span><span class="n">byteArray</span><span class="p">.</span><span class="n">copyOf</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
+                            <span class="n">println</span><span class="p">(</span><span class="s">&#34;接收到的消息 $message&#34;</span><span class="p">)</span>
+
+                            <span class="c1">// 回复数据
+</span><span class="c1"></span>                            <span class="k">val</span> <span class="py">size</span> <span class="p">=</span> <span class="n">remoteCallbackList</span><span class="p">.</span><span class="n">beginBroadcast</span><span class="p">()</span>
+                            <span class="n">repeat</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+                                <span class="k">val</span> <span class="py">item</span> <span class="p">=</span> <span class="n">remoteCallbackList</span><span class="p">.</span><span class="n">getBroadcastItem</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+                                <span class="n">item</span><span class="p">.</span><span class="n">receiverMessage</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                            <span class="p">}</span>
+                            <span class="n">remoteCallbackList</span><span class="p">.</span><span class="n">finishBroadcast</span><span class="p">()</span>
                         <span class="p">}</span>
-                        <span class="n">remoteCallbackList</span><span class="p">.</span><span class="n">finishBroadcast</span><span class="p">()</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
             <span class="p">}</span>
+
         <span class="p">}</span>
-
     <span class="p">}</span>
-<span class="p">}</span>
 
-<span class="k">private</span> <span class="k">fun</span> <span class="nf">releaseLastSocket</span><span class="p">(</span><span class="n">weakSocket</span><span class="p">:</span> <span class="n">WeakReference</span><span class="p">&lt;</span><span class="n">Socket</span><span class="p">&gt;?)</span> <span class="p">{</span>
-    <span class="n">kotlin</span><span class="p">.</span><span class="n">runCatching</span> <span class="p">{</span>
-        <span class="k">var</span> <span class="py">get</span> <span class="p">=</span> <span class="n">weakSocket</span><span class="o">?.</span><span class="k">get</span><span class="p">()</span>
-        <span class="k">if</span> <span class="p">(</span><span class="k">get</span><span class="o">?.</span><span class="n">isClosed</span> <span class="p">==</span> <span class="k">true</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">get</span><span class="o">?.</span><span class="n">close</span><span class="p">()</span>
-        <span class="p">}</span>
-        <span class="k">get</span> <span class="p">=</span> <span class="k">null</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="cm">/**
-</span><span class="cm"> * 发送消息
-</span><span class="cm"> */</span>
-<span class="k">private</span> <span class="k">fun</span> <span class="nf">sendMsg</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">String</span><span class="p">?):</span> <span class="n">Boolean</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">mSocket</span> <span class="p">==</span> <span class="k">null</span> <span class="p">||</span> <span class="n">mSocket</span><span class="o">?.</span><span class="k">get</span><span class="p">()</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="k">return</span> <span class="k">false</span>
-
-    <span class="n">mSocket</span><span class="o">?.</span><span class="k">get</span><span class="p">()</span><span class="o">?.</span><span class="n">let</span> <span class="p">{</span> <span class="n">socket</span> <span class="p">-&gt;</span>
-
-        <span class="k">if</span> <span class="p">(!</span><span class="n">socket</span><span class="p">.</span><span class="n">isClosed</span> <span class="p">&amp;&amp;</span> <span class="p">!</span><span class="n">socket</span><span class="p">.</span><span class="n">isOutputShutdown</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">thread</span> <span class="p">{</span>
-                <span class="k">val</span> <span class="py">outputStream</span> <span class="p">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">getOutputStream</span><span class="p">()</span>
-                <span class="k">val</span> <span class="py">message</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="n">message</span> <span class="p">+</span> <span class="s">&#34;\r\n&#34;</span>
-                <span class="n">kotlin</span><span class="p">.</span><span class="n">runCatching</span> <span class="p">{</span>
-                    <span class="n">outputStream</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">.</span><span class="n">toByteArray</span><span class="p">())</span>
-                    <span class="n">outputStream</span><span class="p">.</span><span class="n">flush</span><span class="p">()</span>
-                <span class="p">}</span>
+    <span class="k">private</span> <span class="k">fun</span> <span class="nf">releaseLastSocket</span><span class="p">(</span><span class="n">weakSocket</span><span class="p">:</span> <span class="n">WeakReference</span><span class="p">&lt;</span><span class="n">Socket</span><span class="p">&gt;?)</span> <span class="p">{</span>
+        <span class="n">kotlin</span><span class="p">.</span><span class="n">runCatching</span> <span class="p">{</span>
+            <span class="k">var</span> <span class="py">get</span> <span class="p">=</span> <span class="n">weakSocket</span><span class="o">?.</span><span class="k">get</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">get</span><span class="o">?.</span><span class="n">isClosed</span> <span class="p">==</span> <span class="k">true</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">get</span><span class="o">?.</span><span class="n">close</span><span class="p">()</span>
             <span class="p">}</span>
-
-            <span class="n">sendTime</span> <span class="p">=</span> <span class="n">System</span><span class="p">.</span><span class="n">currentTimeMillis</span><span class="p">()</span> <span class="c1">// 每次发送成数据，就改一下最后成功发送的时间，节省心跳间隔时间
-</span><span class="c1"></span>
-        <span class="p">}</span> <span class="k">else</span> <span class="k">return</span> <span class="k">false</span>
+            <span class="k">get</span> <span class="p">=</span> <span class="k">null</span>
+        <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="k">return</span> <span class="k">true</span>
-<span class="p">}</span>
+    <span class="cm">/**
+</span><span class="cm">     * 发送消息
+</span><span class="cm">     */</span>
+    <span class="k">private</span> <span class="k">fun</span> <span class="nf">sendMsg</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">String</span><span class="p">?):</span> <span class="n">Boolean</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">mSocket</span> <span class="p">==</span> <span class="k">null</span> <span class="p">||</span> <span class="n">mSocket</span><span class="o">?.</span><span class="k">get</span><span class="p">()</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="k">return</span> <span class="k">false</span>
+
+        <span class="n">mSocket</span><span class="o">?.</span><span class="k">get</span><span class="p">()</span><span class="o">?.</span><span class="n">let</span> <span class="p">{</span> <span class="n">socket</span> <span class="p">-&gt;</span>
+
+            <span class="k">if</span> <span class="p">(!</span><span class="n">socket</span><span class="p">.</span><span class="n">isClosed</span> <span class="p">&amp;&amp;</span> <span class="p">!</span><span class="n">socket</span><span class="p">.</span><span class="n">isOutputShutdown</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">thread</span> <span class="p">{</span>
+                    <span class="k">val</span> <span class="py">outputStream</span> <span class="p">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">getOutputStream</span><span class="p">()</span>
+                    <span class="k">val</span> <span class="py">message</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="n">message</span> <span class="p">+</span> <span class="s">&#34;\r\n&#34;</span>
+                    <span class="n">kotlin</span><span class="p">.</span><span class="n">runCatching</span> <span class="p">{</span>
+                        <span class="n">outputStream</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">.</span><span class="n">toByteArray</span><span class="p">())</span>
+                        <span class="n">outputStream</span><span class="p">.</span><span class="n">flush</span><span class="p">()</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+
+                <span class="n">sendTime</span> <span class="p">=</span> <span class="n">System</span><span class="p">.</span><span class="n">currentTimeMillis</span><span class="p">()</span> <span class="c1">// 每次发送成数据，就改一下最后成功发送的时间，节省心跳间隔时间
+</span><span class="c1"></span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">return</span> <span class="k">false</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="k">true</span>
+    <span class="p">}</span>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
-</div></li>
-</ul>
-
+</div>
 <p>主要流程的源码实现就是这些了，具体细节部分可以看下工程项目。</p>
 
 <p>源码地址： <a href="https://github.com/midFang/blogSource/tree/main/SocketDemo">https://github.com/midFang/blogSource/tree/main/SocketDemo</a></p>
