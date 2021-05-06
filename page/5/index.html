@@ -368,6 +368,11 @@
       
       
       
+        <span id="/tools-picgo-images-use/" class="leancloud_visitors" data-flag-title="使用 PicGo 搭建免费图床">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
+      
     </div>
   </header>
   
@@ -401,6 +406,11 @@
         </div>
       
       
+      
+        <span id="/data-structure-linked/" class="leancloud_visitors" data-flag-title="数据结构之单链表">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
       
     </div>
   </header>
@@ -436,6 +446,11 @@
       
       
       
+        <span id="/okhttp-add-common-params-intercept/" class="leancloud_visitors" data-flag-title="OKHttp 拦截器添加公共参数">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
+      
     </div>
   </header>
   
@@ -469,6 +484,11 @@
         </div>
       
       
+      
+        <span id="/dialog-hide-navigation-statusbar/" class="leancloud_visitors" data-flag-title="Dialog 弹出隐藏状态栏和导航栏">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
       
     </div>
   </header>
@@ -506,6 +526,11 @@
         </div>
       
       
+      
+        <span id="/bluetooth-base/" class="leancloud_visitors" data-flag-title="蓝牙基础知识">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
       
     </div>
   </header>
@@ -548,6 +573,11 @@ Audio Sink ：   （音频接收器） 接收到音频数据后，进行解码�
         </div>
       
       
+      
+        <span id="/hugo-common-command/" class="leancloud_visitors" data-flag-title="hugo常用命令.md">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
       
     </div>
   </header>
@@ -611,6 +641,11 @@ hugo server</pre></td></tr></table>
       
       
       
+        <span id="/clear-git-commit-cache/" class="leancloud_visitors" data-flag-title="清空 git 提交的以往所有历史记录">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
+      
     </div>
   </header>
   
@@ -650,6 +685,11 @@ hugo server</pre></td></tr></table>
       
       
       
+        <span id="/git-use-proxy/" class="leancloud_visitors" data-flag-title="git使用代理加速，修改代理方式">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
+      
     </div>
   </header>
   
@@ -687,6 +727,11 @@ hugo server</pre></td></tr></table>
         </div>
       
       
+      
+        <span id="/colse-sublime-text-3-auto-update/" class="leancloud_visitors" data-flag-title="关闭 Sublime Text 3 自动更新">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
       
     </div>
   </header>
@@ -888,6 +933,115 @@ hugo server</pre></td></tr></table>
 
 
 
+
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script type="text/javascript">
+    AV.initialize( null ,  null );
+  </script>
+
+  <script>
+    function showHitCount(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push($(this).attr("id").trim());
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var hits = item.get('hits');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(hits);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if (countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function (results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("hits");
+            counter.save(null, {
+              success: function (counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('hits'));
+              },
+              error: function (counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+             
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+             
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("hits", 1);
+            newcounter.save(null, {
+              success: function (newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('hits'));
+              },
+              error: function (newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function (error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function () {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        
+        addCount(Counter);
+      } else if ($('.post-link').length > 1) {
+        
+        showHitCount(Counter);
+      }
+    });
+  </script>
 
 
 
