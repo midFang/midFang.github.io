@@ -336,11 +336,11 @@
 
 <p>在很多项目中都有 Banner 广告页或者是 Tab 切换页，如果是如下布局的情况，那么肯定遇到过这个问题，那就是这个 ViewPager 并不会包裹内容填充，而是会填充满整个布局，如下：</p>
 
-<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210328125749.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20210328125749.png" alt="" /></p>
 
 <p>看一下 ViewPager 中的绘制源码</p>
 
-<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210328130946.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20210328130946.png" alt="" /></p>
 
 <p>View 的自身的宽高是和父 View 的剩余大小有关系的，那么在这个地方，由于 ViewPager 的父 View 是填充满整个屏幕的，所以 ViewPager 中的测量规格也是填充满整个屏幕的，而且也直接通过 setMeasuredDimension 设置了。所以也是填充满整个屏幕的。解决方式的话，可以通过自定义 View 的方式，测量子 View 的大小，然后再给定测量规格，代码如下：</p>
 <div class="highlight"><div class="chroma">
@@ -414,7 +414,7 @@
 </div>
 <p>那么现在就引出了另外一个问题，那么就是当界面不可见的时候，用户就不想去加载数据，用户想在当前界面可见的时候才去加载数据，假设有一个 App 是如下类似这样的，其实也就是懒加载的情况了</p>
 
-<p><img src="https://raw.githubusercontent.com/checkFang/img/master/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202021-04-01%20%E4%B8%8A%E5%8D%8812.08.06.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202021-04-01%20%E4%B8%8A%E5%8D%8812.08.06.png" alt="" /></p>
 
 <p>其实这里还有个极端一点的情况，那么就是当 ViewPager + fragment 显示的时候，fragment 1 内部有一个 Banner，这个 fragment1  是用户启动 App 的时候就处于可见，那么假如 fragment2 内部也有一个 Banner，由于 ViewPager 的预加载特性，那么 Fragment2 中的数据也会被提前加载好了，其实是可以不必要的</p>
 
@@ -533,7 +533,7 @@
 
 <p>加入了这两个方法以后，再看一下 ViewPager + Fragment 生命周期是如何变化的，假设当前的界面是这样的：</p>
 
-<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210406162753.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20210406162753.png" alt="" /></p>
 
 <blockquote>
 <p>首次启动 App， 该 Fragment1 和 Fragment2 的生命周期</p>

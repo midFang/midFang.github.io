@@ -507,11 +507,11 @@ Gradle 的构建流程"/>
 </div>
 <p>然后可以在相对应的 buildType 的路径下配置自己的逻辑，例如 release 、debug、internal 各种路径下配置的逻辑都各自不相同。其实这样的方式只写一个单独的类也是可以的，这里只是以这个场景举例，只不过这样的方式在打包的时候，只会引入一套源代码，节约一点空间，或者是配置的资源文件会更加的有优势</p>
 
-<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210412234745.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20210412234745.png" alt="" /></p>
 
 <p>例如在 buildType 中配置 applicationIdSuffix “.debug” ，会在最终输出包中后面加上后缀，如下</p>
 
-<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210413000655.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20210413000655.png" alt="" /></p>
 
 <p>buildConfigField 的配置，例如以下日志的开关，网络 IP，一些特殊的标识，都可以配置，配置的方式如下，需要注意的是，如果是 string 类型的字符串，需要再加上一个双引号，配置如下：</p>
 <div class="highlight"><div class="chroma">
@@ -1018,7 +1018,7 @@ base pluginDemo </code></pre></td></tr></table>
 <li>以创建 java lib 的方式，创建一个工程，并把多余的 test 等等一些多余的文件删除掉，保留像如下格式：</li>
 </ul>
 
-<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210413172716.png" alt="" />首先建立 groovy 目录，然后再创建一个 PluginImpl.groovy 的文件，注意这个文件不是 java 文件</p>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20210413172716.png" alt="" />首先建立 groovy 目录，然后再创建一个 PluginImpl.groovy 的文件，注意这个文件不是 java 文件</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="lnt"> 1
@@ -1127,11 +1127,11 @@ base pluginDemo </code></pre></td></tr></table>
 </div>
 <p>这样配置好之后，这时候，右侧的 gradle Toolbar 就会在 module 下多出一个 task</p>
 
-<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210413173811.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20210413173811.png" alt="" /></p>
 
 <p>点击<code>uploadArchives</code>这个 Task，就会在项目下多出一个 myplugin 目录，里面存着这个 gradle 插件</p>
 
-<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210413173916.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20210413173916.png" alt="" /></p>
 
 <h3 id="插件的使用">插件的使用</h3>
 

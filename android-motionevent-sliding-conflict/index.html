@@ -361,7 +361,7 @@
 
 <p>几种场景的的情况图如下：</p>
 
-<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20201204000730.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20201204000730.png" alt="" /></p>
 
 <ol>
 <li>场景一的情况一般是 ViewPager + Fragment 配合所组成的滑动效果，这种情况下，ViewPager 可以左右滑动，但是 Fragment 里面使用的可能是一个 ListView。本来这种场景下是会存在滑动冲突的情况的，但是 ViewPager 源码中自动的帮我们做了处理，所以不会有这个情况，如果将 ViewPager 换成是 Scrollview 那就必须手动处理滑动冲突了。否则造成的后果就是<code>内外两层只有一层能够滑动</code>这是因为两者的事件在分发的时候有歧义，所以会发生冲突，还有一个类似的场景，那就是外部的 View 是剩下滑动的，内部的 View 是左右滑动的，这种情况属于同一类型的冲突</li>

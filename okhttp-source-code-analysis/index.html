@@ -1662,7 +1662,7 @@ implementation &#39;com.squareup.okhttp3:okhttp:3.5.0&#39;
 </div>
 <p>这个拦截器就是实际发生的网络请求了，完成实际的网络流操作，利用 OKIO 将网络请求写入。和读取网络结果的响应，将结果的 response 返回，注意这里没有再调用 proceed 方法了，意味着不会再交给下一个拦截器处理了。然后就是返回给上一个拦截器也就是之前分析的 proceed 后面部分的代码逻辑了，整体的调用大致是这个样子的：</p>
 
-<p><img src="https://raw.githubusercontent.com/checkFang/img/master/20210128200737.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20210128200737.png" alt="" /></p>
 
 <p>首先是从 interceptors 最先开始出发，先走自身拦截器的 process 的前半部分，然后调用 proceed 交给下一个拦截器，当最后一个拦截器都调用完毕后，再一级一级的返回请求的响应结果。最终回到 interceptors</p>
 
