@@ -1,0 +1,2315 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Compose 动画终章进阶篇 - midFang&#39;s Blog</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="midFang" />
+  <meta name="description" content="AnimatedVisibility 对单个控件做显示和隐藏的动画效果 在上一个章节我们学习了 Transition 动画，这一节学习它更加上层的 Api，但其实内部本质上使用的也是 Transition, 先看一下 AnimatedVisibility 的源码," />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<link rel="canonical" href="https://midFang.github.io/compose-animation-final-chapter-advanced-chapter/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="Compose 动画终章进阶篇" />
+<meta property="og:description" content="AnimatedVisibility 对单个控件做显示和隐藏的动画效果 在上一个章节我们学习了 Transition 动画，这一节学习它更加上层的 Api，但其实内部本质上使用的也是 Transition, 先看一下 AnimatedVisibility 的源码," />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/compose-animation-final-chapter-advanced-chapter/" />
+<meta property="article:published_time" content="2023-07-05T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-07-05T00:00:00+00:00" />
+<meta itemprop="name" content="Compose 动画终章进阶篇">
+<meta itemprop="description" content="AnimatedVisibility 对单个控件做显示和隐藏的动画效果 在上一个章节我们学习了 Transition 动画，这一节学习它更加上层的 Api，但其实内部本质上使用的也是 Transition, 先看一下 AnimatedVisibility 的源码,">
+
+
+<meta itemprop="datePublished" content="2023-07-05T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2023-07-05T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="7290">
+
+
+
+<meta itemprop="keywords" content="Android,动画,Compose," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Compose 动画终章进阶篇"/>
+<meta name="twitter:description" content="AnimatedVisibility 对单个控件做显示和隐藏的动画效果 在上一个章节我们学习了 Transition 动画，这一节学习它更加上层的 Api，但其实内部本质上使用的也是 Transition, 先看一下 AnimatedVisibility 的源码,"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">midFang's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+        
+      </li>
+    
+
+    
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+
+  
+    
+<div class="modal-dialog">
+    
+    <div class="modal-content">
+      <div id="closeSearch" title="Close" class="close">X</div>
+      <div class="modal-header">
+        <div class="modal-title">Search</div>
+      </div>
+      <div class="modal-body">
+          <script>
+            (function() {
+              var cx = '57787f7f4d21d54fc';
+              var gcse = document.createElement('script');
+              gcse.type = 'text/javascript';
+              gcse.async = true;
+              gcse.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//cse.google.com/cse.js?cx=' + cx;
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(gcse, s);
+            })();
+          </script>
+          <gcse:search></gcse:search>
+      </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      midFang's Blog
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+      <li class="menu-item">
+        <a id="openSearch" class="menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">Compose 动画终章进阶篇</h1>
+      
+      <div class="post-meta">
+        <time datetime="2023-07-05" class="post-time">
+          2023-07-05
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/%E5%8A%A8%E7%94%BB/"> 动画 </a>
+            
+          </div>
+        
+
+        
+        
+          <span id="busuanzi_container_page_pv">
+            | 阅读 <span id="busuanzi_value_page_pv"></span>
+          </span>
+        
+
+        
+        
+          <span id="/compose-animation-final-chapter-advanced-chapter/" class="leancloud_visitors" data-flag-title="Compose 动画终章进阶篇">
+            <span class="post-meta-item-text"> | 阅读 </span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#animatedvisibility">AnimatedVisibility</a>
+<ul>
+<li><a href="#transition-入场和出场动画">Transition 入场和出场动画</a></li>
+<li><a href="#fadein">fadeIn</a></li>
+<li><a href="#slidein">slideIn</a></li>
+<li><a href="#fadeout">fadeOut</a></li>
+<li><a href="#scaleout">scaleOut</a></li>
+<li><a href="#场景一">场景一</a></li>
+<li><a href="#shrinkout">shrinkOut</a></li>
+<li><a href="#场景二">场景二</a></li>
+<li><a href="#slide">slide</a></li>
+<li><a href="#场景三">场景三</a></li>
+<li><a href="#expandin">expandIn</a></li>
+<li><a href="#场景四">场景四</a></li>
+<li><a href="#scalein-scaleout">scaleIn scaleOut</a></li>
+<li><a href="#animatedvisibility-总结">AnimatedVisibility 总结</a></li>
+</ul></li>
+<li><a href="#crossfade">CrossFade</a>
+<ul>
+<li><a href="#crossfade-尺寸不一样">CrossFade 尺寸不一样</a></li>
+</ul></li>
+<li><a href="#animatedcontent">AnimatedContent</a>
+<ul>
+<li><a href="#大小尺寸的变化">大小尺寸的变化</a></li>
+<li><a href="#入场和出场">入场和出场</a></li>
+<li><a href="#裁切画面">裁切画面</a></li>
+<li><a href="#targetcontentzindex">targetContentZIndex</a></li>
+</ul></li>
+<li><a href="#modifier-animateenterexit">Modifier.animateEnterExit</a></li>
+<li><a href="#modifier-animatecontentsize">Modifier.animateContentSize</a></li>
+<li><a href="#总结">总结</a></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      
+
+<h1 id="animatedvisibility">AnimatedVisibility</h1>
+
+<blockquote>
+<p>对单个控件做显示和隐藏的动画效果</p>
+</blockquote>
+
+<p>在上一个章节我们学习了 Transition 动画，这一节学习它更加上层的 Api，但其实内部本质上使用的也是 Transition, 先看一下 AnimatedVisibility 的源码, 先看看里面的一些参数配置, 了解了一些参数配置, 就很简单了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">ColumnScope</span><span class="p">.</span><span class="n">AnimatedVisibility</span><span class="p">(</span>
+    <span class="n">visible</span><span class="p">:</span> <span class="n">Boolean</span><span class="p">,</span>
+    <span class="n">modifier</span><span class="p">:</span> <span class="n">Modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">,</span>
+    <span class="n">enter</span><span class="p">:</span> <span class="n">EnterTransition</span> <span class="p">=</span> <span class="n">fadeIn</span><span class="p">()</span> <span class="p">+</span> <span class="n">expandVertically</span><span class="p">(),</span>
+    <span class="n">exit</span><span class="p">:</span> <span class="n">ExitTransition</span> <span class="p">=</span> <span class="n">fadeOut</span><span class="p">()</span> <span class="p">+</span> <span class="n">shrinkVertically</span><span class="p">(),</span>
+    <span class="n">label</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s">&#34;AnimatedVisibility&#34;</span><span class="p">,</span>
+    <span class="n">content</span><span class="p">:</span> <span class="n">@Composable</span> <span class="n">AnimatedVisibilityScope</span><span class="p">.()</span> <span class="p">-&gt;</span> <span class="n">Unit</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">transition</span> <span class="p">=</span> <span class="n">updateTransition</span><span class="p">(</span><span class="n">visible</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+    <span class="n">AnimatedEnterExitImpl</span><span class="p">(</span><span class="n">transition</span><span class="p">,</span> <span class="p">{</span> <span class="n">it</span> <span class="p">},</span> <span class="n">modifier</span><span class="p">,</span> <span class="n">enter</span><span class="p">,</span> <span class="n">exit</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>简单分析一下这几个方法参数, 基本上就知道怎么使用了,</p>
+
+<ul>
+<li>第一个参数是 visible 是控制是否显示</li>
+<li>第二个参数是 modifier 修饰符</li>
+<li>第三个参数是配置的入场动画,  默认参数是 fadeIn() + expandVertically(),  是一个淡入 + 垂直方向展开的一个动画</li>
+<li>第四个参数是退场动画, 默认参数是 fadeOut() + shrinkVertically() 是一个淡出 + 垂直方向收缩动画</li>
+<li>第五个参数可以当做是起的一个名称</li>
+<li>最后一个参数的类型是一个带有 <code>@Composable</code> 注解的函数类型参数, 是我们编写组件的代码</li>
+</ul>
+
+<p>在入场动画和出场动画配置中, 我们发现他的返回值是 EnterTransition 和 ExitTransition,  可以看看 fadeIn 和 fadeOut，淡入淡出的动画</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">fadeIn</span><span class="p">(</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">FiniteAnimationSpec</span><span class="p">&lt;</span><span class="n">Float</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">spring</span><span class="p">(</span><span class="n">stiffness</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMediumLow</span><span class="p">),</span>
+    <span class="n">initialAlpha</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">0f</span>
+<span class="p">):</span> <span class="n">EnterTransition</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">EnterTransitionImpl</span><span class="p">(</span><span class="n">TransitionData</span><span class="p">(</span><span class="n">fade</span> <span class="p">=</span> <span class="n">Fade</span><span class="p">(</span><span class="n">initialAlpha</span><span class="p">,</span> <span class="n">animationSpec</span><span class="p">)))</span>
+<span class="p">}</span>
+
+<span class="k">fun</span> <span class="nf">fadeOut</span><span class="p">(</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">FiniteAnimationSpec</span><span class="p">&lt;</span><span class="n">Float</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">spring</span><span class="p">(</span><span class="n">stiffness</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMediumLow</span><span class="p">),</span>
+    <span class="n">targetAlpha</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">0f</span><span class="p">,</span>
+<span class="p">):</span> <span class="n">ExitTransition</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">ExitTransitionImpl</span><span class="p">(</span><span class="n">TransitionData</span><span class="p">(</span><span class="n">fade</span> <span class="p">=</span> <span class="n">Fade</span><span class="p">(</span><span class="n">targetAlpha</span><span class="p">,</span> <span class="n">animationSpec</span><span class="p">)))</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里可以发现他都是调用 EnterTransitionImpl 构造,并传入了 TransitionData 对象, 其实对动画渐变效果设置都在这个类里面了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">internal</span> <span class="k">data</span> <span class="k">class</span> <span class="nc">TransitionData</span><span class="p">(</span>
+    <span class="k">val</span> <span class="py">fade</span><span class="p">:</span> <span class="n">Fade</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span> <span class="c1">// 淡入淡出动画
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">slide</span><span class="p">:</span> <span class="n">Slide</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span> <span class="c1">// 滑动
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">changeSize</span><span class="p">:</span> <span class="n">ChangeSize</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span> <span class="c1">// 大小的裁切 (会改变画面大小的动画都是这个参数,比如 shrinkOut)
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">scale</span><span class="p">:</span> <span class="n">Scale</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span> <span class="c1">// 缩放动画
+</span><span class="c1"></span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>所以, 我们不管配置的入场还是出场动画效果, 最终都会保存在这个类中</p>
+
+<p>还有一个问题就是我们看到配置动画的方式是用 &ldquo; + ” 加号来完成的, 那么他是如何做到的呢, 其实他使用的也是中缀函数, 上几个篇章我们已经看到它很多身影了, 源码是这样的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin">  <span class="k">operator</span> <span class="k">fun</span> <span class="nf">plus</span><span class="p">(</span><span class="n">enter</span><span class="p">:</span> <span class="n">EnterTransition</span><span class="p">):</span> <span class="n">EnterTransition</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">EnterTransitionImpl</span><span class="p">(</span>
+            <span class="n">TransitionData</span><span class="p">(</span>
+                <span class="n">fade</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="n">fade</span> <span class="o">?:</span> <span class="n">enter</span><span class="p">.</span><span class="k">data</span><span class="p">.</span><span class="n">fade</span><span class="p">,</span> 
+                <span class="n">slide</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="n">slide</span> <span class="o">?:</span> <span class="n">enter</span><span class="p">.</span><span class="k">data</span><span class="p">.</span><span class="n">slide</span><span class="p">,</span> 
+                <span class="n">changeSize</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="n">changeSize</span> <span class="o">?:</span> <span class="n">enter</span><span class="p">.</span><span class="k">data</span><span class="p">.</span><span class="n">changeSize</span><span class="p">,</span>
+                <span class="n">scale</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="n">scale</span> <span class="o">?:</span> <span class="n">enter</span><span class="p">.</span><span class="k">data</span><span class="p">.</span><span class="n">scale</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>如果以默认参数  fadeIn() + expandVertically() 调用的来看的话, 最终赋值的参数就是 fade 和 changeSize , 其实就是配置 TransitionData 的 4 个值, 但是如果相同的动画的画,比如 fade + fade 那么会被覆盖掉</p>
+
+<p>最后可以看到内部也是调用的 updateTransition 方法, 这个上节我们已经学过了, 最后一个小例子看看效果</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">TransitionPro</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">show</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">true</span><span class="p">)</span> <span class="p">}</span>
+    
+    <span class="n">Column</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+         <span class="n">AnimatedVisibility</span><span class="p">(</span> <span class="n">visible</span> <span class="p">=</span> <span class="n">show</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="n">Box</span><span class="p">(</span>
+                <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                    <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+                <span class="n">Button</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">alpha</span><span class="p">(</span><span class="m">0.3f</span><span class="p">),</span> <span class="n">onClick</span> <span class="p">=</span> <span class="p">{</span>
+            <span class="n">show</span> <span class="p">=</span> <span class="p">!</span><span class="n">show</span>
+        <span class="p">})</span> <span class="p">{</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;测试&#34;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401012108039.gif" alt="" /></p>
+
+<h2 id="transition-入场和出场动画">Transition 入场和出场动画</h2>
+
+<ul>
+<li>fadeln：淡入动画。该动画会使对象逐渐从不可见到可见，产生渐变效果</li>
+<li>fadeOut：淡出动画。该动画会使对象逐渐从可见到不可见，产生渐变效果。</li>
+<li>slideOut：滑出动画。该动画会使对象在给定的方向上滑动离开屏幕。</li>
+<li>scaleln：缩放进入动画。该动画会使对象逐渐从较小的大小缩放到正常大小。</li>
+<li>scaleOut：缩放离开动画。该动画会使对象逐渐从正常大小缩放到较小的大小。</li>
+<li>expandln：展开动画。该动画会使对象从一个较小的尺寸逐渐展开到一个较大的尺寸。</li>
+<li>shrinkOut：收缩动画。该动画会使对象从一个较大的尺寸逐渐收缩到一个较小的尺寸。</li>
+<li>expandHorizontally：水平展开动画。该动画会使对象从一个较窄的宽度逐渐展开到一个较宽的宽度。</li>
+<li>expandVertically：垂直展开动画。该动画会使对象从一个较短的高度逐渐展开到一个较高的高度。</li>
+<li>shrinkHorizontally：水平收缩动画。该动画会使对象从一个较短的宽度逐渐收缩到一个较窄的宽度。</li>
+<li>shrinkVertically：垂直收缩动画。该动画会使对象从一个较高的高度逐渐收缩到一个较短的高度。</li>
+<li>slidelnHorizontally：水平滑入动画。该动画会使对象从给定方向的屏幕外滑入，直到达到正常位置。</li>
+<li>slidelnVertically：垂直滑入动画。该动画会使对象从给定方向的屏幕外滑入，直到达到正常位置。</li>
+<li>slideOutHorizontally：水平滑出动画。该动画会使对象从正常位置滑出至给定方向的屏幕外。</li>
+<li>slideOutVertically：垂直滑出动画。该动画会使对象从正常位置滑出至给定方向的屏幕外。</li>
+</ul>
+
+<p>在 AnimatedVisibility 的入场和出场动画中, 一共可以配置这些参数, 下面我们一个一个场景分析, 介绍一些区别</p>
+
+<h2 id="fadein">fadeIn</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">fadeIn</span><span class="p">(</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">FiniteAnimationSpec</span><span class="p">&lt;</span><span class="n">Float</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">spring</span><span class="p">(</span><span class="n">stiffness</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMediumLow</span><span class="p">),</span>
+    <span class="n">initialAlpha</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">0f</span>  <span class="c1">// 初始的透明度
+</span><span class="c1"></span><span class="p">):</span> <span class="n">EnterTransition</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">EnterTransitionImpl</span><span class="p">(</span><span class="n">TransitionData</span><span class="p">(</span><span class="n">fade</span> <span class="p">=</span> <span class="n">Fade</span><span class="p">(</span><span class="n">initialAlpha</span><span class="p">,</span> <span class="n">animationSpec</span><span class="p">)))</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="slidein">slideIn</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Stable</span>
+<span class="k">fun</span> <span class="nf">slideIn</span><span class="p">(</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">FiniteAnimationSpec</span><span class="p">&lt;</span><span class="n">IntOffset</span><span class="p">&gt;</span> <span class="p">=</span>
+        <span class="n">spring</span><span class="p">(</span>
+            <span class="n">stiffness</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMediumLow</span><span class="p">,</span>
+            <span class="n">visibilityThreshold</span> <span class="p">=</span> <span class="n">IntOffset</span><span class="p">.</span><span class="n">VisibilityThreshold</span>
+        <span class="p">),</span>
+    <span class="n">initialOffset</span><span class="p">:</span> <span class="p">(</span><span class="n">fullSize</span><span class="p">:</span> <span class="n">IntSize</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">IntOffset</span><span class="p">,</span> <span class="c1">// 初始的偏移值, 其中 fullSize 是整个控件的大小
+</span><span class="c1"></span><span class="p">):</span> <span class="n">EnterTransition</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">EnterTransitionImpl</span><span class="p">(</span><span class="n">TransitionData</span><span class="p">(</span><span class="n">slide</span> <span class="p">=</span> <span class="n">Slide</span><span class="p">(</span><span class="n">initialOffset</span><span class="p">,</span> <span class="n">animationSpec</span><span class="p">)))</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="fadeout">fadeOut</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="c1">// 基本和 fadeIn 一致, 唯一 targetAlpha 不同, targetAlpha 表示的是目标状态的时候透明度
+</span><span class="c1"></span><span class="k">fun</span> <span class="nf">fadeOut</span><span class="p">(</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">FiniteAnimationSpec</span><span class="p">&lt;</span><span class="n">Float</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">spring</span><span class="p">(</span><span class="n">stiffness</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMediumLow</span><span class="p">),</span>
+    <span class="n">targetAlpha</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">0f</span><span class="p">,</span>
+<span class="p">):</span> <span class="n">ExitTransition</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">ExitTransitionImpl</span><span class="p">(</span><span class="n">TransitionData</span><span class="p">(</span><span class="n">fade</span> <span class="p">=</span> <span class="n">Fade</span><span class="p">(</span><span class="n">targetAlpha</span><span class="p">,</span> <span class="n">animationSpec</span><span class="p">)))</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="scaleout">scaleOut</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">scaleOut</span><span class="p">(</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">FiniteAnimationSpec</span><span class="p">&lt;</span><span class="n">Float</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">spring</span><span class="p">(</span><span class="n">stiffness</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMediumLow</span><span class="p">),</span>
+    <span class="n">targetScale</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">0f</span><span class="p">,</span> <span class="c1">// 目标状态的缩放值
+</span><span class="c1"></span>    <span class="n">transformOrigin</span><span class="p">:</span> <span class="n">TransformOrigin</span> <span class="p">=</span> <span class="n">TransformOrigin</span><span class="p">.</span><span class="n">Center</span> <span class="c1">// 从中心点缩放
+</span><span class="c1"></span><span class="p">):</span> <span class="n">ExitTransition</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">ExitTransitionImpl</span><span class="p">(</span>
+        <span class="n">TransitionData</span><span class="p">(</span><span class="n">scale</span> <span class="p">=</span> <span class="n">Scale</span><span class="p">(</span><span class="n">targetScale</span><span class="p">,</span> <span class="n">transformOrigin</span><span class="p">,</span> <span class="n">animationSpec</span><span class="p">))</span>
+    <span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="场景一">场景一</h2>
+
+<p>其中一些参数说明都写在注释上了, 至于 animationSpec 的配置, 不再说明, 在之前的文章都有描述, 最终我们使用一些上面的几个动画, 看看效果</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">TransitionPro</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">show</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">true</span><span class="p">)</span> <span class="p">}</span>
+    
+    <span class="n">Column</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+                 <span class="n">AnimatedVisibility</span><span class="p">(</span>
+            <span class="n">visible</span> <span class="p">=</span> <span class="n">show</span><span class="p">,</span> <span class="n">enter</span> <span class="p">=</span> <span class="n">fadeIn</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">2000</span><span class="p">))</span> <span class="p">+</span> <span class="n">slideIn</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">2000</span><span class="p">))</span> <span class="p">{</span><span class="n">fullsize</span><span class="p">-&gt;</span>
+                <span class="n">IntOffset</span><span class="p">(</span><span class="n">fullsize</span><span class="p">.</span><span class="n">width</span> <span class="p">/</span> <span class="m">2</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+            <span class="p">},</span> <span class="n">exit</span> <span class="p">=</span> <span class="n">fadeOut</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="m">4000</span><span class="p">))</span> <span class="p">+</span> <span class="n">scaleOut</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">2000</span><span class="p">),</span><span class="n">targetScale</span> <span class="p">=</span> <span class="m">0.5f</span><span class="p">)</span>
+        <span class="p">)</span>  <span class="p">{</span> 
+            <span class="n">Box</span><span class="p">(</span>
+                <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                    <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+                <span class="n">Button</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">alpha</span><span class="p">(</span><span class="m">0.3f</span><span class="p">),</span> <span class="n">onClick</span> <span class="p">=</span> <span class="p">{</span>
+            <span class="n">show</span> <span class="p">=</span> <span class="p">!</span><span class="n">show</span>
+        <span class="p">})</span> <span class="p">{</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;测试&#34;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这段代码的意思是</p>
+
+<ul>
+<li>入场动画是一个淡入的动画, 并且配置的是 tween spec 设置的时间为 5000 毫秒, 加一个从 x 轴方向平移,  fullsize.width / 2, 也就是控件的一半, 以初始状态控件的一半从右往左边滑入目标状态的过程</li>
+<li>出场动画是淡出的动画, 并且配置的是 tween spec 设置的时间为 4000 毫秒, 加一个缩放动画, 配置的目标缩放状态是 0.5f, 也就是控件的一半</li>
+</ul>
+
+<p>最终运行代码后, 效果如下</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401012131151.gif" alt="" /></p>
+
+<h2 id="shrinkout">shrinkOut</h2>
+
+<p>shrinkOut 是一个收缩动画，会改变控件大小，它对应 TransitionData 中的属性是 changeSize , 首先看看 shrinkOut 的源码, 他的一些参数配置, 后面再看怎么使用的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">shrinkOut</span><span class="p">(</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">FiniteAnimationSpec</span><span class="p">&lt;</span><span class="n">IntSize</span><span class="p">&gt;</span> <span class="p">=</span>
+        <span class="n">spring</span><span class="p">(</span>
+            <span class="n">stiffness</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMediumLow</span><span class="p">,</span>
+            <span class="n">visibilityThreshold</span> <span class="p">=</span> <span class="n">IntSize</span><span class="p">.</span><span class="n">VisibilityThreshold</span>
+        <span class="p">),</span>
+    <span class="n">shrinkTowards</span><span class="p">:</span> <span class="n">Alignment</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">BottomEnd</span><span class="p">,</span>
+    <span class="n">clip</span><span class="p">:</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+    <span class="n">targetSize</span><span class="p">:</span> <span class="p">(</span><span class="n">fullSize</span><span class="p">:</span> <span class="n">IntSize</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">IntSize</span> <span class="p">=</span> <span class="p">{</span> <span class="n">IntSize</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span> <span class="p">},</span>
+<span class="p">):</span> <span class="n">ExitTransition</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">ExitTransitionImpl</span><span class="p">(</span>
+        <span class="n">TransitionData</span><span class="p">(</span>
+            <span class="n">changeSize</span> <span class="p">=</span> <span class="n">ChangeSize</span><span class="p">(</span><span class="n">shrinkTowards</span><span class="p">,</span> <span class="n">targetSize</span><span class="p">,</span> <span class="n">animationSpec</span><span class="p">,</span> <span class="n">clip</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>shrinkOut 中有不同的地方是 shrinkTowards 和 clip</p>
+
+<ul>
+<li>clip : 是否剪裁动画边界外的内容，默认为 true 会对控件进行裁切，false 不会对控件进行裁切, 只做动画的位移效果</li>
+<li>shrinkTowards :表示收缩的目标方向，也就是当前位置往哪个方向收缩， 和 expand 相反的作用  默认 Alignment.BottomEnd, 也就是右下角</li>
+</ul>
+
+<h2 id="场景二">场景二</h2>
+
+<p>这里我们先设置 clip 都为 true 的情况, 也就是默认情况下的效果</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">ShrinkExample</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Column</span><span class="p">(</span>
+        <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">(),</span>
+        <span class="n">verticalArrangement</span> <span class="p">=</span> <span class="n">Arrangement</span><span class="p">.</span><span class="n">Center</span><span class="p">,</span>
+        <span class="n">horizontalAlignment</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">CenterHorizontally</span>
+    <span class="p">)</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="py">isVisibleCenter</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">true</span><span class="p">)</span> <span class="p">}</span>
+        <span class="k">var</span> <span class="py">isVisibleBottomEnd</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">true</span><span class="p">)</span> <span class="p">}</span>
+        <span class="k">var</span> <span class="py">isVisibleTopStart</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">true</span><span class="p">)</span> <span class="p">}</span>
+
+        <span class="n">AnimatedVisibility</span><span class="p">(</span>
+            <span class="n">visible</span> <span class="p">=</span> <span class="n">isVisibleCenter</span><span class="p">,</span>
+            <span class="n">enter</span> <span class="p">=</span> <span class="n">expandIn</span><span class="p">(),</span>
+            <span class="n">exit</span> <span class="p">=</span> <span class="n">shrinkOut</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="m">3000</span><span class="p">),</span><span class="n">shrinkTowards</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">Center</span><span class="p">,</span> <span class="n">clip</span> <span class="p">=</span> <span class="k">true</span> <span class="p">)</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="n">Card</span><span class="p">(</span>
+                <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                    <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">150.</span><span class="n">dp</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="m">16.</span><span class="n">dp</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">clickable</span> <span class="p">{</span> <span class="n">isVisibleCenter</span> <span class="p">=</span> <span class="p">!</span><span class="n">isVisibleCenter</span> <span class="p">}</span>
+            <span class="p">)</span> <span class="p">{</span>
+                <span class="n">Text</span><span class="p">(</span>
+                    <span class="n">text</span> <span class="p">=</span> <span class="s">&#34;Center with clip&#34;</span><span class="p">,</span>
+                    <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">align</span><span class="p">(</span><span class="n">Alignment</span><span class="p">.</span><span class="n">Start</span><span class="p">),</span>
+                    <span class="n">textAlign</span> <span class="p">=</span> <span class="n">TextAlign</span><span class="p">.</span><span class="n">Center</span>
+                <span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="n">Spacer</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">height</span><span class="p">(</span><span class="m">16.</span><span class="n">dp</span><span class="p">))</span>
+
+        <span class="n">AnimatedVisibility</span><span class="p">(</span>
+            <span class="n">visible</span> <span class="p">=</span> <span class="n">isVisibleBottomEnd</span><span class="p">,</span>
+            <span class="n">enter</span> <span class="p">=</span> <span class="n">expandIn</span><span class="p">(),</span>
+            <span class="n">exit</span> <span class="p">=</span> <span class="n">shrinkOut</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="m">3000</span><span class="p">),</span> <span class="n">shrinkTowards</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">BottomEnd</span><span class="p">,</span><span class="n">clip</span> <span class="p">=</span> <span class="k">true</span><span class="p">)</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="n">Card</span><span class="p">(</span>
+                <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                    <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">150.</span><span class="n">dp</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="m">16.</span><span class="n">dp</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">clickable</span> <span class="p">{</span> <span class="n">isVisibleBottomEnd</span> <span class="p">=</span> <span class="p">!</span><span class="n">isVisibleBottomEnd</span> <span class="p">}</span>
+            <span class="p">)</span> <span class="p">{</span>
+                <span class="n">Text</span><span class="p">(</span>
+                    <span class="n">text</span> <span class="p">=</span> <span class="s">&#34;Bottom End(右下角)&#34;</span><span class="p">,</span>
+                    <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">align</span><span class="p">(</span><span class="n">Alignment</span><span class="p">.</span><span class="n">Start</span><span class="p">),</span>
+                    <span class="n">textAlign</span> <span class="p">=</span> <span class="n">TextAlign</span><span class="p">.</span><span class="n">Center</span>
+                <span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="n">Spacer</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">height</span><span class="p">(</span><span class="m">16.</span><span class="n">dp</span><span class="p">))</span>
+
+        <span class="n">AnimatedVisibility</span><span class="p">(</span>
+             <span class="n">visible</span> <span class="p">=</span> <span class="n">isVisibleTopStart</span><span class="p">,</span>
+            <span class="n">enter</span> <span class="p">=</span> <span class="n">expandIn</span><span class="p">(),</span>
+            <span class="n">exit</span> <span class="p">=</span> <span class="n">shrinkOut</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="m">3000</span><span class="p">),</span> <span class="n">shrinkTowards</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">TopStart</span><span class="p">,</span><span class="n">clip</span> <span class="p">=</span> <span class="k">true</span><span class="p">)</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="n">Card</span><span class="p">(</span>
+                <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                    <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">150.</span><span class="n">dp</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="m">16.</span><span class="n">dp</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">clickable</span> <span class="p">{</span> <span class="n">isVisibleTopStart</span> <span class="p">=</span> <span class="p">!</span><span class="n">isVisibleTopStart</span> <span class="p">}</span>
+            <span class="p">)</span> <span class="p">{</span>
+                <span class="n">Text</span><span class="p">(</span>
+                    <span class="n">text</span> <span class="p">=</span> <span class="s">&#34;Top Start（左上角）&#34;</span><span class="p">,</span>
+                    <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">align</span><span class="p">(</span><span class="n">Alignment</span><span class="p">.</span><span class="n">Start</span><span class="p">),</span>
+                    <span class="n">textAlign</span> <span class="p">=</span> <span class="n">TextAlign</span><span class="p">.</span><span class="n">Center</span>
+                <span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>代码运行后如下</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401022203016.gif" alt="" /></p>
+
+<p>这是分别设置为中心点, 右下角和左上角的收缩的目标方向, 并且是裁切画面的效果,  接下来, 这3种动画其余的代码都不变化, 只是修改一个参数 clip 为 false 再看看效果</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401022207163.gif" alt="" /></p>
+
+<p>可以看得出, 唯一的区别是, 收缩的时候, 对画面没有进行裁切, 在动画结束后,才隐藏</p>
+
+<h2 id="slide">slide</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">slideIn</span><span class="p">(</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">FiniteAnimationSpec</span><span class="p">&lt;</span><span class="n">IntOffset</span><span class="p">&gt;</span> <span class="p">=</span>
+        <span class="n">spring</span><span class="p">(</span>
+            <span class="n">stiffness</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMediumLow</span><span class="p">,</span>
+            <span class="n">visibilityThreshold</span> <span class="p">=</span> <span class="n">IntOffset</span><span class="p">.</span><span class="n">VisibilityThreshold</span>
+        <span class="p">),</span>
+    <span class="n">initialOffset</span><span class="p">:</span> <span class="p">(</span><span class="n">fullSize</span><span class="p">:</span> <span class="n">IntSize</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">IntOffset</span><span class="p">,</span> <span class="c1">// 初始状态
+</span><span class="c1"></span><span class="p">):</span> <span class="n">EnterTransition</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">EnterTransitionImpl</span><span class="p">(</span><span class="n">TransitionData</span><span class="p">(</span><span class="n">slide</span> <span class="p">=</span> <span class="n">Slide</span><span class="p">(</span><span class="n">initialOffset</span><span class="p">,</span> <span class="n">animationSpec</span><span class="p">)))</span>
+<span class="p">}</span>
+
+<span class="k">fun</span> <span class="nf">slideOut</span><span class="p">(</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">FiniteAnimationSpec</span><span class="p">&lt;</span><span class="n">IntOffset</span><span class="p">&gt;</span> <span class="p">=</span>
+        <span class="n">spring</span><span class="p">(</span>
+            <span class="n">stiffness</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMediumLow</span><span class="p">,</span>
+            <span class="n">visibilityThreshold</span> <span class="p">=</span> <span class="n">IntOffset</span><span class="p">.</span><span class="n">VisibilityThreshold</span>
+        <span class="p">),</span>
+    <span class="n">targetOffset</span><span class="p">:</span> <span class="p">(</span><span class="n">fullSize</span><span class="p">:</span> <span class="n">IntSize</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">IntOffset</span><span class="p">,</span> <span class="c1">// 目标终点状态
+</span><span class="c1"></span><span class="p">):</span> <span class="n">ExitTransition</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">ExitTransitionImpl</span><span class="p">(</span><span class="n">TransitionData</span><span class="p">(</span><span class="n">slide</span> <span class="p">=</span> <span class="n">Slide</span><span class="p">(</span><span class="n">targetOffset</span><span class="p">,</span> <span class="n">animationSpec</span><span class="p">)))</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>slideIn 是一个滑入动画， slideOut 是一个滑出动画，设置的参数都不多，一个是动画的 animationSpec，还是一个就是滑入或者滑出的起点或者终点位置，接下来看看这个例子</p>
+
+<h2 id="场景三">场景三</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin">        <span class="n">AnimatedVisibility</span><span class="p">(</span><span class="n">visible</span> <span class="p">=</span> <span class="n">show</span><span class="p">,</span> <span class="n">enter</span> <span class="p">=</span> <span class="n">slideIn</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">1500</span><span class="p">))</span> <span class="p">{</span>
+            <span class="cm">/** 从初始状态 --it.width, -it.height 到 fullSize 的宽度 **/</span>
+            <span class="n">IntOffset</span><span class="p">(-</span><span class="n">it</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="p">-</span><span class="n">it</span><span class="p">.</span><span class="n">height</span><span class="p">)</span>
+        <span class="p">},</span> <span class="n">exit</span> <span class="p">=</span> <span class="n">fadeOut</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">1500</span><span class="p">))</span> <span class="p">+</span> <span class="n">shrinkOut</span><span class="p">(</span>
+            <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">1500</span><span class="p">),</span> <span class="n">shrinkTowards</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">CenterStart</span><span class="p">,</span> <span class="n">clip</span> <span class="p">=</span> <span class="k">false</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/** 从初始状态切换到目标状态， 也就是 fullzise 切换到 0 的大小 **/</span>
+            <span class="n">IntSize</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+        <span class="p">})</span> <span class="p">{</span>
+            <span class="n">Box</span><span class="p">(</span>
+                <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                    <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">clip</span><span class="p">(</span><span class="n">RoundedCornerShape</span><span class="p">(</span><span class="m">40.</span><span class="n">dp</span><span class="p">))</span>
+                    <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Green</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>上面的代码就是动画出现的时候是以 -it.width, -it.height 的起始坐标点，也就是左上角屏幕外的位置，然后以 tween 1500 毫秒的时间滑入到 fullSize 的位置，控件隐藏的动画是淡出的效果加收缩动画，并且设置了 clip 为不裁切画面的方式，运行后效果如下</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401042111956.gif" alt="" /></p>
+
+<h2 id="expandin">expandIn</h2>
+
+<p>expandIn 是一个展开动画，和 shrinkOut 刚好相反，其中他也是个会改变控件大小的动画，参数基本也和 shrinkOut 一样，唯一不同的是 expandFrom ,表示的是从哪里展开，也就是起始开始位置</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">expandIn</span><span class="p">(</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">FiniteAnimationSpec</span><span class="p">&lt;</span><span class="n">IntSize</span><span class="p">&gt;</span> <span class="p">=</span>
+        <span class="n">spring</span><span class="p">(</span>
+            <span class="n">stiffness</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMediumLow</span><span class="p">,</span>
+            <span class="n">visibilityThreshold</span> <span class="p">=</span> <span class="n">IntSize</span><span class="p">.</span><span class="n">VisibilityThreshold</span>
+        <span class="p">),</span>
+    <span class="n">expandFrom</span><span class="p">:</span> <span class="n">Alignment</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">BottomEnd</span><span class="p">,</span>
+    <span class="n">clip</span><span class="p">:</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+    <span class="n">initialSize</span><span class="p">:</span> <span class="p">(</span><span class="n">fullSize</span><span class="p">:</span> <span class="n">IntSize</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">IntSize</span> <span class="p">=</span> <span class="p">{</span> <span class="n">IntSize</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span> <span class="p">},</span>
+<span class="p">):</span> <span class="n">EnterTransition</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">EnterTransitionImpl</span><span class="p">(</span>
+        <span class="n">TransitionData</span><span class="p">(</span>
+            <span class="n">changeSize</span> <span class="p">=</span> <span class="n">ChangeSize</span><span class="p">(</span><span class="n">expandFrom</span><span class="p">,</span> <span class="n">initialSize</span><span class="p">,</span> <span class="n">animationSpec</span><span class="p">,</span> <span class="n">clip</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="场景四">场景四</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">AnimatedVisibility</span><span class="p">(</span><span class="n">visible</span> <span class="p">=</span> <span class="n">show</span><span class="p">,</span> <span class="n">exit</span> <span class="p">=</span> <span class="n">shrinkOut</span><span class="p">(</span>
+    <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">5000</span><span class="p">),</span>
+    <span class="n">shrinkTowards</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">BottomEnd</span><span class="p">,</span> <span class="n">clip</span> <span class="p">=</span> <span class="k">true</span>
+<span class="p">),</span> <span class="n">enter</span> <span class="p">=</span> <span class="n">expandIn</span><span class="p">(</span>
+    <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">5000</span><span class="p">),</span> <span class="n">expandFrom</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">TopStart</span><span class="p">,</span> <span class="n">clip</span> <span class="p">=</span> <span class="k">true</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="n">IntSize</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+<span class="p">})</span> <span class="p">{</span>
+   <span class="n">Box</span><span class="p">(</span>
+    <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+        <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">156.</span><span class="n">dp</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">clip</span><span class="p">(</span><span class="n">RoundedCornerShape</span><span class="p">(</span><span class="m">40.</span><span class="n">dp</span><span class="p">))</span>
+        <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">)</span>
+	<span class="p">)</span>	
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这段代码配置的是入场是一个展开动画，且是从 TopStart 左上角扩大的，退场动画是从 BottomEnd 右下角收缩的一个动画，运行后效果如下</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401042132709.gif" alt="" /></p>
+
+<h2 id="scalein-scaleout">scaleIn scaleOut</h2>
+
+<p>scaleIn 和 scaleOut 是一个缩放动画，scaleIn 是代表入场，scaleOut 代表的是退场，需要注意的是，他和 expandIn 和 shrinkOut 不一样，这两个会改变控件的大小，会对控件进行裁切，而 scaleIn scaleOut 不会,scaleIn scaleOut 只是对控件本身进行大小缩放</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">scaleIn</span><span class="p">(</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">FiniteAnimationSpec</span><span class="p">&lt;</span><span class="n">Float</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">spring</span><span class="p">(</span><span class="n">stiffness</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMediumLow</span><span class="p">),</span>
+    <span class="n">initialScale</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">0f</span><span class="p">,</span> <span class="c1">// 初始状态缩放大小
+</span><span class="c1"></span>    <span class="n">transformOrigin</span><span class="p">:</span> <span class="n">TransformOrigin</span> <span class="p">=</span> <span class="n">TransformOrigin</span><span class="p">.</span><span class="n">Center</span><span class="p">,</span> <span class="c1">// 缩放的相对位置 (Center 代表的是中心点)
+</span><span class="c1"></span><span class="p">):</span> <span class="n">EnterTransition</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">EnterTransitionImpl</span><span class="p">(</span>
+        <span class="n">TransitionData</span><span class="p">(</span><span class="n">scale</span> <span class="p">=</span> <span class="n">Scale</span><span class="p">(</span><span class="n">initialScale</span><span class="p">,</span> <span class="n">transformOrigin</span><span class="p">,</span> <span class="n">animationSpec</span><span class="p">))</span>
+    <span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">fun</span> <span class="nf">scaleOut</span><span class="p">(</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">FiniteAnimationSpec</span><span class="p">&lt;</span><span class="n">Float</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">spring</span><span class="p">(</span><span class="n">stiffness</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMediumLow</span><span class="p">),</span>
+    <span class="n">targetScale</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">0f</span><span class="p">,</span> <span class="c1">// 目标状态缩放大小
+</span><span class="c1"></span>    <span class="n">transformOrigin</span><span class="p">:</span> <span class="n">TransformOrigin</span> <span class="p">=</span> <span class="n">TransformOrigin</span><span class="p">.</span><span class="n">Center</span> <span class="c1">// 缩放的相对位置 (Center 代表的是中心点)
+</span><span class="c1"></span><span class="p">):</span> <span class="n">ExitTransition</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">ExitTransitionImpl</span><span class="p">(</span>
+        <span class="n">TransitionData</span><span class="p">(</span><span class="n">scale</span> <span class="p">=</span> <span class="n">Scale</span><span class="p">(</span><span class="n">targetScale</span><span class="p">,</span> <span class="n">transformOrigin</span><span class="p">,</span> <span class="n">animationSpec</span><span class="p">))</span>
+    <span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里的参数区别就是 initialScale 和 targetScale 配置的区别了，然后他们都是一个 scale 动画，配置在 TransitionData 对象中的 scale  属性中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">AnimatedVisibility</span><span class="p">(</span>
+    <span class="n">visible</span> <span class="p">=</span> <span class="n">show</span><span class="p">,</span> <span class="n">exit</span> <span class="p">=</span> <span class="n">scaleOut</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">1000</span><span class="p">)),</span> <span class="n">enter</span> <span class="p">=</span> <span class="n">scaleIn</span><span class="p">(</span>
+        <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="m">4000</span><span class="p">),</span> <span class="n">initialScale</span> <span class="p">=</span> <span class="m">0.3f</span><span class="p">,</span> <span class="n">transformOrigin</span> <span class="p">=</span> <span class="n">TransformOrigin</span><span class="p">(</span><span class="m">0f</span><span class="p">,</span> <span class="m">0f</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">)</span> <span class="p">{</span>
+        <span class="n">Box</span><span class="p">(</span>
+        <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+            <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">156.</span><span class="n">dp</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">clip</span><span class="p">(</span><span class="n">RoundedCornerShape</span><span class="p">(</span><span class="m">40.</span><span class="n">dp</span><span class="p">))</span>
+            <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这段代码配置的入场动画是初始缩放大小为 0.3f，缩放的相对位置为 0f,0f 也就是左上角的位置，退场动画为 tween 为1000 毫秒，而相对位置默认参数的话，就是中间位置，目前状态缩放比例是 0f, 也就是完全消失，最后运行代码看看效果</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401042150086.gif" alt="" /></p>
+
+<h2 id="animatedvisibility-总结">AnimatedVisibility 总结</h2>
+
+<p>好了，AnimatedVisibility 的使用和配置基本上都讲完了，本质上它是对单个控件的显示和隐藏做渐变效果，也就是入场和出场的动画，而入场和出场的动画都是对 TransitionData 中的 fade slide changeSize scale 这4个属性做配置，他们的对应关系是这样的</p>
+
+<ul>
+<li>fade 淡入淡出效果
+
+<ul>
+<li>fadeln 淡入动画，该动画会使对象逐渐从不可见到可见，产生渐变效果</li>
+<li>fadeOut 淡出动画，该动画会使对象逐渐从可见到不可见，产生渐变效果</li>
+</ul></li>
+<li>slide 滑入滑出效果
+
+<ul>
+<li>slideOut 滑出动画</li>
+<li>slideIn 滑入动画</li>
+<li>slidelnHorizontally 水平滑入动画</li>
+<li>slidelnVertically 垂直滑入动画</li>
+<li>slideOutHorizontally 水平滑出动画</li>
+<li>slideOutVertically 垂直滑出动画</li>
+</ul></li>
+<li>changeSize 收缩动画效果 （会对控件大小进行裁切）
+
+<ul>
+<li>expandIn 展开动画</li>
+<li>shrinkOut 收缩动画</li>
+<li>expandHorizontally 水平展开动画</li>
+<li>expandVertically 垂直展开动画</li>
+<li>shrinkHorizontally 水平收缩动画</li>
+<li>shrinkVertically 垂直收缩动画</li>
+</ul></li>
+<li>scale 缩放动画效果
+
+<ul>
+<li>scaleln：缩放进入动画</li>
+<li>scaleOut 缩放退场动画</li>
+</ul></li>
+</ul>
+
+<p>好了，基本上 AnimatedVisibility 能使用的动画就是这些，在本文中对于 xxxVertically 和 xxxHorizontally 并没有讲，是因为他们本质上就是再上一层的封装，比如 slideIn 动画，而对于 slidelnVertically 只是针对一个方向上的，而 slideIn 可以完全自由配置你想要的坐标偏移，而你学会了 slideIn 的动画，对于单个方向的自然也就会了</p>
+
+<h1 id="crossfade">CrossFade</h1>
+
+<p>对于 AnimatedVisibility 动画而言，他是作用于单个控件的显示和隐藏做渐变动画的，而 CrossFade 就是两个控件，一个消失另一个显示出来，动画效果是淡入淡出，并对尺寸进行处理  (瞬间改变)。Crossfade 只支持这一种动画效果，是对于 AnimatedContent  的简化版本，AnimatedContent  稍后进行介绍</p>
+
+<p>照例看看  Crossfade 源码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> &lt;T&gt; <span class="nf">Crossfade</span><span class="p">(</span>
+    <span class="n">targetState</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="c1">// 初始状态
+</span><span class="c1"></span>    <span class="n">modifier</span><span class="p">:</span> <span class="n">Modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">,</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">FiniteAnimationSpec</span><span class="p">&lt;</span><span class="n">Float</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(),</span> 
+    <span class="n">label</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s">&#34;Crossfade&#34;</span><span class="p">,</span>
+    <span class="n">content</span><span class="p">:</span> <span class="n">@Composable</span> <span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Unit</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">transition</span> <span class="p">=</span> <span class="n">updateTransition</span><span class="p">(</span><span class="n">targetState</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+    <span class="n">transition</span><span class="p">.</span><span class="n">Crossfade</span><span class="p">(</span><span class="n">modifier</span><span class="p">,</span> <span class="n">animationSpec</span><span class="p">,</span> <span class="n">content</span> <span class="p">=</span> <span class="n">content</span><span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>Crossfade 的源码也比较简单，animationSpec 的配置只能是 FiniteAnimationSpec 的子类，也就是 TweenSpec, SpringSpec, KeyframesSpec, RepeatableSpec, SnapSpec 这些，如果你再往 Crossfade 里面看的话，可以看到他对 alpha 做渐变效果而已，也就是看到的淡入淡出</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">test22</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Column</span><span class="p">(</span><span class="n">horizontalAlignment</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">CenterHorizontally</span><span class="p">,</span> <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxWidth</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="py">showPicture</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">false</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">Crossfade</span><span class="p">(</span><span class="n">targetState</span> <span class="p">=</span> <span class="n">showPicture</span><span class="p">,</span> <span class="n">label</span> <span class="p">=</span> <span class="s">&#34;&#34;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">Image</span><span class="p">(</span>
+                    <span class="n">contentScale</span> <span class="p">=</span> <span class="n">ContentScale</span><span class="p">.</span><span class="n">Crop</span><span class="p">,</span>
+                    <span class="n">painter</span> <span class="p">=</span> <span class="n">painterResource</span><span class="p">(</span><span class="n">id</span> <span class="p">=</span> <span class="n">R</span><span class="p">.</span><span class="n">mipmap</span><span class="p">.</span><span class="n">aaa</span><span class="p">),</span>
+                    <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">width</span><span class="p">(</span><span class="m">300.</span><span class="n">dp</span><span class="p">),</span>
+                    <span class="n">contentDescription</span> <span class="p">=</span> <span class="k">null</span>
+                <span class="p">)</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="n">Box</span><span class="p">(</span>
+                    <span class="n">Modifier</span>
+                        <span class="p">.</span><span class="n">height</span><span class="p">(</span><span class="m">300.</span><span class="n">dp</span> <span class="p">*</span> <span class="m">9</span> <span class="p">/</span> <span class="m">16</span><span class="p">)</span>
+                        <span class="p">.</span><span class="n">width</span><span class="p">(</span><span class="m">300.</span><span class="n">dp</span><span class="p">)</span>
+                        <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="n">Spacer</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">height</span><span class="p">(</span><span class="m">10.</span><span class="n">dp</span><span class="p">))</span>
+        <span class="n">Button</span><span class="p">(</span><span class="n">onClick</span> <span class="p">=</span> <span class="p">{</span> <span class="n">showPicture</span> <span class="p">=</span> <span class="p">!</span><span class="n">showPicture</span> <span class="p">})</span> <span class="p">{</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;切换&#34;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>代码也很简单，使用 showPicture 控制图片的显示和隐藏，运行效果如下</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401062108417.gif" alt="" /></p>
+
+<h2 id="crossfade-尺寸不一样">CrossFade 尺寸不一样</h2>
+
+<p>如果切换的两个组件，尺寸不一致，就会出现如下情况</p>
+
+<p>如果转场前是大尺寸，转场后是小尺寸，会等转场快结束的时候，变成小尺寸
+如果转场前是小尺寸，转场后是大尺寸，会在转场刚开始的时候，变成大尺寸</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">test222</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Column</span><span class="p">(</span><span class="n">horizontalAlignment</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">CenterHorizontally</span><span class="p">,</span> <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxWidth</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="py">showPicture</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">false</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">Crossfade</span><span class="p">(</span><span class="n">targetState</span> <span class="p">=</span> <span class="n">showPicture</span><span class="p">,</span> <span class="n">label</span> <span class="p">=</span> <span class="s">&#34;&#34;</span><span class="p">,</span> <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="m">2000</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">Image</span><span class="p">(</span>
+                    <span class="n">contentScale</span> <span class="p">=</span> <span class="n">ContentScale</span><span class="p">.</span><span class="n">Crop</span><span class="p">,</span>
+                    <span class="n">painter</span> <span class="p">=</span> <span class="n">painterResource</span><span class="p">(</span><span class="n">id</span> <span class="p">=</span> <span class="n">R</span><span class="p">.</span><span class="n">mipmap</span><span class="p">.</span><span class="n">aaa</span><span class="p">),</span>
+                    <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">width</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">),</span>
+                    <span class="n">contentDescription</span> <span class="p">=</span> <span class="k">null</span>
+                <span class="p">)</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="n">Box</span><span class="p">(</span>
+                    <span class="n">Modifier</span>
+                        <span class="p">.</span><span class="n">height</span><span class="p">(</span><span class="m">300.</span><span class="n">dp</span> <span class="p">*</span> <span class="m">9</span> <span class="p">/</span> <span class="m">16</span><span class="p">)</span>
+                        <span class="p">.</span><span class="n">width</span><span class="p">(</span><span class="m">300.</span><span class="n">dp</span><span class="p">)</span>
+                        <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="n">Spacer</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">height</span><span class="p">(</span><span class="m">10.</span><span class="n">dp</span><span class="p">))</span>
+        <span class="n">Button</span><span class="p">(</span><span class="n">onClick</span> <span class="p">=</span> <span class="p">{</span> <span class="n">showPicture</span> <span class="p">=</span> <span class="p">!</span><span class="n">showPicture</span> <span class="p">})</span> <span class="p">{</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;切换&#34;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401062111038.gif" alt="" /></p>
+
+<h1 id="animatedcontent">AnimatedContent</h1>
+
+<p>上面说到 crossFade 是作用于两个控件的，而 AnimatedContent 用来控制多个组件的入场和出场，同时还能对入场和出场效果做定制，AnimatedContent 出入场动画效果的尺寸是渐变的，这是区别与 crossFade 的一点，AnimatedContent 的源码如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> &lt;S&gt; <span class="nf">AnimatedContent</span><span class="p">(</span>
+    <span class="n">targetState</span><span class="p">:</span> <span class="n">S</span><span class="p">,</span>
+    <span class="n">modifier</span><span class="p">:</span> <span class="n">Modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">,</span>
+    <span class="n">transitionSpec</span><span class="p">:</span> <span class="n">AnimatedContentTransitionScope</span><span class="p">&lt;</span><span class="n">S</span><span class="p">&gt;.()</span> <span class="p">-&gt;</span> <span class="n">ContentTransform</span> <span class="p">=</span> <span class="p">{</span>
+        <span class="p">(</span><span class="n">fadeIn</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="m">220</span><span class="p">,</span> <span class="n">delayMillis</span> <span class="p">=</span> <span class="m">90</span><span class="p">))</span> <span class="p">+</span>
+            <span class="n">scaleIn</span><span class="p">(</span><span class="n">initialScale</span> <span class="p">=</span> <span class="m">0.92f</span><span class="p">,</span> <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="m">220</span><span class="p">,</span> <span class="n">delayMillis</span> <span class="p">=</span> <span class="m">90</span><span class="p">)))</span>
+            <span class="p">.</span><span class="n">togetherWith</span><span class="p">(</span><span class="n">fadeOut</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="m">90</span><span class="p">)))</span>
+    <span class="p">},</span>
+    <span class="n">contentAlignment</span><span class="p">:</span> <span class="n">Alignment</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">TopStart</span><span class="p">,</span>
+    <span class="n">label</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s">&#34;AnimatedContent&#34;</span><span class="p">,</span>
+    <span class="n">contentKey</span><span class="p">:</span> <span class="p">(</span><span class="n">targetState</span><span class="p">:</span> <span class="n">S</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Any</span><span class="p">?</span> <span class="p">=</span> <span class="p">{</span> <span class="n">it</span> <span class="p">},</span>
+    <span class="n">content</span><span class="p">:</span> <span class="n">@Composable</span><span class="p">()</span> <span class="n">AnimatedContentScope</span><span class="p">.(</span><span class="n">targetState</span><span class="p">:</span> <span class="n">S</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Unit</span>
+<span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里重要的参数就是 transitionSpec 了，transitionSpec 是一个高阶函数，他可以配置入场和出场的动画，同时提供了一个 AnimatedContentTransitionScope 的上下文环境，返回的对象是一个 ContentTransform 对象，其中 AnimatedContentTransitionScope 内部有一个 using 方法，可以配置大小的改变，而 ContentTransform 是用来配置入场和出场的动画的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">class</span> <span class="nc">ContentTransform</span><span class="p">(</span>
+    <span class="k">val</span> <span class="py">targetContentEnter</span><span class="p">:</span> <span class="n">EnterTransition</span><span class="p">,</span> <span class="c1">// 入场动画
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">initialContentExit</span><span class="p">:</span> <span class="n">ExitTransition</span><span class="p">,</span> <span class="c1">// 退场动画
+</span><span class="c1"></span>    <span class="n">targetContentZIndex</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">0f</span><span class="p">,</span> <span class="c1">// 配置轴， 控件上下的顺序
+</span><span class="c1"></span>    <span class="n">sizeTransform</span><span class="p">:</span> <span class="n">SizeTransform</span><span class="p">?</span> <span class="p">=</span> <span class="n">SizeTransform</span><span class="p">()</span> <span class="c1">//  控制大小
+</span><span class="c1"></span><span class="p">)</span>
+
+<span class="c1">// togetherWith 中缀函数，用来配置退场动画
+</span><span class="c1"></span><span class="k">infix</span> <span class="k">fun</span> <span class="nf">EnterTransition</span><span class="p">.</span><span class="n">togetherWith</span><span class="p">(</span><span class="n">exit</span><span class="p">:</span> <span class="n">ExitTransition</span><span class="p">)</span> <span class="p">=</span> <span class="n">ContentTransform</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">exit</span><span class="p">)</span> </code></pre></td></tr></table>
+</div>
+</div>
+<p>而上面的默认参数的意思就是入场：淡入 + 缩放动画，退场使用  togetherWith 配置了一个淡出的退场动画，togetherWith 是一个中缀函数，它其实就是配置了  initialContentExit 属性，基本参数配置就是这些，回到之前的例子看看效果</p>
+
+<h2 id="大小尺寸的变化">大小尺寸的变化</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">test232</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Column</span><span class="p">(</span><span class="n">horizontalAlignment</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">CenterHorizontally</span><span class="p">,</span> <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxWidth</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="py">showPicture</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">false</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">AnimatedContent</span><span class="p">(</span><span class="n">showPicture</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">Image</span><span class="p">(</span>
+                    <span class="n">contentScale</span> <span class="p">=</span> <span class="n">ContentScale</span><span class="p">.</span><span class="n">Crop</span><span class="p">,</span>
+                    <span class="n">painter</span> <span class="p">=</span> <span class="n">painterResource</span><span class="p">(</span><span class="n">id</span> <span class="p">=</span> <span class="n">R</span><span class="p">.</span><span class="n">mipmap</span><span class="p">.</span><span class="n">aaa</span><span class="p">),</span>
+                    <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">width</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">),</span>
+                    <span class="n">contentDescription</span> <span class="p">=</span> <span class="k">null</span>
+                <span class="p">)</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="n">Box</span><span class="p">(</span>
+                    <span class="n">Modifier</span><span class="p">.</span><span class="n">height</span><span class="p">(</span><span class="m">300.</span><span class="n">dp</span> <span class="p">*</span> <span class="m">9</span> <span class="p">/</span> <span class="m">16</span><span class="p">).</span><span class="n">width</span><span class="p">(</span><span class="m">300.</span><span class="n">dp</span><span class="p">).</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="n">Spacer</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">height</span><span class="p">(</span><span class="m">10.</span><span class="n">dp</span><span class="p">))</span>
+        <span class="n">Button</span><span class="p">(</span><span class="n">onClick</span> <span class="p">=</span> <span class="p">{</span> <span class="n">showPicture</span> <span class="p">=</span> <span class="p">!</span><span class="n">showPicture</span> <span class="p">})</span> <span class="p">{</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;切换&#34;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401062217945.gif" alt="" /></p>
+
+<h2 id="入场和出场">入场和出场</h2>
+
+<p>配置入场和退场的动画效果，模拟 activity 的转场动画</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">AnimContent</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">show</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">true</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="n">Column</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">AnimatedContent</span><span class="p">(</span>
+            <span class="n">targetState</span> <span class="p">=</span> <span class="n">show</span><span class="p">,</span> <span class="n">transitionSpec</span> <span class="p">=</span> <span class="p">{</span>
+                <span class="cm">/** 配置一个 activity 的转场动画 **/</span>
+                <span class="n">slideIn</span><span class="p">(</span>
+                    <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">1000</span><span class="p">)</span>
+                <span class="p">)</span> <span class="p">{</span>
+                    <span class="cm">/** 配置初始状态值 **/</span>
+                    <span class="n">IntOffset</span><span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+                <span class="p">}</span> <span class="n">togetherWith</span> <span class="n">slideOut</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="m">1000</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="cm">/** 目标状态，移除屏幕外 **/</span>
+                    <span class="n">IntOffset</span><span class="p">(-</span><span class="n">it</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+                <span class="p">}</span>
+
+            <span class="p">},</span> <span class="n">label</span> <span class="p">=</span> <span class="s">&#34;&#34;</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="n">square</span><span class="p">()</span> <span class="k">else</span> <span class="n">round</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="n">Button</span><span class="p">(</span><span class="n">onClick</span> <span class="p">=</span> <span class="p">{</span> <span class="n">show</span> <span class="p">=</span> <span class="p">!</span><span class="n">show</span> <span class="p">})</span> <span class="p">{</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;测试&#34;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401062227277.gif" alt="" /></p>
+
+<h2 id="裁切画面">裁切画面</h2>
+
+<p>配置状态的切换</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">TimeTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">count</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableIntStateOf</span><span class="p">(</span><span class="m">0</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="n">Column</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">Button</span><span class="p">(</span><span class="n">onClick</span> <span class="p">=</span> <span class="p">{</span> <span class="n">count</span><span class="p">--</span> <span class="p">})</span> <span class="p">{</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;-&#34;</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="n">Spacer</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="m">20.</span><span class="n">dp</span><span class="p">))</span>
+
+        <span class="n">AnimatedContent</span><span class="p">(</span><span class="n">targetState</span> <span class="p">=</span> <span class="n">count</span><span class="p">,</span> <span class="n">label</span> <span class="p">=</span> <span class="s">&#34;&#34;</span><span class="p">,</span> <span class="n">transitionSpec</span> <span class="p">=</span> <span class="p">{</span>
+            <span class="cm">/** 使用 SizeTransform clip false 可以看到画面不裁切的效果，更加明显 **/</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">targetState</span> <span class="p">&gt;</span> <span class="n">initialState</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 等价于 targetState isTransitioningTo initialState
+</span><span class="c1"></span>                <span class="c1">// 递增
+</span><span class="c1"></span>                <span class="p">(</span><span class="n">slideInVertically</span> <span class="p">{</span> <span class="n">it</span> <span class="p">}</span> <span class="p">+</span> <span class="n">fadeIn</span><span class="p">()</span> <span class="n">togetherWith</span> <span class="n">slideOutVertically</span> <span class="p">{</span> <span class="p">-</span><span class="n">it</span> <span class="p">}</span> <span class="p">+</span> <span class="n">fadeOut</span><span class="p">())</span> <span class="n">using</span> <span class="n">SizeTransform</span><span class="p">(</span><span class="n">clip</span> <span class="p">=</span> <span class="k">true</span><span class="p">)</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="c1">// 递减
+</span><span class="c1"></span>                <span class="p">(</span><span class="n">slideInVertically</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="m">3000</span><span class="p">))</span> <span class="p">{</span> <span class="p">-</span><span class="n">it</span> <span class="p">}</span> <span class="p">+</span> <span class="n">fadeIn</span><span class="p">()</span> <span class="n">togetherWith</span> <span class="n">slideOutVertically</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="m">3000</span><span class="p">))</span> <span class="p">{</span> <span class="n">it</span> <span class="p">}</span> <span class="p">+</span> <span class="n">fadeOut</span><span class="p">())</span> <span class="n">using</span> <span class="n">SizeTransform</span><span class="p">(</span>
+                    <span class="n">clip</span> <span class="p">=</span> <span class="k">true</span>
+                <span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">})</span> <span class="p">{</span>
+            <span class="n">Box</span><span class="p">(</span>
+                <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                    <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Green</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="m">5.</span><span class="n">dp</span><span class="p">)</span>
+            <span class="p">)</span> <span class="p">{</span>
+                <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;count $it&#34;</span><span class="p">,</span> <span class="n">fontSize</span> <span class="p">=</span> <span class="m">28.</span><span class="n">sp</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="n">Spacer</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="m">20.</span><span class="n">dp</span><span class="p">))</span>
+        <span class="n">Button</span><span class="p">(</span><span class="n">onClick</span> <span class="p">=</span> <span class="p">{</span> <span class="n">count</span><span class="p">++</span> <span class="p">})</span> <span class="p">{</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;+&#34;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这段代码配置了一个 count 递增和递减的一个动画</p>
+
+<ul>
+<li>count 递增的时候
+
+<ul>
+<li>入场：初始状态以 fullHeight 的位置开始垂直方向滑入，且是一个淡入的效果</li>
+<li>出场：以初始状态垂直方向滑入到目标状态为 -fullHeight 的位置，且是一个淡出的效果</li>
+</ul></li>
+<li>count 递减的时候：
+
+<ul>
+<li>入场：初始状态以 - fullHeight 的位置开始垂直方向滑入，且是一个淡入的效果</li>
+<li>出场：以初始状态垂直方向滑入到目标状态为 fullHeight 的位置，且是一个淡出的效果</li>
+</ul></li>
+</ul>
+
+<p>同时在递增和递减的过程中，都用 using 配置了 SizeTransform ，他可以理解为在这个入场和出场过程中，额外需要配置尺寸变化的，那么就使用它，这里我们配置了 clip 为 true，会对画面进行裁切，其实也就是默认情况下的效果，运行后看看效果</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401071556728.gif" alt="" /></p>
+
+<p>接下来我们再修改为 clip 为 false，也就是对画面不进行裁切，看看效果</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401071600067.gif" alt="" /></p>
+
+<p>设置为 clip 为 false，不裁切画面，可以发现可以看到动画位移的效果</p>
+
+<h2 id="targetcontentzindex">targetContentZIndex</h2>
+
+<blockquote>
+<p>主要是用于控制组件的层级关系，默认值是 0f，数值较大的控件会覆盖较小的控件，如果数值相同，目标状态控件在最上面</p>
+</blockquote>
+
+<p>它的场景，一般是用于想让动画在切换过程中，想让某一个控件无论是入场或者是退场动画中，控件一直在最上层显示</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">show</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">true</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="cm">/** 控制内容显示 **/</span>
+    <span class="n">Column</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+        <span class="c1">// 修改 targetContentZIndex 的情况
+</span><span class="c1"></span>        <span class="n">AnimatedContent</span><span class="p">(</span>
+            <span class="n">targetState</span> <span class="p">=</span> <span class="n">show</span><span class="p">,</span> <span class="n">transitionSpec</span> <span class="p">=</span> <span class="p">{</span>
+
+                <span class="cm">/** 目标状态是 true 的时候，这里动画的目标状态其实就是 square() 显示 **/</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">targetState</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="p">(</span><span class="n">fadeIn</span><span class="p">(</span><span class="n">tween</span><span class="p">(</span><span class="m">3000</span><span class="p">))</span> <span class="n">togetherWith</span> <span class="n">fadeOut</span><span class="p">(</span><span class="n">tween</span><span class="p">(</span><span class="m">6000</span><span class="p">))).</span><span class="n">apply</span> <span class="p">{</span>
+                        <span class="cm">/** 配置出场的动画 **/</span>
+                        <span class="cm">/** 绘制顺序，小的数值后绘制，大的先绘制，那么大的就会被盖在小的上面 **/</span>
+                        <span class="cm">/** 这样配置，就是 square 显示的时候，square 后绘制，square 一只在最底层，所以红色的会一直盖在上面 **/</span>
+                        <span class="n">targetContentZIndex</span> <span class="p">=</span> <span class="p">-</span><span class="m">1f</span>
+                    <span class="p">}</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="n">fadeIn</span><span class="p">(</span><span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">3000</span><span class="p">))</span> <span class="n">togetherWith</span> <span class="n">fadeOut</span><span class="p">(</span><span class="n">tween</span><span class="p">(</span><span class="m">3000</span><span class="p">))</span>
+
+            <span class="p">},</span> <span class="n">label</span> <span class="p">=</span> <span class="s">&#34;&#34;</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="n">square</span><span class="p">()</span> <span class="k">else</span> <span class="n">round</span><span class="p">()</span>
+        <span class="p">}</span>
+		<span class="n">Spacer</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">height</span><span class="p">(</span><span class="m">20.</span><span class="n">dp</span><span class="p">))</span>
+         <span class="c1">// 默认情况下
+</span><span class="c1"></span>        <span class="n">AnimatedContent</span><span class="p">(</span>
+            <span class="n">targetState</span> <span class="p">=</span> <span class="n">show</span><span class="p">,</span> <span class="n">transitionSpec</span> <span class="p">=</span> <span class="p">{</span>
+                <span class="cm">/** 目标状态是 true 的时候，这里动画的目标状态其实就是 square() 显示 **/</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">targetState</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="p">(</span><span class="n">fadeIn</span><span class="p">(</span><span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">3000</span><span class="p">))</span> <span class="n">togetherWith</span> <span class="n">fadeOut</span><span class="p">(</span><span class="n">tween</span><span class="p">(</span><span class="m">3000</span><span class="p">)))</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">(</span><span class="n">fadeIn</span><span class="p">(</span><span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">3000</span><span class="p">))</span> <span class="n">togetherWith</span> <span class="n">fadeOut</span><span class="p">(</span><span class="n">tween</span><span class="p">(</span><span class="m">3000</span><span class="p">)))</span> <span class="n">using</span> <span class="n">SizeTransform</span><span class="p">()</span>
+            <span class="p">},</span> <span class="n">label</span> <span class="p">=</span> <span class="s">&#34;&#34;</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="n">square</span><span class="p">()</span> <span class="k">else</span> <span class="n">round</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="n">Button</span><span class="p">(</span><span class="n">onClick</span> <span class="p">=</span> <span class="p">{</span> <span class="n">show</span> <span class="p">=</span> <span class="p">!</span><span class="n">show</span> <span class="p">})</span> <span class="p">{</span>
+              <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;测试$show&#34;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这段代码是使用 show 控制正方形和圆角矩形的切换效果的， true 状态的时候显示的是正方形，false 的时候显示圆角矩形, 所以正常情况下</p>
+
+<ul>
+<li>true 到 false 的状态转变是，正方形慢慢消失，圆角矩形慢慢显示，且圆角矩形慢慢的盖在正方形上面</li>
+<li>false 到 true 的状态转变是，圆角矩形慢慢消失，正方形慢慢显示，且正方形慢慢的盖在圆角矩形上面</li>
+</ul>
+
+<p>而如果我想让正方形出现的时候，圆角矩形一直盖在正方形的上面，直到动画结束才消失，那么就可以修改正方形的 targetContentZIndex 比圆角矩形的小，这种状态的转变也就是 false 到 true 的转变</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401071700212.gif" alt="" /></p>
+
+<h1 id="modifier-animateenterexit">Modifier.animateEnterExit</h1>
+
+<blockquote>
+<p>为子项单独设置进入和退出的动画, animateEnterExit 外层必须是 AnimatedVisibility</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">anim1</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">visible</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span>
+        <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">false</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="n">AnimatedVisibility</span><span class="p">(</span>
+       <span class="c1">//        visible = visible, enter = fadeIn(tween(durationMillis = 2000)), exit = fadeOut(tween(durationMillis = 2000))
+</span><span class="c1"></span>        <span class="n">visible</span> <span class="p">=</span> <span class="n">visible</span><span class="p">,</span> <span class="n">enter</span> <span class="p">=</span> <span class="n">EnterTransition</span><span class="p">.</span><span class="n">None</span><span class="p">,</span> <span class="n">exit</span> <span class="p">=</span> <span class="n">ExitTransition</span><span class="p">.</span><span class="n">None</span>
+    <span class="p">)</span> <span class="p">{</span>
+        <span class="n">Box</span><span class="p">(</span>
+            <span class="n">Modifier</span>
+                <span class="p">.</span><span class="n">fillMaxSize</span><span class="p">()</span>
+                <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Gray</span><span class="p">)</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="n">Box</span><span class="p">(</span>
+                <span class="n">Modifier</span>
+                    <span class="p">.</span><span class="n">align</span><span class="p">(</span><span class="n">Alignment</span><span class="p">.</span><span class="n">Center</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">animateEnterExit</span><span class="p">(</span>
+                        <span class="n">enter</span> <span class="p">=</span> <span class="n">slideInVertically</span><span class="p">(</span><span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">2000</span><span class="p">)),</span> <span class="n">exit</span> <span class="p">=</span> <span class="n">slideOutVertically</span><span class="p">(</span><span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">2000</span><span class="p">))</span>
+                    <span class="p">)</span>
+                    <span class="p">.</span><span class="n">sizeIn</span><span class="p">(</span><span class="n">minWidth</span> <span class="p">=</span> <span class="m">64.</span><span class="n">dp</span><span class="p">,</span> <span class="n">minHeight</span> <span class="p">=</span> <span class="m">64.</span><span class="n">dp</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Green</span><span class="p">)</span>
+            <span class="p">)</span> 
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">key1</span> <span class="p">=</span> <span class="n">Unit</span><span class="p">,</span> <span class="n">block</span> <span class="p">=</span> <span class="p">{</span>
+        <span class="n">delay</span><span class="p">(</span><span class="m">2500</span><span class="p">)</span>
+        <span class="n">visible</span> <span class="p">=</span> <span class="k">true</span>
+    <span class="p">})</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这个代码在控件显示的时候，同时子组件 box 设置了入场动画垂直滑入, 效果是这样的</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401071759928.gif" alt="" /></p>
+
+<p>如果不想要 AnimatedVisibility 的默认动画，就可以设置 NONE，这样就是单独使用子组件动画了</p>
+
+<h1 id="modifier-animatecontentsize">Modifier.animateContentSize</h1>
+
+<blockquote>
+<p>使用 animateContentSize，可让 Compose 组件大小发生变化的时候，具备动画的效果</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">anim2</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">maxLines</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableIntStateOf</span><span class="p">(</span><span class="m">2</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="n">Column</span> <span class="p">{</span>
+        <span class="n">Box</span><span class="p">(</span>
+            <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="m">20.</span><span class="n">dp</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">fillMaxWidth</span><span class="p">()</span>
+                <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Gray</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">animateContentSize</span><span class="p">(</span><span class="n">animationSpec</span> <span class="p">=</span> <span class="n">spring</span><span class="p">(</span><span class="n">dampingRatio</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">DampingRatioHighBouncy</span><span class="p">))</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="n">Text</span><span class="p">(</span>
+                <span class="n">text</span> <span class="p">=</span> <span class="s">&#34;111...&#34;</span><span class="p">,</span>
+                <span class="n">maxLines</span> <span class="p">=</span> <span class="n">maxLines</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">Button</span><span class="p">(</span><span class="n">onClick</span> <span class="p">=</span> <span class="p">{</span> <span class="n">maxLines</span> <span class="p">=</span> <span class="m">5</span> <span class="p">})</span> <span class="p">{</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;展开&#34;</span><span class="p">)</span> 
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401071746619.gif" alt="" /></p>
+
+<h1 id="总结">总结</h1>
+
+<p>AnimatedVisibility 是对单个控件做显示和隐藏的动画效果, CrossFade 是两个控件，而 AnimatedContent 是多个控件，其中 AnimatedContent 功能更加强大，可以对入场和出场动画做单独的配置。而它们其实也都是 Transition 动画，至此，关于 compose 所有关于动画的设置都基本讲完了</p>
+
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2023-07-05
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/android/">Android</a>
+          <a href="https://midFang.github.io/tags/%E5%8A%A8%E7%94%BB/">动画</a>
+          <a href="https://midFang.github.io/tags/compose/">Compose</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/compose-transition/">
+            <span class="next-text nav-default">Compose转场动画之 Transition</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://stackoverflow.com/users/14331888/midfang" rel="me noopener" class="iconfont"
+      title="stack-overflow"  target="_blank"
+      >
+      <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M809.714286 932.571429l-638.857143 0 0-274.285714-91.428571 0 0 365.714286 821.714286 0 0-365.714286-91.428571 0 0 274.285714zm-538.285714-299.428571l18.857143-89.714286 447.428571 94.285714-18.857143 89.142857zm58.857143-213.714286l38.285714-83.428571 414.285714 193.714286-38.285714 82.857143zm114.857143-203.428571l58.285714-70.285714 350.857143 293.142857-58.285714 70.285714zm226.857143-216l272.571429 366.285714-73.142857 54.857143-272.571429-366.285714zm-410.285714 840.571429l0-90.857143 457.142857 0 0 90.857143-457.142857 0z"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://www.douban.com/people/194654920/" rel="me noopener" class="iconfont"
+      title="douban"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M926.917973 37.80608C959.65184 37.80608 986.19392 64.34816 986.19392 97.082027L986.19392 926.917973C986.19392 959.65184 959.65184 986.19392 926.917973 986.19392L97.082027 986.19392C64.34816 986.19392 37.80608 959.65184 37.80608 926.917973L37.80608 97.082027C37.80608 64.34816 64.34816 37.80608 97.082027 37.80608zM176.653653 176.19968 176.653653 252.678827 825.658027 252.678827 825.658027 176.19968zM217.719467 316.146347 217.719467 628.08064 273.524053 628.08064 341.292373 770.39616 157.259093 770.39616 157.259093 845.417813 842.949973 845.417813 842.949973 770.39616 654.226773 770.39616 722.899627 628.08064 783.67744 628.08064 783.67744 316.146347zM684.885333 392.891733 684.885333 553.987413 312.576 553.987413 312.576 392.891733zM570.770773 770.39616 426.653013 770.39616 359.621973 628.08064 639.443627 628.08064z"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://midFang.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2020 -
+    2024
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        midFang
+        
+      </span></span>
+
+  
+  
+    <span id="busuanzi_container">
+      访客数/访问量：<span id="busuanzi_value_site_uv"></span>/<span id="busuanzi_value_site_pv"></span>
+    </span>
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script type="text/javascript">
+    AV.initialize( null ,  null );
+  </script>
+
+  <script>
+    function showHitCount(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push($(this).attr("id").trim());
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var hits = item.get('hits');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(hits);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if (countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function (results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("hits");
+            counter.save(null, {
+              success: function (counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('hits'));
+              },
+              error: function (counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+             
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+             
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("hits", 1);
+            newcounter.save(null, {
+              success: function (newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('hits'));
+              },
+              error: function (newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function (error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function () {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        
+        addCount(Counter);
+      } else if ($('.post-link').length > 1) {
+        
+        showHitCount(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+  <script>
+    $("#openSearch, #openSearchMobile").click(function(){
+      $(".modal-dialog").addClass("visible");
+    });
+
+    $("#closeSearch").click(function(){
+      $(".modal-dialog").removeClass("visible");
+    });
+
+    $(document).click(function(event) {
+    
+      if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
+        $("body").find(".modal-dialog").removeClass("visible");
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>

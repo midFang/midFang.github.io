@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Compose 动画基础篇之各种 Spec - midFang&#39;s Blog</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="midFang" />
+  <meta name="description" content="从这一节开始，我们开始讲解 compose 最基础的动画 Api 使用，最基础也是最重要的部分，掌握这些基础的配置，会对后面的高阶动画的使用配置更加的得心应手 状态转" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<link rel="canonical" href="https://midFang.github.io/compose-animation-basics/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="Compose 动画基础篇之各种 Spec" />
+<meta property="og:description" content="从这一节开始，我们开始讲解 compose 最基础的动画 Api 使用，最基础也是最重要的部分，掌握这些基础的配置，会对后面的高阶动画的使用配置更加的得心应手 状态转" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/compose-animation-basics/" />
+<meta property="article:published_time" content="2023-05-20T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-05-20T00:00:00+00:00" />
+<meta itemprop="name" content="Compose 动画基础篇之各种 Spec">
+<meta itemprop="description" content="从这一节开始，我们开始讲解 compose 最基础的动画 Api 使用，最基础也是最重要的部分，掌握这些基础的配置，会对后面的高阶动画的使用配置更加的得心应手 状态转">
+
+
+<meta itemprop="datePublished" content="2023-05-20T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2023-05-20T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="5636">
+
+
+
+<meta itemprop="keywords" content="Android,动画,Compose," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Compose 动画基础篇之各种 Spec"/>
+<meta name="twitter:description" content="从这一节开始，我们开始讲解 compose 最基础的动画 Api 使用，最基础也是最重要的部分，掌握这些基础的配置，会对后面的高阶动画的使用配置更加的得心应手 状态转"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">midFang's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+        
+      </li>
+    
+
+    
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+
+  
+    
+<div class="modal-dialog">
+    
+    <div class="modal-content">
+      <div id="closeSearch" title="Close" class="close">X</div>
+      <div class="modal-header">
+        <div class="modal-title">Search</div>
+      </div>
+      <div class="modal-body">
+          <script>
+            (function() {
+              var cx = '57787f7f4d21d54fc';
+              var gcse = document.createElement('script');
+              gcse.type = 'text/javascript';
+              gcse.async = true;
+              gcse.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//cse.google.com/cse.js?cx=' + cx;
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(gcse, s);
+            })();
+          </script>
+          <gcse:search></gcse:search>
+      </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      midFang's Blog
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+      <li class="menu-item">
+        <a id="openSearch" class="menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">Compose 动画基础篇之各种 Spec</h1>
+      
+      <div class="post-meta">
+        <time datetime="2023-05-20" class="post-time">
+          2023-05-20
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/%E5%8A%A8%E7%94%BB/"> 动画 </a>
+            
+          </div>
+        
+
+        
+        
+          <span id="busuanzi_container_page_pv">
+            | 阅读 <span id="busuanzi_value_page_pv"></span>
+          </span>
+        
+
+        
+        
+          <span id="/compose-animation-basics/" class="leancloud_visitors" data-flag-title="Compose 动画基础篇之各种 Spec">
+            <span class="post-meta-item-text"> | 阅读 </span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#状态转移型动画">状态转移型动画</a></li>
+<li><a href="#流程定制型动画">流程定制型动画</a></li>
+<li><a href="#animateto">animateTo ()</a></li>
+</ul></li>
+<li><a href="#animationspec">animationSpec</a>
+<ul>
+<li><a href="#tweenspec">TweenSpec</a></li>
+<li><a href="#snapspec">SnapSpec</a></li>
+<li><a href="#keyframespec">keyFrameSpec</a></li>
+<li><a href="#springspec">springSpec</a></li>
+<li><a href="#repeatablespec">RepeatableSpec</a></li>
+<li><a href="#infiniterepeatable">infiniteRepeatable</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      
+
+<p>从这一节开始，我们开始讲解 compose 最基础的动画 Api 使用，最基础也是最重要的部分，掌握这些基础的配置，会对后面的高阶动画的使用配置更加的得心应手</p>
+
+<h2 id="状态转移型动画">状态转移型动画</h2>
+
+<blockquote>
+<p>从一个状态切换到另外一个状态</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">AsStateAnim</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">big</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">false</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="cm">/** 特点是有起始值和目标值，从一个初始状态切换到目标状态 **/</span>
+    <span class="k">val</span> <span class="py">size</span> <span class="k">by</span> <span class="n">animateDpAsState</span><span class="p">(</span><span class="n">targetValue</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="n">big</span><span class="p">)</span> <span class="m">60.</span><span class="n">dp</span> <span class="k">else</span> <span class="m">100.</span><span class="n">dp</span><span class="p">,</span> <span class="n">label</span> <span class="p">=</span> <span class="s">&#34;&#34;</span><span class="p">)</span>
+
+    <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+        <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">clickable</span> <span class="p">{</span>
+            <span class="n">big</span> <span class="p">=</span> <span class="p">!</span><span class="n">big</span>
+        <span class="p">})</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>代码比较简单，它是通过按钮的点击改变 big 的 state 对象的值，这个值的改变也导致 animateDpAsState 中的 targetValue 发生改变，而返回值 size 又作用在了 Box 的控件上，在目标状态值发生改变的时候 <code>animateDpAsState</code> 内部有一个协程会以一种动画曲线的方式不断的改变  size 的值，然后再触发 <code>ReCompose</code> 刷新界面，这样就能看到动画效果了，代码运行后，如下所示</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312182202080.gif" alt="" /></p>
+
+<p>可以发现，控件的大小是一种以渐变的方式进行变大和变小的，而不是瞬间改变的，这种从大的状态变到小的状态，可以认为它就是一种状态转移型动画，状态转移型动画类似的 Api 还有很多，比如像如下这样的, 用法都是一模一样的，只是传递的数值不一样而已，在你的项目中，根据情况用那个 Api 你自然就知道了，这里就不举例了</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312192056557.png" alt="" /></p>
+
+<p>状态转移型动画只是针对于从一个状态切换到另外一个状态这种场景的，它比较简单，但是如果这个时候你需要对中间状态有更多的需求，就无法做到了，就需要使用 <strong>流程定制型动画</strong></p>
+
+<h2 id="流程定制型动画">流程定制型动画</h2>
+
+<blockquote>
+<p>可以定制动画中间过程</p>
+</blockquote>
+
+<p>针对于流程定制型动画，需要使用到的 <code>Api</code> 是 <code>Animatable</code> ， 介绍这个函数之前，可以再看下  <code>animateXXXAsState</code> 针对于状态切换的场景，其实他就是一个  <code>Animatable</code> ，只不过是针对其进行封装了，对一些更强大功能进行收敛了，只提供对目标值修改后开启动画，可以看下 <code>animateDpAsState</code>  源码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">animateDpAsState</span><span class="p">(</span>
+    <span class="n">targetValue</span><span class="p">:</span> <span class="n">Dp</span><span class="p">,</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">AnimationSpec</span><span class="p">&lt;</span><span class="n">Dp</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">dpDefaultSpring</span><span class="p">,</span>
+    <span class="n">label</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s">&#34;DpAnimation&#34;</span><span class="p">,</span>
+    <span class="n">finishedListener</span><span class="p">:</span> <span class="p">((</span><span class="n">Dp</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Unit</span><span class="p">)?</span> <span class="p">=</span> <span class="k">null</span>
+<span class="p">):</span> <span class="n">State</span><span class="p">&lt;</span><span class="n">Dp</span><span class="p">&gt;</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">animateValueAsState</span><span class="p">(</span>
+        <span class="n">targetValue</span><span class="p">,</span>
+        <span class="n">Dp</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">,</span>
+        <span class="n">animationSpec</span><span class="p">,</span>
+        <span class="n">label</span> <span class="p">=</span> <span class="n">label</span><span class="p">,</span>
+        <span class="n">finishedListener</span> <span class="p">=</span> <span class="n">finishedListener</span>
+    <span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// animateValueAsState 实现
+</span><span class="c1"></span><span class="n">@Composable</span>
+<span class="k">fun</span> &lt;T, V : AnimationVector&gt; <span class="nf">animateValueAsState</span><span class="p">(</span>
+    <span class="n">targetValue</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
+    <span class="n">typeConverter</span><span class="p">:</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">&gt;,</span>
+    <span class="n">animationSpec</span><span class="p">:</span> <span class="n">AnimationSpec</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">spring</span><span class="p">()</span> <span class="p">},</span>
+    <span class="n">visibilityThreshold</span><span class="p">:</span> <span class="n">T</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span>
+    <span class="n">label</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s">&#34;ValueAnimation&#34;</span><span class="p">,</span>
+    <span class="n">finishedListener</span><span class="p">:</span> <span class="p">((</span><span class="n">T</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Unit</span><span class="p">)?</span> <span class="p">=</span> <span class="k">null</span>
+<span class="p">):</span> <span class="n">State</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">{</span>
+
+    <span class="k">val</span> <span class="py">toolingOverride</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">&lt;</span><span class="n">State</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;?&gt;(</span><span class="k">null</span><span class="p">)</span> <span class="p">}</span>
+    <span class="c1">// 内部也是使用的是 Animatable 
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">animatable</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">Animatable</span><span class="p">(</span><span class="n">targetValue</span><span class="p">,</span> <span class="n">typeConverter</span><span class="p">,</span> <span class="n">visibilityThreshold</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="p">}</span>
+    <span class="k">val</span> <span class="py">listener</span> <span class="k">by</span> <span class="n">rememberUpdatedState</span><span class="p">(</span><span class="n">finishedListener</span><span class="p">)</span>
+ 
+    <span class="k">return</span> <span class="n">toolingOverride</span><span class="p">.</span><span class="n">value</span> <span class="o">?:</span> <span class="n">animatable</span><span class="p">.</span><span class="n">asState</span><span class="p">()</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>接下来，我们直接使用 Animatable 来使用状态切换的例子，稍后，给他赋予更多的功能</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">AsStateBaseAnim</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">big</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span>  <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">false</span><span class="p">)</span>   <span class="p">}</span>
+    <span class="k">val</span> <span class="py">bigAnim</span> <span class="p">=</span> <span class="n">remember</span><span class="p">(</span><span class="n">big</span><span class="p">)</span> <span class="p">{</span> <span class="k">if</span> <span class="p">(</span><span class="n">big</span><span class="p">)</span> <span class="m">90.</span><span class="n">dp</span> <span class="k">else</span> <span class="m">60.</span><span class="n">dp</span> <span class="p">}</span>
+
+    <span class="cm">/** 内部默认是 float 的转换器, 官方实现了各种转换器, dp 转换器, color 转换器等等, 内部其实就是对 value 值如何进行转换算法的 **/</span>
+    <span class="k">val</span> <span class="py">anim</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">Animatable</span><span class="p">(</span><span class="n">bigAnim</span><span class="p">,</span> <span class="n">Dp</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">)}</span>
+
+    <span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">key1</span> <span class="p">=</span> <span class="n">big</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/** snapTo 的效果其实和 animateTo 是一模一样的, 区别是 snap 它没有动画, 瞬间到达设置的位置, 可以用来设置为起始点 **/</span>
+        <span class="cm">/** 假定设置一个起始点  **/</span>
+        <span class="c1">// anim.snapTo(if (big) 200.dp else 20.dp) // 这样是没有动画的，因为瞬间到达了
+</span><span class="c1"></span>
+        <span class="n">anim</span><span class="p">.</span><span class="n">animateTo</span><span class="p">(</span><span class="n">bigAnim</span><span class="p">)</span> <span class="c1">// 设置目标值，开启动画
+</span><span class="c1"></span>    <span class="p">}</span>
+
+    <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+        <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="n">anim</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">clickable</span> <span class="p">{</span>
+            <span class="n">big</span> <span class="p">=</span> <span class="p">!</span><span class="n">big</span>
+        <span class="p">})</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>运行这段代码后，如下所示，和之前是一模一样的</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312192124044.gif" alt="" /></p>
+
+<p>解释这段代码之前，先介绍 Animatable 这个 Api 的参数设置，看下他的源码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">class</span> <span class="nc">Animatable</span><span class="p">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span> <span class="p">:</span> <span class="n">AnimationVector</span><span class="p">&gt;(</span>
+    <span class="n">initialValue</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>   <span class="c1">// 设置的初始值
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">typeConverter</span><span class="p">:</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">&gt;,</span> <span class="c1">// 双向转换器
+</span><span class="c1"></span>    <span class="k">private</span> <span class="k">val</span> <span class="py">visibilityThreshold</span><span class="p">:</span> <span class="n">T</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span> <span class="c1">// 可见阈值，一般用于弹簧动画中
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">label</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s">&#34;Animatable&#34;</span> <span class="c1">// 标签
+</span><span class="c1"></span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>上述的注释已经很明显了，就是给这个动画设置一个初始值，然后再设置一个转换器，这个转换器，默认是一个 float 的类型，是这样的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">Animatable</span><span class="p">(</span>
+    <span class="n">initialValue</span><span class="p">:</span> <span class="n">Float</span><span class="p">,</span>
+    <span class="n">visibilityThreshold</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">DefaultDisplacementThreshold</span>
+<span class="p">)</span> <span class="p">=</span> <span class="n">Animatable</span><span class="p">(</span>
+    <span class="n">initialValue</span><span class="p">,</span>
+    <span class="n">Float</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">,</span> <span class="c1">// 默认的 Float 类型的转换器
+</span><span class="c1"></span>    <span class="n">visibilityThreshold</span>
+<span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>其中官方提供了很多类似的转换器，如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">val</span> <span class="py">Float</span><span class="p">.</span><span class="n">Companion</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">:</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">Float</span><span class="p">,</span> <span class="n">AnimationVector1D</span><span class="p">&gt;</span>
+    <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="n">FloatToVector</span>
+
+<span class="k">val</span> <span class="py">Int</span><span class="p">.</span><span class="n">Companion</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">:</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">,</span> <span class="n">AnimationVector1D</span><span class="p">&gt;</span>
+    <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="n">IntToVector</span>
+
+<span class="k">private</span> <span class="k">val</span> <span class="py">FloatToVector</span><span class="p">:</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">Float</span><span class="p">,</span> <span class="n">AnimationVector1D</span><span class="p">&gt;</span> <span class="p">=</span>
+    <span class="n">TwoWayConverter</span><span class="p">({</span> <span class="n">AnimationVector1D</span><span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">},</span> <span class="p">{</span> <span class="n">it</span><span class="p">.</span><span class="n">value</span> <span class="p">})</span>
+
+<span class="k">private</span> <span class="k">val</span> <span class="py">IntToVector</span><span class="p">:</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">,</span> <span class="n">AnimationVector1D</span><span class="p">&gt;</span> <span class="p">=</span>
+    <span class="n">TwoWayConverter</span><span class="p">({</span> <span class="n">AnimationVector1D</span><span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">toFloat</span><span class="p">())</span> <span class="p">},</span> <span class="p">{</span> <span class="n">it</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">toInt</span><span class="p">()</span> <span class="p">})</span>
+
+<span class="k">val</span> <span class="py">Rect</span><span class="p">.</span><span class="n">Companion</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">:</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">Rect</span><span class="p">,</span> <span class="n">AnimationVector4D</span><span class="p">&gt;</span>
+    <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="n">RectToVector</span>
+
+<span class="k">val</span> <span class="py">Dp</span><span class="p">.</span><span class="n">Companion</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">:</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">Dp</span><span class="p">,</span> <span class="n">AnimationVector1D</span><span class="p">&gt;</span>
+    <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="n">DpToVector</span>
+
+<span class="k">val</span> <span class="py">DpOffset</span><span class="p">.</span><span class="n">Companion</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">:</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">DpOffset</span><span class="p">,</span> <span class="n">AnimationVector2D</span><span class="p">&gt;</span>
+    <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="n">DpOffsetToVector</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>他们的实现是这样的，其中，挑选几个比较有代表的，举个例子  <code>Dp.*VectorConverter*</code>  <code>Float.*VectorConverter*</code>, <code>Offset.*VectorConverter*</code> 如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">private</span> <span class="k">val</span> <span class="py">DpToVector</span><span class="p">:</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">Dp</span><span class="p">,</span> <span class="n">AnimationVector1D</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">TwoWayConverter</span><span class="p">(</span>
+    <span class="n">convertToVector</span> <span class="p">=</span> <span class="p">{</span> <span class="n">AnimationVector1D</span><span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">value</span><span class="p">)</span> <span class="p">},</span>
+    <span class="n">convertFromVector</span> <span class="p">=</span> <span class="p">{</span> <span class="n">Dp</span><span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">value</span><span class="p">)</span> <span class="p">}</span> <span class="c1">// DP 转化了
+</span><span class="c1"></span><span class="p">)</span>
+
+<span class="k">private</span> <span class="k">val</span> <span class="py">FloatToVector</span><span class="p">:</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">Float</span><span class="p">,</span> <span class="n">AnimationVector1D</span><span class="p">&gt;</span> <span class="p">=</span>
+    <span class="n">TwoWayConverter</span><span class="p">({</span> <span class="n">AnimationVector1D</span><span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">},</span> <span class="p">{</span> <span class="n">it</span><span class="p">.</span><span class="n">value</span> <span class="p">})</span> <span class="c1">// 无转化，直接返回了
+</span><span class="c1"></span>
+<span class="k">private</span> <span class="k">val</span> <span class="py">OffsetToVector</span><span class="p">:</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">Offset</span><span class="p">,</span> <span class="n">AnimationVector2D</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">TwoWayConverter</span><span class="p">(</span>
+        <span class="n">convertToVector</span> <span class="p">=</span> <span class="p">{</span> <span class="n">AnimationVector2D</span><span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">it</span><span class="p">.</span><span class="n">y</span><span class="p">)</span> <span class="p">},</span>
+        <span class="n">convertFromVector</span> <span class="p">=</span> <span class="p">{</span> <span class="n">Offset</span><span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">v1</span><span class="p">,</span> <span class="n">it</span><span class="p">.</span><span class="n">v2</span><span class="p">)</span> <span class="p">}</span> <span class="c1">// 二维坐标的转化
+</span><span class="c1"></span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>说白了，他们都是针对数值进行转换的 Api，比如上述中，FloatToVector 并没有对数值进行转换，仅仅是 it.value 直接返回，仍然还是一个 float 值也相同， 而针对 Dp 和 Offset 类型的转换，则是返回 Dp 和 Offset 对象，同时在这个地方，我们看到有 AnimationVector1D  AnimationVector2D AnimationVector3D AnimationVector4D</p>
+
+<p>这些是什么呢 ？其实他们针对的就是一维、二维、三维、四维，可以理解为比如 Float 类型的是 AnimationVector1D 针对的就是一维，一个坐标点，而 offset 有 x，y 的坐标，就是   AnimationVector2D 二维，他是存在两个坐标点的，以此类推</p>
+
+<p>那么，为什么 compose 要这么设计一个转换器呢？原因就是在此，可以针对一维和二维的模型去做动画的计算，即使是针对颜色的色值渐变过渡，也是比较好处理的，比如下面的 Color 渐变转换器，同时这样也方便扩展</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">private</span> <span class="k">val</span> <span class="py">ColorToVector</span><span class="p">:</span> <span class="p">(</span><span class="n">colorSpace</span><span class="p">:</span> <span class="n">ColorSpace</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">Color</span><span class="p">,</span> <span class="n">AnimationVector4D</span><span class="p">&gt;</span> <span class="p">=</span>
+    <span class="p">{</span> <span class="n">colorSpace</span> <span class="p">-&gt;</span>
+        <span class="n">TwoWayConverter</span><span class="p">(</span>
+            <span class="n">convertToVector</span> <span class="p">=</span> <span class="p">{</span> <span class="n">color</span> <span class="p">-&gt;</span>
+                <span class="k">val</span> <span class="err">(</span><span class="py">l</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span> <span class="p">=</span> <span class="n">color</span><span class="p">.</span><span class="n">convert</span><span class="p">(</span><span class="n">ColorSpaces</span><span class="p">.</span><span class="n">Oklab</span><span class="p">)</span>
+                <span class="n">AnimationVector4D</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+            <span class="p">},</span>
+            <span class="n">convertFromVector</span> <span class="p">=</span> <span class="p">{</span> <span class="n">vector</span> <span class="p">-&gt;</span>
+                <span class="n">Color</span><span class="p">(</span>
+                    <span class="n">vector</span><span class="p">.</span><span class="n">v2</span><span class="p">.</span><span class="n">coerceIn</span><span class="p">(</span><span class="m">0f</span><span class="p">,</span> <span class="m">1f</span><span class="p">),</span> <span class="c1">// L (red)
+</span><span class="c1"></span>                    <span class="n">vector</span><span class="p">.</span><span class="n">v3</span><span class="p">.</span><span class="n">coerceIn</span><span class="p">(-</span><span class="m">0.5f</span><span class="p">,</span> <span class="m">0.5f</span><span class="p">),</span> <span class="c1">// a (blue)
+</span><span class="c1"></span>                    <span class="n">vector</span><span class="p">.</span><span class="n">v4</span><span class="p">.</span><span class="n">coerceIn</span><span class="p">(-</span><span class="m">0.5f</span><span class="p">,</span> <span class="m">0.5f</span><span class="p">),</span> <span class="c1">// b (green)
+</span><span class="c1"></span>                    <span class="n">vector</span><span class="p">.</span><span class="n">v1</span><span class="p">.</span><span class="n">coerceIn</span><span class="p">(</span><span class="m">0f</span><span class="p">,</span> <span class="m">1f</span><span class="p">),</span> <span class="c1">// alpha
+</span><span class="c1"></span>                    <span class="n">ColorSpaces</span><span class="p">.</span><span class="n">Oklab</span>
+                <span class="p">).</span><span class="n">convert</span><span class="p">(</span><span class="n">colorSpace</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+
+
+<span class="k">val</span> <span class="py">Color</span><span class="p">.</span><span class="n">Companion</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">colorSpace</span><span class="p">:</span> <span class="n">ColorSpace</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">Color</span><span class="p">,</span> <span class="n">AnimationVector4D</span><span class="p">&gt;</span>
+    <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="n">ColorToVector</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>其实他们的类型都是 TwoWayConverter 这个接口的实现类，后续我们要是有自己的算法，也是可以自己实现一个的，类似就是这样, 这里模仿的 Dp 的转换器</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">interface</span> <span class="nc">TwoWayConverter</span><span class="p">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span> <span class="p">:</span> <span class="n">AnimationVector</span><span class="p">&gt;</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">convertToVector</span><span class="p">:</span> <span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">V</span>
+   
+    <span class="k">val</span> <span class="py">convertFromVector</span><span class="p">:</span> <span class="p">(</span><span class="n">V</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">T</span>
+<span class="p">}</span>
+ 
+ <span class="c1">// 自己实现一个, DP 类型的转换器
+</span><span class="c1"></span> <span class="k">object</span> <span class="err">: </span><span class="nc">TwoWayConverter</span><span class="p">&lt;</span><span class="n">Dp</span><span class="p">,</span> <span class="n">AnimationVector1D</span><span class="p">&gt;</span> <span class="p">{</span>
+        <span class="k">override</span> <span class="k">val</span> <span class="py">convertFromVector</span><span class="p">:</span> <span class="p">(</span><span class="n">AnimationVector1D</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Dp</span>
+            <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="p">{</span> <span class="n">animationVector1D</span> <span class="p">-&gt;</span> <span class="n">Dp</span><span class="p">(</span><span class="n">animationVector1D</span><span class="p">.</span><span class="n">value</span><span class="p">)</span> <span class="p">}</span>
+
+        <span class="k">override</span> <span class="k">val</span> <span class="py">convertToVector</span><span class="p">:</span> <span class="p">(</span><span class="n">Dp</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">AnimationVector1D</span>
+            <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="p">{</span> <span class="n">dp</span> <span class="p">-&gt;</span> <span class="n">AnimationVector</span><span class="p">(</span><span class="n">dp</span><span class="p">.</span><span class="n">value</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>对于 TwoWayConverter 类型转换器就讲到这里了，其实官方提供了非常多的转换器并没有都列举出来，需要用到的时候，临时翻看一下内部的 Api 源码，基本上都能够满足需求，遇到特殊的场景，自己定义一下就可以了</p>
+
+<p>对于 Animatable 的配置，大概就是这些了，回到刚才动画的例子当中，Animatable 创建后了之后，同时还需要启动一个协程，才能启动动画，因为他的 animateTo 和 <strong>snapTo</strong> 都是一个 suspend 函数，都需要在协程中执行，而上面的例子就是通过点击事件的改变 big 的值，从而导致协程的重启，而 bigAnim 也会随着 big 的值而改变，最终通过 animateTo 到 bigAnim 目标值做一个动画</p>
+
+<p>关于 snapTo 和 animateTo 唯一的区别就是 snapTo 是没有动画的，瞬间完成，如果在某一个时刻，你不需要动画，想瞬间回到某个位置，或者是设置一个新的起始点，可以用这个 Api</p>
+
+<h2 id="animateto">animateTo ()</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">suspend</span> <span class="k">fun</span> <span class="nf">animateTo</span><span class="p">(</span>  <span class="c1">// 是一个 suspend 函数, 需要在协程中执行
+</span><span class="c1"></span>        <span class="n">targetValue</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="c1">// 目标值
+</span><span class="c1"></span>        <span class="n">animationSpec</span><span class="p">:</span> <span class="n">AnimationSpec</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">defaultSpringSpec</span><span class="p">,</span> <span class="c1">// 动画规格，默认是弹簧动画
+</span><span class="c1"></span>        <span class="n">initialVelocity</span><span class="p">:</span> <span class="n">T</span> <span class="p">=</span> <span class="n">velocity</span><span class="p">,</span> <span class="c1">// 初始速度
+</span><span class="c1"></span>        <span class="n">block</span><span class="p">:</span> <span class="p">(</span><span class="n">Animatable</span><span class="p">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">&gt;.()</span> <span class="p">-&gt;</span> <span class="n">Unit</span><span class="p">)?</span> <span class="p">=</span> <span class="k">null</span> <span class="c1">// 动画的每一帧
+</span><span class="c1"></span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>代码注释已经很清楚了，animateTo 前提条件是需要在协程中执行，会从当前的初始状态到 targetValue 目标值做一个动画，如果动画正在执行中，同时又 animateTo 调用了一个新的动画，那么会重新以当前的状态作为初始状态到 targetValue 目标值做一个动画</p>
+
+<p>block 函数是监听动画的每一帧的，后面会讲如何使用，initialVelocity 是设置一个初始速度，速度越大，滑动越快，这个初始速度，一般会配合 VelocityTracker 来跟踪手指在屏幕上滑动的坐标和时间，在松手后的计算出一个速度来做惯性滑动，一般情况下是在列表中或者地图场景，比如按下并快速滑动至松手后，还是保持一个速度直到惯性衰减后停下来，这里不做过多的介绍，可以看下<a href="https://developer.android.com/jetpack/compose/animation?hl=zh-cn">官网-手势和动画</a> 和我在 <a href="https://stackoverflow.com/questions/68791103/transformables-with-fling/76991872#76991872">stackoverflow 的一个回答</a></p>
+
+<h1 id="animationspec">animationSpec</h1>
+
+<p>接下来就是各种 animationSpec 的配置了， 他的源码中，类的结构图是这样的，我们接下来一个一个尝试一下，首先看下 tween 是如何使用的</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312231517363.png" alt="" /></p>
+
+<h2 id="tweenspec">TweenSpec</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">AnimSpec</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">big</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span>  <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">false</span><span class="p">)</span>  <span class="p">}</span>
+    
+    <span class="k">val</span> <span class="py">bigAnim</span> <span class="p">=</span> <span class="n">remember</span><span class="p">(</span><span class="n">big</span><span class="p">)</span> <span class="p">{</span>    <span class="k">if</span> <span class="p">(</span><span class="n">big</span><span class="p">)</span> <span class="m">90.</span><span class="n">dp</span> <span class="k">else</span> <span class="m">60.</span><span class="n">dp</span>  <span class="p">}</span>
+
+    <span class="k">val</span> <span class="py">anim</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">Animatable</span><span class="p">(</span><span class="n">bigAnim</span><span class="p">,</span> <span class="n">Dp</span><span class="p">.</span><span class="n">VectorConverter</span>  <span class="p">}</span>
+
+    <span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">key1</span> <span class="p">=</span> <span class="n">big</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">anim</span><span class="p">.</span><span class="n">animateTo</span><span class="p">(</span><span class="n">bigAnim</span><span class="p">,</span> <span class="n">tween</span><span class="p">(</span><span class="n">easing</span> <span class="p">=</span> <span class="n">FastOutLinearInEasing</span><span class="p">))</span>
+
+        <span class="c1">// anim.animateTo(bigAnim, SnapSpec(delay = 300)) // SnapSpec 没有动画，瞬间到达目标状态，和 snapTo 是一样的
+</span><span class="c1"></span>    <span class="p">}</span>
+
+    <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+        <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="n">anim</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">clickable</span> <span class="p">{</span>
+            <span class="n">big</span> <span class="p">=</span> <span class="p">!</span><span class="n">big</span>
+        <span class="p">})</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>运行后是这样的，点击按钮，从初始状态 60.dp 到目标状态 90.dp 的以动画的方式进行放大和缩小</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312231604919.gif" alt="" /></p>
+
+<p>接着看看 tween 源码实现</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> &lt;T&gt; <span class="nf">tween</span><span class="p">(</span>
+    <span class="n">durationMillis</span><span class="p">:</span> <span class="n">Int</span> <span class="p">=</span> <span class="n">DefaultDurationMillis</span><span class="p">,</span> <span class="c1">// 默认的动画时间
+</span><span class="c1"></span>    <span class="n">delayMillis</span><span class="p">:</span> <span class="n">Int</span> <span class="p">=</span> <span class="m">0</span><span class="p">,</span> <span class="c1">// 延时时间（延时多久后执行动画）
+</span><span class="c1"></span>    <span class="n">easing</span><span class="p">:</span> <span class="n">Easing</span> <span class="p">=</span> <span class="n">FastOutSlowInEasing</span> <span class="c1">// 速度曲线模型
+</span><span class="c1"></span><span class="p">):</span> <span class="n">TweenSpec</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">TweenSpec</span><span class="p">(</span><span class="n">durationMillis</span><span class="p">,</span> <span class="n">delayMillis</span><span class="p">,</span> <span class="n">easing</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里的参数配置也比较简单，DefaultDurationMillis 的默认时间是 300 毫秒，延时时间是 0，这个延时时间也很好理解，就是在点击后，需要延时多久后再执行动画，默认 0，就是立即执行，唯一比较难理解的是 easing  速度曲线, (英文翻译, 缓动)， 他可以理解为在传统 Android 中的动画插值器 interceptor，上述设置的是 FastOutLinearInEasing ，它就是默认的过渡效果，以快速开始并慢慢减速直到结束</p>
+
+<ul>
+<li>几种常见的速度曲线模型
+
+<ul>
+<li>FastOutSlowInEasing 默认的过渡效果，它以快速开始并慢慢减速到结束。适用于大多数常规动画</li>
+<li>FastOutSlowInEasing 默认的过渡效果，它以快速开始并慢慢减速到结束。适用于大多数常规动画</li>
+<li>LinearOutSlowInEasing  以线性速度开始并逐渐减速到结束。适用于需要匀速过渡的动画</li>
+<li>FastOutLinearInEasing 以快速开始并以线性速度进行过渡。通常用于突出起始状态的动画</li>
+<li>LinearEasing 简单的线性过渡效果，从开始到结束以恒定速度进行过渡</li>
+</ul></li>
+</ul>
+
+<h2 id="snapspec">SnapSpec</h2>
+
+<p>它是一个没有渐变过渡动画的 Api，他的作用场景，是某一个时刻，不需要渐变过程，瞬间回到某一个地方（重新设置起始点）可以使用它，还是上面的代码，只是修改执行方式，延时一个 300 ms，最终运行后是这样的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">anim</span><span class="p">.</span><span class="n">animateTo</span><span class="p">(</span><span class="n">bigAnim</span><span class="p">,</span> <span class="n">SnapSpec</span><span class="p">(</span><span class="n">delay</span> <span class="p">=</span> <span class="m">300</span><span class="p">))</span> <span class="c1">// 无渐变过程</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312231625798.gif" alt="" /></p>
+
+<h2 id="keyframespec">keyFrameSpec</h2>
+
+<blockquote>
+<p>可以控制某个时间线上的关键帧</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">KeyFrameSpecTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">goAnim</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">false</span><span class="p">)}</span>
+    <span class="cm">/** 设置偏移值 **/</span>
+    <span class="k">val</span> <span class="py">offset</span> <span class="p">=</span> <span class="n">remember</span><span class="p">(</span><span class="n">goAnim</span><span class="p">)</span> <span class="p">{</span>  <span class="k">if</span> <span class="p">(</span><span class="n">goAnim</span><span class="p">)</span> <span class="m">200.</span><span class="n">dp</span> <span class="k">else</span> <span class="m">0.</span><span class="n">dp</span>   <span class="p">}</span>
+
+    <span class="cm">/** 使用 Dp 转换器 **/</span>
+    <span class="k">val</span> <span class="py">offsetAnim</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span>   <span class="n">Animatable</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">typeConverter</span> <span class="p">=</span> <span class="n">Dp</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">)</span>   <span class="p">}</span>
+
+    <span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">key1</span> <span class="p">=</span> <span class="n">goAnim</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/**
+</span><span class="cm">         * 对关键帧进行操作的动画, 可以简写成 keyframes { }
+</span><span class="cm">         *
+</span><span class="cm">         *at 和 with 是  infix 中缀函数
+</span><span class="cm">         */</span>
+        <span class="n">offsetAnim</span><span class="p">.</span><span class="n">animateTo</span><span class="p">(</span><span class="n">targetValue</span> <span class="p">=</span> <span class="n">offset</span><span class="p">,</span> <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">keyframes</span> <span class="p">{</span>
+            <span class="n">durationMillis</span> <span class="p">=</span> <span class="m">3000</span>
+            <span class="cm">/** 可以控制每个时间线上的关键帧 **/</span>
+            <span class="cm">/** 对目标值 200dp 过程做关键帧的操作 **/</span>
+
+            <span class="cm">/** 设置关键帧 **/</span>
+            <span class="cm">/** 表示在动画过程中的第1000毫秒时，属性的值会运动到 50dp的位置 **/</span>
+            <span class="cm">/** with FastOutSlowInEasing 开始加速后减速, 这个减速的区间是从 50.dp 到终点的速度曲线（也就是下一个运动区间） **/</span>
+            <span class="m">50.</span><span class="n">dp</span> <span class="n">at</span> <span class="m">1000</span> <span class="n">with</span> <span class="n">FastOutSlowInEasing</span>
+
+            <span class="cm">/** 在2500毫秒的时候, 需要位移到60dp, 然后以线性开始后减速到下一个关键帧 **/</span>
+            <span class="m">60.</span><span class="n">dp</span> <span class="n">at</span> <span class="m">2500</span> <span class="n">with</span> <span class="n">LinearOutSlowInEasing</span>
+
+            <span class="cm">/** 终点, 最后一个不用设置with, 因为这里的已经是最后一帧了 **/</span>
+            <span class="m">120.</span><span class="n">dp</span> <span class="n">at</span> <span class="m">3000</span>
+        <span class="p">})</span>
+    <span class="p">}</span>
+
+    <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+            <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">90.</span><span class="n">dp</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">offset</span><span class="p">(</span><span class="n">x</span> <span class="p">=</span> <span class="n">offsetAnim</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">clickable</span> <span class="p">{</span>
+                <span class="n">goAnim</span> <span class="p">=</span> <span class="p">!</span><span class="n">goAnim</span>
+            <span class="p">}</span>
+            <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Green</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">Text</span><span class="p">(</span>
+                <span class="n">text</span> <span class="p">=</span> <span class="n">offsetAnim</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">toInt</span><span class="p">().</span><span class="n">toString</span><span class="p">(),</span> <span class="n">textAlign</span> <span class="p">=</span> <span class="n">TextAlign</span><span class="p">.</span><span class="n">Center</span><span class="p">,</span> <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">align</span><span class="p">(</span><span class="n">Alignment</span><span class="p">.</span><span class="n">Center</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里有区别不同就是 animationSpec 的 keyframes 设置了，这里可以这么想象一下，平常我们做一个视频的话，是不是有轨道可以设置的，比如我们经常看网上的视频，在某些精彩片段的时候，是一个慢动作的视频，其余的时候是正常的，如果有制作过视频经验的人，应该会很好理解，类似于下面这样的</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312231851498.png" alt="" /></p>
+
+<p>那么上面代码，对关键帧的设置大概意思就是，在第 1000ms 的时候，需要运动到 50dp，然后以 FastOutSlowInEasing 的曲线运动到下一个关键帧，这里的速度曲线作用的范围也就是 50dp 到 60dp 这个区间，然后在 2500 毫秒的时候，位置运动到 60 dp，然后再以 LinearOutSlowInEasing 的曲线位移到下一个关键帧。</p>
+
+<p>所以最终运行后，是这样的，最后闪一下到 200 dp，是因为动画设置的目标值是 200dp， 而我们对关键帧的操作是仅仅在 120dp 的范围</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312231802776.gif" alt="" /></p>
+
+<p>其中 at with，是 kotlin 的<strong>中缀函数</strong>，它是一种简化写法，他的源码也很简单, 其实就是设置了一个 entity 对象，如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">internal</span> <span class="k">val</span> <span class="py">keyframes</span> <span class="p">=</span> <span class="n">mutableMapOf</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">,</span> <span class="n">KeyframeEntity</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;&gt;()</span>
+<span class="c1">// at 函数，对时间上的关键帧设置
+</span><span class="c1"></span><span class="k">infix</span> <span class="k">fun</span> <span class="nf">T</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="cm">/*@IntRange(from = 0)*/</span> <span class="n">timeStamp</span><span class="p">:</span> <span class="n">Int</span><span class="p">):</span> <span class="n">KeyframeEntity</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">KeyframeEntity</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="n">also</span> <span class="p">{</span>
+                <span class="n">keyframes</span><span class="p">[</span><span class="n">timeStamp</span><span class="p">]</span> <span class="p">=</span> <span class="n">it</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+<span class="c1">// with 函数，设置速度曲线
+</span><span class="c1"></span><span class="k">infix</span> <span class="k">fun</span> <span class="nf">KeyframeEntity</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;.</span><span class="n">with</span><span class="p">(</span><span class="n">easing</span><span class="p">:</span> <span class="n">Easing</span><span class="p">)</span> <span class="p">{</span>
+     <span class="k">this</span><span class="p">.</span><span class="n">easing</span> <span class="p">=</span> <span class="n">easing</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="springspec">springSpec</h2>
+
+<blockquote>
+<p>弹簧动画，它是物理模型的动画, 区别不能设置时间, 是根据物理模式来计算的最终的目标值的</p>
+</blockquote>
+
+<p>为什么 springSpec 是一个物理模型动画呢 ？因为它更加接近于现实中弹簧规律，动画看上去自然并且平滑，而其他的动画 Api 是基于插值算法来做的</p>
+
+<p>还是上面的例子，我们把协程函数换一下就可以了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="cm">/** 弹簧动画 **/</span>
+<span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">key1</span> <span class="p">=</span> <span class="n">goAnim</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/**
+</span><span class="cm">         * 弹簧动画
+</span><span class="cm">         * springSpec, 可以简写成 spring， 它是物理模型动画
+</span><span class="cm">         */</span>
+        <span class="n">offsetAnim</span><span class="p">.</span><span class="n">animateTo</span><span class="p">(</span>
+            <span class="n">targetValue</span> <span class="p">=</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">spring</span><span class="p">(</span><span class="n">dampingRatio</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">DampingRatioHighBouncy</span><span class="p">,</span> <span class="n">stiffness</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMediumLow</span><span class="p">)</span>
+        <span class="p">)</span>
+ <span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>运行后是这样的</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312231851685.gif" alt="" /></p>
+
+<p>其他的代码都和之前一样，就不再解释了，只看看 spring 如何配置</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> &lt;T&gt; <span class="nf">spring</span><span class="p">(</span>
+    <span class="n">dampingRatio</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">DampingRatioNoBouncy</span><span class="p">,</span> <span class="c1">// dampingRatio: 阻尼比, 可以理解为弹簧的晃动的幅度, 数值越小晃动越大
+</span><span class="c1"></span>    <span class="n">stiffness</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="n">Spring</span><span class="p">.</span><span class="n">StiffnessMedium</span><span class="p">,</span> <span class="c1">// stiffness: 刚度, 可以理解为弹簧的硬度, 硬度越高, 回弹的越快, 想象一下现实中的弹簧立马弹回, 数值越大, 硬度越高
+</span><span class="c1"></span>    <span class="n">visibilityThreshold</span><span class="p">:</span> <span class="n">T</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span> <span class="c1">// 可见性阈值，这个参数设置就是比如弹簧最终可能会在很小的范围内抖动，当动画的距离或速度小于该阈值时，动画会被认为到达了最终状态并停止动画。 大白话解释：可以想象在现实的世界中，一个弹簧最终在很小的范围内一直一直不断的弹，可能在 0.0001111111 这样很小的范围，而对应到代码中，这个数值用来忽略的，也避免不断的绘制
+</span><span class="c1"></span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>其中，对于 dampingRatio 和 stiffness 官方默认提供了几个 api 设置，他们的效果大概是这样的</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312231851554.gif" alt="" /></p>
+
+<h2 id="repeatablespec">RepeatableSpec</h2>
+
+<blockquote>
+<p>可重复的动画</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">RepeatableSpecTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">goVertical</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span>  <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">false</span><span class="p">)</span>  <span class="p">}</span>
+
+    <span class="k">val</span> <span class="py">verticalOffset</span> <span class="p">=</span> <span class="n">remember</span><span class="p">(</span><span class="n">goVertical</span><span class="p">)</span> <span class="p">{</span>   <span class="k">if</span> <span class="p">(</span><span class="n">goVertical</span><span class="p">)</span> <span class="m">200.</span><span class="n">dp</span> <span class="k">else</span> <span class="m">0.</span><span class="n">dp</span>   <span class="p">}</span>
+
+    <span class="k">val</span> <span class="py">verticalAnim</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">Animatable</span><span class="p">(</span><span class="n">verticalOffset</span><span class="p">,</span> <span class="n">typeConverter</span> <span class="p">=</span> <span class="n">Dp</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">)}</span>
+
+    <span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">goVertical</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">verticalAnim</span><span class="p">.</span><span class="n">animateTo</span><span class="p">(</span>
+             <span class="n">verticalOffset</span><span class="p">,</span> <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">RepeatableSpec</span><span class="p">(</span>
+                <span class="n">initialStartOffset</span> <span class="p">=</span> <span class="n">StartOffset</span><span class="p">(</span><span class="m">300</span><span class="p">,</span> <span class="n">StartOffsetType</span><span class="p">.</span><span class="n">FastForward</span><span class="p">),</span> <span class="c1">// 快进到 300 秒的地方直接开始
+</span><span class="c1"></span>                <span class="n">iterations</span> <span class="p">=</span> <span class="m">3</span><span class="p">,</span>
+                <span class="n">repeatMode</span> <span class="p">=</span> <span class="n">RepeatMode</span><span class="p">.</span><span class="n">Reverse</span><span class="p">,</span>
+                <span class="n">animation</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">600</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+            <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">80.</span><span class="n">dp</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">offset</span><span class="p">(</span><span class="n">y</span> <span class="p">=</span> <span class="n">verticalAnim</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">clickable</span> <span class="p">{</span> <span class="n">goVertical</span> <span class="p">=</span> <span class="p">!</span><span class="n">goVertical</span> <span class="p">}</span>
+            <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Green</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="n">verticalAnim</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">toString</span><span class="p">(),</span> <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">align</span><span class="p">(</span><span class="n">Alignment</span><span class="p">.</span><span class="n">Center</span><span class="p">))</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>照例还是先看下 RepeatableSpec 的参数设置</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">class</span> <span class="nc">RepeatableSpec</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span>
+    <span class="k">val</span> <span class="py">iterations</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span>
+    <span class="k">val</span> <span class="py">animation</span><span class="p">:</span> <span class="n">DurationBasedAnimationSpec</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;,</span>
+    <span class="k">val</span> <span class="py">repeatMode</span><span class="p">:</span> <span class="n">RepeatMode</span> <span class="p">=</span> <span class="n">RepeatMode</span><span class="p">.</span><span class="n">Restart</span><span class="p">,</span>
+    <span class="k">val</span> <span class="py">initialStartOffset</span><span class="p">:</span> <span class="n">StartOffset</span> <span class="p">=</span> <span class="n">StartOffset</span><span class="p">(</span><span class="m">0</span><span class="p">)</span> <span class="c1">// 初始起始偏移量
+</span><span class="c1"></span><span class="p">)</span> </code></pre></td></tr></table>
+</div>
+</div>
+<ul>
+<li>iterations 重复的次数</li>
+<li>animation  设置作用的动画, 注意他是继承的是  DurationBasedAnimationSpec(基于时间设置的动画) 所以他只能够被设置为 keyFrame snap tween 等 spec 的动画</li>
+<li>repeatMode 重复模式, start, 从起始位置开始重复, Reverse 从目标值开始重复, 如果使用 Reverse 必须是奇数, 因为如果是偶数的话, 假如是 2, 由于动画最终会回到目标值, 会瞬间到到目标值（没有动画）</li>
+<li>initialStartOffset 初始起始偏移量, 是根据时间来设置的, 他还有另外的参数:StartOffsetType.Delay 延时执行 StartOffsetType.FastForward 快进, 直接快进到某个时间点, 比如 300ms, 快进到 280 就会看到 280 直接到 300 毫秒的动画</li>
+</ul>
+
+<p>运行代码后看看几种例子现象</p>
+
+<ol>
+<li>上述例子是快进到 300 秒的地方直接开始，动画也就是从 300 秒到 600 秒之间，重复的次数是 3 次，Reverse 模式，从目标值开始重复，这里的目标值也就是 200dp，所以 3 次后，停留的位置也在 200dp 的地方</li>
+</ol>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312232249363.gif" alt="" /></p>
+
+<ol>
+<li>上述的代码，只改变重复次数为 2 次，看看效果</li>
+</ol>
+
+<blockquote>
+<p>这里有个最大的区别是，动画停止的时候直接瞬移到 200dp的位置了，因为动画重复的位置从目标值开始重复，2次后位置理论上在 0dp 的位置，但是因为要回到目标值，所以最终会瞬间移动到 200dp 的位置</p>
+</blockquote>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312232258040.gif" alt="" /></p>
+
+<ol>
+<li>如果重复次数还是为 2 次，但是重复模式改成了 Restart （从起始位置开始重复）看看效果</li>
+</ol>
+
+<blockquote>
+<p>可以看到每次开始都是瞬间从 0dp 的位置开始，这就是 Restart 模式，最终动画停止到目标状态 200dp</p>
+</blockquote>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312232305747.gif" alt="" /></p>
+
+<h2 id="infiniterepeatable">infiniteRepeatable</h2>
+
+<blockquote>
+<p>和  RepeatableSpec 几乎一样的, 只是 InfiniteRepeatable 是一个无线循环的动画</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">InfiniteRepeatableSpecTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">goVertical</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span>  <span class="n">mutableStateOf</span><span class="p">(</span><span class="k">false</span><span class="p">)</span>   <span class="p">}</span>
+
+    <span class="k">val</span> <span class="py">verticalOffset</span> <span class="p">=</span> <span class="n">remember</span><span class="p">(</span><span class="n">goVertical</span><span class="p">)</span> <span class="p">{</span>     <span class="k">if</span> <span class="p">(</span><span class="n">goVertical</span><span class="p">)</span> <span class="m">200.</span><span class="n">dp</span> <span class="k">else</span> <span class="m">0.</span><span class="n">dp</span>  <span class="p">}</span>
+
+    <span class="k">val</span> <span class="py">verticalAnim</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span>  <span class="n">Animatable</span><span class="p">(</span><span class="n">verticalOffset</span><span class="p">,</span> <span class="n">typeConverter</span> <span class="p">=</span> <span class="n">Dp</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">)</span>  <span class="p">}</span>
+
+    <span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">goVertical</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">verticalAnim</span><span class="p">.</span><span class="n">animateTo</span><span class="p">(</span>
+            <span class="cm">/** 是一个无线循环的动画  **/</span>
+            <span class="n">verticalOffset</span><span class="p">,</span> <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">infiniteRepeatable</span><span class="p">(</span>
+                <span class="n">animation</span> <span class="p">=</span> <span class="n">tween</span><span class="p">(),</span> <span class="n">repeatMode</span> <span class="p">=</span> <span class="n">RepeatMode</span><span class="p">.</span><span class="n">Reverse</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+            <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">80.</span><span class="n">dp</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">offset</span><span class="p">(</span><span class="n">y</span> <span class="p">=</span> <span class="n">verticalAnim</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">clickable</span> <span class="p">{</span> <span class="n">goVertical</span> <span class="p">=</span> <span class="p">!</span><span class="n">goVertical</span> <span class="p">}</span>
+            <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Green</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="n">verticalAnim</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">toString</span><span class="p">(),</span> <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">align</span><span class="p">(</span><span class="n">Alignment</span><span class="p">.</span><span class="n">Center</span><span class="p">))</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>参数配置和 RepeatableSpec 几乎是一模一样的，只是它是无限制重复的，运行后如下</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312232312007.gif" alt="" /></p>
+
+<p>好了，关于各种 animationSpec 的使用，和一些参数配置都基本讲完了，至于 FloatxxxSprc 类似的就没有讲了，因为本质上都是一样的，只是它是限制了泛型是 Float 而已，如果你会其他的，这个自然而然也是会的</p>
+
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2023-05-20
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/android/">Android</a>
+          <a href="https://midFang.github.io/tags/%E5%8A%A8%E7%94%BB/">动画</a>
+          <a href="https://midFang.github.io/tags/compose/">Compose</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/compose-animatedecay/">
+            
+            <i class="iconfont">
+              <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M691.908486 949.511495l75.369571-89.491197c10.963703-12.998035 10.285251-32.864502-1.499144-44.378743L479.499795 515.267417 757.434875 204.940602c11.338233-12.190647 11.035334-32.285311-0.638543-44.850487l-80.46666-86.564541c-11.680017-12.583596-30.356378-12.893658-41.662889-0.716314L257.233596 494.235404c-11.332093 12.183484-11.041474 32.266891 0.657986 44.844348l80.46666 86.564541c1.772366 1.910513 3.706415 3.533476 5.750981 4.877077l306.620399 321.703933C662.505829 963.726242 680.945807 962.528973 691.908486 949.511495z"></path>
+</svg>
+
+            </i>
+            <span class="prev-text nav-default">Compose之衰减型动画</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        
+          <a class="next" href="/android-thread-pool/">
+            <span class="next-text nav-default">线程池参数详解</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://stackoverflow.com/users/14331888/midfang" rel="me noopener" class="iconfont"
+      title="stack-overflow"  target="_blank"
+      >
+      <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M809.714286 932.571429l-638.857143 0 0-274.285714-91.428571 0 0 365.714286 821.714286 0 0-365.714286-91.428571 0 0 274.285714zm-538.285714-299.428571l18.857143-89.714286 447.428571 94.285714-18.857143 89.142857zm58.857143-213.714286l38.285714-83.428571 414.285714 193.714286-38.285714 82.857143zm114.857143-203.428571l58.285714-70.285714 350.857143 293.142857-58.285714 70.285714zm226.857143-216l272.571429 366.285714-73.142857 54.857143-272.571429-366.285714zm-410.285714 840.571429l0-90.857143 457.142857 0 0 90.857143-457.142857 0z"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://www.douban.com/people/194654920/" rel="me noopener" class="iconfont"
+      title="douban"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M926.917973 37.80608C959.65184 37.80608 986.19392 64.34816 986.19392 97.082027L986.19392 926.917973C986.19392 959.65184 959.65184 986.19392 926.917973 986.19392L97.082027 986.19392C64.34816 986.19392 37.80608 959.65184 37.80608 926.917973L37.80608 97.082027C37.80608 64.34816 64.34816 37.80608 97.082027 37.80608zM176.653653 176.19968 176.653653 252.678827 825.658027 252.678827 825.658027 176.19968zM217.719467 316.146347 217.719467 628.08064 273.524053 628.08064 341.292373 770.39616 157.259093 770.39616 157.259093 845.417813 842.949973 845.417813 842.949973 770.39616 654.226773 770.39616 722.899627 628.08064 783.67744 628.08064 783.67744 316.146347zM684.885333 392.891733 684.885333 553.987413 312.576 553.987413 312.576 392.891733zM570.770773 770.39616 426.653013 770.39616 359.621973 628.08064 639.443627 628.08064z"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://midFang.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2020 -
+    2024
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        midFang
+        
+      </span></span>
+
+  
+  
+    <span id="busuanzi_container">
+      访客数/访问量：<span id="busuanzi_value_site_uv"></span>/<span id="busuanzi_value_site_pv"></span>
+    </span>
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script type="text/javascript">
+    AV.initialize( null ,  null );
+  </script>
+
+  <script>
+    function showHitCount(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push($(this).attr("id").trim());
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var hits = item.get('hits');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(hits);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if (countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function (results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("hits");
+            counter.save(null, {
+              success: function (counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('hits'));
+              },
+              error: function (counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+             
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+             
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("hits", 1);
+            newcounter.save(null, {
+              success: function (newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('hits'));
+              },
+              error: function (newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function (error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function () {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        
+        addCount(Counter);
+      } else if ($('.post-link').length > 1) {
+        
+        showHitCount(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+  <script>
+    $("#openSearch, #openSearchMobile").click(function(){
+      $(".modal-dialog").addClass("visible");
+    });
+
+    $("#closeSearch").click(function(){
+      $(".modal-dialog").removeClass("visible");
+    });
+
+    $(document).click(function(event) {
+    
+      if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
+        $("body").find(".modal-dialog").removeClass("visible");
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>

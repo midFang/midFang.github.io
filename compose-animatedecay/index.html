@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Compose之衰减型动画 - midFang&#39;s Blog</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="midFang" />
+  <meta name="description" content="前言 回顾上篇文章我们学习了 compose 中的 animateTo 、 snapTo 如何使用，和 animationSpec 的参数配置等等，这篇文章，我们学习 Animatable 中另外一个方法 animateDecay animateDecay 衰减型动画， 它只有一个实现类 DecayAnimationSpecImpl 有了" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<link rel="canonical" href="https://midFang.github.io/compose-animatedecay/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="Compose之衰减型动画" />
+<meta property="og:description" content="前言 回顾上篇文章我们学习了 compose 中的 animateTo 、 snapTo 如何使用，和 animationSpec 的参数配置等等，这篇文章，我们学习 Animatable 中另外一个方法 animateDecay animateDecay 衰减型动画， 它只有一个实现类 DecayAnimationSpecImpl 有了" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/compose-animatedecay/" />
+<meta property="article:published_time" content="2023-05-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-05-30T00:00:00+00:00" />
+<meta itemprop="name" content="Compose之衰减型动画">
+<meta itemprop="description" content="前言 回顾上篇文章我们学习了 compose 中的 animateTo 、 snapTo 如何使用，和 animationSpec 的参数配置等等，这篇文章，我们学习 Animatable 中另外一个方法 animateDecay animateDecay 衰减型动画， 它只有一个实现类 DecayAnimationSpecImpl 有了">
+
+
+<meta itemprop="datePublished" content="2023-05-30T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2023-05-30T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="4077">
+
+
+
+<meta itemprop="keywords" content="Android,动画,Compose," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Compose之衰减型动画"/>
+<meta name="twitter:description" content="前言 回顾上篇文章我们学习了 compose 中的 animateTo 、 snapTo 如何使用，和 animationSpec 的参数配置等等，这篇文章，我们学习 Animatable 中另外一个方法 animateDecay animateDecay 衰减型动画， 它只有一个实现类 DecayAnimationSpecImpl 有了"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">midFang's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+        
+      </li>
+    
+
+    
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+
+  
+    
+<div class="modal-dialog">
+    
+    <div class="modal-content">
+      <div id="closeSearch" title="Close" class="close">X</div>
+      <div class="modal-header">
+        <div class="modal-title">Search</div>
+      </div>
+      <div class="modal-body">
+          <script>
+            (function() {
+              var cx = '57787f7f4d21d54fc';
+              var gcse = document.createElement('script');
+              gcse.type = 'text/javascript';
+              gcse.async = true;
+              gcse.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//cse.google.com/cse.js?cx=' + cx;
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(gcse, s);
+            })();
+          </script>
+          <gcse:search></gcse:search>
+      </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      midFang's Blog
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+      <li class="menu-item">
+        <a id="openSearch" class="menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">Compose之衰减型动画</h1>
+      
+      <div class="post-meta">
+        <time datetime="2023-05-30" class="post-time">
+          2023-05-30
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/%E5%8A%A8%E7%94%BB/"> 动画 </a>
+            
+          </div>
+        
+
+        
+        
+          <span id="busuanzi_container_page_pv">
+            | 阅读 <span id="busuanzi_value_page_pv"></span>
+          </span>
+        
+
+        
+        
+          <span id="/compose-animatedecay/" class="leancloud_visitors" data-flag-title="Compose之衰减型动画">
+            <span class="post-meta-item-text"> | 阅读 </span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#前言">前言</a></li>
+<li><a href="#animatedecay">animateDecay</a>
+<ul>
+<li><a href="#exponentialdecay">exponentialDecay</a></li>
+<li><a href="#splinebaseddecay">splineBasedDecay</a></li>
+</ul></li>
+<li><a href="#监听动画的每一帧数">监听动画的每一帧数</a></li>
+<li><a href="#动画的打断">动画的打断</a></li>
+<li><a href="#动画的边界-上限和下限">动画的边界， 上限和下限</a></li>
+<li><a href="#动画的结果">动画的结果</a>
+<ul>
+<li><a href="#animationresult">AnimationResult</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      
+
+<h2 id="前言">前言</h2>
+
+<p>回顾上篇文章我们学习了 compose 中的 animateTo 、 snapTo 如何使用，和 animationSpec 的参数配置等等，这篇文章，我们学习 Animatable 中另外一个方法 animateDecay</p>
+
+<h2 id="animatedecay">animateDecay</h2>
+
+<blockquote>
+<p>衰减型动画， 它只有一个实现类 DecayAnimationSpecImpl</p>
+</blockquote>
+
+<p>有了上一篇文章的经验，这里就直接上代码了，大体上都基本类似，直接上栗子</p>
+
+<h3 id="exponentialdecay">exponentialDecay</h3>
+
+<blockquote>
+<p>指数型衰减动画，它是一种自然衰减，以固定的比例逐渐减小时，称之为指数衰减</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">DecayAnimationTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">anim</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span>
+        <span class="n">Animatable</span><span class="p">(</span><span class="m">0.</span><span class="n">dp</span><span class="p">,</span> <span class="n">Dp</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 样条衰减动画
+</span><span class="cm">     * 他是针对于设置像素的动画的，因为他内部使用了 density 密度值来根据不同的设备做了转换计算了， 像这里使用 dp 就是错了， 因为 dp
+</span><span class="cm">     * 它本身就是已经是转换成像素了，已经做了一层转换了， 如果再使用 SplineBasedDecay&lt;Dp&gt; 那么他会再做一次转换， 就多余， 同时这个动画如果针对角度来做的，也不能
+</span><span class="cm">     * 使用它， 因为角度无论在任意的设备上角度都是一样的，和密度值无关，如果你使用它了，会导致在不同的设备上，旋转的角度不一样了
+</span><span class="cm">     *
+</span><span class="cm">     * 所以使用 dp 不要使用它， 非 dp，仅仅是像素的可以使用它 (最简单的区别)
+</span><span class="cm">     */</span>
+    <span class="k">val</span> <span class="py">splineBasedDecay</span> <span class="p">=</span> <span class="n">rememberSplineBasedDecay</span><span class="p">&lt;</span><span class="n">Dp</span><span class="p">&gt;()</span>
+
+    <span class="cm">/**
+</span><span class="cm">     * 指数型衰减动画
+</span><span class="cm">     *
+</span><span class="cm">     * 非 Dp 的衰减动画， 和 SplineBasedDecay 刚好相反的，和设备密度值无关
+</span><span class="cm">     * 几个参数设置：
+</span><span class="cm">     * frictionMultiplier：摩擦系数，默认1f，数值越大，惯性滑动的摩擦力越大，滑动的距离越短
+</span><span class="cm">     * absVelocityThreshold：速度阈值的绝对值， 默认 0.1f，它是一个速度模型， 可以理解为在小于 0.1f 的时候， 动画就会停止下来，如果是 0.5， 那么速度在小于 0.5f 的时候就会停止下来，也就是停止的更早
+</span><span class="cm">     */</span>
+    <span class="k">val</span> <span class="py">exponentialDecay</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">exponentialDecay</span><span class="p">&lt;</span><span class="n">Dp</span><span class="p">&gt;(</span><span class="n">frictionMultiplier</span> <span class="p">=</span> <span class="m">1f</span><span class="p">,</span> <span class="n">absVelocityThreshold</span> <span class="p">=</span> <span class="m">9f</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">Unit</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">delay</span><span class="p">(</span><span class="m">1000</span><span class="p">)</span>
+
+        <span class="cm">/**
+</span><span class="cm">         * animateDecay 衰减型动画，惯性滑动慢慢减速的场景
+</span><span class="cm">         * 其实有一种情况， animateTo  也可以做, 因为本质是开始是线性速度， 后面慢慢开始减速 LinearOutSlowInEasing, 但是本质不同是，一个需要设置终点值， 一个是根据速度来计算的
+</span><span class="cm">         */</span>
+
+        <span class="cm">/**
+</span><span class="cm">         * initialVelocity 速度值， 一般会用 Velocitytrack 计算速度
+</span><span class="cm">         * animationSpec： 衰减型动画， 只有一个实现类
+</span><span class="cm">         */</span>
+        <span class="n">anim</span><span class="p">.</span><span class="n">animateDecay</span><span class="p">(</span><span class="m">1000.</span><span class="n">dp</span><span class="p">,</span> <span class="n">exponentialDecay</span><span class="p">)</span>
+    <span class="p">}</span>
+
+
+    <span class="n">Box</span><span class="p">(</span>
+        <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+            <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">top</span> <span class="p">=</span> <span class="n">anim</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">80.</span><span class="n">dp</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Green</span><span class="p">)</span>
+    <span class="p">)</span> <span class="p">{</span>
+        <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="n">anim</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">toString</span><span class="p">(),</span> <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">align</span><span class="p">(</span><span class="n">Alignment</span><span class="p">.</span><span class="n">Center</span><span class="p">))</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这段代码在启动后，页面被加载后 1000 毫秒后，然后调用 animateDecay 方法，这里 animateDecay 的 1000 毫秒是一个 initialVelocity 初始速度值，这里的速度值，一般是用于对惯性滑动场景来做的，一般在列表会使用到，在上篇的文章也有介绍，可以看下上篇文章，然后第二个参数仍然是 animationSpec 的设置，这里我们设置的是 exponentialDecay</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> &lt;T&gt; <span class="nf">exponentialDecay</span><span class="p">(</span>
+    <span class="cm">/*@FloatRange(
+</span><span class="cm">        from = 0.0,
+</span><span class="cm">        fromInclusive = false
+</span><span class="cm">    )*/</span>
+    <span class="n">frictionMultiplier</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">1f</span><span class="p">,</span>
+    <span class="cm">/*@FloatRange(
+</span><span class="cm">        from = 0.0,
+</span><span class="cm">        fromInclusive = false
+</span><span class="cm">    )*/</span>
+    <span class="n">absVelocityThreshold</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">0.1f</span>
+<span class="p">):</span> <span class="n">DecayAnimationSpec</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">=</span>
+    <span class="n">FloatExponentialDecaySpec</span><span class="p">(</span><span class="n">frictionMultiplier</span><span class="p">,</span> <span class="n">absVelocityThreshold</span><span class="p">).</span><span class="n">generateDecayAnimationSpec</span><span class="p">()</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>其中可以设置的参数有两个，他们的区别如下</p>
+
+<ul>
+<li>frictionMultiplier 摩擦系数，默认1f，数值越大，惯性滑动的摩擦力越大，滑动的距离越短</li>
+<li>absVelocityThreshold：速度阈值的绝对值， 默认 0.1f，它是一个速度模型， 可以理解为在小于 0.1f 的时候， 动画就会停止下来，如果是 0.5， 那么速度在小于 0.5f 的时候就会停止下来，也就是停止的更早</li>
+</ul>
+
+<p>代码运行后是这样的</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312240007960.gif" alt="" /></p>
+
+<h3 id="splinebaseddecay">splineBasedDecay</h3>
+
+<blockquote>
+<p>样条衰减动画，是基于屏幕像素进行的动画速度衰减，当像素密度越大动画减速越快，动画的时长越短，动画惯性滑动的距离越短；可以理解屏幕像素密度越大摩擦力越大，所以惯性滑动的距离就越短，使用这个动画，在不同的设备上可能会呈现不同的效果</p>
+</blockquote>
+
+<p>其余的代码不变，我们仅仅是把 anim.animateDecay(1000.dp, exponentialDecay) 换成 anim.animateDecay(1000.dp, splineBasedDecay) 再运行一下</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312241108974.gif" alt="" /></p>
+
+<p>可以发现，我们设置的初始速度是一样的，但是动画运动后，停止的目标值位置是不一样的，这是因为 splineBasedDecay 他内部还做了一层的换算，他会拿 density 做一层换算，而我们这里的使用的初始值已经是一个 dp 值，已经是经过换算的了，所以就反而多余了</p>
+
+<p>看看 splineBasedDecay 源码就知道了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">actual</span> <span class="k">fun</span> &lt;T&gt; <span class="nf">rememberSplineBasedDecay</span><span class="p">():</span> <span class="n">DecayAnimationSpec</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">{</span>
+    <span class="c1">// This function will internally update the calculation of fling decay when the density changes,
+</span><span class="c1"></span>    <span class="c1">// but the reference to the returned spec will not change across calls.
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">density</span> <span class="p">=</span> <span class="n">LocalDensity</span><span class="p">.</span><span class="n">current</span>
+    <span class="k">return</span> <span class="n">remember</span><span class="p">(</span><span class="n">density</span><span class="p">.</span><span class="n">density</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">SplineBasedFloatDecayAnimationSpec</span><span class="p">(</span><span class="n">density</span><span class="p">).</span><span class="n">generateDecayAnimationSpec</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>可以看到这里使用了到 density 并传入到 SplineBasedFloatDecayAnimationSpec 中了，其中就在这个地方对 density 和 value 值做了再一次的转换，这里的就不再贴源码了，有兴趣的可以自己去看一下</p>
+
+<p>所以 splineBasedDecay  和 exponentialDecay 的区别就是如果本身设置的初始值已经是转换过的了，就使用指数型衰减动画，如果需要动画的运动速度曲线和设备密度相关联，那就使用样条衰减动画</p>
+
+<h2 id="监听动画的每一帧数">监听动画的每一帧数</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">FrameAnimTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">topAnim</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span>  <span class="n">Animatable</span><span class="p">(</span><span class="m">0.</span><span class="n">dp</span><span class="p">,</span> <span class="n">Dp</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">)</span>   <span class="p">}</span>
+
+    <span class="k">var</span> <span class="py">top2</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="m">0.</span><span class="n">dp</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="k">val</span> <span class="py">exponentialDecay</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">exponentialDecay</span><span class="p">&lt;</span><span class="n">Dp</span><span class="p">&gt;()}</span>
+
+    <span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">Unit</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">topAnim</span><span class="p">.</span><span class="n">animateDecay</span><span class="p">(</span><span class="m">1000.</span><span class="n">dp</span><span class="p">,</span> <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">exponentialDecay</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// 监听动画的每一帧数
+</span><span class="c1"></span>            <span class="n">top2</span><span class="p">.</span><span class="n">value</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">value</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">Row</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">Box</span><span class="p">(</span>
+            <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">top</span> <span class="p">=</span> <span class="n">topAnim</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Green</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="cm">/** 监听动画的每一帧变化 **/</span>
+        <span class="n">Box</span><span class="p">(</span>
+            <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">top</span> <span class="p">=</span> <span class="n">top2</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Yellow</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这段代码的其实是使用 topAnim 开启了一个 animateDecay 的衰减型动画，然后在这个 block 的回调函数中，将当前的动画运行的每一帧赋值给 top2 变量，而top2 变量又是作用在黄色的 Box 上的 padding 上面的，所以在绿色方块的动画执行后，黄色的方块也会执行，代码运行后是这样的</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312241850428.gif" alt="" /></p>
+
+<h2 id="动画的打断">动画的打断</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">AnimInterruptionTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">topAnim</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span>  <span class="n">Animatable</span><span class="p">(</span><span class="m">0.</span><span class="n">dp</span><span class="p">,</span> <span class="n">Dp</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="k">val</span> <span class="py">exponentialDecay</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span>  <span class="n">exponentialDecay</span><span class="p">&lt;</span><span class="n">Dp</span><span class="p">&gt;()</span> <span class="p">}</span>
+
+    <span class="cm">/** 场景一**/</span>
+    <span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">Unit</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">&#34;@@@@ &lt;top&gt;.AnimInterruptionTest start&#34;</span><span class="p">)</span>
+        <span class="n">topAnim</span><span class="p">.</span><span class="n">animateDecay</span><span class="p">(</span><span class="m">2000.</span><span class="n">dp</span><span class="p">,</span> <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">exponentialDecay</span><span class="p">)</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">&#34;@@@@ &lt;top&gt;.AnimInterruptionTest animateDecay&#34;</span><span class="p">)</span>
+        <span class="cm">/** 这样写的话，动画会执行完后，才会执行 stop方法，这样等于没用了，因为动画已经结束了，这是为什么？ **/</span>
+        <span class="cm">/**
+</span><span class="cm">         * 这是因为  LaunchedEffect 是一个协程函数， 这里的方法都是按照顺序执行的，然后 animateDecay 是一个挂起函数，所以只有等 animateDecay 函数执行完成后，才会执行stop方法了
+</span><span class="cm">         */</span>
+        <span class="n">topAnim</span><span class="p">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">&#34;@@@@ &lt;top&gt;.AnimInterruptionTest topAnim.stop()&#34;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="cm">/** 场景二 **/</span>
+<span class="c1">//    LaunchedEffect(Unit) {
+</span><span class="c1">//        try {
+</span><span class="c1">//            /** 当调用 stop() 方法后， 会抛出在这个协程中抛出异常，那么这个协程中后面的代码会无法执行  **/
+</span><span class="c1">//            topAnim.animateDecay(2000.dp, animationSpec = exponentialDecay)
+</span><span class="c1">//            println(&#34;@@@@ &lt;top&gt;.AnimInterruptionTest  后面的代码&#34;)
+</span><span class="c1">//        } catch (e: CancellationException) {
+</span><span class="c1">//            println(&#34;@@@@ &lt;top&gt;.AnimInterruptionTest ${e.message}&#34;)
+</span><span class="c1">//            e.printStackTrace()
+</span><span class="c1">//        }  
+</span><span class="c1">//      println(&#34;@@@@ &lt;top&gt;.AnimInterruptionTest  动画停止了&#34;) // 去掉 try catch，停止后，这行代码会无法执行
+</span><span class="c1">//    }
+</span><span class="c1"></span>
+    <span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">Unit</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">delay</span><span class="p">(</span><span class="m">100</span><span class="p">)</span>
+        <span class="cm">/** 100 毫秒后打断它 **/</span>
+<span class="c1">//        topAnim.stop()
+</span><span class="c1"></span>    <span class="p">}</span>
+
+    <span class="n">Box</span><span class="p">(</span>
+        <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+            <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">top</span> <span class="p">=</span> <span class="n">topAnim</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Green</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>动画的打断停止，就是调用 stop 方法，唯一需要注意的是（场景一），animateDecay 和 stop 都是 suspend 挂起函数，会阻塞当前协程，所以在调用的时候，需要避免一前一后的方式，这样会等上一个挂起函数执行完成后，才执行 stop 方法，这个就没有停止的效果了， 其二需要注意的是，调用 stop 的方式如果动画正在执行的话，会在当前协程抛出异常，所以需要注意，如果有后续的代码，可能会导致无法执行了。这段代码和上面运行有的动画基本是一致的，就不放图了</p>
+
+<h2 id="动画的边界-上限和下限">动画的边界， 上限和下限</h2>
+
+<p>动画的边界设置其实就是为了设置不超过某个值,比如在上面的动画代码中, 如果初始速度足够大的话,那么他就会超出屏幕了, 而设置边界的方法就是 updateBounds 方法, 他的内部有两个参数</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">updateBounds</span><span class="p">(</span><span class="n">lowerBound</span><span class="p">:</span> <span class="n">T</span><span class="p">?</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">lowerBound</span><span class="p">,</span> <span class="n">upperBound</span><span class="p">:</span> <span class="n">T</span><span class="p">?</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">upperBound</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<ul>
+<li>lowerBound 动画的下限</li>
+<li>upperBound 动画的上限</li>
+</ul>
+
+<p>这两个参数也比较简单,我们看下如下这段代码, 顺便使用一下这个参数</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">boundsTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">BoxWithConstraints</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">anim</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span>   <span class="n">Animatable</span><span class="p">(</span><span class="m">0.</span><span class="n">dp</span><span class="p">,</span> <span class="n">Dp</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">)</span>        <span class="p">}</span>
+
+        <span class="k">val</span> <span class="py">animOffset</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span>    <span class="n">Animatable</span><span class="p">(</span><span class="n">DpOffset</span><span class="p">.</span><span class="n">Zero</span><span class="p">,</span> <span class="n">DpOffset</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">)</span>        <span class="p">}</span>
+
+        <span class="cm">/** 设置动画的边界， 不超过屏幕大小 **/</span>
+        
+        <span class="cm">/**
+</span><span class="cm">         * 动画的上限和下限意思是，动画往那个方向偏移的界限，只能在这个区域中
+</span><span class="cm">         * 如果是垂直平移，下限就是 0， 上限就是屏幕宽度， 水平的时候则相反
+</span><span class="cm">         * 但是，如果是斜着的时候，界限就是 x，y的值了
+</span><span class="cm">         * lowerBound: 动画的下限
+</span><span class="cm">         * upperBound： 动画的上限
+</span><span class="cm">         */</span>
+        <span class="n">anim</span><span class="p">.</span><span class="n">updateBounds</span><span class="p">(</span><span class="n">lowerBound</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span> <span class="n">upperBound</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">maxHeight</span> <span class="p">-</span> <span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+
+        <span class="cm">/** 垂直平移动画 **/</span>
+        <span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">Unit</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">anim</span><span class="p">.</span><span class="n">animateDecay</span><span class="p">(</span><span class="m">3000.</span><span class="n">dp</span><span class="p">,</span> <span class="n">exponentialDecay</span><span class="p">())</span>
+        <span class="p">}</span>
+
+        <span class="cm">/** 斜着平移的 offset动画， 设置上界和下界， 防止超出屏幕  **/</span>
+        <span class="k">val</span> <span class="py">upperBound</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span>   <span class="n">DpOffset</span><span class="p">(</span><span class="n">x</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">maxWidth</span> <span class="p">-</span> <span class="m">100.</span><span class="n">dp</span><span class="p">,</span> <span class="n">y</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">maxHeight</span> <span class="p">-</span> <span class="m">100.</span><span class="n">dp</span><span class="p">)</span>        <span class="p">}</span>
+        <span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">Unit</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/** 设置动画的边界 **/</span>
+            <span class="n">animOffset</span><span class="p">.</span><span class="n">updateBounds</span><span class="p">(</span><span class="n">lowerBound</span> <span class="p">=</span> <span class="n">DpOffset</span><span class="p">.</span><span class="n">Zero</span><span class="p">,</span> <span class="n">upperBound</span> <span class="p">=</span> <span class="n">upperBound</span><span class="p">)</span>
+
+            <span class="cm">/** initialVelocity设置初始速度，注：并不是目标位置  **/</span>
+            <span class="n">animOffset</span><span class="p">.</span><span class="n">animateDecay</span><span class="p">(</span><span class="n">DpOffset</span><span class="p">(</span><span class="n">x</span> <span class="p">=</span> <span class="m">1000.</span><span class="n">dp</span><span class="p">,</span> <span class="n">y</span> <span class="p">=</span> <span class="m">3600.</span><span class="n">dp</span><span class="p">),</span> <span class="n">exponentialDecay</span><span class="p">())</span>
+        <span class="p">}</span>
+
+        <span class="cm">/** 垂直平移 **/</span>
+        <span class="n">Box</span><span class="p">(</span>
+            <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">top</span> <span class="p">=</span> <span class="n">anim</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="cm">/** 斜方向平移 **/</span>
+        <span class="n">Box</span><span class="p">(</span>
+            <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">top</span> <span class="p">=</span> <span class="n">animOffset</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="n">start</span> <span class="p">=</span> <span class="n">animOffset</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">x</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里的代码是绿色方块设置了一个垂直移动的动画, 并且设置了下限 0 dp, 上限不超过屏幕大小, 所以最终只会在屏幕内进行移动, 然后触边后停止动画, 还有一个红色方块, 基本也是类似的, 唯一不一样的就是初始速度的设置是 offset 坐标, 它是以 2 个坐标点进行偏移的, 同时也设置的下限和上限是在屏幕内中, 最终运行的代码是这样的</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312242106672.gif" alt="" /></p>
+
+<h2 id="动画的结果">动画的结果</h2>
+
+<blockquote>
+<p>动画的结果就是调用 animateDecay 的返回值 AnimationResult</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">AnimEndResultTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">BoxWithConstraints</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">anim</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span>     <span class="n">Animatable</span><span class="p">(</span><span class="n">initialValue</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span> <span class="n">Dp</span><span class="p">.</span><span class="n">VectorConverter</span><span class="p">)</span>  <span class="p">}</span>
+
+        <span class="n">LaunchedEffect</span><span class="p">(</span><span class="n">Unit</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/** 设置边界  **/</span>
+            <span class="n">anim</span><span class="p">.</span><span class="n">updateBounds</span><span class="p">(</span><span class="n">lowerBound</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span> <span class="n">upperBound</span> <span class="p">=</span> <span class="k">this</span><span class="n">@BoxWithConstraints</span><span class="p">.</span><span class="n">maxWidth</span> <span class="p">-</span> <span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+            <span class="c1">// animationResult 动画的结果
+</span><span class="c1"></span>            <span class="k">var</span> <span class="py">animationResult</span> <span class="p">=</span> <span class="n">anim</span><span class="p">.</span><span class="n">animateDecay</span><span class="p">(</span><span class="m">4600.</span><span class="n">dp</span><span class="p">,</span> <span class="n">exponentialDecay</span><span class="p">())</span>
+            
+            <span class="cm">/**
+</span><span class="cm">             * animationResult 内部属性
+</span><span class="cm">             * endReason： 结束原因， finish，动画完成了， BoundReached， 动画到达边界了
+</span><span class="cm">             * endState：  结束状态
+</span><span class="cm">             **/</span>
+         
+<span class="c1">//            if (animationResult.endReason == AnimationEndReason.BoundReached) { // BoundReached 动画到达边界了
+</span><span class="c1">//                println(&#34;@@@@ &lt;top&gt;.AnimEndResultTest  到达边界了 ${animationResult.endState.isRunning}   撞边的速度${animationResult.endState.velocity}&#34;)
+</span><span class="c1">//
+</span><span class="c1">//                /** 拿到撞边的速度，可以做一个弹簧动画 **/
+</span><span class="c1">//                /** 这样只会回弹一次，可以让他反复回弹 **/
+</span><span class="c1">//                 anim.animateDecay(-animationResult.endState.velocity, exponentialDecay())
+</span><span class="c1">//            }
+</span><span class="c1"></span>
+
+            <span class="cm">/** 上面是一次回弹，使用 while 做一个反复回弹的效果 **/</span>
+            <span class="k">while</span> <span class="p">(</span><span class="n">animationResult</span><span class="p">.</span><span class="n">endReason</span> <span class="p">==</span> <span class="n">AnimationEndReason</span><span class="p">.</span><span class="n">BoundReached</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 撞边
+</span><span class="c1"></span>                <span class="c1">// velocity：拿到结束的那一刻的动画速度，设置一个反方向速度，让其不断的反弹
+</span><span class="c1"></span>                <span class="n">animationResult</span> <span class="p">=</span> <span class="n">anim</span><span class="p">.</span><span class="n">animateDecay</span><span class="p">(-</span><span class="n">animationResult</span><span class="p">.</span><span class="n">endState</span><span class="p">.</span><span class="n">velocity</span><span class="p">,</span> <span class="n">exponentialDecay</span><span class="p">())</span>
+            <span class="p">}</span>
+
+        <span class="p">}</span>
+
+        <span class="n">Box</span><span class="p">(</span>
+            <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">start</span> <span class="p">=</span> <span class="n">anim</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>上面的动画代码就是开启了一个横向的偏移的动画，不断的设置 padding 值，且设置了一个边界是在屏幕之内回弹，最终在动画撞边后，获取撞边停止时刻的速度，再开启一个反方向的动画，不断的反弹，直到速度衰减到停止下来</p>
+
+<p>其中 anim.animateDecay 返回值 AnimationResult 就是动画的结果，也比较简单，看下他的源码，后面再看下动画运行后的效果</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">suspend</span> <span class="k">fun</span> <span class="nf">animateDecay</span><span class="p">(</span>
+        <span class="n">initialVelocity</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
+        <span class="n">animationSpec</span><span class="p">:</span> <span class="n">DecayAnimationSpec</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;,</span>
+        <span class="n">block</span><span class="p">:</span> <span class="p">(</span><span class="n">Animatable</span><span class="p">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">&gt;.()</span> <span class="p">-&gt;</span> <span class="n">Unit</span><span class="p">)?</span> <span class="p">=</span> <span class="k">null</span>
+    <span class="p">):</span> <span class="n">AnimationResult</span><span class="p">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">&gt;</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">anim</span> <span class="p">=</span> <span class="n">DecayAnimation</span><span class="p">(</span>
+            <span class="n">animationSpec</span> <span class="p">=</span> <span class="n">animationSpec</span><span class="p">,</span>
+            <span class="n">initialValue</span> <span class="p">=</span> <span class="n">value</span><span class="p">,</span>
+            <span class="n">initialVelocityVector</span> <span class="p">=</span> <span class="n">typeConverter</span><span class="p">.</span><span class="n">convertToVector</span><span class="p">(</span><span class="n">initialVelocity</span><span class="p">),</span>
+            <span class="n">typeConverter</span> <span class="p">=</span> <span class="n">typeConverter</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">runAnimation</span><span class="p">(</span><span class="n">anim</span><span class="p">,</span> <span class="n">initialVelocity</span><span class="p">,</span> <span class="n">block</span><span class="p">)</span>
+    <span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="animationresult">AnimationResult</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">class</span> <span class="nc">AnimationResult</span><span class="p">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span> <span class="p">:</span> <span class="n">AnimationVector</span><span class="p">&gt;(</span>
+    
+    <span class="k">val</span> <span class="py">endState</span><span class="p">:</span> <span class="n">AnimationState</span><span class="p">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">&gt;,</span>
+    
+    <span class="k">val</span> <span class="py">endReason</span><span class="p">:</span> <span class="n">AnimationEndReason</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">toString</span><span class="p">():</span> <span class="n">String</span> <span class="p">=</span> <span class="s">&#34;AnimationResult(endReason=$endReason, endState=$endState)&#34;</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>其中 AnimationResult 是一个类，同时内部维护了 endState 和 endReason 结束状态和结束原因，同时他们也是类，我们先看看 endState</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">class</span> <span class="nc">AnimationState</span><span class="p">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span> <span class="p">:</span> <span class="n">AnimationVector</span><span class="p">&gt;(</span>
+    <span class="k">val</span> <span class="py">typeConverter</span><span class="p">:</span> <span class="n">TwoWayConverter</span><span class="p">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">&gt;,</span> <span class="c1">// 用于转换动画的值和动画的速度向量。
+</span><span class="c1"></span>    <span class="n">initialValue</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="c1">// 表示动画开始时的值
+</span><span class="c1"></span>    <span class="n">initialVelocityVector</span><span class="p">:</span> <span class="n">V</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span> <span class="c1">// 是动画开始时的速度向量
+</span><span class="c1"></span>    <span class="n">lastFrameTimeNanos</span><span class="p">:</span> <span class="n">Long</span> <span class="p">=</span> <span class="n">AnimationConstants</span><span class="p">.</span><span class="n">UnspecifiedTime</span><span class="p">,</span> <span class="c1">// 表示上一帧的时间
+</span><span class="c1"></span>    <span class="n">finishedTimeNanos</span><span class="p">:</span> <span class="n">Long</span> <span class="p">=</span> <span class="n">AnimationConstants</span><span class="p">.</span><span class="n">UnspecifiedTime</span><span class="p">,</span> <span class="c1">// 表示动画结束的时间
+</span><span class="c1"></span>    <span class="n">isRunning</span><span class="p">:</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="k">false</span> <span class="c1">// 表示动画是否正在运行
+</span><span class="c1"></span><span class="p">)</span> <span class="p">:</span> <span class="n">State</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">{</span>
+    <span class="c1">// 当前动画的值
+</span><span class="c1"></span>    <span class="k">override</span> <span class="k">var</span> <span class="py">value</span><span class="p">:</span> <span class="n">T</span> <span class="k">by</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="n">initialValue</span><span class="p">)</span>
+        <span class="k">internal</span> <span class="k">set</span>
+
+    <span class="c1">// 当前动画的速度向量
+</span><span class="c1"></span>    <span class="k">var</span> <span class="py">velocityVector</span><span class="p">:</span> <span class="n">V</span> <span class="p">=</span>
+        <span class="n">initialVelocityVector</span><span class="o">?.</span><span class="n">copy</span><span class="p">()</span> <span class="o">?:</span> <span class="n">typeConverter</span><span class="p">.</span><span class="n">createZeroVectorFrom</span><span class="p">(</span><span class="n">initialValue</span><span class="p">)</span>
+        <span class="k">internal</span> <span class="k">set</span>
+
+    <span class="c1">// 上一帧的时间
+</span><span class="c1"></span>    <span class="n">@get</span><span class="p">:</span><span class="n">Suppress</span><span class="p">(</span><span class="s">&#34;MethodNameUnits&#34;</span><span class="p">)</span>
+    <span class="k">var</span> <span class="py">lastFrameTimeNanos</span><span class="p">:</span> <span class="n">Long</span> <span class="p">=</span> <span class="n">lastFrameTimeNanos</span>
+        <span class="k">internal</span> <span class="k">set</span>
+	<span class="c1">// 动画结束的时间
+</span><span class="c1"></span>    <span class="n">@get</span><span class="p">:</span><span class="n">Suppress</span><span class="p">(</span><span class="s">&#34;MethodNameUnits&#34;</span><span class="p">)</span>
+    <span class="k">var</span> <span class="py">finishedTimeNanos</span><span class="p">:</span> <span class="n">Long</span> <span class="p">=</span> <span class="n">finishedTimeNanos</span>
+        <span class="k">internal</span> <span class="k">set</span>
+
+   <span class="c1">// 动画是否正在运行
+</span><span class="c1"></span>    <span class="k">var</span> <span class="py">isRunning</span><span class="p">:</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="n">isRunning</span>
+        <span class="k">internal</span> <span class="k">set</span>
+
+    <span class="c1">// 当前动画的速度，是从速度向量转换得来的
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">velocity</span><span class="p">:</span> <span class="n">T</span>
+        <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="n">typeConverter</span><span class="p">.</span><span class="n">convertFromVector</span><span class="p">(</span><span class="n">velocityVector</span><span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>基本上就是动画的一些运行状态，速度等等，有需要的时候临时翻一下源码也很好理解，参数不多，接着来看看 endReason</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">enum</span> <span class="k">class</span> <span class="nc">AnimationEndReason</span> <span class="p">{</span>
+    <span class="c1">// 撞边，动画达到设置的边界
+</span><span class="c1"></span>    <span class="n">BoundReached</span><span class="p">,</span>
+    <span class="c1">// 动画已成功完成，没有任何中断（即是自然完成的，调用 stop 的情况，不会有 finishEd 结果返回）
+</span><span class="c1"></span>    <span class="n">Finished</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>endReason 就更加简单了，如注释那样，最后看看上面代码运行的效果</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312252136869.gif" alt="" /></p>
+
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2023-05-30
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/android/">Android</a>
+          <a href="https://midFang.github.io/tags/%E5%8A%A8%E7%94%BB/">动画</a>
+          <a href="https://midFang.github.io/tags/compose/">Compose</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/compose-transition/">
+            
+            <i class="iconfont">
+              <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M691.908486 949.511495l75.369571-89.491197c10.963703-12.998035 10.285251-32.864502-1.499144-44.378743L479.499795 515.267417 757.434875 204.940602c11.338233-12.190647 11.035334-32.285311-0.638543-44.850487l-80.46666-86.564541c-11.680017-12.583596-30.356378-12.893658-41.662889-0.716314L257.233596 494.235404c-11.332093 12.183484-11.041474 32.266891 0.657986 44.844348l80.46666 86.564541c1.772366 1.910513 3.706415 3.533476 5.750981 4.877077l306.620399 321.703933C662.505829 963.726242 680.945807 962.528973 691.908486 949.511495z"></path>
+</svg>
+
+            </i>
+            <span class="prev-text nav-default">Compose转场动画之 Transition</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        
+          <a class="next" href="/compose-animation-basics/">
+            <span class="next-text nav-default">Compose 动画基础篇之各种 Spec</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://stackoverflow.com/users/14331888/midfang" rel="me noopener" class="iconfont"
+      title="stack-overflow"  target="_blank"
+      >
+      <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M809.714286 932.571429l-638.857143 0 0-274.285714-91.428571 0 0 365.714286 821.714286 0 0-365.714286-91.428571 0 0 274.285714zm-538.285714-299.428571l18.857143-89.714286 447.428571 94.285714-18.857143 89.142857zm58.857143-213.714286l38.285714-83.428571 414.285714 193.714286-38.285714 82.857143zm114.857143-203.428571l58.285714-70.285714 350.857143 293.142857-58.285714 70.285714zm226.857143-216l272.571429 366.285714-73.142857 54.857143-272.571429-366.285714zm-410.285714 840.571429l0-90.857143 457.142857 0 0 90.857143-457.142857 0z"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://www.douban.com/people/194654920/" rel="me noopener" class="iconfont"
+      title="douban"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M926.917973 37.80608C959.65184 37.80608 986.19392 64.34816 986.19392 97.082027L986.19392 926.917973C986.19392 959.65184 959.65184 986.19392 926.917973 986.19392L97.082027 986.19392C64.34816 986.19392 37.80608 959.65184 37.80608 926.917973L37.80608 97.082027C37.80608 64.34816 64.34816 37.80608 97.082027 37.80608zM176.653653 176.19968 176.653653 252.678827 825.658027 252.678827 825.658027 176.19968zM217.719467 316.146347 217.719467 628.08064 273.524053 628.08064 341.292373 770.39616 157.259093 770.39616 157.259093 845.417813 842.949973 845.417813 842.949973 770.39616 654.226773 770.39616 722.899627 628.08064 783.67744 628.08064 783.67744 316.146347zM684.885333 392.891733 684.885333 553.987413 312.576 553.987413 312.576 392.891733zM570.770773 770.39616 426.653013 770.39616 359.621973 628.08064 639.443627 628.08064z"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://midFang.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2020 -
+    2024
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        midFang
+        
+      </span></span>
+
+  
+  
+    <span id="busuanzi_container">
+      访客数/访问量：<span id="busuanzi_value_site_uv"></span>/<span id="busuanzi_value_site_pv"></span>
+    </span>
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script type="text/javascript">
+    AV.initialize( null ,  null );
+  </script>
+
+  <script>
+    function showHitCount(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push($(this).attr("id").trim());
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var hits = item.get('hits');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(hits);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if (countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function (results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("hits");
+            counter.save(null, {
+              success: function (counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('hits'));
+              },
+              error: function (counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+             
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+             
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("hits", 1);
+            newcounter.save(null, {
+              success: function (newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('hits'));
+              },
+              error: function (newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function (error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function () {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        
+        addCount(Counter);
+      } else if ($('.post-link').length > 1) {
+        
+        showHitCount(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+  <script>
+    $("#openSearch, #openSearchMobile").click(function(){
+      $(".modal-dialog").addClass("visible");
+    });
+
+    $("#closeSearch").click(function(){
+      $(".modal-dialog").removeClass("visible");
+    });
+
+    $(document).click(function(event) {
+    
+      if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
+        $("body").find(".modal-dialog").removeClass("visible");
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>

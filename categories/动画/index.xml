@@ -6,10 +6,46 @@
     <description>Recent content in 动画 on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 21 Sep 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 05 Jul 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/categories/%E5%8A%A8%E7%94%BB/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Compose 动画终章进阶篇</title>
+      <link>https://midFang.github.io/compose-animation-final-chapter-advanced-chapter/</link>
+      <pubDate>Wed, 05 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/compose-animation-final-chapter-advanced-chapter/</guid>
+      <description>AnimatedVisibility 对单个控件做显示和隐藏的动画效果 在上一个章节我们学习了 Transition 动画，这一节学习它更加上层的 Api，但其实内部本质上使用的也是 Transition, 先看一下 AnimatedVisibility 的源码,</description>
+    </item>
+    
+    <item>
+      <title>Compose转场动画之 Transition</title>
+      <link>https://midFang.github.io/compose-transition/</link>
+      <pubDate>Sun, 11 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/compose-transition/</guid>
+      <description>前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 在 Android 原生中, Transition 动画是</description>
+    </item>
+    
+    <item>
+      <title>Compose之衰减型动画</title>
+      <link>https://midFang.github.io/compose-animatedecay/</link>
+      <pubDate>Tue, 30 May 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/compose-animatedecay/</guid>
+      <description>前言 回顾上篇文章我们学习了 compose 中的 animateTo 、 snapTo 如何使用，和 animationSpec 的参数配置等等，这篇文章，我们学习 Animatable 中另外一个方法 animateDecay animateDecay 衰减型动画， 它只有一个实现类 DecayAnimationSpecImpl 有了</description>
+    </item>
+    
+    <item>
+      <title>Compose 动画基础篇之各种 Spec</title>
+      <link>https://midFang.github.io/compose-animation-basics/</link>
+      <pubDate>Sat, 20 May 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/compose-animation-basics/</guid>
+      <description>从这一节开始，我们开始讲解 compose 最基础的动画 Api 使用，最基础也是最重要的部分，掌握这些基础的配置，会对后面的高阶动画的使用配置更加的得心应手 状态转</description>
+    </item>
     
     <item>
       <title>Android 转场动画之揭露动画的使用</title>
@@ -37,7 +73,7 @@
     </item>
     
     <item>
-      <title>Activity 从各个方向进入和退出的转场动画</title>
+      <title>Compose 动画基础篇之各种 Spec</title>
       <link>https://midFang.github.io/activity-animation-transfer/</link>
       <pubDate>Wed, 02 Oct 2019 00:00:00 +0000</pubDate>
       

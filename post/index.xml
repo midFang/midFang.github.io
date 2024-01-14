@@ -6,10 +6,46 @@
     <description>Recent content in Posts on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 05 May 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 05 Jul 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Compose 动画终章进阶篇</title>
+      <link>https://midFang.github.io/compose-animation-final-chapter-advanced-chapter/</link>
+      <pubDate>Wed, 05 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/compose-animation-final-chapter-advanced-chapter/</guid>
+      <description>AnimatedVisibility 对单个控件做显示和隐藏的动画效果 在上一个章节我们学习了 Transition 动画，这一节学习它更加上层的 Api，但其实内部本质上使用的也是 Transition, 先看一下 AnimatedVisibility 的源码,</description>
+    </item>
+    
+    <item>
+      <title>Compose转场动画之 Transition</title>
+      <link>https://midFang.github.io/compose-transition/</link>
+      <pubDate>Sun, 11 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/compose-transition/</guid>
+      <description>前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 在 Android 原生中, Transition 动画是</description>
+    </item>
+    
+    <item>
+      <title>Compose之衰减型动画</title>
+      <link>https://midFang.github.io/compose-animatedecay/</link>
+      <pubDate>Tue, 30 May 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/compose-animatedecay/</guid>
+      <description>前言 回顾上篇文章我们学习了 compose 中的 animateTo 、 snapTo 如何使用，和 animationSpec 的参数配置等等，这篇文章，我们学习 Animatable 中另外一个方法 animateDecay animateDecay 衰减型动画， 它只有一个实现类 DecayAnimationSpecImpl 有了</description>
+    </item>
+    
+    <item>
+      <title>Compose 动画基础篇之各种 Spec</title>
+      <link>https://midFang.github.io/compose-animation-basics/</link>
+      <pubDate>Sat, 20 May 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/compose-animation-basics/</guid>
+      <description>从这一节开始，我们开始讲解 compose 最基础的动画 Api 使用，最基础也是最重要的部分，掌握这些基础的配置，会对后面的高阶动画的使用配置更加的得心应手 状态转</description>
+    </item>
     
     <item>
       <title>线程池参数详解</title>
@@ -331,60 +367,6 @@
 &lt;li&gt;disqus 这个工具配置也比较简单，也是免费的。但是，广告多，而且加载也比较慢。&lt;/li&gt;
 &lt;li&gt;utterances 是基于 github issue ，拥有多种主题的开源免费小组件。&lt;/li&gt;
 &lt;/ol&gt;</description>
-    </item>
-    
-    <item>
-      <title>Kotlin 中的异常处理</title>
-      <link>https://midFang.github.io/kotlin-catch-exception/</link>
-      <pubDate>Tue, 15 Sep 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/kotlin-catch-exception/</guid>
-      <description>&lt;h3 id=&#34;java-中的异常处理&#34;&gt;Java 中的异常处理&lt;/h3&gt;
-
-&lt;p&gt;日常开发中难免会遇到对异常的处理，我们先来看一段按照 Java 的方式进行的异常处理：&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Kotlin 中的高阶函数</title>
-      <link>https://midFang.github.io/kotlin-higher-order-functions/</link>
-      <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/kotlin-higher-order-functions/</guid>
-      <description>&lt;h3 id=&#34;定义&#34;&gt;定义&lt;/h3&gt;
-
-&lt;p&gt;如果一个函数接受另外一个函数作为参数，或者返回值的类型是另外一个函数，那么该函数称为高阶函数&lt;/p&gt;
-
-&lt;p&gt;函数类型的定义如下&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;(String, Int) -&amp;gt; Unit &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;</description>
-    </item>
-    
-    <item>
-      <title>Kotlin 中的密封类</title>
-      <link>https://midFang.github.io/kotlin-sealed-class/</link>
-      <pubDate>Sun, 30 Aug 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/kotlin-sealed-class/</guid>
-      <description>&lt;h2 id=&#34;密封类&#34;&gt;密封类&lt;/h2&gt;
-
-&lt;p&gt;密封类用来表示受限的类继承结构：当一个值为有限几种的类型, 而不能有任何其他类型时。在某种意义上，他们是枚举类的扩展：枚举类型的值集合 也是受限的，但每个枚举常量只存在一个实例，而密封类 的一个子类可以有可包含状态的多个实例。&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>kotlin 中的运算符重载</title>
-      <link>https://midFang.github.io/kotlin-operator-overloading/</link>
-      <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/kotlin-operator-overloading/</guid>
-      <description>&lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
-
-&lt;p&gt;运算符重载是 Kotlin 中的提供的一个比较有趣的语法糖，我们知道，在 Java 中有许多语言内置的运算符关键字，比如 + - * / % ++ &amp;ndash; 。而 Kotlin 中允许我们将这些所有的运算符甚至其他的关键字进行重载&lt;/p&gt;</description>
     </item>
     
   </channel>

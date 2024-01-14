@@ -71,7 +71,7 @@
 
 <meta itemprop="datePublished" content="2019-10-01T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2019-10-01T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="3273">
+<meta itemprop="wordCount" content="3307">
 
 
 
@@ -162,64 +162,6 @@
   </ul>
 </nav>
 
-
-  
-    
-
-
-
-
-
-
-  <link rel="stylesheet" href="/lib/photoswipe/photoswipe.min.css" />
-  <link rel="stylesheet" href="/lib/photoswipe/default-skin/default-skin.min.css" />
-
-
-
-
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-<div class="pswp__bg"></div>
-
-<div class="pswp__scroll-wrap">
-    
-    <div class="pswp__container">
-      <div class="pswp__item"></div>
-      <div class="pswp__item"></div>
-      <div class="pswp__item"></div>
-    </div>
-    
-    <div class="pswp__ui pswp__ui--hidden">
-    <div class="pswp__top-bar">
-      
-      <div class="pswp__counter"></div>
-      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-      <button class="pswp__button pswp__button--share" title="Share"></button>
-      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-      
-      
-      <div class="pswp__preloader">
-        <div class="pswp__preloader__icn">
-          <div class="pswp__preloader__cut">
-            <div class="pswp__preloader__donut"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-      <div class="pswp__share-tooltip"></div>
-    </div>
-    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-    </button>
-    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-    </button>
-    <div class="pswp__caption">
-      <div class="pswp__caption__center"></div>
-    </div>
-    </div>
-    </div>
-</div>
 
   
 
@@ -1240,7 +1182,7 @@
 </div>
 <h2 id="总结">总结</h2>
 
-<p>好了, 到了这里大致的执行流程的源码就分析完成了, 这里其实有点像观察者设计模式, 但是其实不是, 这里主要是靠几个集合类, 然后通过反射的方式进行执行的, 也就是其核心原理了</p>
+<p>好了, 到了这里大致的执行流程的源码就分析完成了, 这里其实有点像观察者设计模式, 可以说是，也可以说不是，或者说运用了观察者设计模式的思想，本质上内部核心是使用的反射, 主要是靠几个集合类, 然后通过反射的方式进行执行的, 也就是其核心原理了</p>
 
 <ul>
 <li>注册的时候, 通过查找订阅者类信息上面的注解信息, 封装成 SubscriberMethod 存入到集合中 (subscriptionsByEventType Key 对应的是事件类型, Value 对应的是关于事件类型的信息集合), 并缓存起来, 然后再对粘性事件进行处理</li>
@@ -1415,7 +1357,7 @@
     &copy;
     
       2020 -
-    2021
+    2024
     <span class="heart">
       
       <i class="iconfont">
@@ -1475,12 +1417,6 @@
 
 
 
-
-  
-    <script type="text/javascript" src="/js/load-photoswipe.js"></script>
-    <script type="text/javascript" src="/lib/photoswipe/photoswipe.min.js"></script>
-    <script type="text/javascript" src="/lib/photoswipe/photoswipe-ui-default.min.js"></script>
-  
 
 
 
