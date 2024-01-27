@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>midFang&#39;s Blog</title>
+  <title>Compose · midFang&#39;s Blog</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -34,8 +34,8 @@
 <meta name="generator" content="Hugo 0.58.3" />
 
 
-<link rel="canonical" href="https://midFang.github.io/" />
-<link href="/index.xml" rel="alternate" type="application/rss+xml" title="midFang&#39;s Blog" />
+<link rel="canonical" href="https://midFang.github.io/categories/compose/" />
+<link href="/categories/compose/index.xml" rel="alternate" type="application/rss+xml" title="midFang&#39;s Blog" />
 
 
 
@@ -58,17 +58,17 @@
 
 
 
-<meta property="og:title" content="midFang&#39;s Blog" />
+<meta property="og:title" content="Compose" />
 <meta property="og:description" content="Hugo theme jane example site." />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://midFang.github.io/" />
+<meta property="og:url" content="https://midFang.github.io/categories/compose/" />
 
 <meta property="og:updated_time" content="2023-07-20T00:00:00+00:00" />
-<meta itemprop="name" content="midFang&#39;s Blog">
+<meta itemprop="name" content="Compose">
 <meta itemprop="description" content="Hugo theme jane example site.">
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="midFang&#39;s Blog"/>
+<meta name="twitter:title" content="Compose"/>
 <meta name="twitter:description" content="Hugo theme jane example site."/>
 
 <!--[if lte IE 9]>
@@ -194,7 +194,7 @@
   <ul id="menu" class="menu">
     
     
-        <li class="menu-item active">
+        <li class="menu-item">
         
           
           
@@ -267,449 +267,27 @@
       <div class="content-wrapper">
         <div id="content" class="content container">
           
-<section id="posts" class="posts">
-  
+
+<section id="archive" class="archive">
   
     
-  
-  
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/java-dynamic-proxy-design-patterns/">Java 动态代理</a>
-    </h1>
+      <div class="archive-title category">
+        <h2 class="archive-name">Category: Compose</h2>
+      </div>
     
-    <div class="post-meta">
-      <time datetime="2020-01-10" class="post-time">
-        2020-01-10
+  
+
+  
+    <div class="archive-post">
+      <time datetime="2023-07-20" class="archive-post-time">
+        2023-07-20
       </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"> 数据结构 </a>
-          
-        </div>
-      
-      
-      
-        <span id="/java-dynamic-proxy-design-patterns/" class="leancloud_visitors" data-flag-title="Java 动态代理">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
+      <span class="archive-post-title">
+        <a href="/combinedmodifier-composedmodifier-analysis/" class="archive-post-link">
+          CombinedModifier 和 ComposedModifier 原理分析
+        </a>
+      </span>
     </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      动态代理和静态代理一般在设计模式中的定义为代理设计模式 定义： 为其他对象提供一种代理以控制对这个对象的访问 使用场景： 当无法或者不想直接访问某个
-    </div>
-    <div class="read-more">
-      <a href="/java-dynamic-proxy-design-patterns/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/activity-animation-transfer/">Compose 动画基础篇之各种 Spec</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-10-02" class="post-time">
-        2019-10-02
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E5%8A%A8%E7%94%BB/"> 动画 </a>
-          
-        </div>
-      
-      
-      
-        <span id="/activity-animation-transfer/" class="leancloud_visitors" data-flag-title="Compose 动画基础篇之各种 Spec">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <h3 id="向左推">向左推</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// R.anim.i_slide_in_left
-</span><span class="c1"></span><span class="o">&lt;</span><span class="n">set</span> <span class="nf">xmlns</span><span class="o">:</span><span class="n">android</span><span class="o">=</span><span class="s">&#34;http://schemas.android.com/apk/res/android&#34;</span><span class="o">&gt;</span>
-	<span class="o">&lt;</span><span class="n">translate</span> 
-	<span class="nf">android</span><span class="o">:</span><span class="n">fromXDelta</span><span class="o">=</span><span class="s">&#34;100%p&#34;</span>
-	<span class="n">android</span><span class="o">:</span><span class="n">toXDelta</span><span class="o">=</span><span class="s">&#34;0&#34;</span>
-	<span class="n">android</span><span class="o">:</span><span class="n">duration</span><span class="o">=</span><span class="s">&#34;350&#34;</span><span class="o">/&gt;</span>
-<span class="o">&lt;/</span><span class="n">set</span><span class="o">&gt;</span>
-
-<span class="c1">// R.anim.i_slide_out_left
-</span><span class="c1"></span><span class="o">&lt;?</span><span class="n">xml</span> <span class="nf">version</span><span class="o">=</span><span class="s">&#34;1.0&#34;</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#34;utf-8&#34;</span><span class="o">?&gt;</span>
-<span class="o">&lt;</span><span class="n">set</span> <span class="nf">xmlns</span><span class="o">:</span><span class="n">android</span><span class="o">=</span><span class="s">&#34;http://schemas.android.com/apk/res/android&#34;</span><span class="o">&gt;</span>
-	<span class="o">&lt;</span><span class="n">translate</span> 
-	<span class="nf">android</span><span class="o">:</span><span class="n">fromXDelta</span><span class="o">=</span><span class="s">&#34;0&#34;</span>
-	<span class="n">android</span><span class="o">:</span><span class="n">toXDelta</span><span class="o">=</span><span class="s">&#34;-100%p&#34;</span>
-	<span class="n">android</span><span class="o">:</span><span class="n">duration</span><span class="o">=</span><span class="s">&#34;350&#34;</span><span class="o">/&gt;</span>
-<span class="o">&lt;/</span><span class="n">set</span><span class="o">&gt;</span></code></pre></td></tr></table>
-</div>
-</div>
-<h3 id="向右推">向右推</h3>
-    </div>
-    <div class="read-more">
-      <a href="/activity-animation-transfer/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/android-source-code-design-patterns/">Android源码之单例设计模式</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-10-01" class="post-time">
-        2019-10-01
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"> 源码分析 </a>
-          
-        </div>
-      
-      
-      
-        <span id="/android-source-code-design-patterns/" class="leancloud_visitors" data-flag-title="Android源码之单例设计模式">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <h2 id="介绍">介绍</h2>
-
-<blockquote>
-<p>单例设计模式可以说是我们在开发中最常用的一个设计模式了, 单利设计模式的核心思想也就是: 在整个应用的生命周期内, 只有一个对象实例的存在</p>
-</blockquote>
-
-<h3 id="layoutinflater-单例分析">LayoutInflater 单例分析</h3>
-
-<p>在 Activity View 加载一个布局的时候, 通常是这样做的</p>
-    </div>
-    <div class="read-more">
-      <a href="/android-source-code-design-patterns/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/arraylist-source-code-analysis/">ArrayList源码分析</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-10-01" class="post-time">
-        2019-10-01
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"> 源码分析 </a>
-          
-        </div>
-      
-      
-      
-        <span id="/arraylist-source-code-analysis/" class="leancloud_visitors" data-flag-title="ArrayList源码分析">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      开篇之前, 想想下面几个问题的答案是什么? 有的时候我们看源码也是, 并不是说一味盲目的直接跑到源码中去看, 我们带着这几个问题去阅读源码, 反而会轻
-    </div>
-    <div class="read-more">
-      <a href="/arraylist-source-code-analysis/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/eventbus-source-code-analysis/">EventBus 源码分析</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-10-01" class="post-time">
-        2019-10-01
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"> 源码分析 </a>
-          
-        </div>
-      
-      
-      
-        <span id="/eventbus-source-code-analysis/" class="leancloud_visitors" data-flag-title="EventBus 源码分析">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      大致流程 EventBus 是一种用于 Android 的事件发布-订阅总线, 是一个可以实现组件间通信的一个第三方框架, 使用起来非常的简单, 一共也就是 4 个步骤, 注册订阅, 发送
-    </div>
-    <div class="read-more">
-      <a href="/eventbus-source-code-analysis/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/hashmap-source-code-analysis/">HashMap源码分析</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-09-30" class="post-time">
-        2019-09-30
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"> 源码分析 </a>
-          
-        </div>
-      
-      
-      
-        <span id="/hashmap-source-code-analysis/" class="leancloud_visitors" data-flag-title="HashMap源码分析">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      HashMap 可以说是我们在开发中经常使用的到, 在 Java 的数据结构基础里，HashMap 无疑是一个非常重要的数据结构 现在看看源码里面的方法具体都干了一下什么
-    </div>
-    <div class="read-more">
-      <a href="/hashmap-source-code-analysis/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/java-generics-common/">Java 中的泛型</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-09-30" class="post-time">
-        2019-09-30
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/java/"> Java </a>
-          
-        </div>
-      
-      
-      
-        <span id="/java-generics-common/" class="leancloud_visitors" data-flag-title="Java 中的泛型">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      假设有 3 个类, 他们的继承关系是这样的 1 2 public class Person { } 1 2 public class Gril extends Person { } 1 2 public class Boy extends Person { } 1 2 public class Father { } 在类上指定的泛型, 那么在当前类, 使用的都
-    </div>
-    <div class="read-more">
-      <a href="/java-generics-common/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/kotlin-extension-function-base-use/">Kotlin 扩展函数 let with run apply also 的使用初探</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-09-30" class="post-time">
-        2019-09-30
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/kotlin/"> kotlin </a>
-          
-        </div>
-      
-      
-      
-        <span id="/kotlin-extension-function-base-use/" class="leancloud_visitors" data-flag-title="Kotlin 扩展函数 let with run apply also 的使用初探">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      最近的项目中也是基本处于是逐渐切换 Kotlin 的状态, 以下是在项目中经常使用到的几个扩展函数, 做一个记录, 不得不说有的时候真的比 Java 方便很多 内联扩展函数
-    </div>
-    <div class="read-more">
-      <a href="/kotlin-extension-function-base-use/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/view-draw-process/">View 的 draw 过程</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-09-29" class="post-time">
-        2019-09-29
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/view/"> View </a>
-          
-        </div>
-      
-      
-      
-        <span id="/view-draw-process/" class="leancloud_visitors" data-flag-title="View 的 draw 过程">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      Draw 过程 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个顶点的位置, draw 则是将布局绘制在屏
-    </div>
-    <div class="read-more">
-      <a href="/view-draw-process/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/view-layout-process/">View 的 Layout 摆放过程</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-09-29" class="post-time">
-        2019-09-29
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/view/"> View </a>
-          
-        </div>
-      
-      
-      
-        <span id="/view-layout-process/" class="leancloud_visitors" data-flag-title="View 的 Layout 摆放过程">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      Layout 过程 layout 的作用是 ViewGroup 用来确定子元素的位置 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个
-    </div>
-    <div class="read-more">
-      <a href="/view-layout-process/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
   
 </section>
 
@@ -730,38 +308,6 @@
 
   
   
-
-  
-  
-  <nav class="pagination">
-    <ul>
-      
-      <li >
-        <a href="/">1</a>
-      </li>
-      
-      <li >
-        <a href="/page/2/">2</a>
-      </li>
-      
-      <li >
-        <a href="/page/3/">3</a>
-      </li>
-      
-      <li  class="active" >
-        <a href="/page/4/">4</a>
-      </li>
-      
-      <li >
-        <a href="/page/5/">5</a>
-      </li>
-      
-      <li >
-        <a href="/page/6/">6</a>
-      </li>
-      
-    </ul>
-  </nav>
 
   
   

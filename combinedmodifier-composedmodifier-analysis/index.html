@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>CombinedModifier 和 ComposedModifier 原理分析 - midFang&#39;s Blog</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="midFang" />
+  <meta name="description" content="在 Compose 中，Modifier 的调用顺序不同，它造成的结果是不一样的，而不像原生的 XML 一样，顺序并不会影响界面绘制的结果。而在 Compose 中，它是按照Modi" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<link rel="canonical" href="https://midFang.github.io/combinedmodifier-composedmodifier-analysis/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="CombinedModifier 和 ComposedModifier 原理分析" />
+<meta property="og:description" content="在 Compose 中，Modifier 的调用顺序不同，它造成的结果是不一样的，而不像原生的 XML 一样，顺序并不会影响界面绘制的结果。而在 Compose 中，它是按照Modi" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/combinedmodifier-composedmodifier-analysis/" />
+<meta property="article:published_time" content="2023-07-20T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-07-20T00:00:00+00:00" />
+<meta itemprop="name" content="CombinedModifier 和 ComposedModifier 原理分析">
+<meta itemprop="description" content="在 Compose 中，Modifier 的调用顺序不同，它造成的结果是不一样的，而不像原生的 XML 一样，顺序并不会影响界面绘制的结果。而在 Compose 中，它是按照Modi">
+
+
+<meta itemprop="datePublished" content="2023-07-20T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2023-07-20T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="4045">
+
+
+
+<meta itemprop="keywords" content="Android,Compose," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CombinedModifier 和 ComposedModifier 原理分析"/>
+<meta name="twitter:description" content="在 Compose 中，Modifier 的调用顺序不同，它造成的结果是不一样的，而不像原生的 XML 一样，顺序并不会影响界面绘制的结果。而在 Compose 中，它是按照Modi"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">midFang's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+        
+      </li>
+    
+
+    
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+
+  
+    
+<div class="modal-dialog">
+    
+    <div class="modal-content">
+      <div id="closeSearch" title="Close" class="close">X</div>
+      <div class="modal-header">
+        <div class="modal-title">Search</div>
+      </div>
+      <div class="modal-body">
+          <script>
+            (function() {
+              var cx = '57787f7f4d21d54fc';
+              var gcse = document.createElement('script');
+              gcse.type = 'text/javascript';
+              gcse.async = true;
+              gcse.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//cse.google.com/cse.js?cx=' + cx;
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(gcse, s);
+            })();
+          </script>
+          <gcse:search></gcse:search>
+      </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      midFang's Blog
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+      <li class="menu-item">
+        <a id="openSearch" class="menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">CombinedModifier 和 ComposedModifier 原理分析</h1>
+      
+      <div class="post-meta">
+        <time datetime="2023-07-20" class="post-time">
+          2023-07-20
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/compose/"> Compose </a>
+            
+          </div>
+        
+
+        
+        
+          <span id="busuanzi_container_page_pv">
+            | 阅读 <span id="busuanzi_value_page_pv"></span>
+          </span>
+        
+
+        
+        
+          <span id="/combinedmodifier-composedmodifier-analysis/" class="leancloud_visitors" data-flag-title="CombinedModifier 和 ComposedModifier 原理分析">
+            <span class="post-meta-item-text"> | 阅读 </span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#modifier">Modifier</a></li>
+<li><a href="#then-combinedmodifier">then 、CombinedModifier</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      
+
+<p>在 Compose 中，Modifier 的调用顺序不同，它造成的结果是不一样的，而不像原生的 XML 一样，顺序并不会影响界面绘制的结果。而在 Compose 中，它是按照Modifier 顺序执行的，同时 Modifier 它会形成一个链表的数据结构，我们编写如下的代码，看看它的这个链是怎么样的，是如何按照顺序执行的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">modifier</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Box</span><span class="p">(</span>
+        <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+            <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="m">10.</span><span class="n">dp</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">clickable</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>代码很简单，就是针对这个 Box 设置了大小，背景，边距，和一个点击事件而已，然后点进 Modifier 中，看看里面的源代码是怎么样的</p>
+
+<h2 id="modifier">Modifier</h2>
+
+<p>在默认情况下，如果传递的参数仅仅是 Modifier，或者是不传递，因为不传递内部默认就是赋值了 Modifier，也就是 Box (modifier = Modifier) 调用的这个伴生对象，Modifier 是一个接口，它有如下默认方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">inline</span> <span class="k">fun</span> <span class="nf">Box</span><span class="p">(</span>
+    <span class="n">modifier</span><span class="p">:</span> <span class="n">Modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">,</span> <span class="c1">// 默认值就是 Modifier
+</span><span class="c1"></span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">....</span>
+<span class="p">}</span>
+
+<span class="n">Box</span> <span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">)</span> <span class="err">等价于</span> <span class="n">Box</span> <span class="p">()</span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">interface</span> <span class="nc">Modifier</span> <span class="p">{</span>
+		<span class="c1">// 伴生对象
+</span><span class="c1"></span>	    <span class="k">companion</span> <span class="k">object</span> <span class="p">:</span> <span class="n">Modifier</span> <span class="p">{</span>
+            <span class="k">override</span> <span class="k">fun</span> &lt;R&gt; <span class="nf">foldIn</span><span class="p">(</span><span class="n">initial</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">=</span> <span class="n">initial</span> 
+            <span class="k">override</span> <span class="k">fun</span> &lt;R&gt; <span class="nf">foldOut</span><span class="p">(</span><span class="n">initial</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">Element</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">=</span> <span class="n">initial</span>
+            <span class="k">override</span> <span class="k">fun</span> <span class="nf">any</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="p">(</span><span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Boolean</span><span class="p">):</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="k">false</span>
+            <span class="k">override</span> <span class="k">fun</span> <span class="nf">all</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="p">(</span><span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Boolean</span><span class="p">):</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="k">true</span>
+            <span class="k">override</span> <span class="k">infix</span> <span class="k">fun</span> <span class="nf">then</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">Modifier</span><span class="p">):</span> <span class="n">Modifier</span> <span class="p">=</span> <span class="n">other</span>
+            <span class="k">override</span> <span class="k">fun</span> <span class="nf">toString</span><span class="p">()</span> <span class="p">=</span> <span class="s">&#34;Modifier&#34;</span>
+  	  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">)</span>  <span class="c1">// 这样调用的就是 Modifier 的伴生对象 </span></code></pre></td></tr></table>
+</div>
+</div>
+<p>我们按照上面的 Modifier 的调用链来分析一下，假设现在调用的 size 方法，看下 size 方法里面实现的是什么</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Stable</span>
+<span class="k">fun</span> <span class="nf">Modifier</span><span class="p">.</span><span class="n">height</span><span class="p">(</span><span class="n">height</span><span class="p">:</span> <span class="n">Dp</span><span class="p">)</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">then</span><span class="p">(</span>
+    <span class="n">SizeElement</span><span class="p">(</span>
+        <span class="n">minHeight</span> <span class="p">=</span> <span class="n">height</span><span class="p">,</span>
+        <span class="n">maxHeight</span> <span class="p">=</span> <span class="n">height</span><span class="p">,</span>
+        <span class="n">enforceIncoming</span> <span class="p">=</span> <span class="k">true</span>
+    <span class="p">)</span>
+<span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="then-combinedmodifier">then 、CombinedModifier</h2>
+
+<p>可以看到使用 this 调用了一个 then 方法，这个 this 也就是刚才说的 Modifier 伴生对象</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">infix</span> <span class="k">fun</span> <span class="nf">then</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">Modifier</span><span class="p">):</span> <span class="n">Modifier</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="n">other</span> <span class="p">===</span> <span class="n">Modifier</span><span class="p">)</span> <span class="k">this</span> <span class="k">else</span> <span class="n">CombinedModifier</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>可以看到 then 是一个中缀函数，这个方法如果传入的是同一个对象，那么返回的还是本身，否则的情况下调用的是 CombinedModifier</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">class</span> <span class="nc">CombinedModifier</span><span class="p">(</span>
+    <span class="k">internal</span> <span class="k">val</span> <span class="py">outer</span><span class="p">:</span> <span class="n">Modifier</span><span class="p">,</span>
+    <span class="k">internal</span> <span class="k">val</span> <span class="py">inner</span><span class="p">:</span> <span class="n">Modifier</span>
+<span class="p">)</span> <span class="p">:</span> <span class="n">Modifier</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="k">fun</span> &lt;R&gt; <span class="nf">foldIn</span><span class="p">(</span><span class="n">initial</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">=</span>
+        <span class="k">inner</span><span class="p">.</span><span class="n">foldIn</span><span class="p">(</span><span class="n">outer</span><span class="p">.</span><span class="n">foldIn</span><span class="p">(</span><span class="n">initial</span><span class="p">,</span> <span class="n">operation</span><span class="p">),</span> <span class="n">operation</span><span class="p">)</span>
+
+    <span class="k">override</span> <span class="k">fun</span> &lt;R&gt; <span class="nf">foldOut</span><span class="p">(</span><span class="n">initial</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">Modifier</span><span class="p">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">=</span>
+        <span class="n">outer</span><span class="p">.</span><span class="n">foldOut</span><span class="p">(</span><span class="k">inner</span><span class="p">.</span><span class="n">foldOut</span><span class="p">(</span><span class="n">initial</span><span class="p">,</span> <span class="n">operation</span><span class="p">),</span> <span class="n">operation</span><span class="p">)</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">any</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="p">(</span><span class="n">Modifier</span><span class="p">.</span><span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Boolean</span><span class="p">):</span> <span class="n">Boolean</span> <span class="p">=</span>
+        <span class="n">outer</span><span class="p">.</span><span class="n">any</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span> <span class="p">||</span> <span class="k">inner</span><span class="p">.</span><span class="n">any</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">all</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="p">(</span><span class="n">Modifier</span><span class="p">.</span><span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Boolean</span><span class="p">):</span> <span class="n">Boolean</span> <span class="p">=</span>
+        <span class="n">outer</span><span class="p">.</span><span class="n">all</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span> <span class="p">&amp;&amp;</span> <span class="k">inner</span><span class="p">.</span><span class="n">all</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">equals</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">?):</span> <span class="n">Boolean</span> <span class="p">=</span>
+        <span class="n">other</span> <span class="k">is</span> <span class="n">CombinedModifier</span> <span class="p">&amp;&amp;</span> <span class="n">outer</span> <span class="p">==</span> <span class="n">other</span><span class="p">.</span><span class="n">outer</span> <span class="p">&amp;&amp;</span> <span class="k">inner</span> <span class="p">==</span> <span class="n">other</span><span class="p">.</span><span class="k">inner</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">hashCode</span><span class="p">():</span> <span class="n">Int</span> <span class="p">=</span> <span class="n">outer</span><span class="p">.</span><span class="n">hashCode</span><span class="p">()</span> <span class="p">+</span> <span class="m">31</span> <span class="p">*</span> <span class="k">inner</span><span class="p">.</span><span class="n">hashCode</span><span class="p">()</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">toString</span><span class="p">()</span> <span class="p">=</span> <span class="s">&#34;[&#34;</span> <span class="p">+</span> <span class="n">foldIn</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">)</span> <span class="p">{</span> <span class="n">acc</span><span class="p">,</span> <span class="n">element</span> <span class="p">-&gt;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">acc</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span> <span class="n">element</span><span class="p">.</span><span class="n">toString</span><span class="p">()</span> <span class="k">else</span> <span class="s">&#34;$acc, $element&#34;</span>
+    <span class="p">}</span> <span class="p">+</span> <span class="s">&#34;]&#34;</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>在 CombinedModifier 中，可以发现有 inner 和 outer 属性，在上述示例代码中，inner 代表的是 Modifier 伴生对象 outer 代表的是 SizeElement，所以，它现在调用链就变成这样了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">val</span> <span class="py">chain1</span> <span class="p">=</span> <span class="n">CombinedModifier</span><span class="err">（</span><span class="n">Modifier</span> <span class="err">，</span><span class="n">SizeElement</span><span class="err">）</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>然后再调用 background</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">Modifier</span><span class="p">.</span><span class="n">background</span><span class="p">(</span>
+    <span class="n">color</span><span class="p">:</span> <span class="n">Color</span><span class="p">,</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Shape</span> <span class="p">=</span> <span class="n">RectangleShape</span>
+<span class="p">):</span> <span class="n">Modifier</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">alpha</span> <span class="p">=</span> <span class="m">1.0f</span> <span class="c1">// for solid colors
+</span><span class="c1"></span>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="n">then</span><span class="p">(</span>
+        <span class="n">BackgroundElement</span><span class="p">(</span>
+            <span class="n">color</span> <span class="p">=</span> <span class="n">color</span><span class="p">,</span>
+            <span class="n">shape</span> <span class="p">=</span> <span class="n">shape</span><span class="p">,</span>
+            <span class="n">alpha</span> <span class="p">=</span> <span class="n">alpha</span><span class="p">,</span>
+            <span class="n">inspectorInfo</span> <span class="p">=</span> <span class="n">debugInspectorInfo</span> <span class="p">{</span>
+                <span class="n">name</span> <span class="p">=</span> <span class="s">&#34;background&#34;</span>
+                <span class="n">value</span> <span class="p">=</span> <span class="n">color</span>
+                <span class="n">properties</span><span class="p">[</span><span class="s">&#34;color&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="n">color</span>
+                <span class="n">properties</span><span class="p">[</span><span class="s">&#34;shape&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="n">shape</span>
+            <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>同样的，内部也是调用的 this.then(）但是不同的是此时，this 代表的是我们上一步创建好了的 CombinedModifier 对象了，而通过 this.then() 又再次创建了一个 CombinedModifier  并且链上了 BackgroundElement ，所以，这个步骤完就变成这个样子了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">val</span> <span class="py">chain1</span> <span class="p">=</span> <span class="n">CombinedModifier</span><span class="err">（</span><span class="n">Modifier</span> <span class="err">，</span><span class="n">SizeElement</span><span class="err">）</span>
+
+<span class="k">val</span> <span class="py">chain2</span> <span class="p">=</span> <span class="n">CombinedModifier</span><span class="err">（</span><span class="n">chain1</span> <span class="err">，</span><span class="n">BackgroundElement</span><span class="err">）</span> <span class="c1">// 等同于  CombinedModifier（CombinedModifier（Modifier ，SizeElement） ，BackgroundElement）</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里的 BackgroundElement 我们再点进去看一下，可以看下它的结构是这样的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">private</span> <span class="k">class</span> <span class="nc">BackgroundElement</span><span class="p">(</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">color</span><span class="p">:</span> <span class="n">Color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Unspecified</span><span class="p">,</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">brush</span><span class="p">:</span> <span class="n">Brush</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">alpha</span><span class="p">:</span> <span class="n">Float</span><span class="p">,</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">shape</span><span class="p">:</span> <span class="n">Shape</span><span class="p">,</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">inspectorInfo</span><span class="p">:</span> <span class="n">InspectorInfo</span><span class="p">.()</span> <span class="p">-&gt;</span> <span class="n">Unit</span>
+<span class="p">)</span> <span class="p">:</span> <span class="n">ModifierNodeElement</span><span class="p">&lt;</span><span class="n">BackgroundNode</span><span class="p">&gt;()</span> <span class="p">{</span>
+
+<span class="p">}</span>
+
+<span class="c1">// ModifierNodeElement
+</span><span class="c1"></span><span class="k">abstract</span> <span class="k">class</span> <span class="nc">ModifierNodeElement</span><span class="p">&lt;</span><span class="n">N</span> <span class="p">:</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">Node</span><span class="p">&gt;</span> <span class="p">:</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">InspectableValue</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="c1">// Modifier.Element
+</span><span class="c1"></span><span class="n">@JvmDefaultWithCompatibility</span>
+<span class="k">interface</span> <span class="nc">Element</span> <span class="p">:</span> <span class="n">Modifier</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="k">fun</span> &lt;R&gt; <span class="nf">foldIn</span><span class="p">(</span><span class="n">initial</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">=</span>
+        <span class="n">operation</span><span class="p">(</span><span class="n">initial</span><span class="p">,</span> <span class="k">this</span><span class="p">)</span> <span class="c1">// 返回本身了
+</span><span class="c1"></span>    
+    <span class="k">override</span> <span class="k">fun</span> &lt;R&gt; <span class="nf">foldOut</span><span class="p">(</span><span class="n">initial</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">Element</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">=</span>
+        <span class="n">operation</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">initial</span><span class="p">)</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">any</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="p">(</span><span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Boolean</span><span class="p">):</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="n">predicate</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">all</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="p">(</span><span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Boolean</span><span class="p">):</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="n">predicate</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>可以看到 BackgroundElement  继承了 ModifierNodeElement， 然后 ModifierNodeElement 是一个抽象类，然后它实现了一个  Modifier.Element 接口，其中这个接口的内部实现重写了 foldIn 和 foldOut 方法，其实很多 Modifier 调用链的节点其实都实现了 Modifier.Element ，包括上一个步骤的 SizeElement ，所以我们也可以认为它就是一个 Modifier.Element，这里需要留意的 foldIn 和 foldOut，它和 Modifier 的伴生对象方法实现又有一些不同了</p>
+
+<p>紧接着再调用 padding 的设置</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">Modifier</span><span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">all</span><span class="p">:</span> <span class="n">Dp</span><span class="p">)</span> <span class="p">=</span> <span class="k">this</span> <span class="n">then</span> <span class="n">PaddingElement</span><span class="p">(</span>
+    <span class="n">start</span> <span class="p">=</span> <span class="n">all</span><span class="p">,</span>
+    <span class="n">top</span> <span class="p">=</span> <span class="n">all</span><span class="p">,</span>
+    <span class="n">end</span> <span class="p">=</span> <span class="n">all</span><span class="p">,</span>
+    <span class="n">bottom</span> <span class="p">=</span> <span class="n">all</span><span class="p">,</span>
+    <span class="n">rtlAware</span> <span class="p">=</span> <span class="k">true</span>
+<span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里可以发现不同的是调用的是 this then PaddingElement，而不是 this.then() 了，其实是一样的，因为 kotlin 中缀函数，可以省略不写括号，那么到了这一步，它就是变成这样了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">val</span> <span class="py">chain1</span> <span class="p">=</span> <span class="n">CombinedModifier</span><span class="err">（</span><span class="n">Modifier</span> <span class="err">，</span><span class="n">SizeElement</span><span class="err">）</span>
+
+<span class="k">val</span> <span class="py">chain2</span> <span class="p">=</span> <span class="n">CombinedModifier</span><span class="err">（</span><span class="n">chain1</span> <span class="err">，</span><span class="n">BackgroundElement</span><span class="err">）</span> <span class="c1">// 等同于  CombinedModifier（CombinedModifier（Modifier ，SizeElement） ，BackgroundElement）
+</span><span class="c1"></span>
+<span class="k">val</span> <span class="py">chain3</span> <span class="p">=</span> <span class="n">CombinedModifier</span><span class="err">（</span><span class="n">chain2</span> <span class="err">，</span><span class="n">SizeElement</span><span class="err">）</span><span class="c1">// 等同于 CombinedModifier（CombinedModifier（CombinedModifier（Modifier ，SizeElement） ，BackgroundElement） ，SizeElement）</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>到了这一步，可以发现他通过 CombinedModifier 的 inner 和 outer 属性，不断的将 Modifier 过程中产生的对象链在一起了，所以到了这一步 chain3 的链就是这样的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">SizeElement</span>  <span class="n">BackgroundElement</span> <span class="n">PaddingElement</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>到了这里，就有一个疑问了，我们这里已经了解了它是如何将整个过程中的 Modifier 节点如何链在一起了，那么后续它是怎么使用的呢，或者说是怎么取出来的呢，其实在 CombinedModifier 方法中，我们之前还有两个方法没有讲，那就是  foldIn 和 foldOut，两个方法都是遍历</p>
+
+<ul>
+<li>foldIn 正向遍历 Modifier 链</li>
+
+<li><p>foldOut 反向遍历 Modifier 链</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">override</span> <span class="k">fun</span> &lt;R&gt; <span class="nf">foldIn</span><span class="p">(</span><span class="n">initial</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">=</span>
+    <span class="k">inner</span><span class="p">.</span><span class="n">foldIn</span><span class="p">(</span><span class="n">outer</span><span class="p">.</span><span class="n">foldIn</span><span class="p">(</span><span class="n">initial</span><span class="p">,</span> <span class="n">operation</span><span class="p">),</span> <span class="n">operation</span><span class="p">)</span>
+
+<span class="k">override</span> <span class="k">fun</span> &lt;R&gt; <span class="nf">foldOut</span><span class="p">(</span><span class="n">initial</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">Modifier</span><span class="p">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">=</span>
+    <span class="n">outer</span><span class="p">.</span><span class="n">foldOut</span><span class="p">(</span><span class="k">inner</span><span class="p">.</span><span class="n">foldOut</span><span class="p">(</span><span class="n">initial</span><span class="p">,</span> <span class="n">operation</span><span class="p">),</span> <span class="n">operation</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+
+<p>以 foldIn 举例</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">val</span> <span class="py">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+        <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="m">10.</span><span class="n">dp</span><span class="p">)</span>
+
+    <span class="k">val</span> <span class="py">result</span> <span class="p">=</span> <span class="n">modifier</span><span class="p">.</span><span class="n">foldIn</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">&gt;(</span><span class="m">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">currentIndex</span><span class="p">,</span> <span class="n">element</span> <span class="p">-&gt;</span>
+        <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="s">&#34;@@@@&#34;</span><span class="p">,</span> <span class="s">&#34;index: $currentIndex , element :$element&#34;</span><span class="p">)</span>
+        <span class="n">currentIndex</span> <span class="p">+</span> <span class="m">1</span>
+    <span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里我先假设 Modifier 的调用链只有 size 和 background，来举例说明，会更加简单一些，首先再经过 Modifier 的调用链之后，他们会被 CombinedModifier 给组合起来，此时这个时候 CombinedModifier  对应的 outer 是 SizeElement ，inner 是 BackgroundElement，CombinedModifier 当调用 foldIn 的时候，会先调用内部的 outer.foldIn 方法， 而这个时候 SizeElement 同时也是一个 Modifier.Element ，它会调用它的内部的方法（这是我们上面介绍过的）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="c1">// Modifier.Element  的  foldIn 方法
+</span><span class="c1"></span><span class="k">override</span> <span class="k">fun</span> &lt;R&gt; <span class="nf">foldIn</span><span class="p">(</span><span class="n">initial</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">=</span>
+        <span class="n">operation</span><span class="p">(</span><span class="n">initial</span><span class="p">,</span> <span class="k">this</span><span class="p">)</span> <span class="c1">// 返回本身了</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>而 Modifier.Element 方法调用 foldIn 方法，它将我们传入的 operation 直接返回了，对应上述的  currentIndex 和 element ， currentIndex 就是我们传入的初始值，element 是自身，也就是 SizeElement</p>
+
+<p>处理完了 outer.foldIn(initial, operation) 方法，然后再是处理  inner.foldIn() 方法，思路和 outter 调用是一样的，它返回的就是 BackgroundElement，所以当我们这里只有这两个节点的时候，这个遍历就已经完成了。而如果针对是多个链，无非就是更多的节点被 CombinedModifier 给包裹起来了，那么就是通过 CombinedModifier  foldIn方法不断重复的递归调用，最终完成整个链的遍历</p>
+
+<p>简单一点理解就是，比如有 size background padding 这样的几个节点，foldIn 就是从左往右遍历，而 foldout 就是反过来了，从右往左。然后上面的代码运行后，日志如下</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240123220410.png" alt="" /></p>
+
+<p>这个时候还有最后一个 clickable 方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">Modifier</span><span class="p">.</span><span class="n">clickable</span><span class="p">(</span>
+    <span class="n">enabled</span><span class="p">:</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+    <span class="n">onClickLabel</span><span class="p">:</span> <span class="n">String</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span>
+    <span class="n">role</span><span class="p">:</span> <span class="n">Role</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span>
+    <span class="n">onClick</span><span class="p">:</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="n">Unit</span>
+<span class="p">)</span> <span class="p">=</span> <span class="n">composed</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Modifier</span><span class="p">.</span><span class="n">clickable</span><span class="p">(</span>
+        <span class="n">enabled</span> <span class="p">=</span> <span class="n">enabled</span><span class="p">,</span>
+        <span class="n">onClickLabel</span> <span class="p">=</span> <span class="n">onClickLabel</span><span class="p">,</span>
+        <span class="n">onClick</span> <span class="p">=</span> <span class="n">onClick</span><span class="p">,</span>
+        <span class="n">role</span> <span class="p">=</span> <span class="n">role</span><span class="p">,</span>
+        <span class="n">indication</span> <span class="p">=</span> <span class="n">LocalIndication</span><span class="p">.</span><span class="n">current</span><span class="p">,</span>
+        <span class="n">interactionSource</span> <span class="p">=</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">MutableInteractionSource</span><span class="p">()</span> <span class="p">}</span>
+    <span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>可以发现，这个方法和之前的都不一样了，它调用的是  composed 方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">Modifier</span><span class="p">.</span><span class="n">composed</span><span class="p">(</span>
+    <span class="n">inspectorInfo</span><span class="p">:</span> <span class="n">InspectorInfo</span><span class="p">.()</span> <span class="p">-&gt;</span> <span class="n">Unit</span> <span class="p">=</span> <span class="n">NoInspectorInfo</span><span class="p">,</span>
+    <span class="n">factory</span><span class="p">:</span> <span class="n">@Composable</span> <span class="n">Modifier</span><span class="p">.()</span> <span class="p">-&gt;</span> <span class="n">Modifier</span>
+<span class="p">):</span> <span class="n">Modifier</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">then</span><span class="p">(</span><span class="n">ComposedModifier</span><span class="p">(</span><span class="n">inspectorInfo</span><span class="p">,</span> <span class="n">factory</span><span class="p">))</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>而随后又调用了 ComposedModifier</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">private</span> <span class="k">open</span> <span class="k">class</span> <span class="nc">ComposedModifier</span><span class="p">(</span>
+    <span class="n">inspectorInfo</span><span class="p">:</span> <span class="n">InspectorInfo</span><span class="p">.()</span> <span class="p">-&gt;</span> <span class="n">Unit</span><span class="p">,</span>
+    <span class="k">val</span> <span class="py">factory</span><span class="p">:</span> <span class="n">@Composable</span> <span class="n">Modifier</span><span class="p">.()</span> <span class="p">-&gt;</span> <span class="n">Modifier</span>
+<span class="p">)</span> <span class="p">:</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">InspectorValueInfo</span><span class="p">(</span><span class="n">inspectorInfo</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>可以发现 ComposedModifier 它是一个私有的不允许直接创建，它的作用是通过 factory 工厂函数在组合过程时执行 factory 创建出 Modifier 并使用，所以这个时候的 Modifier.clickable 在这个过程中，并没有直接的创建，而是将这个 Modifier 存到 ComposedModifier 中的工厂函数中了，然后它会在组合的过程中，将它创建好</p>
+
+<p>那么它会在哪里执行这个工厂函数呢 ？可以看下 Box 函数中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">inline</span> <span class="k">fun</span> <span class="nf">Box</span><span class="p">(</span>
+    <span class="n">modifier</span><span class="p">:</span> <span class="n">Modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">,</span>
+    <span class="n">contentAlignment</span><span class="p">:</span> <span class="n">Alignment</span> <span class="p">=</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">TopStart</span><span class="p">,</span>
+    <span class="n">propagateMinConstraints</span><span class="p">:</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="k">false</span><span class="p">,</span>
+    <span class="n">content</span><span class="p">:</span> <span class="n">@Composable</span> <span class="n">BoxScope</span><span class="p">.()</span> <span class="p">-&gt;</span> <span class="n">Unit</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">measurePolicy</span> <span class="p">=</span> <span class="n">rememberBoxMeasurePolicy</span><span class="p">(</span><span class="n">contentAlignment</span><span class="p">,</span> <span class="n">propagateMinConstraints</span><span class="p">)</span>
+    <span class="n">Layout</span><span class="p">(</span>
+        <span class="n">content</span> <span class="p">=</span> <span class="p">{</span> <span class="n">BoxScopeInstance</span><span class="p">.</span><span class="n">content</span><span class="p">()</span> <span class="p">},</span>
+        <span class="n">measurePolicy</span> <span class="p">=</span> <span class="n">measurePolicy</span><span class="p">,</span>
+        <span class="n">modifier</span> <span class="p">=</span> <span class="n">modifier</span>
+    <span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>然后再看下 Layout 方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">inline</span> <span class="k">fun</span> <span class="nf">Layout</span><span class="p">(</span>
+    <span class="n">content</span><span class="p">:</span> <span class="n">@Composable</span> <span class="n">@UiComposable</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="n">Unit</span><span class="p">,</span>
+    <span class="n">modifier</span><span class="p">:</span> <span class="n">Modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">,</span>
+    <span class="n">measurePolicy</span><span class="p">:</span> <span class="n">MeasurePolicy</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">compositeKeyHash</span> <span class="p">=</span> <span class="n">currentCompositeKeyHash</span>
+    <span class="k">val</span> <span class="py">localMap</span> <span class="p">=</span> <span class="n">currentComposer</span><span class="p">.</span><span class="n">currentCompositionLocalMap</span>
+    <span class="n">ReusableComposeNode</span><span class="p">&lt;</span><span class="n">ComposeUiNode</span><span class="p">,</span> <span class="n">Applier</span><span class="p">&lt;</span><span class="n">Any</span><span class="p">&gt;&gt;(</span>
+        <span class="n">factory</span> <span class="p">=</span> <span class="n">ComposeUiNode</span><span class="p">.</span><span class="n">Constructor</span><span class="p">,</span>
+        <span class="n">update</span> <span class="p">=</span> <span class="p">{</span>
+            <span class="k">set</span><span class="p">(</span><span class="n">measurePolicy</span><span class="p">,</span> <span class="n">SetMeasurePolicy</span><span class="p">)</span>
+            <span class="k">set</span><span class="p">(</span><span class="n">localMap</span><span class="p">,</span> <span class="n">SetResolvedCompositionLocals</span><span class="p">)</span>
+            <span class="n">@OptIn</span><span class="p">(</span><span class="n">ExperimentalComposeUiApi</span><span class="o">::</span><span class="k">class</span><span class="p">)</span>
+            <span class="k">set</span><span class="p">(</span><span class="n">compositeKeyHash</span><span class="p">,</span> <span class="n">SetCompositeKeyHash</span><span class="p">)</span>
+        <span class="p">},</span>
+        <span class="n">skippableUpdate</span> <span class="p">=</span> <span class="n">materializerOf</span><span class="p">(</span><span class="n">modifier</span><span class="p">),</span> <span class="c1">// 最终会调用这个方法
+</span><span class="c1"></span>        <span class="n">content</span> <span class="p">=</span> <span class="n">content</span>
+    <span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>其他的方法不用管，看下 materializerOf 方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">internal</span> <span class="k">fun</span> <span class="nf">materializerOf</span><span class="p">(</span>
+    <span class="n">modifier</span><span class="p">:</span> <span class="n">Modifier</span>
+<span class="p">):</span> <span class="n">@Composable</span> <span class="n">SkippableUpdater</span><span class="p">&lt;</span><span class="n">ComposeUiNode</span><span class="p">&gt;.()</span> <span class="p">-&gt;</span> <span class="n">Unit</span> <span class="p">=</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">compositeKeyHash</span> <span class="p">=</span> <span class="n">currentCompositeKeyHash</span>
+    <span class="k">val</span> <span class="py">materialized</span> <span class="p">=</span> <span class="n">currentComposer</span><span class="p">.</span><span class="n">materialize</span><span class="p">(</span><span class="n">modifier</span><span class="p">)</span>
+    <span class="n">update</span> <span class="p">{</span>
+        <span class="k">set</span><span class="p">(</span><span class="n">materialized</span><span class="p">,</span> <span class="n">SetModifier</span><span class="p">)</span>
+        <span class="n">@OptIn</span><span class="p">(</span><span class="n">ExperimentalComposeUiApi</span><span class="o">::</span><span class="k">class</span><span class="p">)</span>
+        <span class="k">set</span><span class="p">(</span><span class="n">compositeKeyHash</span><span class="p">,</span> <span class="n">SetCompositeKeyHash</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>最后它的加载会在 materialize 方法中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">Composer</span><span class="p">.</span><span class="n">materialize</span><span class="p">(</span><span class="n">modifier</span><span class="p">:</span> <span class="n">Modifier</span><span class="p">):</span> <span class="n">Modifier</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">modifier</span><span class="p">.</span><span class="n">all</span> <span class="p">{</span> <span class="n">it</span> <span class="p">!</span><span class="k">is</span> <span class="n">ComposedModifier</span> <span class="p">})</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">modifier</span>
+    <span class="p">}</span>
+
+    <span class="n">startReplaceableGroup</span><span class="p">(</span><span class="m">0x48ae8da7</span><span class="p">)</span>
+
+    <span class="k">val</span> <span class="py">result</span> <span class="p">=</span> <span class="n">modifier</span><span class="p">.</span><span class="n">foldIn</span><span class="p">&lt;</span><span class="n">Modifier</span><span class="p">&gt;(</span><span class="n">Modifier</span><span class="p">)</span> <span class="p">{</span> <span class="n">acc</span><span class="p">,</span> <span class="n">element</span> <span class="p">-&gt;</span>
+        <span class="n">acc</span><span class="p">.</span><span class="n">then</span><span class="p">(</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">element</span> <span class="k">is</span> <span class="n">ComposedModifier</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 判断是不是 ComposedModifier 
+</span><span class="c1"></span>                <span class="n">@Suppress</span><span class="p">(</span><span class="s">&#34;UNCHECKED_CAST&#34;</span><span class="p">)</span>
+                <span class="k">val</span> <span class="py">factory</span> <span class="p">=</span> <span class="n">element</span><span class="p">.</span><span class="n">factory</span> <span class="k">as</span> <span class="n">Modifier</span><span class="p">.(</span><span class="n">Composer</span><span class="p">,</span> <span class="n">Int</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Modifier</span> <span class="c1">// 创建 Modifier
+</span><span class="c1"></span>                <span class="k">val</span> <span class="py">composedMod</span> <span class="p">=</span> <span class="n">factory</span><span class="p">(</span><span class="n">Modifier</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+                <span class="n">materialize</span><span class="p">(</span><span class="n">composedMod</span><span class="p">)</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="n">element</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="n">endReplaceableGroup</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">result</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>最终，它会通过 foldIn 遍历的时候，判断是否是 ComposedModifier 类型，然后创建这个 Modifier ，需要注意的是，它是一个递归函数，然后创建好的 Modifier 同样是通过 then 函数链在之前的那条链上了，所以这个 composed 函数，可以认为它是一个懒加载函数，它是在组件在进行组合的过程中才去创建的</p>
+
+<p>那么问题来了，为什么要这么做呢，我直接像 Modifier 那样直接提前创建不可以吗 ？</p>
+
+<p>这个问题，其实在 composed 函数中有解释</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240123211711.png" alt="" /></p>
+
+<p>它大概的意思是，它是一个带有状态的 Modifier 且是可重用，状态独立的</p>
+
+<p>那这又是什么意思呢？我们举一个例子来看看就知道了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">testComposedModifier</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Column</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="py">paddingValue</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="m">10.</span><span class="n">dp</span><span class="p">)</span> <span class="p">}</span>
+
+        <span class="k">val</span> <span class="py">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+            <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">paddingValue</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">clickable</span> <span class="p">{</span> <span class="n">paddingValue</span> <span class="p">=</span> <span class="m">20.</span><span class="n">dp</span> <span class="p">}</span>
+
+        <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">)</span> <span class="n">then</span> <span class="n">modifier</span><span class="p">)</span>
+
+        <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;testComposedModifier&#34;</span><span class="p">,</span> <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">)</span> <span class="n">then</span> <span class="n">modifier</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这段代码我们的 Box 和 Text 都使用了同一个 modifier ,并且这个 modifier 实现了一个点击事件，在这个点击事件中，将 paddingValue 的值变大了，我们运行一下代码然后点击一下 Text 组件，看看会发生什么效果</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/PixPin_2024-01-23_21-33-02.gif" alt="" /></p>
+
+<p>可以发现我们点击的是 Text 组件，但是 Box 组件的间隙也变大了，这是因为共用的是同一个 paddingValue 状态</p>
+
+<p>我们再试试使用 composed 的情况来看看</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">testComposedModifier2</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Column</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">composed</span> <span class="p">{</span>
+
+            <span class="k">var</span> <span class="py">paddingValue</span> <span class="k">by</span> <span class="n">remember</span> <span class="p">{</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="m">10.</span><span class="n">dp</span><span class="p">)</span> <span class="p">}</span>
+
+            <span class="n">padding</span><span class="p">(</span><span class="n">paddingValue</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">clickable</span> <span class="p">{</span> <span class="n">paddingValue</span> <span class="p">=</span> <span class="m">20.</span><span class="n">dp</span> <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">)</span> <span class="n">then</span> <span class="n">modifier</span><span class="p">)</span>
+
+        <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;testComposedModifier&#34;</span><span class="p">,</span> <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">)</span> <span class="n">then</span> <span class="n">modifier</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>代码改动的地方不多，只是将之前 Modifier 的放在了 composed 内部了，同时将 paddingValue 也放在函数内部了，然后再运行代码看一下</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/PixPin_2024-01-23_21-38-31.gif" alt="" /></p>
+
+<p>这个时候我们点击的仍然还是 Text 组件，但是发生的效果不一样了，只有 Text 组件在发生改变了，这就是我们之前说到的，使用 composed 创建的 Modifier 函数，它拥有独立的内部状态，因为它在每个组件在组合过程中，都是创建的组件独有的一个新的对象，同时我们还可以发现它的内部可以使用 @Composable 函数，是因为它的工厂函数，有提供了 @Composable 上下文环境，所以 composed（ComposedModifier） 函数总结如下</p>
+
+<ul>
+<li>composed 的内部有 Composable 的上下文环境，内部可以使用带有 @Composable 注解的函数</li>
+<li>composed 是状态独立的，且是可复用的</li>
+<li>composed 内部的 Modifier 创建时机是在组合过程中进行创建的</li>
+</ul>
+
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2023-07-20
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/android/">Android</a>
+          <a href="https://midFang.github.io/tags/compose/">Compose</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/compose-animation-final-chapter-advanced-chapter/">
+            <span class="next-text nav-default">Compose 动画终章进阶篇</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://stackoverflow.com/users/14331888/midfang" rel="me noopener" class="iconfont"
+      title="stack-overflow"  target="_blank"
+      >
+      <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M809.714286 932.571429l-638.857143 0 0-274.285714-91.428571 0 0 365.714286 821.714286 0 0-365.714286-91.428571 0 0 274.285714zm-538.285714-299.428571l18.857143-89.714286 447.428571 94.285714-18.857143 89.142857zm58.857143-213.714286l38.285714-83.428571 414.285714 193.714286-38.285714 82.857143zm114.857143-203.428571l58.285714-70.285714 350.857143 293.142857-58.285714 70.285714zm226.857143-216l272.571429 366.285714-73.142857 54.857143-272.571429-366.285714zm-410.285714 840.571429l0-90.857143 457.142857 0 0 90.857143-457.142857 0z"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://www.douban.com/people/194654920/" rel="me noopener" class="iconfont"
+      title="douban"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M926.917973 37.80608C959.65184 37.80608 986.19392 64.34816 986.19392 97.082027L986.19392 926.917973C986.19392 959.65184 959.65184 986.19392 926.917973 986.19392L97.082027 986.19392C64.34816 986.19392 37.80608 959.65184 37.80608 926.917973L37.80608 97.082027C37.80608 64.34816 64.34816 37.80608 97.082027 37.80608zM176.653653 176.19968 176.653653 252.678827 825.658027 252.678827 825.658027 176.19968zM217.719467 316.146347 217.719467 628.08064 273.524053 628.08064 341.292373 770.39616 157.259093 770.39616 157.259093 845.417813 842.949973 845.417813 842.949973 770.39616 654.226773 770.39616 722.899627 628.08064 783.67744 628.08064 783.67744 316.146347zM684.885333 392.891733 684.885333 553.987413 312.576 553.987413 312.576 392.891733zM570.770773 770.39616 426.653013 770.39616 359.621973 628.08064 639.443627 628.08064z"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://midFang.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2020 -
+    2024
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        midFang
+        
+      </span></span>
+
+  
+  
+    <span id="busuanzi_container">
+      访客数/访问量：<span id="busuanzi_value_site_uv"></span>/<span id="busuanzi_value_site_pv"></span>
+    </span>
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script type="text/javascript">
+    AV.initialize( null ,  null );
+  </script>
+
+  <script>
+    function showHitCount(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push($(this).attr("id").trim());
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var hits = item.get('hits');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(hits);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if (countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function (results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("hits");
+            counter.save(null, {
+              success: function (counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('hits'));
+              },
+              error: function (counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+             
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+             
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("hits", 1);
+            newcounter.save(null, {
+              success: function (newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('hits'));
+              },
+              error: function (newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function (error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function () {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        
+        addCount(Counter);
+      } else if ($('.post-link').length > 1) {
+        
+        showHitCount(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+  <script>
+    $("#openSearch, #openSearchMobile").click(function(){
+      $(".modal-dialog").addClass("visible");
+    });
+
+    $("#closeSearch").click(function(){
+      $(".modal-dialog").removeClass("visible");
+    });
+
+    $(document).click(function(event) {
+    
+      if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
+        $("body").find(".modal-dialog").removeClass("visible");
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>

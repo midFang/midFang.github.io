@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>android on midFang&#39;s Blog</title>
+    <title>Android on midFang&#39;s Blog</title>
     <link>https://midFang.github.io/tags/android/</link>
-    <description>Recent content in android on midFang&#39;s Blog</description>
+    <description>Recent content in Android on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 05 Jul 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 20 Jul 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/android/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>CombinedModifier 和 ComposedModifier 原理分析</title>
+      <link>https://midFang.github.io/combinedmodifier-composedmodifier-analysis/</link>
+      <pubDate>Thu, 20 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/combinedmodifier-composedmodifier-analysis/</guid>
+      <description>在 Compose 中，Modifier 的调用顺序不同，它造成的结果是不一样的，而不像原生的 XML 一样，顺序并不会影响界面绘制的结果。而在 Compose 中，它是按照Modi</description>
+    </item>
     
     <item>
       <title>Compose 动画终章进阶篇</title>
@@ -348,23 +357,6 @@
  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;</description>
-    </item>
-    
-    <item>
-      <title>Android 中的进程间通信简单使用</title>
-      <link>https://midFang.github.io/android-process-base-use/</link>
-      <pubDate>Wed, 19 Aug 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/android-process-base-use/</guid>
-      <description>&lt;h3 id=&#34;binder-是什么&#34;&gt;Binder 是什么&lt;/h3&gt;
-
-&lt;p&gt;首先在 Android 中， Binder 是一个类，实现了 IBinder 接口， 是实现跨进程通信 （IPC）的一种方式&lt;/p&gt;
-
-&lt;h3 id=&#34;为什么需要跨进程通信&#34;&gt;为什么需要跨进程通信&lt;/h3&gt;
-
-&lt;p&gt;因为在 Android 中一个应用相当于一个进程，而一个进程中有一个独立的用户空间，而用户空间都是独立的，进程之间是隔离的。也就是说，两个进程之间不可进行直接的通信，需要通过一个桥梁，这个就是 Binder&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/midFang/imgSource/main/20200924223216.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

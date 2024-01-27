@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Compose on midFang&#39;s Blog</title>
+    <link>https://midFang.github.io/categories/compose/</link>
+    <description>Recent content in Compose on midFang&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 20 Jul 2023 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://midFang.github.io/categories/compose/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>CombinedModifier 和 ComposedModifier 原理分析</title>
+      <link>https://midFang.github.io/combinedmodifier-composedmodifier-analysis/</link>
+      <pubDate>Thu, 20 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/combinedmodifier-composedmodifier-analysis/</guid>
+      <description>在 Compose 中，Modifier 的调用顺序不同，它造成的结果是不一样的，而不像原生的 XML 一样，顺序并不会影响界面绘制的结果。而在 Compose 中，它是按照Modi</description>
+    </item>
+    
+  </channel>
+</rss>

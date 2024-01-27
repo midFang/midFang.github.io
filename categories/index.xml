@@ -6,10 +6,19 @@
     <description>Recent content in Categories on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 05 Jul 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 20 Jul 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Compose</title>
+      <link>https://midFang.github.io/categories/compose/</link>
+      <pubDate>Thu, 20 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/categories/compose/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>动画</title>
@@ -21,7 +30,7 @@
     </item>
     
     <item>
-      <title>android</title>
+      <title>Android</title>
       <link>https://midFang.github.io/categories/android/</link>
       <pubDate>Wed, 05 May 2021 00:00:00 +0000</pubDate>
       
@@ -138,7 +147,7 @@
     </item>
     
     <item>
-      <title>java</title>
+      <title>Java</title>
       <link>https://midFang.github.io/categories/java/</link>
       <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
       
@@ -179,15 +188,6 @@
       <pubDate>Sat, 04 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/categories/%E9%80%82%E9%85%8D/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>数据结构</title>
-      <link>https://midFang.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
-      <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
       <description></description>
     </item>
     

@@ -6,10 +6,778 @@
     <description>Recent content on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 05 Jul 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 20 Jul 2023 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://midFang.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>CombinedModifier 和 ComposedModifier 原理分析</title>
+      <link>https://midFang.github.io/combinedmodifier-composedmodifier-analysis/</link>
+      <pubDate>Thu, 20 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/combinedmodifier-composedmodifier-analysis/</guid>
+      
+        <description>
+
+&lt;p&gt;在 Compose 中，Modifier 的调用顺序不同，它造成的结果是不一样的，而不像原生的 XML 一样，顺序并不会影响界面绘制的结果。而在 Compose 中，它是按照Modifier 顺序执行的，同时 Modifier 它会形成一个链表的数据结构，我们编写如下的代码，看看它的这个链是怎么样的，是如何按照顺序执行的&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;n&#34;&gt;@Preview&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;@Composable&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;Box&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;size&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;200.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;background&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Blue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;padding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;clickable&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;代码很简单，就是针对这个 Box 设置了大小，背景，边距，和一个点击事件而已，然后点进 Modifier 中，看看里面的源代码是怎么样的&lt;/p&gt;
+
+&lt;h2 id=&#34;modifier&#34;&gt;Modifier&lt;/h2&gt;
+
+&lt;p&gt;在默认情况下，如果传递的参数仅仅是 Modifier，或者是不传递，因为不传递内部默认就是赋值了 Modifier，也就是 Box (modifier = Modifier) 调用的这个伴生对象，Modifier 是一个接口，它有如下默认方法&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;n&#34;&gt;@Composable&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;inline&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Box&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 默认值就是 Modifier
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;....&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;Box&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;等价于&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Box&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;interface&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+		&lt;span class=&#34;c1&#34;&gt;// 伴生对象
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;	    &lt;span class=&#34;k&#34;&gt;companion&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &amp;lt;R&amp;gt; &lt;span class=&#34;nf&#34;&gt;foldIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt; 
+            &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &amp;lt;R&amp;gt; &lt;span class=&#34;nf&#34;&gt;foldOut&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;any&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;predicate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;false&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;predicate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;true&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;infix&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;then&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;other&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;other&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;toString&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;Modifier&amp;#34;&lt;/span&gt;
+  	  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;Box&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// 这样调用的就是 Modifier 的伴生对象 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;我们按照上面的 Modifier 的调用链来分析一下，假设现在调用的 size 方法，看下 size 方法里面实现的是什么&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;n&#34;&gt;@Stable&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;height&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;height&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Dp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;then&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;SizeElement&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;minHeight&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;height&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;maxHeight&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;height&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;enforceIncoming&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;true&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 id=&#34;then-combinedmodifier&#34;&gt;then 、CombinedModifier&lt;/h2&gt;
+
+&lt;p&gt;可以看到使用 this 调用了一个 then 方法，这个 this 也就是刚才说的 Modifier 伴生对象&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;infix&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;then&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;other&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;other&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;===&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;this&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CombinedModifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;other&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;可以看到 then 是一个中缀函数，这个方法如果传入的是同一个对象，那么返回的还是本身，否则的情况下调用的是 CombinedModifier&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;CombinedModifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;internal&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;outer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;internal&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;inner&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &amp;lt;R&amp;gt; &lt;span class=&#34;nf&#34;&gt;foldIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;inner&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;foldIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;outer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;foldIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &amp;lt;R&amp;gt; &lt;span class=&#34;nf&#34;&gt;foldOut&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;outer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;foldOut&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;inner&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;foldOut&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;any&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;predicate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;outer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;any&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;predicate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;||&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;inner&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;any&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;predicate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;predicate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;outer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;predicate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;inner&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;predicate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;equals&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;other&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Any&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;other&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CombinedModifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;outer&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;other&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;outer&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;inner&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;other&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;inner&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;hashCode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Int&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;outer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;hashCode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;31&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;inner&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;hashCode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;toString&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;[&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;foldIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;acc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;element&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;acc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isEmpty&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;toString&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;$acc, $element&amp;#34;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;]&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;在 CombinedModifier 中，可以发现有 inner 和 outer 属性，在上述示例代码中，inner 代表的是 Modifier 伴生对象 outer 代表的是 SizeElement，所以，它现在调用链就变成这样了&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;chain1&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CombinedModifier&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;（&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SizeElement&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;）&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;然后再调用 background&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;background&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;shape&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Shape&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;RectangleShape&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;alpha&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1.0f&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// for solid colors
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;then&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;BackgroundElement&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;color&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;shape&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;shape&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;alpha&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;alpha&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;inspectorInfo&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;debugInspectorInfo&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;background&amp;#34;&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;value&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;color&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;properties&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;color&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;color&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;properties&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;shape&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;shape&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;同样的，内部也是调用的 this.then(）但是不同的是此时，this 代表的是我们上一步创建好了的 CombinedModifier 对象了，而通过 this.then() 又再次创建了一个 CombinedModifier  并且链上了 BackgroundElement ，所以，这个步骤完就变成这个样子了&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;chain1&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CombinedModifier&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;（&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SizeElement&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;）&lt;/span&gt;
+
+&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;chain2&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CombinedModifier&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;（&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;chain1&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;BackgroundElement&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;）&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 等同于  CombinedModifier（CombinedModifier（Modifier ，SizeElement） ，BackgroundElement）&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;这里的 BackgroundElement 我们再点进去看一下，可以看下它的结构是这样的&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;BackgroundElement&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Color&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Unspecified&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;brush&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Brush&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;alpha&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Float&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;shape&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Shape&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;inspectorInfo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;InspectorInfo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Unit&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ModifierNodeElement&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;BackgroundNode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;// ModifierNodeElement
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;abstract&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;ModifierNodeElement&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;N&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;InspectableValue&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;// Modifier.Element
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;@JvmDefaultWithCompatibility&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;interface&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Element&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &amp;lt;R&amp;gt; &lt;span class=&#34;nf&#34;&gt;foldIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 返回本身了
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &amp;lt;R&amp;gt; &lt;span class=&#34;nf&#34;&gt;foldOut&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;any&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;predicate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;predicate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;predicate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;predicate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;可以看到 BackgroundElement  继承了 ModifierNodeElement， 然后 ModifierNodeElement 是一个抽象类，然后它实现了一个  Modifier.Element 接口，其中这个接口的内部实现重写了 foldIn 和 foldOut 方法，其实很多 Modifier 调用链的节点其实都实现了 Modifier.Element ，包括上一个步骤的 SizeElement ，所以我们也可以认为它就是一个 Modifier.Element，这里需要留意的 foldIn 和 foldOut，它和 Modifier 的伴生对象方法实现又有一些不同了&lt;/p&gt;
+
+&lt;p&gt;紧接着再调用 padding 的设置&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;padding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Dp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;this&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;then&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;PaddingElement&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;start&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;top&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;end&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;bottom&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;rtlAware&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;true&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;这里可以发现不同的是调用的是 this then PaddingElement，而不是 this.then() 了，其实是一样的，因为 kotlin 中缀函数，可以省略不写括号，那么到了这一步，它就是变成这样了&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;chain1&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CombinedModifier&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;（&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SizeElement&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;）&lt;/span&gt;
+
+&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;chain2&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CombinedModifier&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;（&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;chain1&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;BackgroundElement&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;）&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 等同于  CombinedModifier（CombinedModifier（Modifier ，SizeElement） ，BackgroundElement）
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;chain3&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CombinedModifier&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;（&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;chain2&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SizeElement&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;）&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 等同于 CombinedModifier（CombinedModifier（CombinedModifier（Modifier ，SizeElement） ，BackgroundElement） ，SizeElement）&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;到了这一步，可以发现他通过 CombinedModifier 的 inner 和 outer 属性，不断的将 Modifier 过程中产生的对象链在一起了，所以到了这一步 chain3 的链就是这样的&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;n&#34;&gt;SizeElement&lt;/span&gt;  &lt;span class=&#34;n&#34;&gt;BackgroundElement&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;PaddingElement&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;到了这里，就有一个疑问了，我们这里已经了解了它是如何将整个过程中的 Modifier 节点如何链在一起了，那么后续它是怎么使用的呢，或者说是怎么取出来的呢，其实在 CombinedModifier 方法中，我们之前还有两个方法没有讲，那就是  foldIn 和 foldOut，两个方法都是遍历&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;foldIn 正向遍历 Modifier 链&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;foldOut 反向遍历 Modifier 链&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &amp;lt;R&amp;gt; &lt;span class=&#34;nf&#34;&gt;foldIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;inner&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;foldIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;outer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;foldIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+&lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &amp;lt;R&amp;gt; &lt;span class=&#34;nf&#34;&gt;foldOut&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;outer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;foldOut&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;inner&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;foldOut&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;以 foldIn 举例&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;size&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;200.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;background&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Blue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;padding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;result&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;foldIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;currentIndex&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;element&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;Log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;@@@@&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;index: $currentIndex , element :$element&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;currentIndex&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;这里我先假设 Modifier 的调用链只有 size 和 background，来举例说明，会更加简单一些，首先再经过 Modifier 的调用链之后，他们会被 CombinedModifier 给组合起来，此时这个时候 CombinedModifier  对应的 outer 是 SizeElement ，inner 是 BackgroundElement，CombinedModifier 当调用 foldIn 的时候，会先调用内部的 outer.foldIn 方法， 而这个时候 SizeElement 同时也是一个 Modifier.Element ，它会调用它的内部的方法（这是我们上面介绍过的）&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Modifier.Element  的  foldIn 方法
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;override&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &amp;lt;R&amp;gt; &lt;span class=&#34;nf&#34;&gt;foldIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;R&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;operation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;initial&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 返回本身了&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;而 Modifier.Element 方法调用 foldIn 方法，它将我们传入的 operation 直接返回了，对应上述的  currentIndex 和 element ， currentIndex 就是我们传入的初始值，element 是自身，也就是 SizeElement&lt;/p&gt;
+
+&lt;p&gt;处理完了 outer.foldIn(initial, operation) 方法，然后再是处理  inner.foldIn() 方法，思路和 outter 调用是一样的，它返回的就是 BackgroundElement，所以当我们这里只有这两个节点的时候，这个遍历就已经完成了。而如果针对是多个链，无非就是更多的节点被 CombinedModifier 给包裹起来了，那么就是通过 CombinedModifier  foldIn方法不断重复的递归调用，最终完成整个链的遍历&lt;/p&gt;
+
+&lt;p&gt;简单一点理解就是，比如有 size background padding 这样的几个节点，foldIn 就是从左往右遍历，而 foldout 就是反过来了，从右往左。然后上面的代码运行后，日志如下&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/midFang/imgSource/main/20240123220410.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这个时候还有最后一个 clickable 方法&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;clickable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;enabled&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;onClickLabel&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;role&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Role&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;?&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;null&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;onClick&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Unit&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;composed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;clickable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;enabled&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;enabled&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;onClickLabel&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;onClickLabel&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;onClick&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;onClick&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;role&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;role&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;indication&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;LocalIndication&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;current&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;interactionSource&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;remember&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;MutableInteractionSource&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;可以发现，这个方法和之前的都不一样了，它调用的是  composed 方法&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;composed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;inspectorInfo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;InspectorInfo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Unit&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NoInspectorInfo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;factory&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;@Composable&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;then&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ComposedModifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;inspectorInfo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;factory&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;而随后又调用了 ComposedModifier&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;open&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;ComposedModifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;inspectorInfo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;InspectorInfo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Unit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;factory&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;@Composable&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;InspectorValueInfo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;inspectorInfo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;可以发现 ComposedModifier 它是一个私有的不允许直接创建，它的作用是通过 factory 工厂函数在组合过程时执行 factory 创建出 Modifier 并使用，所以这个时候的 Modifier.clickable 在这个过程中，并没有直接的创建，而是将这个 Modifier 存到 ComposedModifier 中的工厂函数中了，然后它会在组合的过程中，将它创建好&lt;/p&gt;
+
+&lt;p&gt;那么它会在哪里执行这个工厂函数呢 ？可以看下 Box 函数中&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;n&#34;&gt;@Composable&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;inline&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Box&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;contentAlignment&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Alignment&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Alignment&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TopStart&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;propagateMinConstraints&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Boolean&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;false&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;content&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;@Composable&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;BoxScope&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Unit&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;measurePolicy&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;rememberBoxMeasurePolicy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;contentAlignment&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;propagateMinConstraints&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;Layout&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;content&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;BoxScopeInstance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;content&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;measurePolicy&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;measurePolicy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;然后再看下 Layout 方法&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;n&#34;&gt;@Composable&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;inline&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Layout&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;content&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;@Composable&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;@UiComposable&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Unit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;measurePolicy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;MeasurePolicy&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;compositeKeyHash&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;currentCompositeKeyHash&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;localMap&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;currentComposer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;currentCompositionLocalMap&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;ReusableComposeNode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ComposeUiNode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Applier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Any&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&amp;gt;(&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;factory&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ComposeUiNode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Constructor&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;update&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;measurePolicy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SetMeasurePolicy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;localMap&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SetResolvedCompositionLocals&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;@OptIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ExperimentalComposeUiApi&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;compositeKeyHash&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SetCompositeKeyHash&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;skippableUpdate&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;materializerOf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 最终会调用这个方法
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;n&#34;&gt;content&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;content&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;其他的方法不用管，看下 materializerOf 方法&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;internal&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;materializerOf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;@Composable&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SkippableUpdater&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ComposeUiNode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;.()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Unit&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;compositeKeyHash&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;currentCompositeKeyHash&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;materialized&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;currentComposer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;materialize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;update&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;materialized&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SetModifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;@OptIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ExperimentalComposeUiApi&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;set&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;compositeKeyHash&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SetCompositeKeyHash&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;最后它的加载会在 materialize 方法中&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Composer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;materialize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;all&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;it&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ComposedModifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;})&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+    &lt;span class=&#34;n&#34;&gt;startReplaceableGroup&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x48ae8da7&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;result&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;foldIn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;acc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;element&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;acc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;then&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;element&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ComposedModifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 判断是不是 ComposedModifier 
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                &lt;span class=&#34;n&#34;&gt;@Suppress&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;UNCHECKED_CAST&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;factory&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;element&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;factory&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Composer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 创建 Modifier
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;composedMod&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;factory&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;materialize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;composedMod&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;n&#34;&gt;element&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+    &lt;span class=&#34;n&#34;&gt;endReplaceableGroup&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;最终，它会通过 foldIn 遍历的时候，判断是否是 ComposedModifier 类型，然后创建这个 Modifier ，需要注意的是，它是一个递归函数，然后创建好的 Modifier 同样是通过 then 函数链在之前的那条链上了，所以这个 composed 函数，可以认为它是一个懒加载函数，它是在组件在进行组合的过程中才去创建的&lt;/p&gt;
+
+&lt;p&gt;那么问题来了，为什么要这么做呢，我直接像 Modifier 那样直接提前创建不可以吗 ？&lt;/p&gt;
+
+&lt;p&gt;这个问题，其实在 composed 函数中有解释&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/midFang/imgSource/main/20240123211711.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;它大概的意思是，它是一个带有状态的 Modifier 且是可重用，状态独立的&lt;/p&gt;
+
+&lt;p&gt;那这又是什么意思呢？我们举一个例子来看看就知道了&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;n&#34;&gt;@Composable&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;testComposedModifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;Column&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;paddingValue&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;by&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;remember&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mutableStateOf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+        &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;padding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;paddingValue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;clickable&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;paddingValue&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;20.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dp&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+        &lt;span class=&#34;n&#34;&gt;Box&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;background&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Blue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;then&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+        &lt;span class=&#34;n&#34;&gt;Text&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;text&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;testComposedModifier&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;background&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Red&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;then&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;这段代码我们的 Box 和 Text 都使用了同一个 modifier ,并且这个 modifier 实现了一个点击事件，在这个点击事件中，将 paddingValue 的值变大了，我们运行一下代码然后点击一下 Text 组件，看看会发生什么效果&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/midFang/imgSource/main/PixPin_2024-01-23_21-33-02.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;可以发现我们点击的是 Text 组件，但是 Box 组件的间隙也变大了，这是因为共用的是同一个 paddingValue 状态&lt;/p&gt;
+
+&lt;p&gt;我们再试试使用 composed 的情况来看看&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-kotlin&#34; data-lang=&#34;kotlin&#34;&gt;&lt;span class=&#34;n&#34;&gt;@Preview&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;@Composable&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;fun&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;testComposedModifier2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;Column&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;composed&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+
+            &lt;span class=&#34;k&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;py&#34;&gt;paddingValue&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;by&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;remember&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mutableStateOf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+            &lt;span class=&#34;n&#34;&gt;padding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;paddingValue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;clickable&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;paddingValue&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;20.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dp&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+        &lt;span class=&#34;n&#34;&gt;Box&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;background&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Blue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;then&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+        &lt;span class=&#34;n&#34;&gt;Text&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;text&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;testComposedModifier&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;background&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Red&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;then&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;modifier&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;代码改动的地方不多，只是将之前 Modifier 的放在了 composed 内部了，同时将 paddingValue 也放在函数内部了，然后再运行代码看一下&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/midFang/imgSource/main/PixPin_2024-01-23_21-38-31.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这个时候我们点击的仍然还是 Text 组件，但是发生的效果不一样了，只有 Text 组件在发生改变了，这就是我们之前说到的，使用 composed 创建的 Modifier 函数，它拥有独立的内部状态，因为它在每个组件在组合过程中，都是创建的组件独有的一个新的对象，同时我们还可以发现它的内部可以使用 @Composable 函数，是因为它的工厂函数，有提供了 @Composable 上下文环境，所以 composed（ComposedModifier） 函数总结如下&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;composed 的内部有 Composable 的上下文环境，内部可以使用带有 @Composable 注解的函数&lt;/li&gt;
+&lt;li&gt;composed 是状态独立的，且是可复用的&lt;/li&gt;
+&lt;li&gt;composed 内部的 Modifier 创建时机是在组合过程中进行创建的&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+      
+    </item>
     
     <item>
       <title>Compose 动画终章进阶篇</title>
@@ -12962,54 +13730,6 @@ suspend fun suspendSearchPlaces(query: String): String {
 &lt;p&gt;这里跳转的时候，我将中心点 X 的位置设置为屏幕中间的位置，Y 设置为手指按下的位置。&lt;/p&gt;
 
 &lt;p&gt;具体使用的代码都在这里了，由于隐私问题，就不贴效果图了。效果基本和上文贴的几个连接差不多。&lt;/p&gt;</description>
-      
-    </item>
-    
-    <item>
-      <title>Hugo 博客使用 utterances 作为评论系统</title>
-      <link>https://midFang.github.io/hugo-utterances-comment-system/</link>
-      <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/hugo-utterances-comment-system/</guid>
-      
-        <description>&lt;h3 id=&#34;utterances-是一款基于-github-issues-的评论工具&#34;&gt;utterances 是一款基于 GitHub issues 的评论工具&lt;/h3&gt;
-
-&lt;p&gt;相比同类的工具 gitment、gitalk 以及 disqus 评论工具，优点如下：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;极其轻量&lt;/li&gt;
-&lt;li&gt;加载非常快&lt;/li&gt;
-&lt;li&gt;配置比较简单&lt;/li&gt;
-&lt;li&gt;disqus 这个工具配置也比较简单，也是免费的。但是，广告多，而且加载也比较慢。&lt;/li&gt;
-&lt;li&gt;utterances 是基于 github issue ，拥有多种主题的开源免费小组件。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&#34;github上安装-utterances&#34;&gt;Github上安装 utterances&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;首先必须在 github 上进行安装 utterances，访问 &lt;a href=&#34;https://github.com/apps/utterances&#34;&gt;utterances应用程序&lt;/a&gt; 然后点击 Install 按钮进行安装。&lt;/li&gt;
-&lt;li&gt;在这里可以选择可以关联的存储库，可以选择我们所拥有的库(也包括未来建立的库)或者某一个仓库，这里只选择某一个需要进行评论的库，这样比较好。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/midFang/imgSource/main/20200929154923.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;github-配置&#34;&gt;Github 配置&lt;/h3&gt;
-
-&lt;p&gt;最后再 hugo 的 config.toml 文件中进行配置即可&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-toml&#34; data-lang=&#34;toml&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-toml&#34; data-lang=&#34;toml&#34;&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;params&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;utteranc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;         &lt;span class=&#34;c&#34;&gt;# utteranc is a comment system based on GitHub issues. see https://utteranc.es&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;enable&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;repo&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;github用户名/创建的仓库名&amp;#34;&lt;/span&gt;    &lt;span class=&#34;c&#34;&gt;# The repo to store comments&lt;/span&gt;
-    &lt;span class=&#34;nx&#34;&gt;issueTerm&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;pathname&amp;#34;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;</description>
       
     </item>
     
