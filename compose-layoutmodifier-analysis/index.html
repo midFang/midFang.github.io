@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Compose LayoutModifier 原理解析 - midFang&#39;s Blog</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="midFang" />
+  <meta name="description" content="LayoutModifier 作用是修改 Composable 的尺寸和位置偏移 LayoutModifier 只是一个接口，在实际开发中我们会使用 Modifier.layout() 自定义测量和位置偏移处理，先大致了解一下 layout 源码 1 2 3 4 5 6 7 8 9 10 11 12" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<link rel="canonical" href="https://midFang.github.io/compose-layoutmodifier-analysis/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="Compose LayoutModifier 原理解析" />
+<meta property="og:description" content="LayoutModifier 作用是修改 Composable 的尺寸和位置偏移 LayoutModifier 只是一个接口，在实际开发中我们会使用 Modifier.layout() 自定义测量和位置偏移处理，先大致了解一下 layout 源码 1 2 3 4 5 6 7 8 9 10 11 12" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/compose-layoutmodifier-analysis/" />
+<meta property="article:published_time" content="2023-08-24T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-08-24T00:00:00+00:00" />
+<meta itemprop="name" content="Compose LayoutModifier 原理解析">
+<meta itemprop="description" content="LayoutModifier 作用是修改 Composable 的尺寸和位置偏移 LayoutModifier 只是一个接口，在实际开发中我们会使用 Modifier.layout() 自定义测量和位置偏移处理，先大致了解一下 layout 源码 1 2 3 4 5 6 7 8 9 10 11 12">
+
+
+<meta itemprop="datePublished" content="2023-08-24T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2023-08-24T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="4721">
+
+
+
+<meta itemprop="keywords" content="Android,Compose," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Compose LayoutModifier 原理解析"/>
+<meta name="twitter:description" content="LayoutModifier 作用是修改 Composable 的尺寸和位置偏移 LayoutModifier 只是一个接口，在实际开发中我们会使用 Modifier.layout() 自定义测量和位置偏移处理，先大致了解一下 layout 源码 1 2 3 4 5 6 7 8 9 10 11 12"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">midFang's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+        
+      </li>
+    
+
+    
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+
+  
+    
+<div class="modal-dialog">
+    
+    <div class="modal-content">
+      <div id="closeSearch" title="Close" class="close">X</div>
+      <div class="modal-header">
+        <div class="modal-title">Search</div>
+      </div>
+      <div class="modal-body">
+          <script>
+            (function() {
+              var cx = '57787f7f4d21d54fc';
+              var gcse = document.createElement('script');
+              gcse.type = 'text/javascript';
+              gcse.async = true;
+              gcse.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//cse.google.com/cse.js?cx=' + cx;
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(gcse, s);
+            })();
+          </script>
+          <gcse:search></gcse:search>
+      </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      midFang's Blog
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+      <li class="menu-item">
+        <a id="openSearch" class="menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">Compose LayoutModifier 原理解析</h1>
+      
+      <div class="post-meta">
+        <time datetime="2023-08-24" class="post-time">
+          2023-08-24
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/compose/"> Compose </a>
+            
+          </div>
+        
+
+        
+        
+          <span id="busuanzi_container_page_pv">
+            | 阅读 <span id="busuanzi_value_page_pv"></span>
+          </span>
+        
+
+        
+        
+          <span id="/compose-layoutmodifier-analysis/" class="leancloud_visitors" data-flag-title="Compose LayoutModifier 原理解析">
+            <span class="post-meta-item-text"> | 阅读 </span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#layoutmodifier">LayoutModifier</a>
+<ul>
+<li><a href="#测量和摆放">测量和摆放</a></li>
+<li><a href="#设置边距">设置边距</a></li>
+<li><a href="#layoutmodifier-对布局产生的影响">LayoutModifier 对布局产生的影响</a></li>
+<li><a href="#layoutnode-的测量过程">LayoutNode 的测量过程</a>
+<ul>
+<li><a href="#remeasure">remeasure</a></li>
+</ul></li>
+<li><a href="#总结">总结</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      
+
+<h1 id="layoutmodifier">LayoutModifier</h1>
+
+<blockquote>
+<p>作用是修改 Composable 的尺寸和位置偏移</p>
+</blockquote>
+
+<p>LayoutModifier 只是一个接口，在实际开发中我们会使用 Modifier.layout() 自定义测量和位置偏移处理，先大致了解一下 layout 源码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="c1">// 实际的运用，调用 Modifier.layout 来修改测试和位置偏移处理
+</span><span class="c1"></span><span class="k">fun</span> <span class="nf">Modifier</span><span class="p">.</span><span class="n">layout</span><span class="p">(</span>
+    <span class="n">measure</span><span class="p">:</span> <span class="n">MeasureScope</span><span class="p">.(</span><span class="n">Measurable</span><span class="p">,</span> <span class="n">Constraints</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">MeasureResult</span>
+<span class="p">)</span> <span class="p">=</span> <span class="k">this</span> <span class="n">then</span> <span class="n">LayoutElement</span><span class="p">(</span><span class="n">measure</span><span class="p">)</span>
+
+<span class="k">private</span> <span class="k">data</span> <span class="k">class</span> <span class="nc">LayoutElement</span><span class="p">(</span>
+    <span class="k">val</span> <span class="py">measure</span><span class="p">:</span> <span class="n">MeasureScope</span><span class="p">.(</span><span class="n">Measurable</span><span class="p">,</span> <span class="n">Constraints</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">MeasureResult</span> <span class="c1">//  lambda 函数
+</span><span class="c1"></span><span class="p">)</span> <span class="p">:</span> <span class="n">ModifierNodeElement</span><span class="p">&lt;</span><span class="n">LayoutModifierImpl</span><span class="p">&gt;()</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">create</span><span class="p">()</span> <span class="p">=</span> <span class="n">LayoutModifierImpl</span><span class="p">(</span><span class="n">measure</span><span class="p">)</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">update</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">LayoutModifierImpl</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">node</span><span class="p">.</span><span class="n">measureBlock</span> <span class="p">=</span> <span class="n">measure</span>
+    <span class="p">}</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">InspectorInfo</span><span class="p">.</span><span class="n">inspectableProperties</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">name</span> <span class="p">=</span> <span class="s">&#34;layout&#34;</span>
+        <span class="n">properties</span><span class="p">[</span><span class="s">&#34;measure&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="n">measure</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 测量结果
+</span><span class="c1"></span><span class="k">interface</span> <span class="nc">MeasureResult</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">width</span><span class="p">:</span> <span class="n">Int</span> 
+    <span class="k">val</span> <span class="py">height</span><span class="p">:</span> <span class="n">Int</span>
+    <span class="k">val</span> <span class="py">alignmentLines</span><span class="p">:</span> <span class="n">Map</span><span class="p">&lt;</span><span class="n">AlignmentLine</span><span class="p">,</span> <span class="n">Int</span><span class="p">&gt;</span> <span class="c1">// 一般用于 baseLine 的设置
+</span><span class="c1"></span>    <span class="k">fun</span> <span class="nf">placeChildren</span><span class="p">()</span> <span class="c1">// 子组件的测量
+</span><span class="c1"></span><span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>在 Compose 中，如果我们要拦截控件的测量和摆放一般是使用的 Modifier.layout() 这个函数， 可以看到这个 LayoutModifier  最终的实现是 LayoutModifierImpl ， 最终在这个 layout 的 lambda 表达式中，需要返回 MeasureResult 对象，而在 Compose 有一个 layout() 函数是 Compose 给我们封装好了的一个 MeasureResult  对象返回，其中 MeasureResult 维护了组件宽高，文字的基准线等等</p>
+
+<h2 id="测量和摆放">测量和摆放</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">layoutModifier</span><span class="p">()</span> <span class="p">{</span>
+    <span class="cm">/** modifier.layout() 可以对当前的控件进行测量，和设置偏移，设置宽高的上限， 但是它仅仅是 针对于当前本控件的，不像传统 View 提供可以对 子view 进行操作 **/</span>
+
+    <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+        <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Green</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">layout</span> <span class="p">{</span> <span class="n">measurable</span><span class="p">,</span> <span class="n">constraints</span> <span class="p">-&gt;</span>
+            <span class="c1">// 测量本控件 (// 可以理解为 传统view 中测量自己大小的步骤 获得自己宽高的尺寸)
+</span><span class="c1"></span>            <span class="k">val</span> <span class="py">placeable</span> <span class="p">=</span> <span class="n">measurable</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
+
+            <span class="c1">// 设置当前组件尺寸
+</span><span class="c1"></span>            <span class="n">layout</span><span class="p">(</span><span class="n">placeable</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">placeable</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="p">{</span>
+                <span class="c1">// 摆放
+</span><span class="c1"></span>                <span class="n">placeable</span><span class="p">.</span><span class="n">placeRelative</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span> 
+            <span class="p">}</span>
+        <span class="p">})</span> <span class="p">{</span>
+        <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;Hello World&#34;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>上面代码中 layout 第一个参数 measurable 代表是一个可测量对象指被修饰的组件，constraints 代表的是外层组件对被修饰组件的尺寸限制</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240131212851.png" alt="" /></p>
+
+<p>通过 measurable.measure(constraints) 开始进行测量当前组件，返回的 placeable 中，会包含测量好的宽高等信息，然后通过  layout 函数，将测量好的宽高进行结果返回，我们前面有说到 layout 需要返回一个 MeasureResult 对象， 这个 layout 函数内部其实是一个 MeasureResult 对象，然后再通过 placeable.placeRelative(0, 0) 设置偏移，这里我们设置的是 0，那么就是原封不动的，组件大小和偏移都没有经过任何的修改，这个代码运行后是这样的</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/1706708685376_d.png" alt="" /></p>
+
+<h2 id="设置边距">设置边距</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">layoutModifier2</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">BoxWithConstraints</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+        <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Green</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">layout</span> <span class="p">{</span> <span class="n">measurable</span><span class="p">,</span> <span class="n">constraints</span> <span class="p">-&gt;</span>  <span class="c1">//  测量本控件
+</span><span class="c1"></span>            <span class="c1">// 增加 10 dp
+</span><span class="c1"></span>            <span class="k">val</span> <span class="py">padding</span> <span class="p">=</span> <span class="m">10.</span><span class="n">dp</span>
+            <span class="k">val</span> <span class="py">placeable</span> <span class="p">=</span> <span class="n">measurable</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span>
+                <span class="c1">// 设置限制（约束）范围
+</span><span class="c1"></span>                <span class="n">constraints</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span>
+                    <span class="cm">/** 对上界和下界扩大 , 乘以 2，是因为，左右上下都有padding**/</span>
+
+                    <span class="cm">/**
+</span><span class="cm">                     * 增加 padding, 这里的限制为什么要设减去 padding 呢 ?
+</span><span class="cm">                     *
+</span><span class="cm">                     * 这是因为当前控件增加了 padding, 那么它原本的可以用来放置内容的大小,被内边距给占用了,所以要减去
+</span><span class="cm">                     * 用一个例子来说，假设你有一个 Box，它的最大宽度是300dp，然后你决定添加50dp的 padding。那么，实际上，Box 内你能放置内容的最大宽度就变成了 300dp - 50dp*2 = 200dp。
+</span><span class="cm">                     * 相当于把 100dp 的空间给了 padding，真正用来放置内容的空间变小了。
+</span><span class="cm">                     */</span>
+
+                    <span class="n">maxWidth</span> <span class="p">=</span> <span class="n">constraints</span><span class="p">.</span><span class="n">maxWidth</span> <span class="p">-</span> <span class="p">(</span><span class="n">padding</span> <span class="p">*</span> <span class="m">2</span><span class="p">).</span><span class="n">roundToPx</span><span class="p">(),</span>
+                    <span class="n">maxHeight</span> <span class="p">=</span> <span class="n">constraints</span><span class="p">.</span><span class="n">maxHeight</span> <span class="p">-</span> <span class="p">(</span><span class="n">padding</span> <span class="p">*</span> <span class="m">2</span><span class="p">).</span><span class="n">roundToPx</span><span class="p">(),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="c1">// 设置大小
+</span><span class="c1"></span>            <span class="n">layout</span><span class="p">(</span><span class="n">placeable</span><span class="p">.</span><span class="n">width</span> <span class="p">+</span> <span class="p">(</span><span class="n">padding</span> <span class="p">*</span> <span class="m">2</span><span class="p">).</span><span class="n">roundToPx</span><span class="p">(),</span> <span class="n">placeable</span><span class="p">.</span><span class="n">height</span> <span class="p">+</span> <span class="p">(</span><span class="n">padding</span> <span class="p">*</span> <span class="m">2</span><span class="p">).</span><span class="n">roundToPx</span><span class="p">())</span> <span class="p">{</span>
+                <span class="n">placeable</span><span class="p">.</span><span class="n">placeRelative</span><span class="p">(</span><span class="n">padding</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">(),</span> <span class="n">padding</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">())</span> <span class="c1">// 设置偏移
+</span><span class="c1"></span>            <span class="p">}</span>
+        <span class="p">})</span> <span class="p">{</span>        
+        <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;Hello World&#34;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里我们给这个控件增加左右上下 10dp 的边距间隙，首先是需要通过 measurable.measure() 进行测量，这里我们由于给当前控件增加 10dp 的间隙，当前的控件可以真正可显示的内容就少了 10dp，所以在设置 constraints 约束条件的时候，需要减去 10 dp，为什么要乘以 2，是因为左右上下都有 padding，然后通过 layout 将结果返回，然后再通过 placeRelative 进行 padding 像素的偏移，最终运行代码的效果是这样的</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240131220740.png" alt="" /></p>
+
+<p>上面我们是自己手写了一个 padding 的实现过程，其实，我们可以看看官方的 Compose 的源代码中，Modifier.padding 基本也是这样做的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">private</span> <span class="k">class</span> <span class="nc">PaddingNode</span><span class="p">(</span>
+    <span class="k">var</span> <span class="py">start</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">top</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">end</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">bottom</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">rtlAware</span><span class="p">:</span> <span class="n">Boolean</span>
+<span class="p">)</span> <span class="p">:</span> <span class="n">LayoutModifierNode</span><span class="p">,</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">Node</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">MeasureScope</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span>
+        <span class="n">measurable</span><span class="p">:</span> <span class="n">Measurable</span><span class="p">,</span>
+        <span class="n">constraints</span><span class="p">:</span> <span class="n">Constraints</span>
+    <span class="p">):</span> <span class="n">MeasureResult</span> <span class="p">{</span>
+
+        <span class="k">val</span> <span class="py">horizontal</span> <span class="p">=</span> <span class="n">start</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">()</span> <span class="p">+</span> <span class="n">end</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">()</span> <span class="c1">// 垂直和水平方向上的间距
+</span><span class="c1"></span>        <span class="k">val</span> <span class="py">vertical</span> <span class="p">=</span> <span class="n">top</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">()</span> <span class="p">+</span> <span class="n">bottom</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">()</span>
+
+        <span class="k">val</span> <span class="py">placeable</span> <span class="p">=</span> <span class="n">measurable</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span><span class="n">constraints</span><span class="p">.</span><span class="n">offset</span><span class="p">(-</span><span class="n">horizontal</span><span class="p">,</span> <span class="p">-</span><span class="n">vertical</span><span class="p">))</span> <span class="c1">// 测量（减去padding）
+</span><span class="c1"></span>
+        <span class="k">val</span> <span class="py">width</span> <span class="p">=</span> <span class="n">constraints</span><span class="p">.</span><span class="n">constrainWidth</span><span class="p">(</span><span class="n">placeable</span><span class="p">.</span><span class="n">width</span> <span class="p">+</span> <span class="n">horizontal</span><span class="p">)</span>
+        <span class="k">val</span> <span class="py">height</span> <span class="p">=</span> <span class="n">constraints</span><span class="p">.</span><span class="n">constrainHeight</span><span class="p">(</span><span class="n">placeable</span><span class="p">.</span><span class="n">height</span> <span class="p">+</span> <span class="n">vertical</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">layout</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 设置大小
+</span><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">rtlAware</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 设置偏移
+</span><span class="c1"></span>                <span class="n">placeable</span><span class="p">.</span><span class="n">placeRelative</span><span class="p">(</span><span class="n">start</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">(),</span> <span class="n">top</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">())</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="n">placeable</span><span class="p">.</span><span class="n">place</span><span class="p">(</span><span class="n">start</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">(),</span> <span class="n">top</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">())</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>好了，基本上 layout 函数的使用大体就是如此。那么问题来了，设置 padding 像这样的，Compose 已经提供了，那 Modifier.layout 有什么使用场景呢？</p>
+
+<p>能想到的一个场景有：是在原有的 Compose 组件内部已经都设置好了尺寸和位置了，而这个时候，我想额外设置这个组件的尺寸和偏移，比如如下例子</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">layout</span> <span class="p">{</span> <span class="n">measurable</span><span class="p">,</span> <span class="n">constraints</span> <span class="p">-&gt;</span>
+        <span class="k">val</span> <span class="py">placeable</span> <span class="p">=</span> <span class="n">measurable</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
+        <span class="n">layout</span><span class="p">(</span><span class="n">placeable</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">placeable</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">placeable</span><span class="p">.</span><span class="n">placeRelative</span><span class="p">(</span><span class="m">30</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">})</span> <span class="p">{</span>
+        <span class="n">Box</span><span class="p">()</span> <span class="p">{</span>
+            <span class="n">Column</span> <span class="p">{</span>
+                <span class="n">Image</span><span class="p">(</span><span class="n">painter</span> <span class="p">=</span> <span class="n">painterResource</span><span class="p">(</span><span class="n">id</span> <span class="p">=</span> <span class="n">R</span><span class="p">.</span><span class="n">mipmap</span><span class="p">.</span><span class="n">aaa</span><span class="p">),</span> <span class="n">contentDescription</span> <span class="p">=</span> <span class="s">&#34;&#34;</span><span class="p">)</span>
+                <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;hello world !!! &#34;</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里内部组件的图片和文字的位置在实际的项目中，假设说是已经完美了，而这个时候，我想对这一整个整体进行偏移，那么可以使用 layout 函数进行设置，目前能想到的场景好像只有这个了，不过其实，单独设置 padding 也是可以做到的
+关于 layout 这个函数，我觉得用到的场景是不多的，关键是要理解 layout 函数在测量过程中会对布局产生什么影响，有了之前的一些前奏知识，接下来我们再仔细看下它的测量流程是怎么样的</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/1706712589070_d.png" alt="" /></p>
+
+<h2 id="layoutmodifier-对布局产生的影响">LayoutModifier 对布局产生的影响</h2>
+
+<p>在讲解 LayoutModifier 原理前先看下如下代码他们的组件大小是多少呢 ？</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">Box</span><span class="p">(</span><span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">).</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">))</span>
+<span class="n">Box</span><span class="p">(</span><span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">).</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">))</span>
+<span class="n">Box</span><span class="p">(</span>
+    <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+        <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+    	<span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Blue</span><span class="p">)</span>
+    	<span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">50.</span><span class="n">dp</span><span class="p">)</span>
+    	<span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Origin</span><span class="p">)</span>
+<span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="layoutnode-的测量过程">LayoutNode 的测量过程</h2>
+
+<p>在讲解 LayoutModifier 之前，我们先要了解一个前置知识，那就是 Compose 在组合阶段，会将我们写的 Composable  函数最终组合成一个 LayoutNode 对象，而这个 LayoutNode 对象就是用来测量布局的，其中在 LayoutNode 类中测量和布局分别由 remeasure() 和 replace() 处理。</p>
+
+<h3 id="remeasure">remeasure</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">layout</span><span class="p">.</span><span class="n">kt</span>
+
+<span class="k">internal</span> <span class="k">val</span> <span class="py">layoutDelegate</span> <span class="p">=</span> <span class="n">LayoutNodeLayoutDelegate</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+	
+<span class="k">internal</span> <span class="k">val</span> <span class="py">measurePassDelegate</span>
+<span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="n">layoutDelegate</span><span class="p">.</span><span class="n">measurePassDelegate</span>
+
+
+<span class="k">internal</span> <span class="k">fun</span> <span class="nf">remeasure</span><span class="p">(</span>
+	<span class="n">constraints</span><span class="p">:</span> <span class="n">Constraints</span><span class="p">?</span> <span class="p">=</span> <span class="n">layoutDelegate</span><span class="p">.</span><span class="n">lastConstraints</span>
+<span class="p">):</span> <span class="n">Boolean</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="k">if</span> <span class="p">(</span><span class="n">constraints</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">intrinsicsUsageByParent</span> <span class="p">==</span> <span class="n">UsageByParent</span><span class="p">.</span><span class="n">NotUsed</span><span class="p">)</span> <span class="p">{</span>
+			<span class="c1">// This LayoutNode may have asked children for intrinsics. If so, we should
+</span><span class="c1"></span>			<span class="c1">// clear the intrinsics usage for everything that was requested previously.
+</span><span class="c1"></span>			<span class="n">clearSubtreeIntrinsicsUsage</span><span class="p">()</span>
+		<span class="p">}</span>
+		<span class="n">measurePassDelegate</span><span class="p">.</span><span class="n">remeasure</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>  <span class="c1">// 重要
+</span><span class="c1"></span>	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="k">false</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>其中，可以看到通过 measurePassDelegate 对象调用 remeasure 方法，然后 measurePassDelegate 对象又是 LayoutNodeLayoutDelegate 中的 MeasurePassDelegate 的一个内部类，所以最终的调用者是在 MeasurePassDelegate 中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">remeasure</span><span class="p">(</span><span class="n">constraints</span><span class="p">:</span> <span class="n">Constraints</span><span class="p">):</span> <span class="n">Boolean</span> <span class="p">{</span>
+	<span class="p">...</span>
+	
+	<span class="k">if</span> <span class="p">(</span><span class="n">layoutNode</span><span class="p">.</span><span class="n">measurePending</span> <span class="p">||</span> <span class="n">measurementConstraints</span> <span class="p">!=</span> <span class="n">constraints</span><span class="p">)</span> <span class="p">{</span>
+		<span class="p">...</span>
+		<span class="n">performMeasure</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
+		<span class="p">...</span>
+		<span class="k">return</span> <span class="n">sizeChanged</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="p">...</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="k">false</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>然后再次调用 performMeasure</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">private</span> <span class="k">fun</span> <span class="nf">performMeasure</span><span class="p">(</span><span class="n">constraints</span><span class="p">:</span> <span class="n">Constraints</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">layoutState</span> <span class="p">=</span> <span class="n">LayoutState</span><span class="p">.</span><span class="n">Measuring</span>
+	<span class="n">measurePending</span> <span class="p">=</span> <span class="k">false</span>
+	<span class="n">layoutNode</span><span class="p">.</span><span class="n">requireOwner</span><span class="p">().</span><span class="n">snapshotObserver</span><span class="p">.</span><span class="n">observeMeasureSnapshotReads</span><span class="p">(</span>
+		<span class="n">layoutNode</span><span class="p">,</span>
+		<span class="n">affectsLookahead</span> <span class="p">=</span> <span class="k">false</span>
+	<span class="p">)</span> <span class="p">{</span>
+		<span class="n">outerCoordinator</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>  <span class="c1">// 重要
+</span><span class="c1"></span>	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="n">layoutState</span> <span class="p">==</span> <span class="n">LayoutState</span><span class="p">.</span><span class="n">Measuring</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">markLayoutPending</span><span class="p">()</span>
+		<span class="n">layoutState</span> <span class="p">=</span> <span class="n">LayoutState</span><span class="p">.</span><span class="n">Idle</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>在 performMeasure 中,又通过 outerCoordinator 调用了 measure 方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">interface</span> <span class="nc">Measurable</span> <span class="p">:</span> <span class="n">IntrinsicMeasurable</span> <span class="p">{</span>
+    <span class="k">fun</span> <span class="nf">measure</span><span class="p">(</span><span class="n">constraints</span><span class="p">:</span> <span class="n">Constraints</span><span class="p">):</span> <span class="n">Placeable</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>最终可以看到, 在这里的调用链就结束了, 再深入是一个接口了, 所以这个时候我们应该找到 outerCoordinator 的实现类是什么了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">internal</span> <span class="k">class</span> <span class="nc">LayoutNodeLayoutDelegate</span><span class="p">(</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">layoutNode</span><span class="p">:</span> <span class="n">LayoutNode</span><span class="p">,</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">outerCoordinator</span><span class="p">:</span> <span class="n">NodeCoordinator</span>
+        <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="n">layoutNode</span><span class="p">.</span><span class="n">nodes</span><span class="p">.</span><span class="n">outerCoordinator</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>在这里可以看到, 这个 outerCoordinator 的获取方式是 layoutNode.nodes.outerCoordinator , 这个 layoutNode 我们上面说过了, 然后再看下 nodes 是什么</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">internal</span> <span class="k">class</span> <span class="nc">LayoutNode</span><span class="p">(){</span>
+    <span class="k">internal</span> <span class="k">val</span> <span class="py">nodes</span> <span class="p">=</span> <span class="n">NodeChain</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>然后再看下 NodeChain ,因为 outerCoordinator 就在这个类中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">internal</span> <span class="k">class</span> <span class="nc">NodeChain</span><span class="p">(</span><span class="k">val</span> <span class="py">layoutNode</span><span class="p">:</span> <span class="n">LayoutNode</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 负责最内层测量的 NodeCoordinator
+</span><span class="c1"></span>    <span class="k">internal</span> <span class="k">val</span> <span class="py">innerCoordinator</span> <span class="p">=</span> <span class="n">InnerNodeCoordinator</span><span class="p">(</span><span class="n">layoutNode</span><span class="p">)</span> <span class="c1">// Composable 
+</span><span class="c1"></span>    <span class="k">internal</span> <span class="k">var</span> <span class="py">outerCoordinator</span><span class="p">:</span> <span class="n">NodeCoordinator</span> <span class="p">=</span> <span class="n">innerCoordinator</span>
+        <span class="k">private</span> <span class="k">set</span>
+    <span class="k">internal</span> <span class="k">val</span> <span class="py">tail</span><span class="p">:</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">Node</span> <span class="p">=</span> <span class="n">innerCoordinator</span><span class="p">.</span><span class="n">tail</span>
+    <span class="k">internal</span> <span class="k">var</span> <span class="py">head</span><span class="p">:</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">Node</span> <span class="p">=</span> <span class="n">tail</span>
+        <span class="k">private</span> <span class="k">set</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">isUpdating</span><span class="p">:</span> <span class="n">Boolean</span> <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="n">head</span> <span class="p">===</span> <span class="n">SentinelHead</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">aggregateChildKindSet</span><span class="p">:</span> <span class="n">Int</span> <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="n">head</span><span class="p">.</span><span class="n">aggregateChildKindSet</span>
+    <span class="k">private</span> <span class="k">var</span> <span class="py">current</span><span class="p">:</span> <span class="n">MutableVector</span><span class="p">&lt;</span><span class="n">Modifier</span><span class="p">.</span><span class="n">Element</span><span class="p">&gt;?</span> <span class="p">=</span> <span class="k">null</span>
+    <span class="k">private</span> <span class="k">var</span> <span class="py">buffer</span><span class="p">:</span> <span class="n">MutableVector</span><span class="p">&lt;</span><span class="n">Modifier</span><span class="p">.</span><span class="n">Element</span><span class="p">&gt;?</span> <span class="p">=</span> <span class="k">null</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>最终兜兜转转我们终于找到了 outerCoordinator 是个什么, 它是一个 NodeCoordinator 类型的对象, 他是用来测量和摆放布局的一个工具类,
+这个时候,如果我们的组件一个 Modifier 都没有写的话, 获取的是 innerCoordinator , innerCoordinator 可以认为它是控件本身的一个测量布局的方式, 比如仅仅写一个 Text()，那他就是按照自身的测量规则</p>
+
+<p>同时我们也可以发现 NodeChain 是一个双向链表, 因为它内部维护了 head tail 头尾指针, 到了这里, 我们可以大胆的猜测一些, 如果我们写了多个 LayoutModifier
+那么是不是意味着都会被链在这个双向链表中呢 ?</p>
+
+<p>确实是这样的, 在 Compose 组合阶段, 每一个 Composable 函数,都会被组合成一个 LayoutNode 对象, 然后它设置的 Modifier 会被包装成一个一个的 Modifier.Node 对象, 然后通过 NodeChain 串成一个双向链表
+那么问题又来了,  我们设置的 Modifier 他是怎么被包装成 Modifier.Node 对象的呢 ? 又是怎么串成一个双向链表的呢 ?</p>
+
+<p>其实答案在 LayoutNode 中的 Modifier 属性中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">override</span> <span class="k">var</span> <span class="py">modifier</span><span class="p">:</span> <span class="n">Modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+    <span class="k">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">field</span> <span class="p">=</span> <span class="n">value</span>
+        <span class="n">nodes</span><span class="p">.</span><span class="n">updateFrom</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="c1">// 重点
+</span><span class="c1"></span>        <span class="p">...</span>
+    <span class="p">}</span>
+
+
+<span class="k">internal</span> <span class="k">fun</span> <span class="nf">updateFrom</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="n">Modifier</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="py">before</span> <span class="p">=</span> <span class="n">current</span>
+    <span class="k">val</span> <span class="py">beforeSize</span> <span class="p">=</span> <span class="n">before</span><span class="o">?.</span><span class="n">size</span> <span class="o">?:</span> <span class="m">0</span>
+    <span class="c1">//  fillVector 会将 Modifier 展开铺平到一个数组，后面的代码就可以用这个数组遍历
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">after</span> <span class="p">=</span> <span class="n">m</span><span class="p">.</span><span class="n">fillVector</span><span class="p">(</span><span class="n">buffer</span> <span class="o">?:</span> <span class="n">mutableVectorOf</span><span class="p">())</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">after</span><span class="p">.</span><span class="n">size</span> <span class="p">==</span> <span class="n">beforeSize</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="py">node</span><span class="p">:</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">Node</span><span class="p">?</span> <span class="p">=</span> <span class="n">paddedHead</span><span class="p">.</span><span class="n">child</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">node</span> <span class="p">!=</span> <span class="k">null</span> <span class="p">&amp;&amp;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">beforeSize</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">val</span> <span class="py">prev</span> <span class="p">=</span> <span class="n">before</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">val</span> <span class="py">next</span> <span class="p">=</span> <span class="n">after</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">when</span> <span class="p">(</span><span class="n">actionForModifiers</span><span class="p">(</span><span class="n">prev</span><span class="p">,</span> <span class="n">next</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="p">...</span>
+            <span class="p">}</span>
+            <span class="c1">// NOTE: We do not need to check if the node is attached since these are all updated
+</span><span class="c1"></span>            <span class="c1">// or reused modifiers only
+</span><span class="c1"></span>            <span class="n">node</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">child</span>
+            <span class="n">i</span><span class="p">++</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="p">&lt;</span> <span class="n">beforeSize</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">coordinatorSyncNeeded</span> <span class="p">=</span> <span class="k">true</span>
+            <span class="n">structuralUpdate</span>
+                <span class="n">i</span><span class="p">,</span>
+                <span class="n">before</span><span class="p">,</span>
+                <span class="n">after</span><span class="p">,</span>
+                <span class="n">node</span><span class="p">,</span>
+                <span class="n">layoutNode</span><span class="p">.</span><span class="n">isAttached</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(!</span><span class="n">layoutNode</span><span class="p">.</span><span class="n">isAttached</span> <span class="p">&amp;&amp;</span> <span class="n">beforeSize</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// 第一次组装双向链表
+</span><span class="c1"></span>        <span class="c1">// 遍历上面铺平的数组，然后将 Modifier 装进 Node 组装成双向链表
+</span><span class="c1"></span>        <span class="n">coordinatorSyncNeeded</span> <span class="p">=</span> <span class="k">true</span>
+        <span class="k">var</span> <span class="py">node</span> <span class="p">=</span> <span class="n">paddedHead</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="p">&lt;</span> <span class="n">after</span><span class="p">.</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">val</span> <span class="py">next</span> <span class="p">=</span> <span class="n">after</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">val</span> <span class="py">parent</span> <span class="p">=</span> <span class="n">node</span>
+            <span class="c1">// 组装双向链表的具体逻辑
+</span><span class="c1"></span>            <span class="n">node</span> <span class="p">=</span> <span class="n">createAndInsertNodeAsChild</span><span class="p">(</span><span class="n">next</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">?.</span><span class="n">nodeInserted</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">next</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+            <span class="n">i</span><span class="p">++</span>
+        <span class="p">}</span>
+        <span class="n">syncAggregateChildKindSet</span><span class="p">()</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">after</span><span class="p">.</span><span class="n">size</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">checkNotNull</span><span class="p">(</span><span class="n">before</span><span class="p">)</span> <span class="p">{</span> <span class="s">&#34;expected prior modifier list to be non-empty&#34;</span> <span class="p">}</span>
+        <span class="c1">// common case where we we are removing all the modifiers.
+</span><span class="c1"></span>        <span class="k">var</span> <span class="py">node</span> <span class="p">=</span> <span class="n">paddedHead</span><span class="p">.</span><span class="n">child</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">node</span> <span class="p">!=</span> <span class="k">null</span> <span class="p">&amp;&amp;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">before</span><span class="p">.</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">logger</span><span class="o">?.</span><span class="n">nodeRemoved</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">before</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">node</span><span class="p">)</span>
+            <span class="n">node</span> <span class="p">=</span> <span class="n">detachAndRemoveNode</span><span class="p">(</span><span class="n">node</span><span class="p">).</span><span class="n">child</span>
+            <span class="n">i</span><span class="p">++</span>
+        <span class="p">}</span>
+        <span class="n">innerCoordinator</span><span class="p">.</span><span class="n">wrappedBy</span> <span class="p">=</span> <span class="n">layoutNode</span><span class="p">.</span><span class="n">parent</span><span class="o">?.</span><span class="n">innerCoordinator</span>
+        <span class="n">outerCoordinator</span> <span class="p">=</span> <span class="n">innerCoordinator</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="p">...</span>
+    <span class="p">}</span>
+    <span class="n">current</span> <span class="p">=</span> <span class="n">after</span>
+    
+    <span class="n">buffer</span> <span class="p">=</span> <span class="n">before</span><span class="o">?.</span><span class="n">also</span> <span class="p">{</span> <span class="n">it</span><span class="p">.</span><span class="n">clear</span><span class="p">()</span> <span class="p">}</span>
+    <span class="c1">// 将头节点和尾节点保存到 head 和 tail
+</span><span class="c1"></span>    <span class="n">head</span> <span class="p">=</span> <span class="n">trimChain</span><span class="p">(</span><span class="n">paddedHead</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">coordinatorSyncNeeded</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//  将 Node 和所属的 NodeCoordinator 挂接关联
+</span><span class="c1"></span>        <span class="n">syncCoordinators</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这一步的逻辑是当我们在外部设置 Modifier 的时候, 那么就会调用到这里的 Modifier 的 set 函数, 然后调用 nodes.updateFrom(value) , 这个 value 就是我们组件设置的 Modifier, 一般来说多个的话，肯定是一个 CombinedModifier（这个我们之前的文章有提过），然后在 updateFrom 的内部，会通过 fillVector 方法，将我们外部设置的 Modifier 链铺平, 假设我们在外部设置的是 Modifier.size().padding().layout() 那么这里铺平后的集合就是这样的 sizeNode , paddingNode LayoutModifierNode</p>
+
+<p>然后将铺平后的数据, 会通过 node = createAndInsertNodeAsChild(next, parent) 方法，将 nodeChain 这个双向链表给连起来， 最后也是比较重要的一步， 就是通过 syncCoordinators 方法，将设置好的 node
+关联一个 NodeCoordinator 对象， 这个 NodeCoordinator 对象我们之前提到过， 就是用来测量布局的工具类</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">syncCoordinators</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="py">coordinator</span><span class="p">:</span> <span class="n">NodeCoordinator</span> <span class="p">=</span> <span class="n">innerCoordinator</span>
+        <span class="k">var</span> <span class="py">node</span><span class="p">:</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">Node</span><span class="p">?</span> <span class="p">=</span> <span class="n">tail</span><span class="p">.</span><span class="n">parent</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">node</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">val</span> <span class="py">layoutmod</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">asLayoutModifierNode</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">layoutmod</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">val</span> <span class="py">next</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="n">node</span><span class="p">.</span><span class="n">coordinator</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">val</span> <span class="py">c</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">coordinator</span> <span class="k">as</span> <span class="n">LayoutModifierNodeCoordinator</span>
+                    <span class="k">val</span> <span class="py">prevNode</span> <span class="p">=</span> <span class="n">c</span><span class="p">.</span><span class="n">layoutModifierNode</span>
+                    <span class="n">c</span><span class="p">.</span><span class="n">layoutModifierNode</span> <span class="p">=</span> <span class="n">layoutmod</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">prevNode</span> <span class="p">!==</span> <span class="n">node</span><span class="p">)</span> <span class="n">c</span><span class="p">.</span><span class="n">onLayoutModifierNodeChanged</span><span class="p">()</span>
+                    <span class="n">c</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="k">val</span> <span class="py">c</span> <span class="p">=</span> <span class="n">LayoutModifierNodeCoordinator</span><span class="p">(</span><span class="n">layoutNode</span><span class="p">,</span> <span class="n">layoutmod</span><span class="p">)</span> <span class="c1">// 创建 LayoutModifierNodeCoordinator
+</span><span class="c1"></span>                    <span class="n">node</span><span class="p">.</span><span class="n">updateCoordinator</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                    <span class="n">c</span>
+                <span class="p">}</span>
+                <span class="n">coordinator</span><span class="p">.</span><span class="n">wrappedBy</span> <span class="p">=</span> <span class="n">next</span>
+                <span class="n">next</span><span class="p">.</span><span class="n">wrapped</span> <span class="p">=</span> <span class="n">coordinator</span>
+                <span class="n">coordinator</span> <span class="p">=</span> <span class="n">next</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="n">node</span><span class="p">.</span><span class="n">updateCoordinator</span><span class="p">(</span><span class="n">coordinator</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="n">node</span> <span class="p">=</span> <span class="n">node</span><span class="p">.</span><span class="n">parent</span>
+        <span class="p">}</span>
+        <span class="n">coordinator</span><span class="p">.</span><span class="n">wrappedBy</span> <span class="p">=</span> <span class="n">layoutNode</span><span class="p">.</span><span class="n">parent</span><span class="o">?.</span><span class="n">innerCoordinator</span>
+        <span class="n">outerCoordinator</span> <span class="p">=</span> <span class="n">coordinator</span>
+    <span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里的步骤就是给 node 对象设置一个 NodeCoordinator 对象，让每一个 LayoutModifier 都具备测量和布局的能力</p>
+
+<p>到了这里我们之前分析的 outerCoordinator.measure(constraints)，已经可以知道这个 outerCoordinator 就是一个 LayoutModifierNodeCoordinator 对象了，那么我们再来看下它的 measure 测量方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">override</span> <span class="k">fun</span> <span class="nf">measure</span><span class="p">(</span><span class="n">constraints</span><span class="p">:</span> <span class="n">Constraints</span><span class="p">):</span> <span class="n">Placeable</span> <span class="p">{</span>
+        <span class="n">performingMeasure</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">with</span><span class="p">(</span><span class="n">layoutModifierNode</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">measureResult</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span> <span class="k">is</span> <span class="n">IntermediateLayoutModifierNode</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">intermediateMeasure</span><span class="p">(</span>
+                        <span class="n">wrappedNonNull</span><span class="p">,</span>
+                        <span class="n">constraints</span><span class="p">,</span>
+                        <span class="n">lookaheadDelegate</span><span class="o">!!</span><span class="p">.</span><span class="n">measureResult</span><span class="p">.</span><span class="n">let</span> <span class="p">{</span> <span class="n">IntSize</span><span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">it</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="p">},</span>
+                        <span class="n">lookaheadConstraints</span><span class="o">!!</span>
+                    <span class="p">)</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="n">measure</span><span class="p">(</span><span class="n">wrappedNonNull</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span> <span class="c1">// 最终调用的地方
+</span><span class="c1"></span>                <span class="p">}</span>
+                <span class="k">this</span><span class="n">@LayoutModifierNodeCoordinator</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="n">onMeasured</span><span class="p">()</span>
+        <span class="k">return</span> <span class="k">this</span>
+    <span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="c1">// LayoutModifierNode.kt 
+</span><span class="c1"></span><span class="k">interface</span> <span class="nc">LayoutModifierNode</span> <span class="p">:</span> <span class="n">DelegatableNode</span> <span class="p">{</span>
+    <span class="k">fun</span> <span class="nf">MeasureScope</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span>
+        <span class="n">measurable</span><span class="p">:</span> <span class="n">Measurable</span><span class="p">,</span>
+        <span class="n">constraints</span><span class="p">:</span> <span class="n">Constraints</span>
+    <span class="p">):</span> <span class="n">MeasureResult</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>而这里调用的 measure 方法就是所属于 LayoutModifierNode 类中的方法了, 而 LayoutModifierNode 就是我们这是 padding，设置 size 的时候，它的内部方法实现在这个地方</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span><span class="lnt">88
+</span><span class="lnt">89
+</span><span class="lnt">90
+</span><span class="lnt">91
+</span><span class="lnt">92
+</span><span class="lnt">93
+</span><span class="lnt">94
+</span><span class="lnt">95
+</span><span class="lnt">96
+</span><span class="lnt">97
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">SizeNode</span> 
+
+<span class="n">@Stable</span>
+<span class="k">fun</span> <span class="nf">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="n">size</span><span class="p">:</span> <span class="n">Dp</span><span class="p">)</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">then</span><span class="p">(</span>
+    <span class="n">SizeElement</span><span class="p">(</span> <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="k">private</span> <span class="k">class</span> <span class="nc">SizeElement</span><span class="p">(</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">minWidth</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="n">Dp</span><span class="p">.</span><span class="n">Unspecified</span><span class="p">,</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">minHeight</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="n">Dp</span><span class="p">.</span><span class="n">Unspecified</span><span class="p">,</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">maxWidth</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="n">Dp</span><span class="p">.</span><span class="n">Unspecified</span><span class="p">,</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">maxHeight</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="n">Dp</span><span class="p">.</span><span class="n">Unspecified</span><span class="p">,</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">enforceIncoming</span><span class="p">:</span> <span class="n">Boolean</span><span class="p">,</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="py">inspectorInfo</span><span class="p">:</span> <span class="n">InspectorInfo</span><span class="p">.()</span> <span class="p">-&gt;</span> <span class="n">Unit</span>
+<span class="p">)</span> <span class="p">:</span> <span class="n">ModifierNodeElement</span><span class="p">&lt;</span><span class="n">SizeNode</span><span class="p">&gt;()</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">create</span><span class="p">():</span> <span class="n">SizeNode</span> <span class="p">=</span>
+        <span class="n">SizeNode</span><span class="p">(</span>
+            <span class="n">minWidth</span> <span class="p">=</span> <span class="n">minWidth</span><span class="p">,</span>
+            <span class="n">minHeight</span> <span class="p">=</span> <span class="n">minHeight</span><span class="p">,</span>
+            <span class="n">maxWidth</span> <span class="p">=</span> <span class="n">maxWidth</span><span class="p">,</span>
+            <span class="n">maxHeight</span> <span class="p">=</span> <span class="n">maxHeight</span><span class="p">,</span>
+            <span class="n">enforceIncoming</span> <span class="p">=</span> <span class="n">enforceIncoming</span>
+        <span class="p">)</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">update</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">SizeNode</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">node</span><span class="p">.</span><span class="n">minWidth</span> <span class="p">=</span> <span class="n">minWidth</span>
+        <span class="n">node</span><span class="p">.</span><span class="n">minHeight</span> <span class="p">=</span> <span class="n">minHeight</span>
+        <span class="n">node</span><span class="p">.</span><span class="n">maxWidth</span> <span class="p">=</span> <span class="n">maxWidth</span>
+        <span class="n">node</span><span class="p">.</span><span class="n">maxHeight</span> <span class="p">=</span> <span class="n">maxHeight</span>
+        <span class="n">node</span><span class="p">.</span><span class="n">enforceIncoming</span> <span class="p">=</span> <span class="n">enforceIncoming</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="k">private</span> <span class="k">class</span> <span class="nc">SizeNode</span><span class="p">(</span>
+    <span class="k">var</span> <span class="py">minWidth</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="n">Dp</span><span class="p">.</span><span class="n">Unspecified</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">minHeight</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="n">Dp</span><span class="p">.</span><span class="n">Unspecified</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">maxWidth</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="n">Dp</span><span class="p">.</span><span class="n">Unspecified</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">maxHeight</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="n">Dp</span><span class="p">.</span><span class="n">Unspecified</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">enforceIncoming</span><span class="p">:</span> <span class="n">Boolean</span>
+<span class="p">)</span> <span class="p">:</span> <span class="n">LayoutModifierNode</span><span class="p">,</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">Node</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">MeasureScope</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span> <span class="c1">// sizeNode 的测量布局方式
+</span><span class="c1"></span>        <span class="n">measurable</span><span class="p">:</span> <span class="n">Measurable</span><span class="p">,</span>
+        <span class="n">constraints</span><span class="p">:</span> <span class="n">Constraints</span>
+    <span class="p">):</span> <span class="n">MeasureResult</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">wrappedConstraints</span> <span class="p">=</span>  <span class="p">....</span>
+        <span class="k">val</span> <span class="py">placeable</span> <span class="p">=</span> <span class="n">measurable</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span><span class="n">wrappedConstraints</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">layout</span><span class="p">(</span><span class="n">placeable</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">placeable</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">placeable</span><span class="p">.</span><span class="n">placeRelative</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// paddingNode
+</span><span class="c1"></span><span class="n">@Stable</span>
+<span class="k">fun</span> <span class="nf">Modifier</span><span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">all</span><span class="p">:</span> <span class="n">Dp</span><span class="p">)</span> <span class="p">=</span> <span class="k">this</span> <span class="n">then</span> <span class="n">PaddingElement</span><span class="p">()</span>
+
+
+<span class="k">private</span> <span class="k">class</span> <span class="nc">PaddingElement</span><span class="p">(</span>
+    <span class="k">var</span> <span class="py">start</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">top</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">end</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">bottom</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">rtlAware</span><span class="p">:</span> <span class="n">Boolean</span><span class="p">,</span>
+    <span class="k">val</span> <span class="py">inspectorInfo</span><span class="p">:</span> <span class="n">InspectorInfo</span><span class="p">.()</span> <span class="p">-&gt;</span> <span class="n">Unit</span>
+<span class="p">)</span> <span class="p">:</span> <span class="n">ModifierNodeElement</span><span class="p">&lt;</span><span class="n">PaddingNode</span><span class="p">&gt;()</span>
+
+<span class="k">private</span> <span class="k">class</span> <span class="nc">PaddingNode</span><span class="p">(</span>
+    <span class="k">var</span> <span class="py">start</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">top</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">end</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">bottom</span><span class="p">:</span> <span class="n">Dp</span> <span class="p">=</span> <span class="m">0.</span><span class="n">dp</span><span class="p">,</span>
+    <span class="k">var</span> <span class="py">rtlAware</span><span class="p">:</span> <span class="n">Boolean</span>
+<span class="p">)</span> <span class="p">:</span> <span class="n">LayoutModifierNode</span><span class="p">,</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">Node</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">MeasureScope</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span> <span class="c1">// // PaddingNode 的测量布局方式
+</span><span class="c1"></span>        <span class="n">measurable</span><span class="p">:</span> <span class="n">Measurable</span><span class="p">,</span>
+        <span class="n">constraints</span><span class="p">:</span> <span class="n">Constraints</span>
+    <span class="p">):</span> <span class="n">MeasureResult</span> <span class="p">{</span>
+
+        <span class="k">val</span> <span class="py">horizontal</span> <span class="p">=</span> <span class="n">start</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">()</span> <span class="p">+</span> <span class="n">end</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">()</span>
+        <span class="k">val</span> <span class="py">vertical</span> <span class="p">=</span> <span class="n">top</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">()</span> <span class="p">+</span> <span class="n">bottom</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">()</span>
+
+        <span class="k">val</span> <span class="py">placeable</span> <span class="p">=</span> <span class="n">measurable</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span><span class="n">constraints</span><span class="p">.</span><span class="n">offset</span><span class="p">(-</span><span class="n">horizontal</span><span class="p">,</span> <span class="p">-</span><span class="n">vertical</span><span class="p">))</span>
+
+        <span class="k">val</span> <span class="py">width</span> <span class="p">=</span> <span class="n">constraints</span><span class="p">.</span><span class="n">constrainWidth</span><span class="p">(</span><span class="n">placeable</span><span class="p">.</span><span class="n">width</span> <span class="p">+</span> <span class="n">horizontal</span><span class="p">)</span>
+        <span class="k">val</span> <span class="py">height</span> <span class="p">=</span> <span class="n">constraints</span><span class="p">.</span><span class="n">constrainHeight</span><span class="p">(</span><span class="n">placeable</span><span class="p">.</span><span class="n">height</span> <span class="p">+</span> <span class="n">vertical</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">layout</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">rtlAware</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">placeable</span><span class="p">.</span><span class="n">placeRelative</span><span class="p">(</span><span class="n">start</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">(),</span> <span class="n">top</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">())</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="n">placeable</span><span class="p">.</span><span class="n">place</span><span class="p">(</span><span class="n">start</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">(),</span> <span class="n">top</span><span class="p">.</span><span class="n">roundToPx</span><span class="p">())</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>我们可以写一个更加简单的例子，可以更加清晰的看到这个过程</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">layoutModifier2</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">BoxWithConstraints</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+        <span class="p">.</span><span class="n">layout</span> <span class="p">{</span> <span class="n">measurable</span><span class="p">,</span> <span class="n">constraints</span> <span class="p">-&gt;</span>
+            <span class="n">println</span><span class="p">(</span><span class="s">&#34;@@@@ &lt;top&gt;.layoutModifier2  流程1&#34;</span><span class="p">)</span>
+
+            <span class="k">val</span> <span class="py">placeable</span> <span class="p">=</span> <span class="n">measurable</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
+            
+            <span class="n">println</span><span class="p">(</span><span class="s">&#34;@@@@ &lt;top&gt;.layoutModifier2  流程2&#34;</span><span class="p">)</span>
+
+            <span class="c1">// 偏移
+</span><span class="c1"></span>            <span class="n">layout</span><span class="p">(</span><span class="n">placeable</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">placeable</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">placeable</span><span class="p">.</span><span class="n">placeRelative</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="p">.</span><span class="n">layout</span> <span class="p">{</span> <span class="n">measurable</span><span class="p">,</span> <span class="n">constraints</span> <span class="p">-&gt;</span>
+            <span class="n">println</span><span class="p">(</span><span class="s">&#34;@@@@ &lt;top&gt;.layoutModifier2  流程3&#34;</span><span class="p">)</span>
+            
+            <span class="k">val</span> <span class="py">placeable</span> <span class="p">=</span> <span class="n">measurable</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
+
+            <span class="n">println</span><span class="p">(</span><span class="s">&#34;@@@@ &lt;top&gt;.layoutModifier2  流程4&#34;</span><span class="p">)</span>
+            <span class="n">layout</span><span class="p">(</span><span class="n">placeable</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">placeable</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">placeable</span><span class="p">.</span><span class="n">placeRelative</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">})</span> <span class="p">{</span>
+        <span class="n">Text</span><span class="p">(</span><span class="n">text</span> <span class="p">=</span> <span class="s">&#34;Hello World&#34;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>它的打印结果是这样的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="err">@@@@</span> <span class="p">&lt;</span><span class="n">top</span><span class="p">&gt;.</span><span class="n">layoutModifier2</span>  <span class="err">流程</span><span class="m">1</span>
+<span class="err">@@@@</span> <span class="p">&lt;</span><span class="n">top</span><span class="p">&gt;.</span><span class="n">layoutModifier2</span>  <span class="err">流程</span><span class="m">3</span>
+<span class="err">@@@@</span> <span class="p">&lt;</span><span class="n">top</span><span class="p">&gt;.</span><span class="n">layoutModifier2</span>  <span class="err">流程</span><span class="m">4</span>
+<span class="err">@@@@</span> <span class="p">&lt;</span><span class="n">top</span><span class="p">&gt;.</span><span class="n">layoutModifier2</span>  <span class="err">流程</span><span class="m">2</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>所以这个流程应该这样就很清楚了，有点像一个链式调用，其实也有点像 okHttp 中的 process 的处理方式，在调用第一个 layout 进行测量的时候, 它会将约束条件传递到下一个 layout 函数中，而下一个 layout 函数，因为没有后续的 LayoutModifier 了，所以就不会再往内层传递了，而是测量完成后，将测量结果大小再一层一层的返回（如果左边的约束条件更加严格的话，则右边的尺寸将受到左边的约束）</p>
+
+<p>到了这里，我们再来看看上面说的， 它们的结果是什么了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">Box</span><span class="p">(</span><span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">).</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">))</span> <span class="c1">// 最终大小为 100dp
+</span><span class="c1"></span><span class="n">Box</span><span class="p">(</span><span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">).</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">))</span> <span class="c1">// 最终大小为 200dp
+</span><span class="c1"></span><span class="n">Box</span><span class="p">(</span>
+    <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+        <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+    	<span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Blue</span><span class="p">)</span>
+    	<span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+    	<span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Red</span><span class="p">)</span>  <span class="c1">// 大小为 100dp 的红色，盖着 100dp 的绿色 
+</span><span class="c1"></span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="总结">总结</h2>
+
+<p>通过上面的两个例子和原理的分析，在日常编写程序时我们就可以简单理解 LayoutModifier 对测量布局的影响是：当 Composable 有多个 LayoutModifier 时，最终会以最外层的 LayoutModifier 为最终结果（即是最左边的 LayoutModifier），最外层的优先级是最高的</p>
+
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2023-08-24
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/android/">Android</a>
+          <a href="https://midFang.github.io/tags/compose/">Compose</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/combinedmodifier-composedmodifier-analysis/">
+            <span class="next-text nav-default">CombinedModifier 和 ComposedModifier 原理分析</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://stackoverflow.com/users/14331888/midfang" rel="me noopener" class="iconfont"
+      title="stack-overflow"  target="_blank"
+      >
+      <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M809.714286 932.571429l-638.857143 0 0-274.285714-91.428571 0 0 365.714286 821.714286 0 0-365.714286-91.428571 0 0 274.285714zm-538.285714-299.428571l18.857143-89.714286 447.428571 94.285714-18.857143 89.142857zm58.857143-213.714286l38.285714-83.428571 414.285714 193.714286-38.285714 82.857143zm114.857143-203.428571l58.285714-70.285714 350.857143 293.142857-58.285714 70.285714zm226.857143-216l272.571429 366.285714-73.142857 54.857143-272.571429-366.285714zm-410.285714 840.571429l0-90.857143 457.142857 0 0 90.857143-457.142857 0z"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://www.douban.com/people/194654920/" rel="me noopener" class="iconfont"
+      title="douban"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M926.917973 37.80608C959.65184 37.80608 986.19392 64.34816 986.19392 97.082027L986.19392 926.917973C986.19392 959.65184 959.65184 986.19392 926.917973 986.19392L97.082027 986.19392C64.34816 986.19392 37.80608 959.65184 37.80608 926.917973L37.80608 97.082027C37.80608 64.34816 64.34816 37.80608 97.082027 37.80608zM176.653653 176.19968 176.653653 252.678827 825.658027 252.678827 825.658027 176.19968zM217.719467 316.146347 217.719467 628.08064 273.524053 628.08064 341.292373 770.39616 157.259093 770.39616 157.259093 845.417813 842.949973 845.417813 842.949973 770.39616 654.226773 770.39616 722.899627 628.08064 783.67744 628.08064 783.67744 316.146347zM684.885333 392.891733 684.885333 553.987413 312.576 553.987413 312.576 392.891733zM570.770773 770.39616 426.653013 770.39616 359.621973 628.08064 639.443627 628.08064z"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://midFang.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2020 -
+    2024
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        midFang
+        
+      </span></span>
+
+  
+  
+    <span id="busuanzi_container">
+      访客数/访问量：<span id="busuanzi_value_site_uv"></span>/<span id="busuanzi_value_site_pv"></span>
+    </span>
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script type="text/javascript">
+    AV.initialize( null ,  null );
+  </script>
+
+  <script>
+    function showHitCount(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push($(this).attr("id").trim());
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var hits = item.get('hits');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(hits);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if (countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function (results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("hits");
+            counter.save(null, {
+              success: function (counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('hits'));
+              },
+              error: function (counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+             
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+             
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("hits", 1);
+            newcounter.save(null, {
+              success: function (newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('hits'));
+              },
+              error: function (newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function (error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function () {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        
+        addCount(Counter);
+      } else if ($('.post-link').length > 1) {
+        
+        showHitCount(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+  <script>
+    $("#openSearch, #openSearchMobile").click(function(){
+      $(".modal-dialog").addClass("visible");
+    });
+
+    $("#closeSearch").click(function(){
+      $(".modal-dialog").removeClass("visible");
+    });
+
+    $(document).click(function(event) {
+    
+      if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
+        $("body").find(".modal-dialog").removeClass("visible");
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>

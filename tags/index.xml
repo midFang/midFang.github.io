@@ -6,15 +6,15 @@
     <description>Recent content in Tags on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 20 Jul 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 24 Aug 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Android</title>
+      <title>android</title>
       <link>https://midFang.github.io/tags/android/</link>
-      <pubDate>Thu, 20 Jul 2023 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 24 Aug 2023 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/tags/android/</guid>
       <description></description>
@@ -23,7 +23,7 @@
     <item>
       <title>Compose</title>
       <link>https://midFang.github.io/tags/compose/</link>
-      <pubDate>Thu, 20 Jul 2023 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 24 Aug 2023 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/tags/compose/</guid>
       <description></description>
@@ -84,7 +84,7 @@
     </item>
     
     <item>
-      <title>View</title>
+      <title>view</title>
       <link>https://midFang.github.io/tags/view/</link>
       <pubDate>Sun, 18 Apr 2021 00:00:00 +0000</pubDate>
       
