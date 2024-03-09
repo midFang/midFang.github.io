@@ -6,10 +6,19 @@
     <description>Recent content in Posts on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 27 Sep 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 13 Oct 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Compose 滑动冲突解决方案</title>
+      <link>https://midFang.github.io/compose-sliding-conflict-resolution/</link>
+      <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/compose-sliding-conflict-resolution/</guid>
+      <description>在 Compose 中， 处理滑动冲突的 Api 是 Modifier.nestedScroll() 下面就让我们来看看 Compose 中是如何处理的 一般来说，滑动冲突本质是，滑动冲突是因为内外层组件在同一方向上都滑动，而系统并</description>
+    </item>
     
     <item>
       <title>Compose 自定义绘制</title>
@@ -303,26 +312,6 @@
       <description>&lt;h3 id=&#34;java-可变参数可能引发的性能问题&#34;&gt;Java 可变参数可能引发的性能问题&lt;/h3&gt;
 
 &lt;p&gt;在这里先看一下我们项目中之前写的日志打印工具&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>理解 Android 中的 window 与悬浮窗的实现</title>
-      <link>https://midFang.github.io/android-window-suspension-view/</link>
-      <pubDate>Sat, 07 Nov 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/android-window-suspension-view/</guid>
-      <description>&lt;h3 id=&#34;window-是什么&#34;&gt;Window 是什么&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Window 是一个相对概念上的载体，他并不是一个真正的容器，仅仅负责管理依赖 window 上面的 View 的一个类，充当管理者。&lt;/li&gt;
-&lt;li&gt;Window 是一个抽象类，在源码实现中，只有一个具体的实现类，phoneWindow&lt;/li&gt;
-&lt;li&gt;创建 Window 需要通过 WindowManager 创建&lt;/li&gt;
-&lt;li&gt;WindowManager 是外界访问 Window 的入口&lt;/li&gt;
-&lt;li&gt;Window 具体实现位于 WindowManagerService 中&lt;/li&gt;
-&lt;li&gt;WindowManager 和 WindowManagerService 的交互是通过 IPC 完成&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;activity-和-window-之间的关系&#34;&gt;Activity 和 Window 之间的关系&lt;/h3&gt;</description>
     </item>
     
   </channel>
