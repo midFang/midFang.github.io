@@ -6,10 +6,28 @@
     <description>Recent content in Compose on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 24 Aug 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 27 Sep 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/compose/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Compose 自定义绘制</title>
+      <link>https://midFang.github.io/compose-custom-drawing/</link>
+      <pubDate>Wed, 27 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/compose-custom-drawing/</guid>
+      <description>在 Compose 中，绘制的 Api 有 drawBehind drawWithContent 或者是使用完成自定义绘制方式 Canvas，接下来就来看看他们是如何使用的 在已有内容上绘制 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</description>
+    </item>
+    
+    <item>
+      <title>Compose 中的固有特性测量和自定义绘制顺序</title>
+      <link>https://midFang.github.io/intrinsic-property-measurement-and-custom-plotting-order-in-compose/</link>
+      <pubDate>Fri, 15 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/intrinsic-property-measurement-and-custom-plotting-order-in-compose/</guid>
+      <description>固有特性测量是什么 在解释固有特性测量是怎么之前，我们先看这样的例子 假设我们要实现上面的代码的效果，也就是中间线条的宽度是根据两边文字动态来计</description>
+    </item>
     
     <item>
       <title>Compose LayoutModifier 原理解析</title>
