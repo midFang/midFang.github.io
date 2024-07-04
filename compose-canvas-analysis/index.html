@@ -1,0 +1,3015 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Compose 绘制功能全解析 - midFang&#39;s Blog</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="midFang" />
+  <meta name="description" content="最近项目中，针对 App 首次启动新手指引做了适配，新手指引大概的效果是如下图这样的，原本项目中使用的是纯图片，下方的箭头和小圆圈是固定显示在中间的" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<link rel="canonical" href="https://midFang.github.io/compose-canvas-analysis/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="Compose 绘制功能全解析" />
+<meta property="og:description" content="最近项目中，针对 App 首次启动新手指引做了适配，新手指引大概的效果是如下图这样的，原本项目中使用的是纯图片，下方的箭头和小圆圈是固定显示在中间的" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/compose-canvas-analysis/" />
+<meta property="article:published_time" content="2023-11-09T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-11-09T00:00:00+00:00" />
+<meta itemprop="name" content="Compose 绘制功能全解析">
+<meta itemprop="description" content="最近项目中，针对 App 首次启动新手指引做了适配，新手指引大概的效果是如下图这样的，原本项目中使用的是纯图片，下方的箭头和小圆圈是固定显示在中间的">
+
+
+<meta itemprop="datePublished" content="2023-11-09T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2023-11-09T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="9129">
+
+
+
+<meta itemprop="keywords" content="Android,Compose,view," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Compose 绘制功能全解析"/>
+<meta name="twitter:description" content="最近项目中，针对 App 首次启动新手指引做了适配，新手指引大概的效果是如下图这样的，原本项目中使用的是纯图片，下方的箭头和小圆圈是固定显示在中间的"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">midFang's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+        
+      </li>
+    
+
+    
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+
+  
+    
+<div class="modal-dialog">
+    
+    <div class="modal-content">
+      <div id="closeSearch" title="Close" class="close">X</div>
+      <div class="modal-header">
+        <div class="modal-title">Search</div>
+      </div>
+      <div class="modal-body">
+          <script>
+            (function() {
+              var cx = '57787f7f4d21d54fc';
+              var gcse = document.createElement('script');
+              gcse.type = 'text/javascript';
+              gcse.async = true;
+              gcse.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//cse.google.com/cse.js?cx=' + cx;
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(gcse, s);
+            })();
+          </script>
+          <gcse:search></gcse:search>
+      </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      midFang's Blog
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+      <li class="menu-item">
+        <a id="openSearch" class="menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">Compose 绘制功能全解析</h1>
+      
+      <div class="post-meta">
+        <time datetime="2023-11-09" class="post-time">
+          2023-11-09
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/compose/"> Compose </a>
+            <a href="https://midFang.github.io/categories/view/"> view </a>
+            
+          </div>
+        
+
+        
+        
+          <span id="busuanzi_container_page_pv">
+            | 阅读 <span id="busuanzi_value_page_pv"></span>
+          </span>
+        
+
+        
+        
+          <span id="/compose-canvas-analysis/" class="leancloud_visitors" data-flag-title="Compose 绘制功能全解析">
+            <span class="post-meta-item-text"> | 阅读 </span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#开始">开始</a></li>
+<li><a href="#绘制三角形">绘制三角形</a></li>
+<li><a href="#画出一条线">画出一条线</a></li>
+<li><a href="#圆">圆</a></li>
+<li><a href="#drawline">drawLine</a></li>
+<li><a href="#stampedpatheffect-效果">stampedPathEffect 效果</a></li>
+<li><a href="#colorfilter">colorFilter</a></li>
+<li><a href="#drawcircle">drawCircle</a></li>
+<li><a href="#drawrect">drawRect</a></li>
+<li><a href="#drawroundrect">drawRoundRect</a></li>
+<li><a href="#drawarc">drawArc</a></li>
+<li><a href="#drawimage">drawImage</a></li>
+<li><a href="#drawoval">drawOval</a></li>
+<li><a href="#drawpoints">DrawPoints</a></li>
+<li><a href="#drawpath">DrawPath</a></li>
+<li><a href="#transform">transform</a></li>
+<li><a href="#addarc">addArc</a></li>
+<li><a href="#addarcrad">addArcRad</a></li>
+<li><a href="#addoval">AddOval</a></li>
+<li><a href="#addoutline">addOutline</a></li>
+<li><a href="#addpath">addPath</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      
+
+<p>最近项目中，针对 <code>App</code> 首次启动新手指引做了适配，新手指引大概的效果是如下图这样的，原本项目中使用的是纯图片，下方的箭头和小圆圈是固定显示在中间的，随着项目的不断庞大，这个指引的位置不是固定的，可能在左边也可能在右边，而且更加重要的是后续需要适配平板，如果还是用图片处理就会变得非常困难，所以只能使用代码画出来了，本文将以这个需求为起始点，展示如何使用 <code>Jetpack Compose</code> 进行绘制。我们将从这个示例开始，逐步尝试和了解 <code>Compose</code> 中的各种绘制 <code>API</code> 和方法</p>
+
+<h2 id="开始">开始</h2>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240616191005.png" alt="" /></p>
+
+<p>首先分析一下这个效果，上方是一个圆角矩形， 圆角矩形底部中间一个小三角形，这个三角形连接着一条线连接着两个重叠的小圆。要使用 Compose 纯代码绘制，起始和 <code>Android</code> 原生差不多，需要使用到 <code>Canvas</code> 和 <code>Path</code>，直接上代码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">TestCanvas</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">rectWidth</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="c1">// 矩形宽度
+</span><span class="c1"></span>        <span class="k">val</span> <span class="py">rectHeight</span> <span class="p">=</span> <span class="m">150.</span><span class="n">dp</span><span class="p">.</span><span class="n">toPx</span><span class="p">()</span> <span class="c1">// 矩形高度
+</span><span class="c1"></span>
+        <span class="k">val</span> <span class="py">gradientBrush</span> <span class="p">=</span> <span class="n">Brush</span><span class="p">.</span><span class="n">linearGradient</span><span class="p">(</span> <span class="c1">// 绘制渐变色
+</span><span class="c1"></span>            <span class="n">colors</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">,</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span> <span class="n">Color</span><span class="p">.</span><span class="n">Yellow</span><span class="p">),</span>
+            <span class="n">start</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">.</span><span class="n">Zero</span><span class="p">,</span> <span class="c1">// 渐变开始的坐标
+</span><span class="c1"></span>            <span class="n">end</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">.</span><span class="n">Infinite</span> <span class="c1">// 渐变终点的坐标,
+</span><span class="c1"></span>            <span class="n">tileMode</span> <span class="p">=</span> <span class="n">TileMode</span><span class="p">.</span><span class="n">Clamp</span>
+        <span class="p">)</span>
+
+        <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+            <span class="k">val</span> <span class="py">cornerRadius</span> <span class="p">=</span> <span class="m">5.</span><span class="n">dp</span><span class="p">.</span><span class="n">toPx</span><span class="p">()</span> <span class="c1">// 定义圆角矩形的四个角的半径
+</span><span class="c1"></span>
+            <span class="c1">// 定义矩形的边界
+</span><span class="c1"></span>            <span class="k">val</span> <span class="py">rect</span> <span class="p">=</span> <span class="n">Rect</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">,</span> <span class="n">rectWidth</span> <span class="p">-</span> <span class="m">50f</span><span class="p">,</span> <span class="n">rectHeight</span> <span class="p">-</span> <span class="m">50f</span><span class="p">)</span>
+            <span class="c1">// 添加圆角矩形到路径
+</span><span class="c1"></span>            <span class="n">addRoundRect</span><span class="p">(</span>
+                <span class="n">RoundRect</span><span class="p">(</span>
+                    <span class="n">rect</span> <span class="p">=</span> <span class="n">rect</span><span class="p">,</span>
+                    <span class="n">cornerRadius</span> <span class="p">=</span> <span class="n">CornerRadius</span><span class="p">(</span><span class="n">cornerRadius</span><span class="p">,</span> <span class="n">cornerRadius</span><span class="p">)</span> <span class="c1">// 圆角
+</span><span class="c1"></span>                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/image-20240616193642478.png" alt="" /></p>
+
+<p>上述代码效果就是这样，首先是使用 Brush（笔刷）这个类达到渐变效果，而 <code>linearGradient</code> 就是线性渐变，<code>linearGradient</code> 方法中，一共有 4 个参数可以配置，其余的参数都在注释上说明了，这里说下 <code>TileMode</code> 参数配置区别，它的默认值是 <code>TileMode.Clamp</code></p>
+
+<ul>
+<li>TileMode.Clamp： 当使用 <code>TileMode.Clamp</code> 时，渐变在到达终点后，继续使用终点的颜色填充超出范围的区域。例如，如果渐变从红色到蓝色，超出范围的区域将填充蓝色</li>
+<li>TileMode.Repeated：当使用 <code>TileMode.Repeated</code> 时，渐变在到达终点后，将从起点重新开始，形成一个连续的重复图案。例如，红色到蓝色的渐变会不断重复，填充整个区域</li>
+<li>TileMode.Mirror：当使用 <code>TileMode.Mirror</code> 时，渐变在到达终点后，会镜像反转然后再重复。例如，红色到蓝色的渐变会变成蓝色到红色，然后再重复红色到蓝色，如此循环</li>
+</ul>
+
+<p>绘制好渐变颜色后，再使用 <code>path</code> 的 <code>addRoundRect</code> 添加了一个圆角矩形，配置我们刚刚编写好的渐变颜色，这样就完成了一个渐变颜色的圆角矩形</p>
+
+<h2 id="绘制三角形">绘制三角形</h2>
+
+<p>接下来，我们再绘制矩形中间底部的三角形，同样也是使用 path，但是这里需要使用的 addPath 添加自定义的路径，这个路径就是三角形的路径</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="c1">// 定义三角形的顶点
+</span><span class="c1"></span><span class="k">val</span> <span class="py">triangleHeight</span> <span class="p">=</span> <span class="m">30f</span>
+<span class="k">val</span> <span class="py">triangleWidth</span> <span class="p">=</span> <span class="m">60f</span> <span class="c1">// 三角形的宽度
+</span><span class="c1"></span><span class="k">val</span> <span class="py">trianglePath</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+    <span class="n">moveTo</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="p">-</span> <span class="n">triangleWidth</span> <span class="p">/</span> <span class="m">2</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span><span class="p">)</span> <span class="c1">// 三角形右边的点
+</span><span class="c1"></span>    <span class="n">lineTo</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span> <span class="p">+</span> <span class="n">triangleHeight</span><span class="p">)</span> <span class="c1">// 三角形底部的点
+</span><span class="c1"></span>    <span class="n">lineTo</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="p">+</span> <span class="n">triangleWidth</span> <span class="p">/</span> <span class="m">2</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span><span class="p">)</span> <span class="c1">// 三角形右边的点
+</span><span class="c1"></span>    <span class="n">close</span><span class="p">()</span> <span class="c1">// 闭合路径
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="c1">// 添加三角形到路径
+</span><span class="c1"></span><span class="n">addPath</span><span class="p">(</span><span class="n">trianglePath</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240616202830.png" alt="" /></p>
+
+<p>效果就是这样，代码比较简单，这里我们首先了解一下 <code>moveTo</code> 和 <code>lineTo</code> 的作用</p>
+
+<ul>
+<li>moveTo(x, y)：将当前绘图点移动到指定的 (x, y) 坐标，而不绘制任何线段。通常用于设置起始点或跳过某些区域</li>
+<li>lineTo(x, y)：从当前绘图点绘制一条直线到指定的 (x, y) 坐标，并将当前绘图点更新为新的 (x, y) 坐标</li>
+</ul>
+
+<p>所以，上述的代码就是将绘图的起点设置在了 <code>rect.center.x - triangleWidth / 2, rect.bottom</code> 的位置，就是圆角矩形底部中间左边的位置，然后再 lineTo <code>rect.center.x, rect.bottom + triangleHeight</code>, 这个坐标点就是下面三角形的底部的那个点，最后 lineTo 到三角形右边的那个点，最后调用 <code>close</code>，闭合整个路径，这样就完成了这个三角形的绘制</p>
+
+<h2 id="画出一条线">画出一条线</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+       <span class="n">moveTo</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span> <span class="p">+</span> <span class="n">triangleHeight</span> <span class="p">-</span> <span class="m">1.</span><span class="n">dp</span><span class="p">.</span><span class="n">toPx</span><span class="p">())</span> <span class="c1">// 上移 1个 dp 像素，线条衔接的更自然
+</span><span class="c1"></span>       <span class="n">lineTo</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span> <span class="p">+</span> <span class="n">lineHeight</span><span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240617220509.png" alt="" /></p>
+
+<p>这里也很简单， 将绘图的起始点移动到三角形的下方区域，笔直的往下，<code>lineTo</code> 画出一条线，其实这里也可以使用 <code>drawLine</code></p>
+
+<h2 id="圆">圆</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="c1">// 定义两个小圆的半径
+</span><span class="c1"></span><span class="k">val</span> <span class="py">circleRadius</span> <span class="p">=</span> <span class="m">4.</span><span class="n">dp</span><span class="p">.</span><span class="n">toPx</span><span class="p">()</span>
+<span class="c1">// 定义两个小圆的位置，分别位于线条的底部
+</span><span class="c1"></span><span class="k">val</span> <span class="py">circleCenter</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span> <span class="p">+</span> <span class="n">lineHeight</span><span class="p">)</span>
+<span class="c1">// 绘制第一个小圆（较为外侧，透明度小）
+</span><span class="c1"></span><span class="n">drawCircle</span><span class="p">(</span>
+    <span class="n">brush</span> <span class="p">=</span> <span class="n">gradientBrush</span><span class="p">,</span>
+    <span class="n">radius</span> <span class="p">=</span> <span class="n">circleRadius</span> <span class="p">*</span> <span class="m">2f</span><span class="p">,</span> <span class="c1">// 半径稍大
+</span><span class="c1"></span>    <span class="n">center</span> <span class="p">=</span> <span class="n">circleCenter</span><span class="p">,</span> <span class="c1">// 中心位置
+</span><span class="c1"></span>    <span class="n">alpha</span> <span class="p">=</span> <span class="m">0.5f</span> <span class="c1">// 透明度降低
+</span><span class="c1"></span><span class="p">)</span>
+<span class="c1">// 绘制第二个小圆（较为内侧，透明度大）
+</span><span class="c1"></span><span class="n">drawCircle</span><span class="p">(</span>
+    <span class="n">brush</span> <span class="p">=</span> <span class="n">gradientBrush</span><span class="p">,</span>
+    <span class="n">radius</span> <span class="p">=</span> <span class="n">circleRadius</span><span class="p">,</span> <span class="c1">// 半径
+</span><span class="c1"></span>    <span class="n">center</span> <span class="p">=</span> <span class="n">circleCenter</span>  <span class="c1">// 中心位置
+</span><span class="c1"></span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这部分代码使用 <code>circleRadius</code> 定义圆的半径，<code>circleCenter</code> 设置圆的起始位置，这里设置的位置，也就是底部线条的位置，画出一个内圆和外圆，外圆的半径较大，并且设置浅透明度，就可以看下如下这样扩散的效果一样</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240617220933.png" alt="" /></p>
+
+<p>至此，整个效果就这样完成了，不管下方的箭头指向何处，我们都可以自定义，这样就没有了图片不能修改和图片会被缩放的局限性，最后完成的代码如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">TestCanvas1</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">rectWidth</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span>
+        <span class="k">val</span> <span class="py">rectHeight</span> <span class="p">=</span> <span class="m">150.</span><span class="n">dp</span><span class="p">.</span><span class="n">toPx</span><span class="p">()</span>
+
+        <span class="c1">// 定义渐变颜色 线性渐变的画笔
+</span><span class="c1"></span>        <span class="k">val</span> <span class="py">gradientBrush</span> <span class="p">=</span> <span class="n">Brush</span><span class="p">.</span><span class="n">linearGradient</span><span class="p">(</span>
+            <span class="n">colors</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">,</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span> <span class="n">Color</span><span class="p">.</span><span class="n">Yellow</span><span class="p">),</span>
+            <span class="n">start</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">.</span><span class="n">Zero</span><span class="p">,</span> <span class="c1">// 渐变开始的坐标
+</span><span class="c1"></span>            <span class="n">end</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">.</span><span class="n">Infinite</span> <span class="c1">// 渐变终点的坐标,
+</span><span class="c1"></span>        <span class="p">)</span>
+
+        <span class="k">var</span> <span class="py">linePath</span> <span class="p">=</span> <span class="n">Path</span><span class="p">()</span>
+
+        <span class="k">val</span> <span class="py">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+            <span class="c1">// 定义圆角矩形的四个角的半径
+</span><span class="c1"></span>            <span class="k">val</span> <span class="py">cornerRadius</span> <span class="p">=</span> <span class="m">5.</span><span class="n">dp</span><span class="p">.</span><span class="n">toPx</span><span class="p">()</span>
+
+            <span class="k">val</span> <span class="py">lineHeight</span> <span class="p">=</span> <span class="m">80.</span><span class="n">dp</span><span class="p">.</span><span class="n">toPx</span><span class="p">()</span>
+
+            <span class="c1">// 定义矩形的边界
+</span><span class="c1"></span>            <span class="k">val</span> <span class="py">rect</span> <span class="p">=</span> <span class="n">Rect</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">,</span> <span class="n">rectWidth</span> <span class="p">-</span> <span class="m">50f</span><span class="p">,</span> <span class="n">rectHeight</span> <span class="p">-</span> <span class="m">50f</span><span class="p">)</span>
+            <span class="c1">// 添加圆角矩形到路径
+</span><span class="c1"></span>            <span class="n">addRoundRect</span><span class="p">(</span>
+                <span class="n">RoundRect</span><span class="p">(</span>
+                    <span class="n">rect</span> <span class="p">=</span> <span class="n">rect</span><span class="p">,</span>
+                    <span class="n">cornerRadius</span> <span class="p">=</span> <span class="n">CornerRadius</span><span class="p">(</span><span class="n">cornerRadius</span><span class="p">,</span> <span class="n">cornerRadius</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="c1">// 定义三角形的顶点
+</span><span class="c1"></span>            <span class="k">val</span> <span class="py">triangleHeight</span> <span class="p">=</span> <span class="m">30f</span>
+            <span class="k">val</span> <span class="py">triangleWidth</span> <span class="p">=</span> <span class="m">60f</span>
+            <span class="k">val</span> <span class="py">trianglePath</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+                <span class="n">moveTo</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="p">-</span> <span class="n">triangleWidth</span> <span class="p">/</span> <span class="m">2</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span><span class="p">)</span>
+                <span class="n">lineTo</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span> <span class="p">+</span> <span class="n">triangleHeight</span><span class="p">)</span>
+                <span class="n">lineTo</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="p">+</span> <span class="n">triangleWidth</span> <span class="p">/</span> <span class="m">2</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span><span class="p">)</span>
+                <span class="n">close</span><span class="p">()</span>
+            <span class="p">}</span>
+
+            <span class="c1">// 添加三角形到路径
+</span><span class="c1"></span>             <span class="n">addPath</span><span class="p">(</span><span class="n">trianglePath</span><span class="p">)</span>
+
+            <span class="c1">// 定义沿着三角形底部的线条路径
+</span><span class="c1"></span>            <span class="n">linePath</span><span class="p">.</span><span class="n">apply</span> <span class="p">{</span>
+                <span class="n">moveTo</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span> <span class="p">+</span> <span class="n">triangleHeight</span> <span class="p">-</span> <span class="m">1.</span><span class="n">dp</span><span class="p">.</span><span class="n">toPx</span><span class="p">())</span>
+                <span class="n">lineTo</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span> <span class="p">+</span> <span class="n">lineHeight</span><span class="p">)</span>
+            <span class="p">}</span>
+
+
+            <span class="c1">// 使用黄色填充路径
+</span><span class="c1"></span>            <span class="n">drawPath</span><span class="p">(</span>
+                <span class="n">path</span> <span class="p">=</span> <span class="k">this</span><span class="p">,</span>
+                <span class="n">brush</span> <span class="p">=</span> <span class="n">gradientBrush</span><span class="p">,</span>
+                <span class="n">style</span> <span class="p">=</span> <span class="n">Fill</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1">// 绘制线条并设置线条宽度
+</span><span class="c1"></span>            <span class="n">drawPath</span><span class="p">(</span>
+                <span class="n">path</span> <span class="p">=</span> <span class="n">linePath</span><span class="p">,</span>
+                <span class="n">brush</span> <span class="p">=</span> <span class="n">gradientBrush</span><span class="p">,</span>
+                <span class="n">style</span> <span class="p">=</span> <span class="n">Stroke</span><span class="p">(</span><span class="n">width</span> <span class="p">=</span> <span class="m">2.</span><span class="n">dp</span><span class="p">.</span><span class="n">toPx</span><span class="p">())</span> <span class="c1">// 设置线条宽度为4dp
+</span><span class="c1"></span>            <span class="p">)</span>
+
+            <span class="c1">// 定义两个小圆的半径
+</span><span class="c1"></span>            <span class="k">val</span> <span class="py">circleRadius</span> <span class="p">=</span> <span class="m">4.</span><span class="n">dp</span><span class="p">.</span><span class="n">toPx</span><span class="p">()</span>
+            <span class="c1">// 定义两个小圆的位置，分别位于线条的底部
+</span><span class="c1"></span>            <span class="k">val</span> <span class="py">circleCenter</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">bottom</span> <span class="p">+</span> <span class="n">lineHeight</span><span class="p">)</span>
+
+            <span class="c1">// 绘制第一个小圆（较为外侧，透明度小）
+</span><span class="c1"></span>            <span class="n">drawCircle</span><span class="p">(</span>
+                <span class="n">brush</span> <span class="p">=</span> <span class="n">gradientBrush</span><span class="p">,</span>
+                <span class="n">radius</span> <span class="p">=</span> <span class="n">circleRadius</span> <span class="p">*</span> <span class="m">2f</span><span class="p">,</span> <span class="c1">// 半径稍大
+</span><span class="c1"></span>                <span class="n">center</span> <span class="p">=</span> <span class="n">circleCenter</span><span class="p">,</span>
+                <span class="n">alpha</span> <span class="p">=</span> <span class="m">0.5f</span>
+            <span class="p">)</span>
+
+            <span class="c1">// 绘制第二个小圆（较为内侧，透明度大）
+</span><span class="c1"></span>            <span class="n">drawCircle</span><span class="p">(</span>
+                <span class="n">brush</span> <span class="p">=</span> <span class="n">gradientBrush</span><span class="p">,</span>
+                <span class="n">radius</span> <span class="p">=</span> <span class="n">circleRadius</span><span class="p">,</span> <span class="c1">// 原始半径
+</span><span class="c1"></span>                <span class="n">center</span> <span class="p">=</span> <span class="n">circleCenter</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>上面通过这个小需求使用了 <code>addRoundRect</code>, <code>drwLine</code> <code>drawCircle</code> 等方法，基本使用已经大概了解了，他们分别都是位于 <code>DrawScope</code> 和 <code>Path</code> 类中的方法，为了以后面对各种各样的绘制更加的得心应手，接下来乘着这一股劲，了解一下内部所有的方法，和方法中其他可配置的参数</p>
+
+<h2 id="drawline">drawLine</h2>
+
+<blockquote>
+<p>画一条线</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">drawLine</span><span class="p">(</span>
+        <span class="n">color</span><span class="p">:</span> <span class="n">Color</span><span class="p">,</span> <span class="c1">// 颜色
+</span><span class="c1"></span>        <span class="n">start</span><span class="p">:</span> <span class="n">Offset</span><span class="p">,</span> <span class="c1">// 线条的起点
+</span><span class="c1"></span>        <span class="n">end</span><span class="p">:</span> <span class="n">Offset</span><span class="p">,</span> <span class="c1">// 线条的终点
+</span><span class="c1"></span>        <span class="n">strokeWidth</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="n">Stroke</span><span class="p">.</span><span class="n">HairlineWidth</span><span class="p">,</span>  <span class="c1">// 线条的宽度， 默认值 HairlineWidth 是一个 1 像素的宽度
+</span><span class="c1"></span>        <span class="n">cap</span><span class="p">:</span> <span class="n">StrokeCap</span> <span class="p">=</span> <span class="n">Stroke</span><span class="p">.</span><span class="n">DefaultCap</span><span class="p">,</span> <span class="c1">// 线条末端的样式， 默认是矩形，可以
+</span><span class="c1"></span>        <span class="n">pathEffect</span><span class="p">:</span> <span class="n">PathEffect</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span> <span class="c1">// 线条的路径效果，可以用来创建虚线、波浪线等效果
+</span><span class="c1"></span>        <span class="n">alpha</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">1.0f</span><span class="p">,</span> <span class="c1">// 透明值
+</span><span class="c1"></span>        <span class="n">colorFilter</span><span class="p">:</span> <span class="n">ColorFilter</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span> <span class="c1">// 颜色过滤器
+</span><span class="c1"></span>        <span class="n">blendMode</span><span class="p">:</span> <span class="n">BlendMode</span> <span class="p">=</span> <span class="n">DefaultBlendMode</span> <span class="c1">// 颜色混合模式
+</span><span class="c1"></span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<ul>
+<li><strong>cap</strong>
+<br /></li>
+</ul>
+
+<blockquote>
+<p>线条末端的样式</p>
+</blockquote>
+
+<ul>
+<li>StrokeCap.Butt 末端是平直的，但不会超出线条的终点，比如说终点是  (100, 0)，那么他的终点就就刚好在  (100, 0) 的位置</li>
+<li>StrokeCap.Square 末端是平直的，会超过末端终点，超过一半的距离是线的宽度一半， 比如宽度是 10 dp， 终点是 (100, 0)， 那么终点会在 (105, 0)， 其实和 Butt 的差别，视觉上就是一个一长一短</li>
+
+<li><p>StrokeCap.Round 末端是圆弧</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="n">drawLine</span><span class="p">(</span>
+        <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+        <span class="n">start</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="n">x</span> <span class="p">=</span> <span class="m">330f</span><span class="p">,</span> <span class="n">y</span> <span class="p">=</span> <span class="m">50f</span><span class="p">),</span>
+        <span class="n">end</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="n">x</span> <span class="p">=</span> <span class="m">330f</span><span class="p">,</span> <span class="n">y</span> <span class="p">=</span> <span class="m">1000f</span><span class="p">),</span>
+        <span class="n">strokeWidth</span> <span class="p">=</span> <span class="m">60f</span><span class="p">,</span>
+        <span class="n">cap</span> <span class="p">=</span> <span class="n">StrokeCap</span><span class="p">.</span><span class="n">Round</span>
+    <span class="p">)</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="n">drawLine</span><span class="p">(</span>
+        <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+        <span class="n">start</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="n">x</span> <span class="p">=</span> <span class="m">430f</span><span class="p">,</span> <span class="n">y</span> <span class="p">=</span> <span class="m">50f</span><span class="p">),</span>
+        <span class="n">end</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="n">x</span> <span class="p">=</span> <span class="m">430f</span><span class="p">,</span> <span class="n">y</span> <span class="p">=</span> <span class="m">1000f</span><span class="p">),</span>
+        <span class="n">strokeWidth</span> <span class="p">=</span> <span class="m">60f</span><span class="p">,</span>
+        <span class="n">cap</span> <span class="p">=</span> <span class="n">StrokeCap</span><span class="p">.</span><span class="n">Butt</span>
+    <span class="p">)</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="n">drawLine</span><span class="p">(</span>
+        <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+        <span class="n">start</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="n">x</span> <span class="p">=</span> <span class="m">530f</span><span class="p">,</span> <span class="n">y</span> <span class="p">=</span> <span class="m">50f</span><span class="p">),</span>
+        <span class="n">end</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="n">x</span> <span class="p">=</span> <span class="m">530f</span><span class="p">,</span> <span class="n">y</span> <span class="p">=</span> <span class="m">1000f</span><span class="p">),</span>
+        <span class="n">strokeWidth</span> <span class="p">=</span> <span class="m">60f</span><span class="p">,</span>
+        <span class="n">cap</span> <span class="p">=</span> <span class="n">StrokeCap</span><span class="p">.</span><span class="n">Square</span>
+    <span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+
+<p>上面的代码，参数配置都比较简单，都差不太多，只是配置了 cap 的差别，运行后，效果如下</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240618214542.png" alt="" /></p>
+
+<ul>
+<li>pathEffect
+<br /></li>
+</ul>
+
+<blockquote>
+<p>线条的路径效果</p>
+</blockquote>
+
+<ul>
+<li><p>DashPathEffect 创建虚线效果</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="c1">// 画出 10像素一段线，然后空 10 个像素， phase 表示 参数表示虚线的起始偏移量
+</span><span class="c1"></span><span class="k">val</span> <span class="py">dashEffect</span> <span class="p">=</span> <span class="n">PathEffect</span><span class="p">.</span><span class="n">dashPathEffect</span><span class="p">(</span><span class="n">floatArrayOf</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">10f</span><span class="p">),</span> <span class="n">phase</span> <span class="p">=</span> <span class="m">0f</span><span class="p">)</span> </code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>CornerPathEffect 用于将路径的尖角变成圆角（针对的路径的尖角，这里说的路径是 path，用于 drawline 可能没有效果）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="c1">// 表示将路径的尖角变成半径为 10 像素的圆角
+</span><span class="c1"></span><span class="k">val</span> <span class="py">cornerEffect</span> <span class="p">=</span> <span class="n">PathEffect</span><span class="p">.</span><span class="n">cornerPathEffect</span><span class="p">(</span><span class="n">radius</span> <span class="p">=</span> <span class="m">10f</span><span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>ChainPathEffect 将 PathEffect 的效果连接在一起</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">val</span> <span class="py">dashEffect</span> <span class="p">=</span> <span class="n">PathEffect</span><span class="p">.</span><span class="n">dashPathEffect</span><span class="p">(</span><span class="n">floatArrayOf</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">10f</span><span class="p">),</span> <span class="n">phase</span> <span class="p">=</span> <span class="m">0f</span><span class="p">)</span>
+<span class="k">val</span> <span class="py">cornerEffect</span> <span class="p">=</span> <span class="n">PathEffect</span><span class="p">.</span><span class="n">cornerPathEffect</span><span class="p">(</span><span class="n">radius</span> <span class="p">=</span> <span class="m">10f</span><span class="p">)</span>
+<span class="k">val</span> <span class="py">chainEffect</span> <span class="p">=</span> <span class="n">PathEffect</span><span class="p">.</span><span class="n">chainPathEffect</span><span class="p">(</span><span class="n">cornerEffect</span><span class="p">,</span> <span class="n">dashEffect</span><span class="p">)</span> <span class="c1">// 同时应用虚线和圆角效果</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+
+<p>接下来看看 <code>pathEffect</code> 的效果</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span><span class="lnt">88
+</span><span class="lnt">89
+</span><span class="lnt">90
+</span><span class="lnt">91
+</span><span class="lnt">92
+</span><span class="lnt">93
+</span><span class="lnt">94
+</span><span class="lnt">95
+</span><span class="lnt">96
+</span><span class="lnt">97
+</span><span class="lnt">98
+</span><span class="lnt">99
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">canvasTest3</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">dashEffect</span> <span class="p">=</span> <span class="n">PathEffect</span><span class="p">.</span><span class="n">dashPathEffect</span><span class="p">(</span><span class="n">floatArrayOf</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">10f</span><span class="p">),</span> <span class="n">phase</span> <span class="p">=</span> <span class="m">0f</span><span class="p">)</span>   
+
+    <span class="n">Column</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">50.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">drawLine</span><span class="p">(</span>
+                <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+                <span class="n">start</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">60f</span><span class="p">),</span>
+                <span class="n">end</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="m">490f</span><span class="p">,</span> <span class="m">80f</span><span class="p">),</span>
+                <span class="n">strokeWidth</span> <span class="p">=</span> <span class="m">20f</span><span class="p">,</span>
+                <span class="n">pathEffect</span> <span class="p">=</span> <span class="n">dashEffect</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">Row</span> <span class="p">{</span>
+            <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">val</span> <span class="py">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+                    <span class="n">moveTo</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">150f</span><span class="p">)</span>
+                    <span class="n">close</span><span class="p">()</span>
+                <span class="p">}</span>
+
+                <span class="n">drawPath</span><span class="p">(</span>
+                    <span class="n">path</span> <span class="p">=</span> <span class="n">path</span><span class="p">,</span>
+                    <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">,</span>
+                    <span class="n">style</span> <span class="p">=</span> <span class="n">Stroke</span><span class="p">(</span><span class="n">width</span> <span class="p">=</span> <span class="m">5f</span><span class="p">,</span> <span class="n">pathEffect</span> <span class="p">=</span> <span class="n">PathEffect</span><span class="p">.</span><span class="n">cornerPathEffect</span><span class="p">(</span><span class="n">radius</span> <span class="p">=</span> <span class="m">30f</span><span class="p">))</span> <span class="c1">// 圆角 30f
+</span><span class="c1"></span>                <span class="p">)</span>
+            <span class="p">}</span>
+            <span class="n">Canvas</span><span class="p">(</span>
+                <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                    <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">start</span> <span class="p">=</span> <span class="m">50.</span><span class="n">dp</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+            <span class="p">)</span> <span class="p">{</span>
+                <span class="k">val</span> <span class="py">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+                    <span class="n">moveTo</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">150f</span><span class="p">)</span>
+                    <span class="n">close</span><span class="p">()</span>
+                <span class="p">}</span>
+
+                <span class="n">drawPath</span><span class="p">(</span>
+                    <span class="n">path</span> <span class="p">=</span> <span class="n">path</span><span class="p">,</span>
+                    <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">,</span>
+                    <span class="n">style</span> <span class="p">=</span> <span class="n">Stroke</span><span class="p">(</span><span class="n">width</span> <span class="p">=</span> <span class="m">5f</span><span class="p">,</span> <span class="n">pathEffect</span> <span class="p">=</span> <span class="n">PathEffect</span><span class="p">.</span><span class="n">cornerPathEffect</span><span class="p">(</span><span class="n">radius</span> <span class="p">=</span> <span class="m">5f</span><span class="p">))</span> <span class="c1">// 圆角 5f
+</span><span class="c1"></span>                <span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+
+
+        <span class="n">Row</span> <span class="p">{</span>
+            <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">val</span> <span class="py">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+                    <span class="n">moveTo</span><span class="p">(</span><span class="m">50f</span> <span class="p">*</span> <span class="m">2</span><span class="p">,</span> <span class="m">50f</span> <span class="p">*</span> <span class="m">2</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">150f</span> <span class="p">*</span> <span class="m">2</span><span class="p">,</span> <span class="m">50f</span> <span class="p">*</span> <span class="m">2</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">150f</span> <span class="p">*</span> <span class="m">2</span><span class="p">,</span> <span class="m">150f</span> <span class="p">*</span> <span class="m">2</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">50f</span> <span class="p">*</span> <span class="m">2</span><span class="p">,</span> <span class="m">150f</span> <span class="p">*</span> <span class="m">2</span><span class="p">)</span>
+                    <span class="n">close</span><span class="p">()</span>
+                <span class="p">}</span>
+
+                <span class="n">drawPath</span><span class="p">(</span>
+                    <span class="n">path</span> <span class="p">=</span> <span class="n">path</span><span class="p">,</span>
+                    <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+                    <span class="n">style</span> <span class="p">=</span> <span class="n">Stroke</span><span class="p">(</span>
+                        <span class="n">width</span> <span class="p">=</span> <span class="m">10f</span><span class="p">,</span> <span class="n">pathEffect</span> <span class="p">=</span> <span class="n">PathEffect</span><span class="p">.</span><span class="n">chainPathEffect</span><span class="p">(</span>
+                            <span class="n">PathEffect</span><span class="p">.</span><span class="n">cornerPathEffect</span><span class="p">(</span><span class="n">radius</span> <span class="p">=</span> <span class="m">0f</span><span class="p">),</span>
+                            <span class="n">PathEffect</span><span class="p">.</span><span class="n">dashPathEffect</span><span class="p">(</span><span class="n">floatArrayOf</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">10f</span><span class="p">),</span> <span class="n">phase</span> <span class="p">=</span> <span class="m">0f</span><span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">start</span> <span class="p">=</span> <span class="m">10.</span><span class="n">dp</span><span class="p">).</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">val</span> <span class="py">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+                    <span class="n">moveTo</span><span class="p">(</span><span class="m">50f</span> <span class="p">*</span> <span class="m">2</span><span class="p">,</span> <span class="m">50f</span> <span class="p">*</span> <span class="m">2</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">150f</span> <span class="p">*</span> <span class="m">2</span><span class="p">,</span> <span class="m">50f</span> <span class="p">*</span> <span class="m">2</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">150f</span> <span class="p">*</span> <span class="m">2</span><span class="p">,</span> <span class="m">150f</span> <span class="p">*</span> <span class="m">2</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">50f</span> <span class="p">*</span> <span class="m">2</span><span class="p">,</span> <span class="m">150f</span> <span class="p">*</span> <span class="m">2</span><span class="p">)</span>
+                    <span class="n">close</span><span class="p">()</span>
+                <span class="p">}</span>
+
+                <span class="n">drawPath</span><span class="p">(</span>
+                    <span class="n">path</span> <span class="p">=</span> <span class="n">path</span><span class="p">,</span>
+                    <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+                    <span class="n">style</span> <span class="p">=</span> <span class="n">Stroke</span><span class="p">(</span>
+                        <span class="n">width</span> <span class="p">=</span> <span class="m">10f</span><span class="p">,</span> <span class="n">pathEffect</span> <span class="p">=</span> <span class="n">PathEffect</span><span class="p">.</span><span class="n">chainPathEffect</span><span class="p">(</span>
+                            <span class="n">PathEffect</span><span class="p">.</span><span class="n">cornerPathEffect</span><span class="p">(</span><span class="n">radius</span> <span class="p">=</span> <span class="m">90f</span><span class="p">),</span> <span class="c1">// 注意， 虚线和圆弧一起设置，看不出来效果，可能是路径被覆盖了
+</span><span class="c1"></span>                            <span class="n">PathEffect</span><span class="p">.</span><span class="n">dashPathEffect</span><span class="p">(</span><span class="n">floatArrayOf</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">10f</span><span class="p">),</span> <span class="n">phase</span> <span class="p">=</span> <span class="m">0f</span><span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>上面的代码运行后的效果如下，不做过多解释，感兴趣的看看代码就知道了，基本上就是 path 路径效果的区别</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240619212418.png" alt="" /></p>
+
+<h2 id="stampedpatheffect-效果">stampedPathEffect 效果</h2>
+
+<blockquote>
+<p>使用一个路径作为模板，在另一条路径上重复绘制该模板, 比如绘制一个三角形的路径，然后一直重复</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">DrawStampedEffectPath</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// 绘制三角形路径
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">stampPath</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+        <span class="n">moveTo</span><span class="p">(</span><span class="m">0f</span><span class="p">,</span> <span class="p">-</span><span class="m">10f</span><span class="p">)</span>
+        <span class="n">lineTo</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">10f</span><span class="p">)</span>
+        <span class="n">lineTo</span><span class="p">(-</span><span class="m">10f</span><span class="p">,</span> <span class="m">10f</span><span class="p">)</span>
+        <span class="n">close</span><span class="p">()</span>
+    <span class="p">}</span>
+
+     <span class="c1">// 绘制圆形路径
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">stampPath</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+        <span class="n">addOval</span><span class="p">(</span><span class="n">androidx</span><span class="p">.</span><span class="n">compose</span><span class="p">.</span><span class="n">ui</span><span class="p">.</span><span class="n">geometry</span><span class="p">.</span><span class="n">Rect</span><span class="p">(</span><span class="m">0f</span><span class="p">,</span> <span class="m">0f</span><span class="p">,</span> <span class="m">20f</span><span class="p">,</span> <span class="m">20f</span><span class="p">))</span>
+    <span class="p">}</span>
+
+        <span class="c1">// 绘制星星路径
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">stampPath</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+        <span class="n">moveTo</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">0f</span><span class="p">)</span>
+        <span class="n">lineTo</span><span class="p">(</span><span class="m">12f</span><span class="p">,</span> <span class="m">7f</span><span class="p">)</span>
+        <span class="n">lineTo</span><span class="p">(</span><span class="m">20f</span><span class="p">,</span> <span class="m">7f</span><span class="p">)</span>
+        <span class="n">lineTo</span><span class="p">(</span><span class="m">14f</span><span class="p">,</span> <span class="m">11f</span><span class="p">)</span>
+        <span class="n">lineTo</span><span class="p">(</span><span class="m">16f</span><span class="p">,</span> <span class="m">18f</span><span class="p">)</span>
+        <span class="n">lineTo</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">14f</span><span class="p">)</span>
+        <span class="n">lineTo</span><span class="p">(</span><span class="m">4f</span><span class="p">,</span> <span class="m">18f</span><span class="p">)</span>
+        <span class="n">lineTo</span><span class="p">(</span><span class="m">6f</span><span class="p">,</span> <span class="m">11f</span><span class="p">)</span>
+        <span class="n">lineTo</span><span class="p">(</span><span class="m">0f</span><span class="p">,</span> <span class="m">7f</span><span class="p">)</span>
+        <span class="n">lineTo</span><span class="p">(</span><span class="m">8f</span><span class="p">,</span> <span class="m">7f</span><span class="p">)</span>
+        <span class="n">close</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Create the stamped path effect
+</span><span class="c1"></span>    <span class="k">val</span> <span class="py">stampedEffect</span> <span class="p">=</span> <span class="n">PathEffect</span><span class="p">.</span><span class="n">stampedPathEffect</span><span class="p">(</span>
+        <span class="n">shape</span> <span class="p">=</span> <span class="n">stampPath</span><span class="p">,</span>
+        <span class="n">advance</span> <span class="p">=</span> <span class="m">30f</span><span class="p">,</span>
+        <span class="n">phase</span> <span class="p">=</span> <span class="m">0f</span><span class="p">,</span>
+        <span class="n">style</span> <span class="p">=</span> <span class="n">StampedPathEffectStyle</span><span class="p">.</span><span class="n">Rotate</span>
+    <span class="p">)</span>
+
+    <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">300.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+            <span class="n">moveTo</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+            <span class="n">lineTo</span><span class="p">(</span><span class="m">250f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+            <span class="n">lineTo</span><span class="p">(</span><span class="m">250f</span><span class="p">,</span> <span class="m">250f</span><span class="p">)</span>
+            <span class="n">lineTo</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">250f</span><span class="p">)</span>
+            <span class="n">close</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="n">drawPath</span><span class="p">(</span>
+            <span class="n">path</span> <span class="p">=</span> <span class="n">path</span><span class="p">,</span>
+            <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+            <span class="n">style</span> <span class="p">=</span> <span class="n">Stroke</span><span class="p">(</span>
+                <span class="n">width</span> <span class="p">=</span> <span class="m">10f</span><span class="p">,</span> <span class="n">pathEffect</span> <span class="p">=</span> <span class="n">stampedEffect</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240619213332.png" alt="" /></p>
+
+<h2 id="colorfilter">colorFilter</h2>
+
+<blockquote>
+<p>颜色过滤器可以用来改变绘制内容的颜色，比如调整亮度、对比度、饱和度，或者应用颜色矩阵</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">DrawPathWithColorFilter</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">colorMatrix</span> <span class="p">=</span> <span class="n">ColorMatrix</span><span class="p">()</span> <span class="c1">//  默认情况
+</span><span class="c1"></span>
+    <span class="k">val</span> <span class="py">colorMatrix1</span> <span class="p">=</span> <span class="n">ColorMatrix</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+         <span class="n">setToSaturation</span><span class="p">(</span><span class="m">0f</span><span class="p">)</span> <span class="c1">// 将饱和度设置为0，创建灰度效果
+</span><span class="c1"></span>    <span class="p">}</span>
+
+    <span class="k">val</span> <span class="py">colorMatrix2</span> <span class="p">=</span> <span class="n">ColorMatrix</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+         <span class="n">setToScale</span><span class="p">(</span><span class="m">1.2f</span><span class="p">,</span> <span class="m">1.2f</span><span class="p">,</span> <span class="m">1.2f</span><span class="p">,</span> <span class="m">1f</span><span class="p">)</span> <span class="c1">// 增加亮度
+</span><span class="c1"></span>    <span class="p">}</span>
+    <span class="k">val</span> <span class="py">colorMatrix3</span> <span class="p">=</span> <span class="n">ColorMatrix</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+        <span class="n">setToRotateRed</span><span class="p">(</span> <span class="m">45f</span><span class="p">)</span> <span class="c1">// 旋转红色通道
+</span><span class="c1"></span>        <span class="n">setToRotateGreen</span><span class="p">(</span> <span class="m">45f</span><span class="p">)</span> <span class="c1">// 旋转绿色通道
+</span><span class="c1"></span>        <span class="n">setToRotateBlue</span><span class="p">(</span><span class="m">45f</span><span class="p">)</span> <span class="c1">// 旋转蓝色通道
+</span><span class="c1"></span>    <span class="p">}</span>
+
+    <span class="k">val</span> <span class="py">list</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span><span class="n">colorMatrix</span><span class="p">,</span> <span class="n">colorMatrix1</span><span class="p">,</span> <span class="n">colorMatrix2</span><span class="p">,</span> <span class="n">colorMatrix3</span><span class="p">)</span>
+
+    <span class="n">Row</span> <span class="p">{</span>
+        <span class="n">list</span><span class="p">.</span><span class="n">forEach</span> <span class="p">{</span>
+            <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">90.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">val</span> <span class="py">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+                    <span class="n">moveTo</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">250f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">250f</span><span class="p">,</span> <span class="m">250f</span><span class="p">)</span>
+                    <span class="n">lineTo</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">250f</span><span class="p">)</span>
+                    <span class="n">close</span><span class="p">()</span>
+                <span class="p">}</span>
+
+                <span class="n">drawPath</span><span class="p">(</span>
+                    <span class="n">path</span> <span class="p">=</span> <span class="n">path</span><span class="p">,</span>
+                    <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+                    <span class="n">style</span> <span class="p">=</span> <span class="n">Stroke</span><span class="p">(</span><span class="n">width</span> <span class="p">=</span> <span class="m">10f</span><span class="p">),</span>
+                    <span class="n">colorFilter</span> <span class="p">=</span> <span class="n">ColorFilter</span><span class="p">.</span><span class="n">colorMatrix</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>上面的代码, 主要是针对 ColorMatrix 对颜色的配置, 代码运行后效果如下
+<img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240619215939.png" alt="" /></p>
+
+<h2 id="drawcircle">drawCircle</h2>
+
+<blockquote>
+<p>画一个圆</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">CircleTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Row</span> <span class="p">{</span>
+        <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">drawCircle</span><span class="p">(</span>
+                <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span> <span class="c1">// 颜色
+</span><span class="c1"></span>                <span class="n">radius</span> <span class="p">=</span> <span class="m">90f</span><span class="p">,</span> <span class="c1">// 半径
+</span><span class="c1"></span>                <span class="n">center</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="p">/</span> <span class="m">2f</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="p">/</span> <span class="m">2f</span><span class="p">),</span> <span class="c1">// 圆的位置
+</span><span class="c1"></span>                 <span class="n">alpha</span> <span class="p">=</span> <span class="m">1f</span><span class="p">,</span> <span class="c1">// 透明度
+</span><span class="c1"></span>                <span class="n">style</span> <span class="p">=</span> <span class="n">Fill</span><span class="p">,</span> <span class="c1">// 填充模式
+</span><span class="c1"></span>                <span class="n">colorFilter</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span> <span class="c1">// 颜色过滤器
+</span><span class="c1"></span>            <span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="c1">// 渐变
+</span><span class="c1"></span>        <span class="k">val</span> <span class="py">brush</span> <span class="p">=</span> <span class="n">Brush</span><span class="p">.</span><span class="n">linearGradient</span><span class="p">(</span><span class="n">listOf</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span> <span class="n">Color</span><span class="p">.</span><span class="n">Green</span><span class="p">))</span>
+
+        <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">drawCircle</span><span class="p">(</span>
+                <span class="n">brush</span> <span class="p">=</span> <span class="n">brush</span><span class="p">,</span>
+                <span class="n">radius</span> <span class="p">=</span> <span class="m">90f</span><span class="p">,</span>
+                <span class="n">center</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="p">/</span> <span class="m">2f</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="p">/</span> <span class="m">2f</span><span class="p">),</span>
+                <span class="n">alpha</span> <span class="p">=</span> <span class="m">1f</span><span class="p">,</span>
+                <span class="n">style</span> <span class="p">=</span> <span class="n">Fill</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>由于其余的参数, 上面的示例已经讲解过了, 就不再多说了, 这里我们来看下其他没有用过的,  Brush， 它一般是用来设置渐变的，可以有以下几种设置方式</p>
+
+<ul>
+<li>SolidColor 单一颜色填充</li>
+<li>LinearGradient 线性渐变填充</li>
+<li>RadialGradient 放射状渐变填充</li>
+<li>SweepGradient 扫描渐变填充</li>
+</ul>
+
+<p>而这个颜色渐变方法参数配置, 基本都一致, 我们这里用 LinearGradient 举例</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">linearGradient</span><span class="p">(</span>
+            <span class="n">colors</span><span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Color</span><span class="p">&gt;,</span> <span class="c1">// 多个颜色
+</span><span class="c1"></span>            <span class="n">start</span><span class="p">:</span> <span class="n">Offset</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">.</span><span class="n">Zero</span><span class="p">,</span> <span class="c1">//  渐变开始的坐标
+</span><span class="c1"></span>            <span class="n">end</span><span class="p">:</span> <span class="n">Offset</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">.</span><span class="n">Infinite</span><span class="p">,</span><span class="c1">//  渐变终点的坐标
+</span><span class="c1"></span>            <span class="n">tileMode</span><span class="p">:</span> <span class="n">TileMode</span> <span class="p">=</span> <span class="n">TileMode</span><span class="p">.</span><span class="n">Clamp</span> 
+<span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<ul>
+<li><p>tileMode</p>
+
+<ul>
+<li>Clamp 渐变在到达终点后，继续使用终点的颜色填充超出范围的区域。例如，如果渐变从红色到蓝色，超出范围的区域将填充蓝色</li>
+<li>Repeated 渐变在到达终点后，将从起点重新开始，形成一个连续的重复图案。例如，红色到蓝色的渐变会不断重复，填充整个区域</li>
+<li>Mirror 渐变在到达终点后，会镜像反转然后再重复。例如，红色到蓝色的渐变会变成蓝色到红色，然后再重复红色到蓝色，如此循环
+<br /></li>
+</ul></li>
+</ul>
+
+<p>上面的代码运行后的效果如下</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240620210953.png" alt="" /></p>
+
+<h2 id="drawrect">drawRect</h2>
+
+<blockquote>
+<p>绘制一个矩形</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">drawRect</span><span class="p">(</span>
+        <span class="n">color</span><span class="p">:</span> <span class="n">Color</span><span class="p">,</span> <span class="c1">// 颜色
+</span><span class="c1"></span>        <span class="n">topLeft</span><span class="p">:</span> <span class="n">Offset</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">.</span><span class="n">Zero</span><span class="p">,</span> <span class="c1">// 矩形的左上角位置，默认为 (0, 0)
+</span><span class="c1"></span>        <span class="n">size</span><span class="p">:</span> <span class="n">Size</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">offsetSize</span><span class="p">(</span><span class="n">topLeft</span><span class="p">),</span> <span class="c1">// 矩形的尺寸，默认为整个画布的尺寸减去 topLeft 的偏移。
+</span><span class="c1"></span>        <span class="cm">/*@FloatRange(from = 0.0, to = 1.0)*/</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">1.0f</span><span class="p">,</span> <span class="c1">// 透明度，范围为 0.0 到 1.0，默认值为 1.0（不透明）。
+</span><span class="c1"></span>        <span class="n">style</span><span class="p">:</span> <span class="n">DrawStyle</span> <span class="p">=</span> <span class="n">Fill</span><span class="p">,</span> <span class="c1">// 绘制样式，默认为 Fill（填充矩形），也可以是 Stroke（仅绘制边框）。
+</span><span class="c1"></span>        <span class="n">colorFilter</span><span class="p">:</span> <span class="n">ColorFilter</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span> 
+        <span class="n">blendMode</span><span class="p">:</span> <span class="n">BlendMode</span> <span class="p">=</span> <span class="n">DefaultBlendMode</span>
+    <span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>参数比较简单，唯一比较陌生的是 DrawStyle，看下这个例子就知道是什么样子了, 一个是全部填充, 一个仅仅绘制边框</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">DrawRectTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Row</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">drawRect</span><span class="p">(</span>
+                <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+                <span class="n">topLeft</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">.</span><span class="n">Zero</span><span class="p">,</span>
+                <span class="n">style</span> <span class="p">=</span> <span class="n">Fill</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">Canvas</span><span class="p">(</span>
+            <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">start</span> <span class="p">=</span> <span class="m">30.</span><span class="n">dp</span><span class="p">,</span> <span class="n">top</span> <span class="p">=</span> <span class="m">10.</span><span class="n">dp</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="n">drawRect</span><span class="p">(</span>
+                <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+                <span class="n">topLeft</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">.</span><span class="n">Zero</span><span class="p">,</span>
+                <span class="n">size</span> <span class="p">=</span> <span class="n">Size</span><span class="p">(</span><span class="m">300f</span><span class="p">,</span> <span class="m">100f</span><span class="p">),</span>
+                <span class="n">style</span> <span class="p">=</span> <span class="n">Stroke</span><span class="p">(</span><span class="n">width</span> <span class="p">=</span> <span class="m">10f</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240620213738.png" alt="" /></p>
+
+<h2 id="drawroundrect">drawRoundRect</h2>
+
+<blockquote>
+<p>绘制圆角矩形</p>
+</blockquote>
+
+<p>drawRoundRect 和 drawRect 参数配置和使用上都差不多, 无非就是多了 cornerRadius 圆角的配置</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">DrawRoundRect1</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Canvas</span><span class="p">(</span>
+        <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+            <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">start</span> <span class="p">=</span> <span class="m">10.</span><span class="n">dp</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+    <span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// 圆角矩形
+</span><span class="c1"></span>        <span class="n">drawRoundRect</span><span class="p">(</span>
+            <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">,</span>
+            <span class="n">cornerRadius</span> <span class="p">=</span> <span class="n">CornerRadius</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240703221704.png" alt="" /></p>
+
+<h2 id="drawarc">drawArc</h2>
+
+<blockquote>
+<p>用于绘制一个弧或扇形</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">drawArc</span><span class="p">(</span>
+        <span class="n">color</span><span class="p">:</span> <span class="n">Color</span><span class="p">,</span> <span class="c1">// 圆弧的颜色
+</span><span class="c1"></span>        <span class="n">startAngle</span><span class="p">:</span> <span class="n">Float</span><span class="p">,</span> <span class="c1">// 圆弧起始角度（以度为单位）
+</span><span class="c1"></span>        <span class="n">sweepAngle</span><span class="p">:</span> <span class="n">Float</span><span class="p">,</span> <span class="c1">// 圆弧扫过的角度（以度为单位）
+</span><span class="c1"></span>        <span class="n">useCenter</span><span class="p">:</span> <span class="n">Boolean</span><span class="p">,</span><span class="c1">// 是否连接圆弧的两端到圆心
+</span><span class="c1"></span>        <span class="n">topLeft</span><span class="p">:</span> <span class="n">Offset</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">.</span><span class="n">Zero</span><span class="p">,</span> <span class="c1">// 圆弧外接矩形的左上角位置，默认为 (0, 0)
+</span><span class="c1"></span>        <span class="n">size</span><span class="p">:</span> <span class="n">Size</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">offsetSize</span><span class="p">(</span><span class="n">topLeft</span><span class="p">),</span> <span class="c1">// 圆弧外接矩形的尺寸，默认为整个画布的尺寸减去 topLeft 的偏移
+</span><span class="c1"></span>        <span class="cm">/*@FloatRange(from = 0.0, to = 1.0)*/</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">1.0f</span><span class="p">,</span>
+        <span class="n">style</span><span class="p">:</span> <span class="n">DrawStyle</span> <span class="p">=</span> <span class="n">Fill</span><span class="p">,</span> <span class="c1">// 填充模式
+</span><span class="c1"></span>        <span class="n">colorFilter</span><span class="p">:</span> <span class="n">ColorFilter</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span>
+        <span class="n">blendMode</span><span class="p">:</span> <span class="n">BlendMode</span> <span class="p">=</span> <span class="n">DefaultBlendMode</span>
+    <span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">DrawArcTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Row</span> <span class="p">{</span>
+        <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">drawArc</span><span class="p">(</span>
+                <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Green</span><span class="p">,</span>
+                <span class="n">startAngle</span> <span class="p">=</span> <span class="m">0f</span><span class="p">,</span>
+                <span class="n">sweepAngle</span> <span class="p">=</span> <span class="m">360f</span><span class="p">,</span>
+                <span class="n">useCenter</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+                <span class="n">topLeft</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">10f</span><span class="p">),</span>
+                <span class="n">size</span> <span class="p">=</span> <span class="n">Size</span><span class="p">(</span><span class="m">200f</span><span class="p">,</span> <span class="m">200f</span><span class="p">),</span>
+                <span class="n">alpha</span> <span class="p">=</span> <span class="m">0.8f</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">start</span> <span class="p">=</span> <span class="m">5.</span><span class="n">dp</span><span class="p">).</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">drawArc</span><span class="p">(</span>
+                <span class="n">brush</span> <span class="p">=</span> <span class="n">Brush</span><span class="p">.</span><span class="n">linearGradient</span><span class="p">(</span><span class="n">listOf</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span> <span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">)),</span>
+                <span class="n">startAngle</span> <span class="p">=</span> <span class="m">0f</span><span class="p">,</span>
+                <span class="n">sweepAngle</span> <span class="p">=</span> <span class="m">270f</span><span class="p">,</span>
+                <span class="n">useCenter</span> <span class="p">=</span> <span class="k">false</span><span class="p">,</span>
+                <span class="n">topLeft</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">10f</span><span class="p">),</span>
+                <span class="n">size</span> <span class="p">=</span> <span class="n">Size</span><span class="p">(</span><span class="m">200f</span><span class="p">,</span> <span class="m">200f</span><span class="p">),</span>
+                <span class="n">alpha</span> <span class="p">=</span> <span class="m">0.8f</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">start</span> <span class="p">=</span> <span class="m">5.</span><span class="n">dp</span><span class="p">).</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">drawArc</span><span class="p">(</span>
+                <span class="n">brush</span> <span class="p">=</span> <span class="n">Brush</span><span class="p">.</span><span class="n">linearGradient</span><span class="p">(</span><span class="n">listOf</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Black</span><span class="p">,</span> <span class="n">Color</span><span class="p">.</span><span class="n">Yellow</span><span class="p">)),</span>
+                <span class="n">startAngle</span> <span class="p">=</span> <span class="m">0f</span><span class="p">,</span>
+                <span class="n">sweepAngle</span> <span class="p">=</span> <span class="m">270f</span><span class="p">,</span>
+                <span class="n">useCenter</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span> 
+                <span class="n">topLeft</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">10f</span><span class="p">),</span>
+                <span class="n">size</span> <span class="p">=</span> <span class="n">Size</span><span class="p">(</span><span class="m">200f</span><span class="p">,</span> <span class="m">200f</span><span class="p">),</span>
+                <span class="n">alpha</span> <span class="p">=</span> <span class="m">0.8f</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240703221801.png" alt="" /></p>
+
+<h2 id="drawimage">drawImage</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">drawImage</span><span class="p">(</span>
+        <span class="n">image</span><span class="p">:</span> <span class="n">ImageBitmap</span><span class="p">,</span> <span class="c1">// 要绘制的图像
+</span><span class="c1"></span>        <span class="n">srcOffset</span><span class="p">:</span> <span class="n">IntOffset</span> <span class="p">=</span> <span class="n">IntOffset</span><span class="p">.</span><span class="n">Zero</span><span class="p">,</span> <span class="c1">// 图像的偏移量，表示从图像的哪个位置开始绘制
+</span><span class="c1"></span>        <span class="n">srcSize</span><span class="p">:</span> <span class="n">IntSize</span> <span class="p">=</span> <span class="n">IntSize</span><span class="p">(</span><span class="n">image</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">image</span><span class="p">.</span><span class="n">height</span><span class="p">),</span> <span class="c1">// 图像的尺寸，表示从源图像中截取的区域大小，默认为整个图像的尺寸
+</span><span class="c1"></span>        <span class="n">dstOffset</span><span class="p">:</span> <span class="n">IntOffset</span> <span class="p">=</span> <span class="n">IntOffset</span><span class="p">.</span><span class="n">Zero</span><span class="p">,</span> <span class="c1">// 目标位置的偏移量，表示在画布上从哪个位置开始绘制图像，默认为 (0,0)
+</span><span class="c1"></span>        <span class="n">dstSize</span><span class="p">:</span> <span class="n">IntSize</span> <span class="p">=</span> <span class="n">srcSize</span><span class="p">,</span> <span class="c1">// 目标尺寸，表示图像在画布上的绘制大小，默认为源图像的尺寸
+</span><span class="c1"></span>        <span class="cm">/*@FloatRange(from = 0.0, to = 1.0)*/</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">1.0f</span><span class="p">,</span>
+        <span class="n">style</span><span class="p">:</span> <span class="n">DrawStyle</span> <span class="p">=</span> <span class="n">Fill</span><span class="p">,</span> <span class="c1">// 图像的填充模式 
+</span><span class="c1"></span>        <span class="n">colorFilter</span><span class="p">:</span> <span class="n">ColorFilter</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span> <span class="c1">// 颜色过滤器
+</span><span class="c1"></span>        <span class="n">blendMode</span><span class="p">:</span> <span class="n">BlendMode</span> <span class="p">=</span> <span class="n">DefaultBlendMode</span><span class="p">,</span> <span class="c1">// 混合模式
+</span><span class="c1"></span>        <span class="n">filterQuality</span><span class="p">:</span> <span class="n">FilterQuality</span> <span class="p">=</span> <span class="n">DefaultFilterQuality</span> <span class="c1">// 过滤质量，用于指定图像缩放时的过滤质量
+</span><span class="c1"></span>    <span class="p">)</span> </code></pre></td></tr></table>
+</div>
+</div>
+<p>这里有些区别需要注意的是 srcOffset dstOffset 的偏移量，假设 srcOffset 是 (50, 50) 它是从图像的位置上截图的图像的，所以这样图片会被裁切掉一部分，
+而 dstOffset 是画布的偏移量，同样设置  (50, 50)  图片会相对画布的位置进行偏移，还有一个参数 filterQuality 是图片绘制的质量，默认有低中高几个参数配置
+看下如下代码的示例, 感受一下 srcOffset dstOffset 的区别</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">DrawImageTest</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="k">val</span> <span class="py">imageBitmap</span> <span class="p">=</span> <span class="n">ImageBitmap</span><span class="p">.</span><span class="n">imageResource</span><span class="p">(</span><span class="n">id</span> <span class="p">=</span> <span class="n">R</span><span class="p">.</span><span class="n">mipmap</span><span class="p">.</span><span class="n">qqq</span><span class="p">)</span>
+
+    <span class="n">Row</span> <span class="p">{</span>
+        <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">),</span> <span class="n">onDraw</span> <span class="p">=</span> <span class="p">{</span>
+            <span class="cm">/** 原始图像 **/</span>
+            <span class="n">drawImage</span><span class="p">(</span>
+                <span class="n">image</span> <span class="p">=</span> <span class="n">imageBitmap</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">})</span>
+
+        <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">start</span> <span class="p">=</span> <span class="m">20.</span><span class="n">dp</span><span class="p">).</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">),</span> <span class="n">onDraw</span> <span class="p">=</span> <span class="p">{</span>
+            <span class="n">drawImage</span><span class="p">(</span>
+                <span class="n">image</span> <span class="p">=</span> <span class="n">imageBitmap</span><span class="p">,</span>
+                <span class="n">srcOffset</span> <span class="p">=</span> <span class="n">IntOffset</span><span class="p">(</span><span class="m">50</span><span class="p">,</span> <span class="m">50</span><span class="p">)</span> <span class="c1">//在源图像的 50,50 位置绘制
+</span><span class="c1"></span>            <span class="p">)</span>
+        <span class="p">})</span>
+
+        <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">start</span> <span class="p">=</span> <span class="m">20.</span><span class="n">dp</span><span class="p">).</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">),</span> <span class="n">onDraw</span> <span class="p">=</span> <span class="p">{</span>
+            <span class="n">drawImage</span><span class="p">(</span>
+                <span class="n">image</span> <span class="p">=</span> <span class="n">imageBitmap</span><span class="p">,</span>
+                <span class="n">srcOffset</span> <span class="p">=</span> <span class="n">IntOffset</span><span class="p">(</span><span class="m">50</span><span class="p">,</span> <span class="m">50</span><span class="p">),</span>
+                <span class="n">dstOffset</span> <span class="p">=</span> <span class="n">IntOffset</span><span class="p">(</span><span class="m">50</span><span class="p">,</span> <span class="m">50</span><span class="p">),</span> <span class="c1">// 设置画布的偏移
+</span><span class="c1"></span>            <span class="p">)</span>
+        <span class="p">})</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240623112844.png" alt="" /></p>
+
+<h2 id="drawoval">drawOval</h2>
+
+<blockquote>
+<p>用于绘制一个椭圆, 其实也可以用来绘制一个完整的圆</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">DrawOvalTest</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+
+      <span class="c1">//  drawCircle() 画一个完美的圆, 区别是 半径和中心点可以自定义
+</span><span class="c1"></span>      <span class="c1">//  drawArc 函数用于绘制一个弧或扇形
+</span><span class="c1"></span>      <span class="c1">//  drawOval 函数用于绘制一个椭圆, 但是也可以用来绘制一个完整的圆
+</span><span class="c1"></span>
+        <span class="n">drawOval</span><span class="p">(</span>
+            <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span> <span class="c1">// 颜色
+</span><span class="c1"></span>            <span class="n">topLeft</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="m">20f</span><span class="p">,</span> <span class="m">40f</span><span class="p">),</span> <span class="c1">// 椭圆左上角的位置
+</span><span class="c1"></span>            <span class="n">size</span> <span class="p">=</span> <span class="n">Size</span><span class="p">(</span><span class="m">100f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span> <span class="c1">// 椭圆的大小
+</span><span class="c1"></span>        <span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240624213124.png" alt="" /></p>
+
+<p>drawOval 函数也比较简单, 画一个椭圆, topLeft 是距离左上角的位置, size 是绘制椭圆的大小, 它也可以绘制一个完成的圆, 只要设置 size 的 x, y 坐标相等即可,
+这里需要注意一下 drawCircle 和 drawArc drawOval 我们上面的示例都用过了, 他们都可以绘制一个完整的圆, 但是他们的使用场景或者是他们本身的定义是不一样的, 需要注意</p>
+
+<ul>
+<li><p>drawCircle 画一个完美的圆, 区别是半径和中心点可以自定义</p></li>
+
+<li><p>drawArc 用于绘制一个弧或扇形</p></li>
+
+<li><p>drawOval 用于绘制一个椭圆, 但是也可以用来绘制一个完整的圆, 设置的 size 相等就可以</p></li>
+</ul>
+
+<h2 id="drawpoints">DrawPoints</h2>
+
+<blockquote>
+<p>用于绘制一组点的函数 它允许你在画布上绘制多个点，并且可以通过不同的参数来配置这些点的样式和位置</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">drawPoints</span><span class="p">(</span>
+        <span class="n">points</span><span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Offset</span><span class="p">&gt;,</span> <span class="c1">// 表示要绘制的点的坐标
+</span><span class="c1"></span>        <span class="n">pointMode</span><span class="p">:</span> <span class="n">PointMode</span><span class="p">,</span> <span class="c1">// 一个 PointMode 枚举值，决定点的连接方式
+</span><span class="c1"></span>        <span class="n">color</span><span class="p">:</span> <span class="n">Color</span><span class="p">,</span>
+        <span class="n">strokeWidth</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="n">Stroke</span><span class="p">.</span><span class="n">HairlineWidth</span><span class="p">,</span>
+        <span class="n">cap</span><span class="p">:</span> <span class="n">StrokeCap</span> <span class="p">=</span> <span class="n">StrokeCap</span><span class="p">.</span><span class="n">Butt</span><span class="p">,</span>
+        <span class="n">pathEffect</span><span class="p">:</span> <span class="n">PathEffect</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span>
+        <span class="n">@FloatRange</span><span class="p">(</span><span class="n">from</span> <span class="p">=</span> <span class="m">0.0</span><span class="p">,</span> <span class="n">to</span> <span class="p">=</span> <span class="m">1.0</span><span class="p">)</span> <span class="n">alpha</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">1.0f</span><span class="p">,</span>
+        <span class="n">colorFilter</span><span class="p">:</span> <span class="n">ColorFilter</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span>
+        <span class="n">blendMode</span><span class="p">:</span> <span class="n">BlendMode</span> <span class="p">=</span> <span class="n">DefaultBlendMode</span>
+    <span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>有一些参数上面都介绍过了, 就不再解释了, 看下这里出现的一些新的参数</p>
+
+<ul>
+<li><p>PointMode</p>
+
+<ul>
+<li><p>Points: 绘制独立的点</p></li>
+
+<li><p>Lines: PointMode.Lines 两坐标点形成线段，不够两坐标最后一个坐标点自动省略不显示</p></li>
+
+<li><p>Polygon: 多边形，多坐标点连线，和 drawPath 绘制路径类似, 连接点列表中的所有点</p></li>
+</ul></li>
+
+<li><p>strokeWidth: 点的宽度或线条的宽度</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">DrawPointsTest</span><span class="p">()</span> <span class="p">{</span>
+<span class="n">Column</span> <span class="p">{</span>
+    <span class="n">Row</span> <span class="p">{</span>
+        <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">drawPoints</span><span class="p">(</span>
+                <span class="n">points</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">),</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">),</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">100f</span><span class="p">,</span> <span class="m">350f</span><span class="p">)</span>
+                <span class="p">),</span>
+                <span class="n">pointMode</span> <span class="p">=</span> <span class="n">PointMode</span><span class="p">.</span><span class="n">Points</span><span class="p">,</span>
+                <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+                <span class="n">strokeWidth</span> <span class="p">=</span> <span class="m">50f</span><span class="p">,</span>
+                <span class="n">cap</span> <span class="p">=</span> <span class="n">StrokeCap</span><span class="p">.</span><span class="n">Round</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">drawPoints</span><span class="p">(</span>
+                <span class="n">points</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">),</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">),</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">100f</span><span class="p">,</span> <span class="m">350f</span><span class="p">)</span>
+                <span class="p">),</span>
+                <span class="n">pointMode</span> <span class="p">=</span> <span class="n">PointMode</span><span class="p">.</span><span class="n">Points</span><span class="p">,</span>
+                <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+                <span class="n">strokeWidth</span> <span class="p">=</span> <span class="m">50f</span><span class="p">,</span>
+                <span class="n">cap</span> <span class="p">=</span> <span class="n">StrokeCap</span><span class="p">.</span><span class="n">Butt</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">drawPoints</span><span class="p">(</span>
+                <span class="n">points</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">),</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">),</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">100f</span><span class="p">,</span> <span class="m">350f</span><span class="p">)</span>
+                <span class="p">),</span>
+                <span class="n">pointMode</span> <span class="p">=</span> <span class="n">PointMode</span><span class="p">.</span><span class="n">Points</span><span class="p">,</span>
+                <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+                <span class="n">strokeWidth</span> <span class="p">=</span> <span class="m">50f</span><span class="p">,</span>
+                <span class="n">cap</span> <span class="p">=</span> <span class="n">StrokeCap</span><span class="p">.</span><span class="n">Square</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">Row</span> <span class="p">{</span>
+        <span class="n">Canvas</span><span class="p">(</span>
+            <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">top</span> <span class="p">=</span> <span class="m">90.</span><span class="n">dp</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="n">drawPoints</span><span class="p">(</span>
+                <span class="n">points</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">),</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">),</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">100f</span><span class="p">,</span> <span class="m">350f</span><span class="p">)</span>
+                <span class="p">),</span>
+                <span class="n">pointMode</span> <span class="p">=</span> <span class="n">PointMode</span><span class="p">.</span><span class="n">Lines</span><span class="p">,</span>
+                <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+                <span class="n">strokeWidth</span> <span class="p">=</span> <span class="m">50f</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">Canvas</span><span class="p">(</span>
+            <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">top</span> <span class="p">=</span> <span class="m">90.</span><span class="n">dp</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="n">drawPoints</span><span class="p">(</span>
+                <span class="n">points</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">),</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">),</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">100f</span><span class="p">,</span> <span class="m">350f</span><span class="p">)</span>
+                <span class="p">),</span>
+                <span class="n">pointMode</span> <span class="p">=</span> <span class="n">PointMode</span><span class="p">.</span><span class="n">Lines</span><span class="p">,</span>
+                <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+                <span class="n">strokeWidth</span> <span class="p">=</span> <span class="m">50f</span><span class="p">,</span>
+                <span class="n">cap</span> <span class="p">=</span> <span class="n">StrokeCap</span><span class="p">.</span><span class="n">Butt</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">Canvas</span><span class="p">(</span>
+            <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span>
+                <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="n">top</span> <span class="p">=</span> <span class="m">90.</span><span class="n">dp</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">)</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="n">drawPoints</span><span class="p">(</span>
+                <span class="n">points</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">),</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">),</span>
+                    <span class="n">Offset</span><span class="p">(</span><span class="m">100f</span><span class="p">,</span> <span class="m">350f</span><span class="p">)</span>
+                <span class="p">),</span>
+                <span class="n">pointMode</span> <span class="p">=</span> <span class="n">PointMode</span><span class="p">.</span><span class="n">Lines</span><span class="p">,</span>
+                <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+                <span class="n">strokeWidth</span> <span class="p">=</span> <span class="m">50f</span><span class="p">,</span>
+                <span class="n">cap</span> <span class="p">=</span> <span class="n">StrokeCap</span><span class="p">.</span><span class="n">Square</span> <span class="c1">// 会更长一点, 会延伸 strokeWidth 宽度的一半
+</span><span class="c1"></span>            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+
+    <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">100.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">drawPoints</span><span class="p">(</span>
+            <span class="n">points</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span>
+                <span class="n">Offset</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">),</span>
+                <span class="n">Offset</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">),</span>
+                <span class="n">Offset</span><span class="p">(</span><span class="m">100f</span><span class="p">,</span> <span class="m">350f</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">pointMode</span> <span class="p">=</span> <span class="n">PointMode</span><span class="p">.</span><span class="n">Polygon</span><span class="p">,</span>
+            <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span>
+            <span class="n">strokeWidth</span> <span class="p">=</span> <span class="m">50f</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+
+<p>上述代码主要是配置 pointMode 和 cap 参数不同, 看看他们之间的区别, 其余的基本都一致, 代码运行后效果是这样的
+<img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240624212608.png" alt="" /></p>
+
+<h2 id="drawpath">DrawPath</h2>
+
+<blockquote>
+<p>根据路径可绘制复杂的图案</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">drawPath</span><span class="p">(</span>
+        <span class="n">path</span><span class="p">:</span> <span class="n">Path</span>
+        <span class="n">color</span><span class="p">:</span> <span class="n">Color</span><span class="p">,</span>
+        <span class="n">@FloatRange</span><span class="p">(</span><span class="n">from</span> <span class="p">=</span> <span class="m">0.0</span><span class="p">,</span> <span class="n">to</span> <span class="p">=</span> <span class="m">1.0</span><span class="p">)</span> <span class="n">alpha</span><span class="p">:</span> <span class="n">Float</span> <span class="p">=</span> <span class="m">1.0f</span><span class="p">,</span>
+        <span class="n">style</span><span class="p">:</span> <span class="n">DrawStyle</span> <span class="p">=</span> <span class="n">Fill</span><span class="p">,</span> <span class="c1">// 填充模式
+</span><span class="c1"></span>        <span class="n">colorFilter</span><span class="p">:</span> <span class="n">ColorFilter</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span> <span class="c1">// 颜色过滤器
+</span><span class="c1"></span>        <span class="n">blendMode</span><span class="p">:</span> <span class="n">BlendMode</span> <span class="p">=</span> <span class="n">DefaultBlendMode</span>
+    <span class="p">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>DrawPath 的可以配置参数不多, 因为大部分主要是根据 Path 类的路径来绘制的, 配置基本都在 Path 这个类里面 addxxx 相关的方法, 先来看看一个简单的例子, 绘制一个三角形</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">DrawPathTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">())</span> <span class="p">{</span>
+        <span class="c1">// 绘制一个三角形
+</span><span class="c1"></span>        <span class="k">val</span> <span class="py">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+            <span class="n">moveTo</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+            <span class="n">lineTo</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+            <span class="n">lineTo</span><span class="p">(</span><span class="m">100f</span><span class="p">,</span> <span class="m">150f</span><span class="p">)</span>
+
+            <span class="n">close</span><span class="p">()</span> <span class="c1">// 将路径的终点 (100, 150) 连接到起点 (50, 50)，形成一个封闭的三角形
+</span><span class="c1"></span>        <span class="p">}</span>
+
+        <span class="n">drawPath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">,</span> <span class="n">style</span> <span class="p">=</span> <span class="n">Stroke</span><span class="p">(</span><span class="n">width</span> <span class="p">=</span> <span class="m">4f</span><span class="p">))</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240624213008.png" alt="" /></p>
+
+<p>这里使用 Path 绘制一段三角形的路径, 代码比较简单, 主要是 moveTo 和 lineTo 的运用, 它们是什么意思呢 ?</p>
+
+<ul>
+<li><p>moveTo(x, y)：将当前绘图点移动到指定的 (x, y) 坐标，而不绘制任何线段。这通常用于设置起始点或跳过某些区域</p></li>
+
+<li><p>lineTo(x, y)：从当前绘图点绘制一条直线到指定的 (x, y) 坐标，并将当前绘图点更新为新的 (x, y) 坐标</p></li>
+
+<li><p>close: 关闭当前路径, 将路径的最后一个点连接到路径的第一个点，从而形成一个封闭的形状</p></li>
+</ul>
+
+<p>然后我们再来看看 Path 类中, 其他的一些方法, 一个一个解析, 并看看他们是如何使用的</p>
+
+<ul>
+<li><p>路径操作方法</p>
+
+<ul>
+<li><p>reset() 重置路径，清除所有的内容，使路径变为空</p></li>
+
+<li><p>rewind()  重置路径，但保留内部数据结构以便重用，效率比 reset() 高</p></li>
+
+<li><p>transform(matrix: Matrix) 应用一个矩阵变换到路径上，可以用于旋转、缩放、平移等操作</p></li>
+
+<li><p>fillType 设置路径的填充类型，可以是 Winding 或 EvenOdd（），决定路径的填充规则</p></li>
+
+<li><p>isConvex 检查路径是否为凸形状</p></li>
+
+<li><p>isEmpty 检查路径是否为空</p></li>
+</ul></li>
+
+<li><p>添加形状方法</p>
+
+<ul>
+<li><p>addArc(rect: Rect, startAngle: Float, sweepAngle: Float)  添加一个圆弧到路径中，指定矩形区域、起始角度和扫过的角度</p></li>
+
+<li><p>addArcRad(rect: Rect, startAngleRad: Float, sweepAngleRad: Float) 与</p></li>
+
+<li><p>addArc 类似，但使用弧度而不是角度</p></li>
+
+<li><p>addOval(rect: Rect) 添加一个椭圆到路径中，指定矩形区域</p></li>
+
+<li><p>addRect(rect: Rect) 添加一个矩形到路径中</p></li>
+
+<li><p>addPath(path: Path) 将另一个路径添加到当前路径中</p></li>
+
+<li><p>addRoundRect(rect: Rect) 添加一个圆角矩形到路径中，指定矩形区域和圆角半径</p></li>
+
+<li><p>addOutline(outline: Outline) 添加一个轮廓到路径中</p></li>
+</ul></li>
+
+<li><p>曲线和弧线方法</p>
+
+<ul>
+<li><p>arcTo(rect: Rect, startAngle: Float, sweepAngle: Float, forceMoveTo: Boolean) 添加一个圆弧到路径中，指定矩形区域、起始角度和扫过的角度，forceMoveTo 决定是否移动到圆弧的起点</p></li>
+
+<li><p>arcToRad(rect: Rect, startAngleRad: Float, sweepAngleRad: Float, forceMoveTo: Boolean) 与 arcTo 类似，但使用弧度而不是角度</p></li>
+
+<li><p>cubicTo(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) 添加一个三次贝塞尔曲线到路径中，指定控制点和终点</p></li>
+
+<li><p>quadraticBezierTo(x1: Float, y1: Float, x2: Float, y2: Float)  添加一个二次贝塞尔曲线到路径中，指定控制点和终点</p></li>
+</ul></li>
+
+<li><p>相对路径方法</p>
+
+<ul>
+<li><p>relativeCubicTo(dx1: Float, dy1: Float, dx2: Float, dy2: Float, dx3: Float, dy3: Float) 添加一个相对三次贝塞尔曲线到路径中，指定相对于当前点的控制点和终点</p></li>
+
+<li><p>relativeLineTo(dx: Float, dy: Float) 添加一条相对直线到路径中，指定相对于当前点的终点</p></li>
+
+<li><p>relativeMoveTo(dx: Float, dy: Float) 将当前点相对移动到新的位置</p></li>
+
+<li><p>relativeQuadraticBezierTo(dx1: Float, dy1: Float, dx2: Float, dy2: Float) 添加一个相对二次贝塞尔曲线到路径中，指定相对于当前点的控制点和终点</p></li>
+</ul></li>
+
+<li><p>其他方法</p>
+
+<ul>
+<li><p>op(path1: Path, path2: Path, operation: PathOperation) 对两个路径执行布尔操作，如联合、交集、差集等</p></li>
+
+<li><p>translate(dx: Float, dy: Float) 将路径平移指定的距离</p></li>
+</ul></li>
+</ul>
+
+<h2 id="transform">transform</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">private</span> <span class="k">fun</span> <span class="nf">transformTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">matrix</span> <span class="p">=</span> <span class="n">Matrix</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+            <span class="n">scale</span><span class="p">(</span><span class="n">x</span> <span class="p">=</span> <span class="m">1.5f</span><span class="p">)</span> <span class="c1">// x 缩放 1.5 倍数
+</span><span class="c1"></span>            <span class="c1">// 绕 Z 轴旋转 20 度
+</span><span class="c1"></span>            <span class="k">this</span><span class="p">.</span><span class="n">rotateZ</span><span class="p">(</span><span class="m">20f</span><span class="p">)</span> <span class="c1">// 也可以做旋转, 但是一般用于3D图形变换
+</span><span class="c1"></span>        <span class="p">}</span>
+        <span class="k">val</span> <span class="py">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+            <span class="n">addRect</span><span class="p">(</span><span class="n">Rect</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">,</span> <span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">))</span> <span class="c1">// 添加坐标点
+</span><span class="c1"></span>            <span class="n">transform</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span> <span class="c1">// 应用旋转变换
+</span><span class="c1"></span>        <span class="p">}</span>
+
+        <span class="c1">//  rotate 是 drawScope 中的方法, 是旋转画布的意思
+</span><span class="c1"></span>        <span class="n">rotate</span><span class="p">(</span><span class="m">64f</span><span class="p">,</span> <span class="n">pivot</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="m">100f</span><span class="p">,</span> <span class="m">100f</span><span class="p">))</span> <span class="p">{</span> <span class="c1">// pivot 设置旋转中心点
+</span><span class="c1"></span>            <span class="n">drawPath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Blue</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这部分代码是使用 Matrix 创建矩阵, 对图片缩放 1.5 倍, scale 内部有 3个参数，x, y , z 上述填写一个参数就是对 x 轴放大 1.5 倍数, 然后针对 Z 轴旋转, 再应用到  transform 中, 再绘制出 path 路径, 需要注意的是，这里有两个旋转的方法，一个是 rotateZ 是针对图片的，一个 rotate 是针对画布的，效果就是这样的</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240624213037.png" alt="" /></p>
+
+<h2 id="addarc">addArc</h2>
+
+<blockquote>
+<p>添加一个圆弧到路径中，指定矩形区域、起始角度和扫过的角度 (使用的是角度)</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">private</span> <span class="k">fun</span> <span class="nf">PathAddArc</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+        <span class="c1">// 绘制圆弧或椭圆弧
+</span><span class="c1"></span>        <span class="k">val</span> <span class="py">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+            <span class="c1">// 画一个椭圆路径
+</span><span class="c1"></span>            <span class="k">val</span> <span class="py">oval</span> <span class="p">=</span> <span class="n">Rect</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">,</span> <span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">)</span>
+            <span class="n">addArc</span><span class="p">(</span><span class="n">oval</span> <span class="p">=</span> <span class="n">oval</span><span class="p">,</span> <span class="n">startAngleDegrees</span> <span class="p">=</span> <span class="m">0f</span><span class="p">,</span> <span class="n">sweepAngleDegrees</span> <span class="p">=</span> <span class="m">240f</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">drawPath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<ul>
+<li><p>参数说明</p>
+
+<ul>
+<li><p><code>oval</code>: 定义弧线所在的矩形区域。弧线将被绘制在这个矩形的内切圆或椭圆上</p></li>
+
+<li><p><code>startAngleRadians</code>: 弧线的起始角度，以弧度为单位。0 弧度表示从矩形的右侧中点开始，角度按顺时针方向增加</p></li>
+
+<li><p><code>sweepAngleRadians</code>: 弧线的扫过角度，以弧度为单位。正值表示顺时针方向，负值表示逆时针方向</p></li>
+</ul></li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240627204138.png" alt="" /></p>
+
+<h2 id="addarcrad">addArcRad</h2>
+
+<blockquote>
+<p>与 addArc 类似，但使用弧度而不是角度</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">private</span> <span class="k">fun</span> <span class="nf">PathAddArcRad</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+            <span class="c1">// 定义弧线所在的矩形区域
+</span><span class="c1"></span>            <span class="k">val</span> <span class="py">oval</span> <span class="p">=</span> <span class="n">Rect</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">,</span> <span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">)</span>
+            <span class="c1">// 添加弧线，起始角度为0弧度，扫过角度为π弧度（180度）
+</span><span class="c1"></span>            <span class="n">addArcRad</span><span class="p">(</span><span class="n">oval</span><span class="p">,</span> <span class="m">0f</span><span class="p">,</span> <span class="n">Math</span><span class="p">.</span><span class="n">PI</span><span class="p">.</span><span class="n">toFloat</span><span class="p">())</span>
+        <span class="p">}</span>
+        <span class="n">drawPath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<ul>
+<li><p>弧度和角度的区别</p>
+
+<ul>
+<li><p>角度（Degrees）: 角度是一个常用的角度单位，1 圈等于 360 度</p></li>
+
+<li><p>弧度（Radians）: 弧度是一个基于圆周的角度单位，1 圈等于 2π 弧度。1 弧度约等于 57.2958 度</p></li>
+</ul></li>
+
+<li><p>参数说明</p>
+
+<ul>
+<li><p><code>oval</code>: 定义弧线所在的矩形区域。弧线将被绘制在这个矩形的内切圆或椭圆上</p></li>
+
+<li><p><code>startAngleDegrees</code>: 弧线的起始角度，以度为单位。0 度表示从矩形的右侧中点开始，角度按顺时针方向增加</p></li>
+
+<li><p><code>sweepAngleDegrees</code>: 弧线的扫过角度，以度为单位。正值表示顺时针方向，负值表示逆时针方向</p></li>
+</ul></li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240627204633.png" alt="" /></p>
+
+<h2 id="addoval">AddOval</h2>
+
+<blockquote>
+<p>指定矩形区域, 添加一个椭圆到路径中</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">private</span> <span class="k">fun</span> <span class="nf">PathOvalTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">200.</span><span class="n">dp</span><span class="p">).</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">Yellow</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+            <span class="k">val</span> <span class="py">oval</span> <span class="p">=</span> <span class="n">Rect</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">,</span> <span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">)</span>
+            <span class="n">addOval</span><span class="p">(</span><span class="n">oval</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="n">drawPath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Red</span><span class="p">)</span> 
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>效果如下，可以看出是一个完整的圆形，通过 <code>addOval</code>, 和 <code>addArc</code>, <code>addArcRad</code> 的绘制，发现都可以绘制一个完整的圆，但是他们还是有一些区分的</p>
+
+<ul>
+<li><code>addOval</code>: 添加一个椭圆路径，<code>Oval</code> 是代表椭圆的意思，它设置的是一个矩形 <code>Rect</code> 对象，如果设置这个矩形是一个正方形，那么绘制的出来的刚好是一个完整的圆</li>
+<li><code>addArc</code>: 添加一个弧形路径，<code>arc</code> 是代表弧的意思，除了也需要设置 <code>Rect</code> 参数，还有另外两个参数，设置的是角度</li>
+<li><code>addArcRad</code>: 和 <code>addArcRad</code> 类似， 也是添加一个弧形路径，但是设置的是弧度，其中 <code>Rad</code> 是 <code>Radian</code> 的缩写，代表的是弧度，一个 π 弧度表示 180°</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240627204841.png" alt="" /></p>
+
+<h2 id="addoutline">addOutline</h2>
+
+<blockquote>
+<p>将一个轮廓添加到路径中</p>
+</blockquote>
+
+<ol>
+<li>矩形轮廓 (<code>Outline.Rectangle</code>)</li>
+<li>圆角矩形轮廓（<code>Outline.Rounded</code>）</li>
+
+<li><p>通用路径 （<code>Outline.Generic</code>）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">fun</span> <span class="nf">PathOutline</span><span class="p">()</span> <span class="p">{</span>
+<span class="n">Canvas</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="m">10.</span><span class="n">dp</span><span class="p">).</span><span class="n">size</span><span class="p">(</span><span class="m">300.</span><span class="n">dp</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+        <span class="c1">// 添加矩形轮廓
+</span><span class="c1"></span>        <span class="n">addOutline</span><span class="p">(</span><span class="n">Outline</span><span class="p">.</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">Rect</span><span class="p">(</span><span class="m">0f</span><span class="p">,</span> <span class="m">0f</span><span class="p">,</span> <span class="m">100f</span><span class="p">,</span> <span class="m">100f</span><span class="p">)))</span>
+
+        <span class="c1">// 添加圆角矩形轮廓
+</span><span class="c1"></span>        <span class="n">addOutline</span><span class="p">(</span><span class="n">Outline</span><span class="p">.</span><span class="n">Rounded</span><span class="p">(</span><span class="n">RoundRect</span><span class="p">(</span><span class="n">Rect</span><span class="p">(</span><span class="m">110f</span><span class="p">,</span> <span class="m">0f</span><span class="p">,</span> <span class="m">210f</span><span class="p">,</span> <span class="m">100f</span><span class="p">),</span> <span class="m">16f</span><span class="p">,</span> <span class="m">16f</span><span class="p">)))</span>
+
+        <span class="c1">// 添加通用路径轮廓
+</span><span class="c1"></span>        <span class="k">val</span> <span class="py">customPath</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+            <span class="n">moveTo</span><span class="p">(</span><span class="m">220f</span><span class="p">,</span> <span class="m">0f</span><span class="p">)</span>
+            <span class="n">lineTo</span><span class="p">(</span><span class="m">270f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+            <span class="n">lineTo</span><span class="p">(</span><span class="m">220f</span><span class="p">,</span> <span class="m">100f</span><span class="p">)</span>
+            <span class="n">close</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="n">addOutline</span><span class="p">(</span><span class="n">Outline</span><span class="p">.</span><span class="n">Generic</span><span class="p">(</span><span class="n">customPath</span><span class="p">))</span>
+    <span class="p">}</span>
+
+    <span class="c1">// 使用 path 进行绘制(也就是上面添加好的路径)
+</span><span class="c1"></span>    <span class="n">drawPath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Black</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+
+<p>上述代码分别通过 addOutline 添加了一个矩形路径， 圆角路径，和自定义的路径，其实 addOutline 的方法实现是这样的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">fun</span> <span class="nf">Path</span><span class="p">.</span><span class="n">addOutline</span><span class="p">(</span><span class="n">outline</span><span class="p">:</span> <span class="n">Outline</span><span class="p">)</span> <span class="p">=</span> <span class="k">when</span> <span class="p">(</span><span class="n">outline</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">is</span> <span class="n">Outline</span><span class="p">.</span><span class="n">Rectangle</span> <span class="p">-&gt;</span> <span class="n">addRect</span><span class="p">(</span><span class="n">outline</span><span class="p">.</span><span class="n">rect</span><span class="p">)</span>
+    <span class="k">is</span> <span class="n">Outline</span><span class="p">.</span><span class="n">Rounded</span> <span class="p">-&gt;</span> <span class="n">addRoundRect</span><span class="p">(</span><span class="n">outline</span><span class="p">.</span><span class="n">roundRect</span><span class="p">)</span>
+    <span class="k">is</span> <span class="n">Outline</span><span class="p">.</span><span class="n">Generic</span> <span class="p">-&gt;</span> <span class="n">addPath</span><span class="p">(</span><span class="n">outline</span><span class="p">.</span><span class="n">path</span><span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>可以发现本质上也还是调用 addRect addRoundRect addPath 这些我们之前介绍过的方法，它只是做了再一层的封装而已，其实你也可以直接使用这 3个 Api，其实还有 DrawScope 中，也有一个类似一个方法叫 drawOutLine 基本也是这样的套路，上述代码效果如下</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240629211339.png" alt="" /></p>
+
+<h2 id="addpath">addPath</h2>
+
+<blockquote>
+<p>将另一个路径添加到当前路径中，可用于组合路径</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">@Preview</span>
+<span class="n">@Composable</span>
+<span class="k">private</span> <span class="k">fun</span> <span class="nf">PathAddRect</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Canvas</span><span class="p">(</span>
+        <span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="m">400.</span><span class="n">dp</span><span class="p">)</span>
+    <span class="p">)</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">path1</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+            <span class="n">moveTo</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">10f</span><span class="p">)</span>
+            <span class="n">lineTo</span><span class="p">(</span><span class="m">90f</span><span class="p">,</span> <span class="m">10f</span><span class="p">)</span>
+            <span class="n">lineTo</span><span class="p">(</span><span class="m">90f</span><span class="p">,</span> <span class="m">90f</span><span class="p">)</span>
+            <span class="n">lineTo</span><span class="p">(</span><span class="m">10f</span><span class="p">,</span> <span class="m">90f</span><span class="p">)</span>
+            <span class="n">close</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="k">val</span> <span class="py">path2</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+            <span class="n">moveTo</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+            <span class="n">lineTo</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">50f</span><span class="p">)</span>
+            <span class="n">lineTo</span><span class="p">(</span><span class="m">150f</span><span class="p">,</span> <span class="m">150f</span><span class="p">)</span>
+            <span class="n">lineTo</span><span class="p">(</span><span class="m">50f</span><span class="p">,</span> <span class="m">150f</span><span class="p">)</span>
+            <span class="n">close</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="c1">// 将路径1和路径2合并为一个路径
+</span><span class="c1"></span>        <span class="k">val</span> <span class="py">combinedPath</span> <span class="p">=</span> <span class="n">Path</span><span class="p">().</span><span class="n">apply</span> <span class="p">{</span>
+            <span class="n">addPath</span><span class="p">(</span><span class="n">path1</span><span class="p">,</span> <span class="n">offset</span> <span class="p">=</span> <span class="n">Offset</span><span class="p">(</span><span class="n">x</span> <span class="p">=</span> <span class="m">10f</span><span class="p">,</span> <span class="n">y</span> <span class="p">=</span> <span class="m">10f</span><span class="p">))</span>
+            <span class="n">addPath</span><span class="p">(</span><span class="n">path2</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="c1">// 使用 combinedPath 进行绘制
+</span><span class="c1"></span>        <span class="n">drawPath</span><span class="p">(</span><span class="n">combinedPath</span><span class="p">,</span> <span class="n">color</span> <span class="p">=</span> <span class="n">Color</span><span class="p">.</span><span class="n">Black</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240629215722.png" alt="" /></p>
+
+<p>好了，至此，关于 compose 中所有关于绘制的方法，都讲完了，也基本都使用示例演示了一遍，基本上所有的方法都在 DrawScope 和 Path 类当中，现在你可以回顾一下里面的方法都是什么意思，它们都有什么样的能力，如果你都掌握了这些，基本对这个绘制应该问题大不了</p>
+
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2023-11-09
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/android/">Android</a>
+          <a href="https://midFang.github.io/tags/compose/">Compose</a>
+          <a href="https://midFang.github.io/tags/view/">view</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/compose-sliding-conflict-resolution/">
+            <span class="next-text nav-default">Compose 滑动冲突解决</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://stackoverflow.com/users/14331888/midfang" rel="me noopener" class="iconfont"
+      title="stack-overflow"  target="_blank"
+      >
+      <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M809.714286 932.571429l-638.857143 0 0-274.285714-91.428571 0 0 365.714286 821.714286 0 0-365.714286-91.428571 0 0 274.285714zm-538.285714-299.428571l18.857143-89.714286 447.428571 94.285714-18.857143 89.142857zm58.857143-213.714286l38.285714-83.428571 414.285714 193.714286-38.285714 82.857143zm114.857143-203.428571l58.285714-70.285714 350.857143 293.142857-58.285714 70.285714zm226.857143-216l272.571429 366.285714-73.142857 54.857143-272.571429-366.285714zm-410.285714 840.571429l0-90.857143 457.142857 0 0 90.857143-457.142857 0z"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://www.douban.com/people/194654920/" rel="me noopener" class="iconfont"
+      title="douban"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M926.917973 37.80608C959.65184 37.80608 986.19392 64.34816 986.19392 97.082027L986.19392 926.917973C986.19392 959.65184 959.65184 986.19392 926.917973 986.19392L97.082027 986.19392C64.34816 986.19392 37.80608 959.65184 37.80608 926.917973L37.80608 97.082027C37.80608 64.34816 64.34816 37.80608 97.082027 37.80608zM176.653653 176.19968 176.653653 252.678827 825.658027 252.678827 825.658027 176.19968zM217.719467 316.146347 217.719467 628.08064 273.524053 628.08064 341.292373 770.39616 157.259093 770.39616 157.259093 845.417813 842.949973 845.417813 842.949973 770.39616 654.226773 770.39616 722.899627 628.08064 783.67744 628.08064 783.67744 316.146347zM684.885333 392.891733 684.885333 553.987413 312.576 553.987413 312.576 392.891733zM570.770773 770.39616 426.653013 770.39616 359.621973 628.08064 639.443627 628.08064z"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://midFang.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2020 -
+    2024
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        midFang
+        
+      </span></span>
+
+  
+  
+    <span id="busuanzi_container">
+      访客数/访问量：<span id="busuanzi_value_site_uv"></span>/<span id="busuanzi_value_site_pv"></span>
+    </span>
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script type="text/javascript">
+    AV.initialize( null ,  null );
+  </script>
+
+  <script>
+    function showHitCount(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push($(this).attr("id").trim());
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var hits = item.get('hits');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(hits);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if (countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function (results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("hits");
+            counter.save(null, {
+              success: function (counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('hits'));
+              },
+              error: function (counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+             
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+             
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("hits", 1);
+            newcounter.save(null, {
+              success: function (newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('hits'));
+              },
+              error: function (newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function (error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function () {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        
+        addCount(Counter);
+      } else if ($('.post-link').length > 1) {
+        
+        showHitCount(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+  <script>
+    $("#openSearch, #openSearchMobile").click(function(){
+      $(".modal-dialog").addClass("visible");
+    });
+
+    $("#closeSearch").click(function(){
+      $(".modal-dialog").removeClass("visible");
+    });
+
+    $(document).click(function(event) {
+    
+      if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
+        $("body").find(".modal-dialog").removeClass("visible");
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>

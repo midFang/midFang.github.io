@@ -6,7 +6,7 @@
     <description>Recent content in Tags on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 13 Oct 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 09 Nov 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>Android</title>
       <link>https://midFang.github.io/tags/android/</link>
-      <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 09 Nov 2023 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/tags/android/</guid>
       <description></description>
@@ -23,9 +23,18 @@
     <item>
       <title>Compose</title>
       <link>https://midFang.github.io/tags/compose/</link>
-      <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 09 Nov 2023 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/tags/compose/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>View</title>
+      <link>https://midFang.github.io/tags/view/</link>
+      <pubDate>Thu, 09 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/view/</guid>
       <description></description>
     </item>
     
@@ -39,7 +48,7 @@
     </item>
     
     <item>
-      <title>OkHttp</title>
+      <title>OKHttp</title>
       <link>https://midFang.github.io/tags/okhttp/</link>
       <pubDate>Wed, 05 May 2021 00:00:00 +0000</pubDate>
       
@@ -80,15 +89,6 @@
       <pubDate>Sun, 18 Apr 2021 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/tags/hook/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>View</title>
-      <link>https://midFang.github.io/tags/view/</link>
-      <pubDate>Sun, 18 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/tags/view/</guid>
       <description></description>
     </item>
     
@@ -138,7 +138,7 @@
     </item>
     
     <item>
-      <title>kotlin</title>
+      <title>Kotlin</title>
       <link>https://midFang.github.io/tags/kotlin/</link>
       <pubDate>Sun, 22 Nov 2020 00:00:00 +0000</pubDate>
       

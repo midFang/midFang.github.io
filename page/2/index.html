@@ -63,7 +63,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://midFang.github.io/" />
 
-<meta property="og:updated_time" content="2023-10-13T00:00:00+00:00" />
+<meta property="og:updated_time" content="2023-11-09T00:00:00+00:00" />
 <meta itemprop="name" content="midFang&#39;s Blog">
 <meta itemprop="description" content="Hugo theme jane example site.">
 
@@ -273,6 +273,79 @@
     
   
   
+  
+    <article class="post bg-white">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/android-thread-pool/">线程池参数详解</a>
+    </h1>
+    
+    <div class="post-meta">
+      <time datetime="2021-05-05" class="post-time">
+        2021-05-05
+      </time>
+      <div class="post-category">
+          <a href="https://midFang.github.io/categories/android/"> Android </a>
+          <a href="https://midFang.github.io/categories/okhttp/"> OKHttp </a>
+          <a href="https://midFang.github.io/categories/%E7%BA%BF%E7%A8%8B/"> 线程 </a>
+          
+        </div>
+      
+      
+      
+        <span id="/android-thread-pool/" class="leancloud_visitors" data-flag-title="线程池参数详解">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
+      
+    </div>
+  </header>
+  
+  <div class="post-content">
+    
+    <div class="post-summary">
+      <p>这里直接拿 OKHttp 源码中的线程池举例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">synchronized</span> <span class="n">ExecutorService</span> <span class="nf">executorService</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">executorService</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">executorService</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span>
+          									<span class="n">0</span><span class="p">,</span> <span class="c1">// 核心线程
+</span><span class="c1"></span>                            <span class="n">Integer</span><span class="p">.</span><span class="na">MAX_VALUE</span><span class="p">,</span>  <span class="c1">// 最大线程
+</span><span class="c1"></span>                            <span class="n">60</span><span class="p">,</span>					<span class="c1">// 空闲线程闲置时间
+</span><span class="c1"></span>                            <span class="n">TimeUnit</span><span class="p">.</span><span class="na">SECONDS</span><span class="p">,</span>	<span class="c1">// 闲置时间单位
+</span><span class="c1"></span>                            <span class="k">new</span> <span class="n">SynchronousQueue</span><span class="o">&lt;</span><span class="n">Runnable</span><span class="o">&gt;</span><span class="p">(),</span> <span class="c1">// 线程等待队列
+</span><span class="c1"></span>                            <span class="n">Util</span><span class="p">.</span><span class="na">threadFactory</span><span class="p">(</span><span class="s">&#34;OkHttp Dispatcher&#34;</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span> <span class="c1">// 线程创建工厂
+</span><span class="c1"></span>      <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">executorService</span><span class="p">;</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+    <div class="read-more">
+      <a href="/android-thread-pool/" class="read-more-link">Read more</a>
+    </div>
+    
+  </div>
+</article>
+
   
     <article class="post bg-white">
   <header class="post-header">
@@ -724,47 +797,6 @@
     </div>
     <div class="read-more">
       <a href="/android-kotlin-thread-coroutine/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/java-varargs-performance/">Java 可变参数可能引发的性能问题</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2020-11-08" class="post-time">
-        2020-11-08
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/android/"> Android </a>
-          
-        </div>
-      
-      
-      
-        <span id="/java-varargs-performance/" class="leancloud_visitors" data-flag-title="Java 可变参数可能引发的性能问题">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <h3 id="java-可变参数可能引发的性能问题">Java 可变参数可能引发的性能问题</h3>
-
-<p>在这里先看一下我们项目中之前写的日志打印工具</p>
-    </div>
-    <div class="read-more">
-      <a href="/java-varargs-performance/" class="read-more-link">Read more</a>
     </div>
     
   </div>

@@ -6,10 +6,19 @@
     <description>Recent content in Android on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 13 Oct 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 09 Nov 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/android/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Compose 绘制功能全解析</title>
+      <link>https://midFang.github.io/compose-canvas-analysis/</link>
+      <pubDate>Thu, 09 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/compose-canvas-analysis/</guid>
+      <description>最近项目中，针对 App 首次启动新手指引做了适配，新手指引大概的效果是如下图这样的，原本项目中使用的是纯图片，下方的箭头和小圆圈是固定显示在中间的</description>
+    </item>
     
     <item>
       <title>Compose 滑动冲突解决</title>
@@ -301,17 +310,6 @@
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;</description>
-    </item>
-    
-    <item>
-      <title>Java 可变参数可能引发的性能问题</title>
-      <link>https://midFang.github.io/java-varargs-performance/</link>
-      <pubDate>Sun, 08 Nov 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/java-varargs-performance/</guid>
-      <description>&lt;h3 id=&#34;java-可变参数可能引发的性能问题&#34;&gt;Java 可变参数可能引发的性能问题&lt;/h3&gt;
-
-&lt;p&gt;在这里先看一下我们项目中之前写的日志打印工具&lt;/p&gt;</description>
     </item>
     
   </channel>

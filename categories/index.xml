@@ -6,7 +6,7 @@
     <description>Recent content in Categories on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 13 Oct 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 09 Nov 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,9 +14,18 @@
     <item>
       <title>Compose</title>
       <link>https://midFang.github.io/categories/compose/</link>
-      <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 09 Nov 2023 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/categories/compose/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>View</title>
+      <link>https://midFang.github.io/categories/view/</link>
+      <pubDate>Thu, 09 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/categories/view/</guid>
       <description></description>
     </item>
     
@@ -84,15 +93,6 @@
     </item>
     
     <item>
-      <title>View</title>
-      <link>https://midFang.github.io/categories/view/</link>
-      <pubDate>Sun, 18 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/categories/view/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>gradle</title>
       <link>https://midFang.github.io/categories/gradle/</link>
       <pubDate>Sun, 11 Apr 2021 00:00:00 +0000</pubDate>
@@ -138,7 +138,7 @@
     </item>
     
     <item>
-      <title>kotlin</title>
+      <title>Kotlin</title>
       <link>https://midFang.github.io/categories/kotlin/</link>
       <pubDate>Sun, 22 Nov 2020 00:00:00 +0000</pubDate>
       

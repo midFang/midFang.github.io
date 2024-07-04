@@ -6,10 +6,19 @@
     <description>Recent content in View on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 18 Apr 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 09 Nov 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/view/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Compose 绘制功能全解析</title>
+      <link>https://midFang.github.io/compose-canvas-analysis/</link>
+      <pubDate>Thu, 09 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/compose-canvas-analysis/</guid>
+      <description>最近项目中，针对 App 首次启动新手指引做了适配，新手指引大概的效果是如下图这样的，原本项目中使用的是纯图片，下方的箭头和小圆圈是固定显示在中间的</description>
+    </item>
     
     <item>
       <title>HOOK 插件式一键换肤流程分析</title>
