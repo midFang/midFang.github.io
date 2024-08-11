@@ -6,7 +6,7 @@
     <description>Recent content in Tags on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 10 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 17 Mar 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,9 +14,18 @@
     <item>
       <title>NDK</title>
       <link>https://midFang.github.io/tags/ndk/</link>
-      <pubDate>Sun, 10 Mar 2024 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 17 Mar 2024 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/tags/ndk/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>shell</title>
+      <link>https://midFang.github.io/tags/shell/</link>
+      <pubDate>Sun, 17 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/shell/</guid>
       <description></description>
     </item>
     
@@ -48,7 +57,7 @@
     </item>
     
     <item>
-      <title>view</title>
+      <title>View</title>
       <link>https://midFang.github.io/tags/view/</link>
       <pubDate>Thu, 09 Nov 2023 00:00:00 +0000</pubDate>
       
@@ -66,7 +75,7 @@
     </item>
     
     <item>
-      <title>OkHttp</title>
+      <title>OKHttp</title>
       <link>https://midFang.github.io/tags/okhttp/</link>
       <pubDate>Wed, 05 May 2021 00:00:00 +0000</pubDate>
       
@@ -165,7 +174,7 @@
     </item>
     
     <item>
-      <title>Java</title>
+      <title>java</title>
       <link>https://midFang.github.io/tags/java/</link>
       <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
       
@@ -174,20 +183,11 @@
     </item>
     
     <item>
-      <title>Hugo</title>
+      <title>hugo</title>
       <link>https://midFang.github.io/tags/hugo/</link>
       <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/tags/hugo/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Git</title>
-      <link>https://midFang.github.io/tags/git/</link>
-      <pubDate>Sun, 05 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/tags/git/</guid>
       <description></description>
     </item>
     

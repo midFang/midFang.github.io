@@ -6,10 +6,19 @@
     <description>Recent content in Posts on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 10 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 17 Mar 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Android NDK 开发之 shell 脚本和交叉编译</title>
+      <link>https://midFang.github.io/android-ndk-shell-and-cross-compile/</link>
+      <pubDate>Sun, 17 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/android-ndk-shell-and-cross-compile/</guid>
+      <description>当编译过程比较复杂的时候, 我们就可以使用 shell 脚本来简化这个过程, 同时版本升级, 重复构建的基础上 shell 脚本也能够重复利用, 下面直接开始看看 shell 脚本是如</description>
+    </item>
     
     <item>
       <title>Android NDK 开发之 cmake 使用</title>
@@ -262,17 +271,6 @@
 &lt;pre class=&#34;chroma&#34;&gt;implementation &amp;#39;com.squareup.okhttp3:okhttp:3.5.0&amp;#39; &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;</description>
-    </item>
-    
-    <item>
-      <title>Android 事件分发的冲突解决方案</title>
-      <link>https://midFang.github.io/android-motionevent-sliding-conflict/</link>
-      <pubDate>Sun, 06 Dec 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/android-motionevent-sliding-conflict/</guid>
-      <description>&lt;p&gt;阅读本文前，需要对事件分发机制所有了解，建议先阅读  &lt;a href=&#34;https://www.midfang.com/android-motionevent-soruce-code-analysis/&#34;&gt;Android 事件分发机制源码流程分析&lt;/a&gt;，但是解决这个问题之前，首先我们要知道，滑动冲突是怎么来的，为什么会存在滑动冲突呢 ？&lt;/p&gt;
-
-&lt;p&gt;其实在 Android 中，只要是在界面中内外两层 View 可以同时滑动的时候，这个时候，就会产生滑动冲突了，或者可以理解在同一方向一个 View 上只能响应一组事件序列。当然了，部分情况下，会看到同时滑动的情况，可能是通过特殊的方式，将自己的事件序列传递给其他 View 上面了。&lt;/p&gt;</description>
     </item>
     
   </channel>
