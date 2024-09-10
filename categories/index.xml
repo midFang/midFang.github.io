@@ -6,7 +6,7 @@
     <description>Recent content in Categories on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 17 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 30 Mar 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>NDK</title>
       <link>https://midFang.github.io/categories/ndk/</link>
-      <pubDate>Sun, 17 Mar 2024 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 30 Mar 2024 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/categories/ndk/</guid>
       <description></description>
@@ -165,7 +165,7 @@
     </item>
     
     <item>
-      <title>Kotlin</title>
+      <title>kotlin</title>
       <link>https://midFang.github.io/categories/kotlin/</link>
       <pubDate>Sun, 22 Nov 2020 00:00:00 +0000</pubDate>
       
@@ -174,7 +174,7 @@
     </item>
     
     <item>
-      <title>java</title>
+      <title>Java</title>
       <link>https://midFang.github.io/categories/java/</link>
       <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
       

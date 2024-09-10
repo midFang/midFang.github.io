@@ -63,7 +63,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://midFang.github.io/" />
 
-<meta property="og:updated_time" content="2024-03-17T00:00:00+00:00" />
+<meta property="og:updated_time" content="2024-03-30T00:00:00+00:00" />
 <meta itemprop="name" content="midFang&#39;s Blog">
 <meta itemprop="description" content="Hugo theme jane example site.">
 
@@ -291,6 +291,123 @@
     
   
   
+  
+    <article class="post bg-white">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/java-dynamic-proxy-design-patterns/">Java 动态代理</a>
+    </h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-01-10" class="post-time">
+        2020-01-10
+      </time>
+      <div class="post-category">
+          <a href="https://midFang.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"> 数据结构 </a>
+          
+        </div>
+      
+      
+      
+        <span id="/java-dynamic-proxy-design-patterns/" class="leancloud_visitors" data-flag-title="Java 动态代理">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
+      
+    </div>
+  </header>
+  
+  <div class="post-content">
+    
+    <div class="post-summary">
+      动态代理和静态代理一般在设计模式中的定义为代理设计模式 定义： 为其他对象提供一种代理以控制对这个对象的访问 使用场景： 当无法或者不想直接访问某个
+    </div>
+    <div class="read-more">
+      <a href="/java-dynamic-proxy-design-patterns/" class="read-more-link">Read more</a>
+    </div>
+    
+  </div>
+</article>
+
+  
+    <article class="post bg-white">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/activity-animation-transfer/">Compose 动画基础篇之各种 Spec</a>
+    </h1>
+    
+    <div class="post-meta">
+      <time datetime="2019-10-02" class="post-time">
+        2019-10-02
+      </time>
+      <div class="post-category">
+          <a href="https://midFang.github.io/categories/%E5%8A%A8%E7%94%BB/"> 动画 </a>
+          
+        </div>
+      
+      
+      
+        <span id="/activity-animation-transfer/" class="leancloud_visitors" data-flag-title="Compose 动画基础篇之各种 Spec">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
+      
+    </div>
+  </header>
+  
+  <div class="post-content">
+    
+    <div class="post-summary">
+      <h3 id="向左推">向左推</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// R.anim.i_slide_in_left
+</span><span class="c1"></span><span class="o">&lt;</span><span class="n">set</span> <span class="nf">xmlns</span><span class="o">:</span><span class="n">android</span><span class="o">=</span><span class="s">&#34;http://schemas.android.com/apk/res/android&#34;</span><span class="o">&gt;</span>
+	<span class="o">&lt;</span><span class="n">translate</span> 
+	<span class="nf">android</span><span class="o">:</span><span class="n">fromXDelta</span><span class="o">=</span><span class="s">&#34;100%p&#34;</span>
+	<span class="n">android</span><span class="o">:</span><span class="n">toXDelta</span><span class="o">=</span><span class="s">&#34;0&#34;</span>
+	<span class="n">android</span><span class="o">:</span><span class="n">duration</span><span class="o">=</span><span class="s">&#34;350&#34;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">set</span><span class="o">&gt;</span>
+
+<span class="c1">// R.anim.i_slide_out_left
+</span><span class="c1"></span><span class="o">&lt;?</span><span class="n">xml</span> <span class="nf">version</span><span class="o">=</span><span class="s">&#34;1.0&#34;</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#34;utf-8&#34;</span><span class="o">?&gt;</span>
+<span class="o">&lt;</span><span class="n">set</span> <span class="nf">xmlns</span><span class="o">:</span><span class="n">android</span><span class="o">=</span><span class="s">&#34;http://schemas.android.com/apk/res/android&#34;</span><span class="o">&gt;</span>
+	<span class="o">&lt;</span><span class="n">translate</span> 
+	<span class="nf">android</span><span class="o">:</span><span class="n">fromXDelta</span><span class="o">=</span><span class="s">&#34;0&#34;</span>
+	<span class="n">android</span><span class="o">:</span><span class="n">toXDelta</span><span class="o">=</span><span class="s">&#34;-100%p&#34;</span>
+	<span class="n">android</span><span class="o">:</span><span class="n">duration</span><span class="o">=</span><span class="s">&#34;350&#34;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">set</span><span class="o">&gt;</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="向右推">向右推</h3>
+    </div>
+    <div class="read-more">
+      <a href="/activity-animation-transfer/" class="read-more-link">Read more</a>
+    </div>
+    
+  </div>
+</article>
+
   
     <article class="post bg-white">
   <header class="post-header">
@@ -606,84 +723,6 @@
     </div>
     <div class="read-more">
       <a href="/view-layout-process/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/view-measure-process/">View 的 measure 测量过程</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-09-29" class="post-time">
-        2019-09-29
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/view/"> View </a>
-          
-        </div>
-      
-      
-      
-        <span id="/view-measure-process/" class="leancloud_visitors" data-flag-title="View 的 measure 测量过程">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      View 的测量过程 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个顶点的位置, draw 则是将布局绘
-    </div>
-    <div class="read-more">
-      <a href="/view-measure-process/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/android-custom-view-measurespec/">Android 测量规格 MeasureSpec</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-09-28" class="post-time">
-        2019-09-28
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/view/"> View </a>
-          
-        </div>
-      
-      
-      
-        <span id="/android-custom-view-measurespec/" class="leancloud_visitors" data-flag-title="Android 测量规格 MeasureSpec">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      MeasureSpec MeasureSpec 代表的是一个 32 位的 int 值，高2位代表 SpecMode，低 30 位代表 SpecSize，SpecMode 指的测量模式，SpecSize 是指在某种
-    </div>
-    <div class="read-more">
-      <a href="/android-custom-view-measurespec/" class="read-more-link">Read more</a>
     </div>
     
   </div>

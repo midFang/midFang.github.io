@@ -6,10 +6,28 @@
     <description>Recent content in Posts on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 17 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 30 Mar 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Android 使用 ffmpeg &#43; AudioTrack 音频播放</title>
+      <link>https://midFang.github.io/android-ffmpeg-audiotrack-play/</link>
+      <pubDate>Sat, 30 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/android-ffmpeg-audiotrack-play/</guid>
+      <description>在之前的文章中，我们已经编译好了 ffmpeg so 库了，本章中，我们开始使用它进行编解码音频播放，需要先了解一些前置知识 音视频前置知识和之前写的一些 C 代码</description>
+    </item>
+    
+    <item>
+      <title>Android 编译 ffmpeg</title>
+      <link>https://midFang.github.io/android-compile-ffmpeg/</link>
+      <pubDate>Mon, 25 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/android-compile-ffmpeg/</guid>
+      <description>前言 在上两篇文章中，我们已经学习了 CMake 和 Shell 的使用，接下来本篇文章开始对 ffmpeg 进行编译, 在编译开始之前 需要准备好 Linux 环境，下载 NDK，配置 NDK 环境变量等</description>
+    </item>
     
     <item>
       <title>Android NDK 开发之 shell 脚本和交叉编译</title>
@@ -237,40 +255,6 @@
       
       <guid>https://midFang.github.io/viewpager-fragment-code-analysis-performance-optimization/</guid>
       <description>在很多项目中都有 Banner 广告页或者是 Tab 切换页，如果是如下布局的情况，那么肯定遇到过这个问题，那就是这个 ViewPager 并不会包裹内容填充，而是会填充满整个布局，</description>
-    </item>
-    
-    <item>
-      <title>独立进程通信之悬浮下拉状态栏实践</title>
-      <link>https://midFang.github.io/android-process-ipc/</link>
-      <pubDate>Thu, 01 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/android-process-ipc/</guid>
-      <description>&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
-
-&lt;p&gt;我们首先先看下这个效果是怎么样的，如果有人见过百度音箱或者是小米音箱，就应该对这个会清楚一些，也就是图示中我们是自定义了一个下拉状态栏，并没有使用系统原生的，那么我们就可以根据需求实现我们自定义的下拉状态栏 UI，比如音乐通知，时间、天气显示信息等等。不过这种需要自定义的情况一般是针对于 Android 定制化的地方会用到的多一些，但本文更多的是牵扯的是如何将这个下拉状态栏运行在独立进程中，以及进程之间的通信，这样的话即使下拉状态栏崩溃了，也不会影响主进程。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/midFang/imgSource/main/preview199.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>OkHttp 源码分析及网络优化</title>
-      <link>https://midFang.github.io/okhttp-source-code-analysis/</link>
-      <pubDate>Thu, 28 Jan 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/okhttp-source-code-analysis/</guid>
-      <description>&lt;h2 id=&#34;使用&#34;&gt;使用&lt;/h2&gt;
-
-&lt;p&gt;OKHttp 是作为 Android 开发人员使用最多的网络库之一， 接下来从最基础的使用来介绍 OkHttp 源码里面是如何工作的。&lt;/p&gt;
-
-&lt;p&gt;首先需要添加OKHttp的依赖&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre class=&#34;chroma&#34;&gt;implementation &amp;#39;com.squareup.okhttp3:okhttp:3.5.0&amp;#39; &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;</description>
     </item>
     
   </channel>

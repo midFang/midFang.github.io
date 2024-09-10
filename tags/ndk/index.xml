@@ -6,10 +6,28 @@
     <description>Recent content in NDK on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 17 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 30 Mar 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/ndk/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Android 使用 ffmpeg &#43; AudioTrack 音频播放</title>
+      <link>https://midFang.github.io/android-ffmpeg-audiotrack-play/</link>
+      <pubDate>Sat, 30 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/android-ffmpeg-audiotrack-play/</guid>
+      <description>在之前的文章中，我们已经编译好了 ffmpeg so 库了，本章中，我们开始使用它进行编解码音频播放，需要先了解一些前置知识 音视频前置知识和之前写的一些 C 代码</description>
+    </item>
+    
+    <item>
+      <title>Android 编译 ffmpeg</title>
+      <link>https://midFang.github.io/android-compile-ffmpeg/</link>
+      <pubDate>Mon, 25 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/android-compile-ffmpeg/</guid>
+      <description>前言 在上两篇文章中，我们已经学习了 CMake 和 Shell 的使用，接下来本篇文章开始对 ffmpeg 进行编译, 在编译开始之前 需要准备好 Linux 环境，下载 NDK，配置 NDK 环境变量等</description>
+    </item>
     
     <item>
       <title>Android NDK 开发之 shell 脚本和交叉编译</title>

@@ -63,7 +63,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://midFang.github.io/" />
 
-<meta property="og:updated_time" content="2024-03-17T00:00:00+00:00" />
+<meta property="og:updated_time" content="2024-03-30T00:00:00+00:00" />
 <meta itemprop="name" content="midFang&#39;s Blog">
 <meta itemprop="description" content="Hugo theme jane example site.">
 
@@ -291,6 +291,84 @@
     
   
   
+  
+    <article class="post bg-white">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/view-measure-process/">View 的 measure 测量过程</a>
+    </h1>
+    
+    <div class="post-meta">
+      <time datetime="2019-09-29" class="post-time">
+        2019-09-29
+      </time>
+      <div class="post-category">
+          <a href="https://midFang.github.io/categories/view/"> View </a>
+          
+        </div>
+      
+      
+      
+        <span id="/view-measure-process/" class="leancloud_visitors" data-flag-title="View 的 measure 测量过程">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
+      
+    </div>
+  </header>
+  
+  <div class="post-content">
+    
+    <div class="post-summary">
+      View 的测量过程 View 的工作流程主要是 measure layout draw 这三大流程完成的, 测量, 布局, 绘制, 其中 measure 测量布局的宽高, layout 确定 View 在布局中 4 个顶点的位置, draw 则是将布局绘
+    </div>
+    <div class="read-more">
+      <a href="/view-measure-process/" class="read-more-link">Read more</a>
+    </div>
+    
+  </div>
+</article>
+
+  
+    <article class="post bg-white">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/android-custom-view-measurespec/">Android 测量规格 MeasureSpec</a>
+    </h1>
+    
+    <div class="post-meta">
+      <time datetime="2019-09-28" class="post-time">
+        2019-09-28
+      </time>
+      <div class="post-category">
+          <a href="https://midFang.github.io/categories/view/"> View </a>
+          
+        </div>
+      
+      
+      
+        <span id="/android-custom-view-measurespec/" class="leancloud_visitors" data-flag-title="Android 测量规格 MeasureSpec">
+          <span class="post-meta-item-text"> | 阅读 </span>
+          <span class="leancloud-visitors-count"></span>
+        </span>
+      
+    </div>
+  </header>
+  
+  <div class="post-content">
+    
+    <div class="post-summary">
+      MeasureSpec MeasureSpec 代表的是一个 32 位的 int 值，高2位代表 SpecMode，低 30 位代表 SpecSize，SpecMode 指的测量模式，SpecSize 是指在某种
+    </div>
+    <div class="read-more">
+      <a href="/android-custom-view-measurespec/" class="read-more-link">Read more</a>
+    </div>
+    
+  </div>
+</article>
+
   
     <article class="post bg-white">
   <header class="post-header">
@@ -610,117 +688,6 @@ Audio Sink ：   （音频接收器） 接收到音频数据后，进行解码�
     </div>
     <div class="read-more">
       <a href="/bluetooth-base/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/hugo-common-command/">hugo常用命令.md</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-06-20" class="post-time">
-        2019-06-20
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E7%AC%94%E8%AE%B0/"> 笔记 </a>
-          <a href="https://midFang.github.io/categories/hugo/"> Hugo </a>
-          
-        </div>
-      
-      
-      
-        <span id="/hugo-common-command/" class="leancloud_visitors" data-flag-title="hugo常用命令.md">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <h2 id="hugo-常用命令">Hugo 常用命令</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">#查看版本
-hugo version
-
-#创建文章
-hugo new xxx.md 
-
-#编译生成静态文件
-hugo
-
-#编译生成静态文件并启动web服务
-hugo server</pre></td></tr></table>
-</div>
-</div>
-    </div>
-    <div class="read-more">
-      <a href="/hugo-common-command/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/clear-git-commit-cache/">清空 git 提交的以往所有历史记录</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2019-06-20" class="post-time">
-        2019-06-20
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/git/"> Git </a>
-          
-        </div>
-      
-      
-      
-        <span id="/clear-git-commit-cache/" class="leancloud_visitors" data-flag-title="清空 git 提交的以往所有历史记录">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <h2 id="前言">前言</h2>
-
-<p>为什么要清空提交的历史记录呢 ？</p>
-
-<p>在使用 Git 进行仓库代码管理的时候，难免不注意会提交一些隐私的信息，即使是后面删除了，但还是能够从 Git 的历史记录可以找的到以往提交的信息。而且大部分开发者都是使用 Public Repository 公开的仓库，别人 clone 下来的话，那么就会造成隐式信息的直接暴露。</p>
-    </div>
-    <div class="read-more">
-      <a href="/clear-git-commit-cache/" class="read-more-link">Read more</a>
     </div>
     
   </div>

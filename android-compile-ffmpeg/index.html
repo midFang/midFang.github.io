@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>midFang&#39;s Blog</title>
+  <title>Android 编译 ffmpeg - midFang&#39;s Blog</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -23,7 +23,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="author" content="midFang" />
-  <meta name="description" content="Hugo theme jane example site." />
+  <meta name="description" content="前言 在上两篇文章中，我们已经学习了 CMake 和 Shell 的使用，接下来本篇文章开始对 ffmpeg 进行编译, 在编译开始之前 需要准备好 Linux 环境，下载 NDK，配置 NDK 环境变量等" />
+
   <meta name="keywords" content="Hugo, theme, jane" />
 
 
@@ -34,8 +35,8 @@
 <meta name="generator" content="Hugo 0.58.3" />
 
 
-<link rel="canonical" href="https://midFang.github.io/" />
-<link href="/index.xml" rel="alternate" type="application/rss+xml" title="midFang&#39;s Blog" />
+<link rel="canonical" href="https://midFang.github.io/android-compile-ffmpeg/" />
+
 
 
 
@@ -58,18 +59,26 @@
 
 
 
-<meta property="og:title" content="midFang&#39;s Blog" />
-<meta property="og:description" content="Hugo theme jane example site." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://midFang.github.io/" />
+<meta property="og:title" content="Android 编译 ffmpeg" />
+<meta property="og:description" content="前言 在上两篇文章中，我们已经学习了 CMake 和 Shell 的使用，接下来本篇文章开始对 ffmpeg 进行编译, 在编译开始之前 需要准备好 Linux 环境，下载 NDK，配置 NDK 环境变量等" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/android-compile-ffmpeg/" />
+<meta property="article:published_time" content="2024-03-25T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-03-25T00:00:00+00:00" />
+<meta itemprop="name" content="Android 编译 ffmpeg">
+<meta itemprop="description" content="前言 在上两篇文章中，我们已经学习了 CMake 和 Shell 的使用，接下来本篇文章开始对 ffmpeg 进行编译, 在编译开始之前 需要准备好 Linux 环境，下载 NDK，配置 NDK 环境变量等">
 
-<meta property="og:updated_time" content="2024-03-30T00:00:00+00:00" />
-<meta itemprop="name" content="midFang&#39;s Blog">
-<meta itemprop="description" content="Hugo theme jane example site.">
 
+<meta itemprop="datePublished" content="2024-03-25T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2024-03-25T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1076">
+
+
+
+<meta itemprop="keywords" content="NDK," />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="midFang&#39;s Blog"/>
-<meta name="twitter:description" content="Hugo theme jane example site."/>
+<meta name="twitter:title" content="Android 编译 ffmpeg"/>
+<meta name="twitter:description" content="前言 在上两篇文章中，我们已经学习了 CMake 和 Shell 的使用，接下来本篇文章开始对 ffmpeg 进行编译, 在编译开始之前 需要准备好 Linux 环境，下载 NDK，配置 NDK 环境变量等"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -201,7 +210,7 @@
   <ul id="menu" class="menu">
     
     
-        <li class="menu-item active">
+        <li class="menu-item">
         
           
           
@@ -284,244 +293,166 @@
     <main id="main" class="main bg-llight">
       <div class="content-wrapper">
         <div id="content" class="content container">
-          
-<section id="posts" class="posts">
-  
-  
+          <article class="post bg-white">
     
-  
-  
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
+    <header class="post-header">
+      <h1 class="post-title">Android 编译 ffmpeg</h1>
       
-      <a class="post-link" href="/combinedmodifier-composedmodifier-analysis/">CombinedModifier 和 ComposedModifier 原理分析</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2023-07-20" class="post-time">
-        2023-07-20
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/compose/"> Compose </a>
-          
-        </div>
-      
-      
-      
-        <span id="/combinedmodifier-composedmodifier-analysis/" class="leancloud_visitors" data-flag-title="CombinedModifier 和 ComposedModifier 原理分析">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      在 Compose 中，Modifier 的调用顺序不同，它造成的结果是不一样的，而不像原生的 XML 一样，顺序并不会影响界面绘制的结果。而在 Compose 中，它是按照Modi
-    </div>
-    <div class="read-more">
-      <a href="/combinedmodifier-composedmodifier-analysis/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
+      <div class="post-meta">
+        <time datetime="2024-03-25" class="post-time">
+          2024-03-25
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/ndk/"> NDK </a>
+            
+          </div>
+        
 
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/compose-animation-final-chapter-advanced-chapter/">Compose 动画终章进阶篇</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2023-07-05" class="post-time">
-        2023-07-05
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E5%8A%A8%E7%94%BB/"> 动画 </a>
-          
-        </div>
-      
-      
-      
-        <span id="/compose-animation-final-chapter-advanced-chapter/" class="leancloud_visitors" data-flag-title="Compose 动画终章进阶篇">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      AnimatedVisibility 对单个控件做显示和隐藏的动画效果 在上一个章节我们学习了 Transition 动画，这一节学习它更加上层的 Api，但其实内部本质上使用的也是 Transition, 先看一下 AnimatedVisibility 的源码,
-    </div>
-    <div class="read-more">
-      <a href="/compose-animation-final-chapter-advanced-chapter/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
+        
+        
+          <span id="busuanzi_container_page_pv">
+            | 阅读 <span id="busuanzi_value_page_pv"></span>
+          </span>
+        
 
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/compose-transition/">Compose转场动画之 Transition</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2023-06-11" class="post-time">
-        2023-06-11
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E5%8A%A8%E7%94%BB/"> 动画 </a>
-          
-        </div>
-      
-      
-      
-        <span id="/compose-transition/" class="leancloud_visitors" data-flag-title="Compose转场动画之 Transition">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 在 Android 原生中, Transition 动画是
-    </div>
-    <div class="read-more">
-      <a href="/compose-transition/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
+        
+        
+          <span id="/android-compile-ffmpeg/" class="leancloud_visitors" data-flag-title="Android 编译 ffmpeg">
+            <span class="post-meta-item-text"> | 阅读 </span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+      </div>
+    </header>
 
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/compose-animatedecay/">Compose之衰减型动画</a>
-    </h1>
     
-    <div class="post-meta">
-      <time datetime="2023-05-30" class="post-time">
-        2023-05-30
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E5%8A%A8%E7%94%BB/"> 动画 </a>
-          
-        </div>
-      
-      
-      
-        <span id="/compose-animatedecay/" class="leancloud_visitors" data-flag-title="Compose之衰减型动画">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
     
-    <div class="post-summary">
-      前言 回顾上篇文章我们学习了 compose 中的 animateTo 、 snapTo 如何使用，和 animationSpec 的参数配置等等，这篇文章，我们学习 Animatable 中另外一个方法 animateDecay animateDecay 衰减型动画， 它只有一个实现类 DecayAnimationSpecImpl 有了
-    </div>
-    <div class="read-more">
-      <a href="/compose-animatedecay/" class="read-more-link">Read more</a>
-    </div>
-    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#前言">前言</a></li>
+<li><a href="#编写编译脚本">编写编译脚本</a></li>
+</ul></li>
+</ul>
+</nav>
   </div>
-</article>
+</div>
 
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/compose-animation-basics/">Compose 动画基础篇之各种 Spec</a>
-    </h1>
     
-    <div class="post-meta">
-      <time datetime="2023-05-20" class="post-time">
-        2023-05-20
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/%E5%8A%A8%E7%94%BB/"> 动画 </a>
-          
-        </div>
+    <div class="post-content">
       
-      
-      
-        <span id="/compose-animation-basics/" class="leancloud_visitors" data-flag-title="Compose 动画基础篇之各种 Spec">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      从这一节开始，我们开始讲解 compose 最基础的动画 Api 使用，最基础也是最重要的部分，掌握这些基础的配置，会对后面的高阶动画的使用配置更加的得心应手 状态转
-    </div>
-    <div class="read-more">
-      <a href="/compose-animation-basics/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
 
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/android-thread-pool/">线程池参数详解</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2021-05-05" class="post-time">
-        2021-05-05
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/android/"> Android </a>
-          <a href="https://midFang.github.io/categories/okhttp/"> OKHttp </a>
-          <a href="https://midFang.github.io/categories/%E7%BA%BF%E7%A8%8B/"> 线程 </a>
-          
-        </div>
-      
-      
-      
-        <span id="/android-thread-pool/" class="leancloud_visitors" data-flag-title="线程池参数详解">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <p>这里直接拿 OKHttp 源码中的线程池举例：</p>
+<h2 id="前言">前言</h2>
+
+<p>在上两篇文章中，我们已经学习了 CMake 和 Shell 的使用，接下来本篇文章开始对 ffmpeg 进行编译, 在编译开始之前
+需要准备好 Linux 环境，下载 NDK，配置 NDK 环境变量等等，这在之前的两篇文章中都有，这里就不再展开介绍了</p>
+
+<p>首先先下载好 ffmpeg，然后在解压在 Linux 中，就可以得到目录结果是这样的文件</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202408081413933.png" alt="" /></p>
+
+<p>首先观察这个文件，可以看到有一个 Makefile 文件，那么是不是意味着可以直接运行 make 指令开始编译了呢，运行后一下会得到如下这个结果</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">Makefile:206: /tests/Makefile: No such file or directory
+make: *** No rule to make target <span class="s1">&#39;/tests/Makefile&#39;</span>.  Stop.</code></pre></td></tr></table>
+</div>
+</div>
+<p>可以发现缺少了文件，这个文件怎么来呢，其实面对一个第三方库，有这么以下几个通用准则</p>
+
+<ol>
+<li>阅读 README.md</li>
+<li>编译项目(动静态库)需要 Makefile 管理,如果已经有写好的 Makefile 可以尝试着用 make 命令去编译，如果没有需要自己写 Makefile 或者采用 cmake 构建</li>
+<li>如果报错需要解决，一般情况下都是 Makefile 的一些配置文件没生产，所以一般需要运行 configure 文件, 基本上很多库，都会有这个文件</li>
+<li>生产配置文件之后，再次运行 make, 但是编译后的文件(elf，so，a)只能当前类型系统上运行</li>
+<li>如果需要跑到 android 或者 iOS 那么需要交叉编译</li>
+<li>因此我们一般都需要往 configure 文件里面传一些交叉编译参数</li>
+</ol>
+
+<p>仔细看看这个库的话，其实提供了一个 configure 文件，一般我们运行 ./configure 文件就可以了，但是可能还有一些参数需要配置，所以运行 ./configure &ndash;help
+根据自己的需要需要配置那些参数即可，现在我们直接编写一个 shell 脚本来进行编译</p>
+
+<p>我这里的编译环境和版本如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">NDK r27
+ffmpeg 7.0.2
+Ubuntu 22.04.3 LTS Linux version 5.10.16.3-microsoft-standard-WSL2 (oe-user@oe-host) (x86_64-msft-linux-gcc (GCC) 9.3.0, GNU ld (GNU Binutils) 2.34.0.20200220) #1 SMP Fri Apr 2 22:23:49 UTC 2021</pre></td></tr></table>
+</div>
+</div>
+<blockquote>
+<p>提前说一句，这里我使用的是 r27 的版本，一开始我编写的脚本是使用 gcc 进行编译的，死活都编译不过去，原因未知，后面排查说是，gcc 在 ndk 17 的时候就已经被移除了，所以后面又查看大量的文章看 clang 如何编译的，废了很多时间</p>
+</blockquote>
+
+<p>同时，还需要修改 configure 文件中的几个配置</p>
+
+<ol>
+<li>找到 CMDLINE_SET 新增加 cross_prefix_clang 参数</li>
+</ol>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202408091814354.png" alt="" /></p>
+
+<ol>
+<li><p>然后搜索 ar_default</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">将 
+ar_default=&#34;${cross_prefix}${ar_default}&#34;
+cc_default=&#34;${cross_prefix}${cc_default}&#34;
+cxx_default=&#34;${cross_prefix}${cxx_default}&#34;
+nm_default=&#34;${cross_prefix}${nm_default}&#34;
+
+
+修改成 
+ar_default=&#34;${cross_prefix}${ar_default}&#34;
+cc_default=&#34;${cross_prefix_clang}${cc_default}&#34; 
+cxx_default=&#34;${cross_prefix_clang}${cxx_default}&#34;
+nm_default=&#34;${cross_prefix}${nm_default}&#34;</pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>配置项目, 目的是生成一些必要的文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">./configure --disable-x86asm</code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+
+<h2 id="编写编译脚本">编写编译脚本</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -534,291 +465,218 @@
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">synchronized</span> <span class="n">ExecutorService</span> <span class="nf">executorService</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">executorService</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">executorService</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span>
-          									<span class="n">0</span><span class="p">,</span> <span class="c1">// 核心线程
-</span><span class="c1"></span>                            <span class="n">Integer</span><span class="p">.</span><span class="na">MAX_VALUE</span><span class="p">,</span>  <span class="c1">// 最大线程
-</span><span class="c1"></span>                            <span class="n">60</span><span class="p">,</span>					<span class="c1">// 空闲线程闲置时间
-</span><span class="c1"></span>                            <span class="n">TimeUnit</span><span class="p">.</span><span class="na">SECONDS</span><span class="p">,</span>	<span class="c1">// 闲置时间单位
-</span><span class="c1"></span>                            <span class="k">new</span> <span class="n">SynchronousQueue</span><span class="o">&lt;</span><span class="n">Runnable</span><span class="o">&gt;</span><span class="p">(),</span> <span class="c1">// 线程等待队列
-</span><span class="c1"></span>                            <span class="n">Util</span><span class="p">.</span><span class="na">threadFactory</span><span class="p">(</span><span class="s">&#34;OkHttp Dispatcher&#34;</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span> <span class="c1">// 线程创建工厂
-</span><span class="c1"></span>      <span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="n">executorService</span><span class="p">;</span>
-<span class="p">}</span></code></pre></td></tr></table>
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="nb">set</span> -x
+<span class="c1"># 目标Android版本</span>
+<span class="nv">API</span><span class="o">=</span><span class="m">29</span>
+<span class="nv">ARCH</span><span class="o">=</span>arm64
+<span class="nv">CPU</span><span class="o">=</span>armv8-a
+<span class="nv">TOOL_CPU_NAME</span><span class="o">=</span>aarch64
+<span class="c1">#so库输出目录</span>
+<span class="nv">OUTPUT</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/android/<span class="nv">$CPU</span>
+<span class="c1"># NDK的路径，根据自己的NDK位置进行设置</span>
+<span class="nv">NDK</span><span class="o">=</span><span class="nv">$NDK_PATH</span>
+<span class="c1"># 编译工具链路径</span>
+<span class="nv">TOOLCHAIN</span><span class="o">=</span><span class="nv">$NDK</span>/toolchains/llvm/prebuilt/linux-x86_64
+<span class="c1"># 用于配置交叉编译环境的路径</span>
+<span class="nv">SYSROOT</span><span class="o">=</span><span class="nv">$TOOLCHAIN</span>/sysroot
+
+<span class="nv">TOOL_PREFIX</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$TOOLCHAIN</span><span class="s2">/bin/</span><span class="nv">$TOOL_CPU_NAME</span><span class="s2">-linux-android&#34;</span>
+
+<span class="nv">CC</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$TOOL_PREFIX$API</span><span class="s2">-clang&#34;</span>
+<span class="nv">CXX</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$TOOL_PREFIX$API</span><span class="s2">-clang++&#34;</span>
+<span class="nv">OPTIMIZE_CFLAGS</span><span class="o">=</span><span class="s2">&#34;-march=</span><span class="nv">$CPU</span><span class="s2">&#34;</span>
+<span class="k">function</span> build
+<span class="o">{</span>
+  ./configure <span class="se">\
+</span><span class="se"></span>  --prefix<span class="o">=</span><span class="nv">$OUTPUT</span> <span class="se">\
+</span><span class="se"></span>  --target-os<span class="o">=</span>android <span class="se">\
+</span><span class="se"></span>  --arch<span class="o">=</span><span class="nv">$ARCH</span>  <span class="se">\
+</span><span class="se"></span>  --cpu<span class="o">=</span><span class="nv">$CPU</span> <span class="se">\
+</span><span class="se"></span>  --enable-gpl <span class="se">\
+</span><span class="se"></span>  --enable-small <span class="se">\
+</span><span class="se"></span>  --disable-programs <span class="se">\
+</span><span class="se"></span>  --disable-asm <span class="se">\
+</span><span class="se"></span>  --enable-neon <span class="se">\
+</span><span class="se"></span>  --enable-cross-compile <span class="se">\
+</span><span class="se"></span>  --enable-shared <span class="se">\
+</span><span class="se"></span>  --disable-static <span class="se">\
+</span><span class="se"></span>  --disable-doc <span class="se">\
+</span><span class="se"></span>  --disable-ffplay <span class="se">\
+</span><span class="se"></span>  --disable-ffprobe <span class="se">\
+</span><span class="se"></span>  --disable-symver <span class="se">\
+</span><span class="se"></span>  --disable-ffmpeg <span class="se">\
+</span><span class="se"></span>  --cc<span class="o">=</span><span class="nv">$CC</span> <span class="se">\
+</span><span class="se"></span>  --cxx<span class="o">=</span><span class="nv">$CXX</span> <span class="se">\
+</span><span class="se"></span>  --sysroot<span class="o">=</span><span class="nv">$SYSROOT</span> <span class="se">\
+</span><span class="se"></span>  --extra-cflags<span class="o">=</span><span class="s2">&#34;-Os -fpic </span><span class="nv">$OPTIMIZE_CFLAGS</span><span class="s2">&#34;</span> <span class="se">\
+</span><span class="se"></span>  --disable-vulkan <span class="se">\
+</span><span class="se"></span>  --disable-stripping
+
+  make clean all
+  <span class="c1"># 这里是定义用几个CPU编译</span>
+  make -j8
+  make install
+<span class="o">}</span>
+build</code></pre></td></tr></table>
 </div>
 </div>
-    </div>
-    <div class="read-more">
-      <a href="/android-thread-pool/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
+<p>执行 ./build.sh 后，就会得到如下的头文件和 so 库， 如果还想编译其他的 so 库，只需要重新赋值一下变量，然后再调用一下 build 就可以了</p>
 
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/android-socket-long-connection/">Socket 长连接通信实践与 NAT 超时</a>
-    </h1>
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/20240811120116.png" alt="" /></p>
+
+<p>然后导入到 Android studio 中，添加我们引入的头文件和链接 SO 库</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202408141543013.png" alt="" /></p>
+
+<p>最后，再找个 cpp 中导入方法试试</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202408211111651.png" alt="" /></p>
+
+<p>可以看到正常输出了</p>
+
+<p>参考 <a href="https://juejin.cn/post/6844904048303276045">https://juejin.cn/post/6844904048303276045</a></p>
+
+    </div>
+
     
-    <div class="post-meta">
-      <time datetime="2021-05-04" class="post-time">
-        2021-05-04
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/android/"> Android </a>
-          <a href="https://midFang.github.io/categories/ipc/"> IPC </a>
-          <a href="https://midFang.github.io/categories/socket/"> Socket </a>
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2024-03-25
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/ndk/">NDK</a>
           
         </div>
+
       
-      
-      
-        <span id="/android-socket-long-connection/" class="leancloud_visitors" data-flag-title="Socket 长连接通信实践与 NAT 超时">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
+      <nav class="post-nav">
+        
+          <a class="prev" href="/android-ffmpeg-audiotrack-play/">
+            
+            <i class="iconfont">
+              <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M691.908486 949.511495l75.369571-89.491197c10.963703-12.998035 10.285251-32.864502-1.499144-44.378743L479.499795 515.267417 757.434875 204.940602c11.338233-12.190647 11.035334-32.285311-0.638543-44.850487l-80.46666-86.564541c-11.680017-12.583596-30.356378-12.893658-41.662889-0.716314L257.233596 494.235404c-11.332093 12.183484-11.041474 32.266891 0.657986 44.844348l80.46666 86.564541c1.772366 1.910513 3.706415 3.533476 5.750981 4.877077l306.620399 321.703933C662.505829 963.726242 680.945807 962.528973 691.908486 949.511495z"></path>
+</svg>
+
+            </i>
+            <span class="prev-text nav-default">Android 使用 ffmpeg &#43; AudioTrack 音频播放</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        
+          <a class="next" href="/android-ndk-shell-and-cross-compile/">
+            <span class="next-text nav-default">Android NDK 开发之 shell 脚本和交叉编译</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
   
-  <div class="post-content">
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
     
-    <div class="post-summary">
-      <h3 id="什么是socket">什么是Socket？</h3>
-
-<ul>
-<li>即套接字，是一个对 TCP / IP协议进行封装 的编程调用接口（API）</li>
-</ul>
-
-<h3 id="socket通信模型">Socket通信模型</h3>
-
-<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202401141020583.png" alt="" /></p>
-    </div>
-    <div class="read-more">
-      <a href="/android-socket-long-connection/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
 
   
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/android-hook-change-skin/">HOOK 插件式一键换肤流程分析</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2021-04-18" class="post-time">
-        2021-04-18
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/android/"> Android </a>
-          <a href="https://midFang.github.io/categories/view/"> View </a>
-          <a href="https://midFang.github.io/categories/hook/"> Hook </a>
-          
-        </div>
-      
-      
-      
-        <span id="/android-hook-change-skin/" class="leancloud_visitors" data-flag-title="HOOK 插件式一键换肤流程分析">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <h3 id="换肤流程">换肤流程</h3>
-
-<p>首先实现插件式换肤需要知道以下几个流程：</p>
-
-<ul>
-<li>在默认情况下通过 setContentView 设置的资源布局（XML）是如何加载到界面上的</li>
-<li>在 Android 5.0 之前的版本和 5.0 之后的版本按钮是不一样的样式，系统是如何做到换肤的</li>
-<li>自定义换肤框架，如何知道我们自己的 APK 哪些控件是需要换肤的</li>
-<li>如何切换 【皮肤插件 / 默认】的肤色</li>
-<li>如何加载资源包插件</li>
-<li>重启 APP、进入其他 Activty 如何换肤</li>
-</ul>
-    </div>
-    <div class="read-more">
-      <a href="/android-hook-change-skin/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/gradle-task-plugin/">Gradle 自定义 plugin 以及项目优化实践</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2021-04-11" class="post-time">
-        2021-04-11
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/android/"> android </a>
-          <a href="https://midFang.github.io/categories/gradle/"> gradle </a>
-          
-        </div>
-      
-      
-      
-        <span id="/gradle-task-plugin/" class="leancloud_visitors" data-flag-title="Gradle 自定义 plugin 以及项目优化实践">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      <h3 id="gradle-是什么">Gradle 是什么？</h3>
-
-<ul>
-<li>它是一款强大的构建工具，而不是语⾔</li>
-<li>它使用了 Groovy 这个语言，创造了一种 DSL，但它本身不是语⾔</li>
-</ul>
-
-<h3 id="groovy-是什么">groovy 是什么</h3>
-
-<p>Groovy 是一种动态语言，它和 Java 类似（算是 Java 的升级版，但是又具备脚本语言的特点），都在 Java 虚拟机中运行。当运行 Groovy 脚本时它会先被编译成 Java 类字节码，然后通过 JVM 虚拟机执行这个 Java 字节码类</p>
-
-<h3 id="gradle-的-project-和-tasks">Gradle 的 Project 和 Tasks</h3>
-
-<p>每次构建（build）至少由一个 project 构成，一个 project 由一到多个 task 构成。每个 task 代表了构建过程当中的一个原子性操作，比如编译，打包，生成javadoc，发布等等这些操作</p>
-
-<h3 id="gradle-的构建流程">Gradle 的构建流程</h3>
-    </div>
-    <div class="read-more">
-      <a href="/gradle-task-plugin/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-    <article class="post bg-white">
-  <header class="post-header">
-    <h1 class="post-title">
-      
-      <a class="post-link" href="/viewpager-fragment-code-analysis-performance-optimization/">ViewPager &#43; Fragment 源码解析与性能优化</a>
-    </h1>
-    
-    <div class="post-meta">
-      <time datetime="2021-04-03" class="post-time">
-        2021-04-03
-      </time>
-      <div class="post-category">
-          <a href="https://midFang.github.io/categories/android/"> Android </a>
-          <a href="https://midFang.github.io/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"> 源码分析 </a>
-          <a href="https://midFang.github.io/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"> 性能优化 </a>
-          
-        </div>
-      
-      
-      
-        <span id="/viewpager-fragment-code-analysis-performance-optimization/" class="leancloud_visitors" data-flag-title="ViewPager &#43; Fragment 源码解析与性能优化">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span class="leancloud-visitors-count"></span>
-        </span>
-      
-    </div>
-  </header>
-  
-  <div class="post-content">
-    
-    <div class="post-summary">
-      在很多项目中都有 Banner 广告页或者是 Tab 切换页，如果是如下布局的情况，那么肯定遇到过这个问题，那就是这个 ViewPager 并不会包裹内容填充，而是会填充满整个布局，
-    </div>
-    <div class="read-more">
-      <a href="/viewpager-fragment-code-analysis-performance-optimization/" class="read-more-link">Read more</a>
-    </div>
-    
-  </div>
-</article>
-
-  
-</section>
-
-
-
-
-
-
-  
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-  <nav class="pagination">
-    <ul>
-      
-      <li >
-        <a href="/">1</a>
-      </li>
-      
-      <li  class="active" >
-        <a href="/page/2/">2</a>
-      </li>
-      
-      <li >
-        <a href="/page/3/">3</a>
-      </li>
-      
-      <li >
-        <a href="/page/4/">4</a>
-      </li>
-      
-      <li >
-        <a href="/page/5/">5</a>
-      </li>
-      
-      <li >
-        <a href="/page/6/">6</a>
-      </li>
-      
-      <li >
-        <a href="/page/7/">7</a>
-      </li>
-      
-    </ul>
-  </nav>
-
-  
-  
-
-
-
-
 
         </div>
       </div>
