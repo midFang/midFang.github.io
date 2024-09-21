@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Android 使用 OpenSL ES 音频播放 - midFang&#39;s Blog</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="midFang" />
+  <meta name="description" content="在上篇文章中，我们使用的是 Android 自带的 AudioTrack 来音频播放的，现在我们要切换成 OpenSL ES 来播放，那为什么要换成这个呢 ？ 一个方面是因为 OpenSL ES 性能会好一些，且都是在" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<link rel="canonical" href="https://midFang.github.io/android-ffmpeg-opensl-es-play/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="Android 使用 OpenSL ES 音频播放" />
+<meta property="og:description" content="在上篇文章中，我们使用的是 Android 自带的 AudioTrack 来音频播放的，现在我们要切换成 OpenSL ES 来播放，那为什么要换成这个呢 ？ 一个方面是因为 OpenSL ES 性能会好一些，且都是在" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/android-ffmpeg-opensl-es-play/" />
+<meta property="article:published_time" content="2024-04-06T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-04-06T00:00:00+00:00" />
+<meta itemprop="name" content="Android 使用 OpenSL ES 音频播放">
+<meta itemprop="description" content="在上篇文章中，我们使用的是 Android 自带的 AudioTrack 来音频播放的，现在我们要切换成 OpenSL ES 来播放，那为什么要换成这个呢 ？ 一个方面是因为 OpenSL ES 性能会好一些，且都是在">
+
+
+<meta itemprop="datePublished" content="2024-04-06T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2024-04-06T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="5037">
+
+
+
+<meta itemprop="keywords" content="NDK,FFmpeg," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android 使用 OpenSL ES 音频播放"/>
+<meta name="twitter:description" content="在上篇文章中，我们使用的是 Android 自带的 AudioTrack 来音频播放的，现在我们要切换成 OpenSL ES 来播放，那为什么要换成这个呢 ？ 一个方面是因为 OpenSL ES 性能会好一些，且都是在"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">midFang's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+        
+      </li>
+    
+
+    
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+
+  
+    
+<div class="modal-dialog">
+    
+    <div class="modal-content">
+      <div id="closeSearch" title="Close" class="close">X</div>
+      <div class="modal-header">
+        <div class="modal-title">Search</div>
+      </div>
+      <div class="modal-body">
+          <script>
+            (function() {
+              var cx = '57787f7f4d21d54fc';
+              var gcse = document.createElement('script');
+              gcse.type = 'text/javascript';
+              gcse.async = true;
+              gcse.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//cse.google.com/cse.js?cx=' + cx;
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(gcse, s);
+            })();
+          </script>
+          <gcse:search></gcse:search>
+      </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      midFang's Blog
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+      <li class="menu-item">
+        <a id="openSearch" class="menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">Android 使用 OpenSL ES 音频播放</h1>
+      
+      <div class="post-meta">
+        <time datetime="2024-04-06" class="post-time">
+          2024-04-06
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/ndk/"> NDK </a>
+            <a href="https://midFang.github.io/categories/ffmpeg/"> FFmpeg </a>
+            
+          </div>
+        
+
+        
+        
+          <span id="busuanzi_container_page_pv">
+            | 阅读 <span id="busuanzi_value_page_pv"></span>
+          </span>
+        
+
+        
+        
+          <span id="/android-ffmpeg-opensl-es-play/" class="leancloud_visitors" data-flag-title="Android 使用 OpenSL ES 音频播放">
+            <span class="post-meta-item-text"> | 阅读 </span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#opensl-es-是什么">OpenSL ES 是什么？</a></li>
+<li><a href="#示例">示例</a></li>
+<li><a href="#opensl-es-的一些基本概念">OpenSL ES 的一些基本概念</a></li>
+<li><a href="#对象和接口概念">对象和接口概念</a></li>
+<li><a href="#使用流程">使用流程</a>
+<ul>
+<li><a href="#初始化-ffmpeg">初始化 FFmpeg</a></li>
+<li><a href="#缓存队列">缓存队列</a></li>
+<li><a href="#子线程加载压缩数据">子线程加载压缩数据</a></li>
+<li><a href="#子线程解码数据播放">子线程解码数据播放</a></li>
+<li><a href="#回调函数">回调函数</a></li>
+<li><a href="#解码音频数据">解码音频数据</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      
+
+<p>在上篇文章中，我们使用的是 Android 自带的 AudioTrack 来音频播放的，现在我们要切换成 OpenSL ES 来播放，那为什么要换成这个呢 ？</p>
+
+<p>一个方面是因为 OpenSL ES 性能会好一些，且都是在 Native 中处理的，而 AudioTrack 是在 Android Java 层处理的，交互涉及到 Jni，相互之间调用也比较麻烦，性能也有额外开销（基本很小）</p>
+
+<p>所以本篇来使用 OpenSL ES 来播放</p>
+
+<h2 id="opensl-es-是什么">OpenSL ES 是什么？</h2>
+
+<p>OpenSL ES 是一个针对嵌入式系统的开放硬件音频加速库，也可以将其视为一套针对嵌入式平台的音频标准，全称为： Open Sound Library for Embedded Systems ，它提供了一套高性能、 低延迟的音频功能实现方法，并且实现了软硬件音频性能的跨平台部署，大大降低了上层处理音频应用的开发难度
+在 Android 开发中，Google 官方从 Android 2.3 （API 9）开始，便支持了 OpenSL ES 标准 ，并且对其进行了扩展。</p>
+
+<h2 id="示例">示例</h2>
+
+<p><a href="https://developer.android.google.cn/ndk/guides/audio/opensl?hl=zh-cn">可以看下 android 中文官网。里面也有一些demo</a></p>
+
+<h2 id="opensl-es-的一些基本概念">OpenSL ES 的一些基本概念</h2>
+
+<p>OpenSL ES 是基于 c 语言实现的，但其提供的接口是采用面向对象的方式实现，OpenSL ES 的大多数 API 是通过对象来调用的。一般都会通过 object 来调用 Realize 实例化对象，然后通过 GetInterface 获取对应接口的能力，一般都是这样配套使用的</p>
+
+<h2 id="对象和接口概念">对象和接口概念</h2>
+
+<p>Object 和 Interface OpenSL ES 中的两大基本概念，可以类比为 Java 中的对象和接口。</p>
+
+<ol>
+<li>Objects (对象):
+
+<ul>
+<li>Objects 是 OpenSL ES 中表示音频对象或组件的实例。每个 Object 都实现了一个或多个接口 (Interfaces), 并且具有自己的生命周期</li>
+</ul></li>
+
+<li><p>常见的 Objects 包括:</p>
+
+<ul>
+<li>Player Object: 用于音频播放</li>
+<li>AudioRecorder Object: 用于音频录制</li>
+<li>OutputMix Object: 用于混合多个音频流输出</li>
+<li>MIDI Object: 用于 MIDI 音乐播放</li>
+</ul></li>
+
+<li><p>Interfaces (接口):</p>
+
+<ul>
+<li>Interfaces 定义了 Objects 所支持的功能集合。每个 Interface 由一组预定义的方法(函数)和数据结构组成,Objects 需要实现这些接口才能提供相应的功能</li>
+</ul></li>
+
+<li><p>常见的 Interfaces 包括:</p>
+
+<ul>
+<li>Player Interface: 定义了音频播放的基本功能, 如播放、暂停、停止等</li>
+<li>AudioRecorder Interface: 定义了音频录制的基本功能</li>
+<li>EngineInterface: 定义了 OpenSL ES 引擎的配置和控制功能</li>
+<li>MetadataTraversal Interface: 定义了访问和操作元数据的功能</li>
+</ul></li>
+</ol>
+
+<h2 id="使用流程">使用流程</h2>
+
+<p>先简单介绍一下整体的流程，本文还是使用 ffmpeg 来进行解码，只是将解码好的数据给 OpenSL ES，有一些流程基本和 ffmpeg + audioTrack 的使用区别不大，不过本文使用了多线程的技术，一边加载压缩数据，一边进行播放，
+首先还是在 Java 层级，将 url 传入到 native 层，区别是这里是异步加载了，等待加载好了，然后再去调用 play 方法，非同步行为</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">class</span> <span class="nc">Player</span> <span class="p">{</span>
+    <span class="k">companion</span> <span class="k">object</span> <span class="p">{</span>
+        <span class="n">init</span> <span class="p">{</span> <span class="n">System</span><span class="p">.</span><span class="n">loadLibrary</span><span class="p">(</span><span class="s">&#34;player&#34;</span><span class="p">)</span>  <span class="p">}</span> <span class="c1">// 加载 so 库
+</span><span class="c1"></span>    <span class="p">}</span>
+    <span class="k">private</span> <span class="k">var</span> <span class="py">url</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s">&#34;&#34;</span>
+		
+	<span class="c1">// ......
+</span><span class="c1"></span>
+    <span class="k">fun</span> <span class="nf">setDataSource</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">{</span>   <span class="k">this</span><span class="p">.</span><span class="n">url</span> <span class="p">=</span> <span class="n">url</span>  <span class="p">}</span>
+
+    <span class="k">fun</span> <span class="nf">play</span><span class="p">()</span> <span class="p">{</span>  <span class="n">nPlay</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>  <span class="p">}</span>
+
+    <span class="k">private</span> <span class="k">external</span> <span class="k">fun</span> <span class="nf">nPlay</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span>
+
+    <span class="k">fun</span> <span class="nf">prepare</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">url</span><span class="p">.</span><span class="n">isBlank</span><span class="p">())</span> <span class="n">error</span><span class="p">(</span><span class="s">&#34;url is null&#34;</span><span class="p">)</span>
+
+        <span class="n">nPrepare</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="c1">// 准备
+</span><span class="c1"></span>    <span class="p">}</span>
+
+    <span class="k">private</span> <span class="k">external</span> <span class="k">fun</span> <span class="nf">nPrepare</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span>
+
+    <span class="k">fun</span> <span class="nf">prepareAsync</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">url</span><span class="p">.</span><span class="n">isBlank</span><span class="p">())</span> <span class="n">error</span><span class="p">(</span><span class="s">&#34;url is null&#34;</span><span class="p">)</span>
+
+        <span class="n">nPrepareAsync</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="c1">// 准备
+</span><span class="c1"></span>    <span class="p">}</span>
+
+    <span class="k">private</span> <span class="k">external</span> <span class="k">fun</span> <span class="nf">nPrepareAsync</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// MainActivity 类
+</span><span class="c1"></span><span class="k">class</span> <span class="nc">MainActivity</span> <span class="p">:</span> <span class="n">ComponentActivity</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="k">private</span> <span class="k">val</span> <span class="py">play</span> <span class="k">by</span> <span class="n">lazy</span> <span class="p">{</span> <span class="n">Player</span><span class="p">()</span> <span class="p">}</span>
+
+    <span class="k">private</span> <span class="k">val</span> <span class="py">mMusicFile</span><span class="p">:</span> <span class="n">File</span> <span class="p">=</span> <span class="n">File</span><span class="p">(</span><span class="n">Environment</span><span class="p">.</span><span class="n">getExternalStorageDirectory</span><span class="p">(),</span> <span class="s">&#34;input.mp3&#34;</span><span class="p">)</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
+        <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
+        <span class="n">setContent</span> <span class="p">{</span>
+
+            <span class="n">XXPermissions</span><span class="p">.</span><span class="n">with</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">permission</span><span class="p">(</span><span class="n">Permission</span><span class="p">.</span><span class="n">MANAGE_EXTERNAL_STORAGE</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">request</span> <span class="p">{</span> <span class="n">permissions</span><span class="p">,</span> <span class="n">allGranted</span> <span class="p">-&gt;</span> <span class="p">}</span>
+
+            <span class="n">PlayerTheme</span> <span class="p">{</span>
+                <span class="n">Surface</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">.</span><span class="n">fillMaxSize</span><span class="p">(),</span> <span class="n">color</span> <span class="p">=</span> <span class="n">MaterialTheme</span><span class="p">.</span><span class="n">colorScheme</span><span class="p">.</span><span class="n">background</span><span class="p">)</span> <span class="p">{</span>
+
+                    <span class="n">play</span><span class="p">.</span><span class="n">setDataSource</span><span class="p">(</span><span class="n">mMusicFile</span><span class="p">.</span><span class="n">absolutePath</span><span class="p">)</span>
+
+
+                    <span class="n">play</span><span class="p">.</span><span class="n">setOnPrepareListener</span><span class="p">(</span><span class="k">object</span> <span class="err">: </span><span class="nc">MediaPreparedListener</span> <span class="p">{</span>
+                        <span class="k">override</span> <span class="k">fun</span> <span class="nf">onPrepared</span><span class="p">()</span> <span class="p">{</span>
+                            <span class="n">play</span><span class="p">.</span><span class="n">play</span><span class="p">()</span>
+                        <span class="p">}</span>
+                    <span class="p">})</span>
+
+                    <span class="n">play</span><span class="p">.</span><span class="n">prepareAsync</span><span class="p">()</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>然后到了 native 层</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="cm">/** 异步去准备 **/</span>
+<span class="k">extern</span> <span class="s">&#34;C&#34;</span>
+<span class="n">JNIEXPORT</span> <span class="kt">void</span> <span class="n">JNICALL</span>
+<span class="n">Java_com_fang_player_Player_nPrepareAsync</span><span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">instance</span><span class="p">,</span> <span class="n">jstring</span> <span class="n">url_</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//获取 java 中的字符串，jstring 转换回 c 中的字符来使用
+</span><span class="c1"></span>    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">url</span> <span class="o">=</span> <span class="n">env</span><span class="o">-&gt;</span><span class="n">GetStringUTFChars</span><span class="p">(</span><span class="n">url_</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">fFmpegHelper</span> <span class="o">==</span> <span class="n">nullptr</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">myJniCall</span> <span class="o">=</span> <span class="n">new</span> <span class="n">MyJNICall</span><span class="p">(</span><span class="n">pJavaVM</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">instance</span><span class="p">);</span> 
+        <span class="n">fFmpegHelper</span> <span class="o">=</span> <span class="n">new</span> <span class="n">FFmpegHelper</span><span class="p">(</span><span class="n">myJniCall</span><span class="p">,</span> <span class="n">url</span><span class="p">);</span> <span class="c1">// 注意这里的方法执行完成了，栈内存就释放了，url 就会被释放掉，所以内部如果使用到 url 的话，需要重新分配内存
+</span><span class="c1"></span>        <span class="n">fFmpegHelper</span><span class="o">-&gt;</span><span class="n">prepareAsync</span><span class="p">();</span> <span class="c1">// 准备
+</span><span class="c1"></span>    <span class="p">}</span>
+
+    <span class="n">env</span><span class="o">-&gt;</span><span class="n">ReleaseStringUTFChars</span><span class="p">(</span><span class="n">url_</span><span class="p">,</span> <span class="n">url</span><span class="p">);</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里创建了 myJniCall 和 fFmpegHelper 对象，其两个对象的构造中都只是储存了一些引用，并没有太多逻辑，不再展示，然后调用的 prepareAsync 方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">threadPrepare</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="o">*</span><span class="n">pFFmpeg</span> <span class="o">=</span> <span class="p">(</span><span class="n">FFmpegHelper</span> <span class="o">*</span><span class="p">)</span> <span class="n">context</span><span class="p">;</span>
+    <span class="n">pFFmpeg</span><span class="o">-&gt;</span><span class="n">prepare</span><span class="p">(</span><span class="n">THREAD_CHILD</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">nullptr</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">FFmpegHelper</span><span class="o">::</span><span class="n">prepareAsync</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// 创建一个线程去播放，多线程编解码边播放
+</span><span class="c1"></span>    <span class="n">pthread_t</span> <span class="n">prepareThreadT</span><span class="p">;</span>
+    <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">prepareThreadT</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="n">threadPrepare</span><span class="p">,</span> <span class="n">this</span><span class="p">);</span>
+    <span class="n">pthread_detach</span><span class="p">(</span><span class="n">prepareThreadT</span><span class="p">);</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>然后在 prepareAsync 方法中，创建了线程，在子线程中，创建了 ffmpeg 相关实例</p>
+
+<h3 id="初始化-ffmpeg">初始化 FFmpeg</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="n">FFmpegHelper</span><span class="o">::</span><span class="n">prepare</span><span class="p">(</span><span class="n">ThreadMode</span> <span class="n">threadMode</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">av_register_all</span><span class="p">();</span> <span class="c1">// 初始化所有的辩解码器
+</span><span class="c1"></span>    <span class="n">avformat_network_init</span><span class="p">();</span>
+
+    <span class="kt">int</span> <span class="n">formatOpenInputRes</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">formatFindStreamInfoRes</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="n">formatOpenInputRes</span> <span class="o">=</span> <span class="n">avformat_open_input</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pFormatContext</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">);</span>
+
+    <span class="c1">// 第一步
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">formatOpenInputRes</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 打开读取文件失败
+</span><span class="c1"></span>        <span class="c1">// 失败，需要告知 java 层，需要释放流资源
+</span><span class="c1"></span>        <span class="n">LOGE</span><span class="p">(</span><span class="s">&#34;format open input error: %s&#34;</span><span class="p">,</span> <span class="n">av_err2str</span><span class="p">(</span><span class="n">formatOpenInputRes</span><span class="p">));</span>
+        <span class="n">callPlayerJniError</span><span class="p">(</span><span class="n">threadMode</span><span class="p">,</span> <span class="n">formatOpenInputRes</span><span class="p">,</span> <span class="n">av_err2str</span><span class="p">(</span><span class="n">formatOpenInputRes</span><span class="p">));</span>
+        <span class="k">return</span><span class="p">;</span> <span class="c1">// 因为 return 了，之前打开的相关操作，需要释放
+</span><span class="c1"></span>    <span class="p">}</span>
+
+    <span class="c1">// 第二部，读取流信息，并将读取到的信息，封装在 pFormatContext 中
+</span><span class="c1"></span>    <span class="n">formatFindStreamInfoRes</span> <span class="o">=</span> <span class="n">avformat_find_stream_info</span><span class="p">(</span><span class="n">pFormatContext</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">formatFindStreamInfoRes</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">LOGE</span><span class="p">(</span><span class="s">&#34;format find stream info error: %s&#34;</span><span class="p">,</span> <span class="n">av_err2str</span><span class="p">(</span><span class="n">formatFindStreamInfoRes</span><span class="p">));</span>
+        <span class="n">callPlayerJniError</span><span class="p">(</span><span class="n">threadMode</span><span class="p">,</span> <span class="n">formatFindStreamInfoRes</span><span class="p">,</span> <span class="n">av_err2str</span><span class="p">(</span><span class="n">formatFindStreamInfoRes</span><span class="p">));</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// 第三部：查找音频流的 index, 为什么要找 ？因为一个文件中，含有多一个流
+</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">audioStreamIndex</span> <span class="o">=</span> <span class="n">av_find_best_stream</span><span class="p">(</span><span class="n">pFormatContext</span><span class="p">,</span> <span class="n">AVMediaType</span><span class="o">::</span><span class="n">AVMEDIA_TYPE_AUDIO</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">audioStreamIndex</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">LOGE</span><span class="p">(</span><span class="s">&#34;format audio stream error: %d, %s&#34;</span><span class="p">,</span> <span class="n">audioStreamIndex</span><span class="p">,</span> <span class="n">av_err2str</span><span class="p">(</span><span class="n">audioStreamIndex</span><span class="p">));</span>
+        <span class="n">callPlayerJniError</span><span class="p">(</span><span class="n">threadMode</span><span class="p">,</span> <span class="n">audioStreamIndex</span><span class="p">,</span> <span class="n">av_err2str</span><span class="p">(</span><span class="n">audioStreamIndex</span><span class="p">));</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">pAudio</span> <span class="o">=</span> <span class="n">new</span> <span class="n">AudioManager</span><span class="p">(</span><span class="n">audioStreamIndex</span><span class="p">,</span> <span class="n">pJniCall</span><span class="p">,</span> <span class="n">pFormatContext</span><span class="p">);</span>
+    <span class="n">pAudio</span><span class="o">-&gt;</span><span class="n">analysisStream</span><span class="p">(</span><span class="n">threadMode</span><span class="p">,</span> <span class="n">pFormatContext</span><span class="o">-&gt;</span><span class="n">streams</span><span class="p">);</span>
+
+    <span class="c1">// ---------- 重采样 end ----------
+</span><span class="c1"></span>    <span class="c1">// 回调到 Java 告诉他准备好了
+</span><span class="c1"></span>    <span class="n">pJniCall</span><span class="o">-&gt;</span><span class="n">callPlayerPrepared</span><span class="p">(</span><span class="n">threadMode</span><span class="p">);</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>然后最后一步，通过 Jni 的调用，告知 Java 层准备好了，在上面的代码中，我们可以知道，会调用 play 方法，可以开始播放了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="n">AudioManager</span><span class="o">::</span><span class="n">play</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// 多线程，边解码边播放
+</span><span class="c1"></span>    <span class="c1">// 一个线程不断的加载数据，一个线程不断的读取解码播放
+</span><span class="c1"></span>    <span class="c1">// 加载压缩数据
+</span><span class="c1"></span>    <span class="n">pthread_t</span> <span class="n">readPacketThreadT</span><span class="p">;</span>
+    <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">readPacketThreadT</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="n">threadReadPacket</span><span class="p">,</span> <span class="n">this</span><span class="p">);</span>
+    <span class="n">pthread_detach</span><span class="p">(</span><span class="n">readPacketThreadT</span><span class="p">);</span>
+
+
+    <span class="c1">// 解码数据
+</span><span class="c1"></span>    <span class="n">pthread_t</span> <span class="n">playThreadT</span><span class="p">;</span>
+    <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">playThreadT</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="n">threadPlay</span><span class="p">,</span> <span class="n">this</span><span class="p">);</span>
+    <span class="n">pthread_detach</span><span class="p">(</span><span class="n">playThreadT</span><span class="p">);</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里从代码就可以看的出来，创建了两个线程，一个线程不断的加载数据，一个线程不断的读取解码播放，为什么这么做呢？假设说我们只有一个线程去处理的话，要做的事情是压缩数据，然后解码数据去播放，逻辑是加载一帧的数据，然后就去解码播放，同步行为，压力较大，可能会造成，播放端的视频已经播放完成了，而可能会遇到加载数据可能并没有准备好数据的情况（网络拥堵）。声音卡顿，所以我们需要使用两个线程，加载数据和解码，各自的线程去处理，这样压力就会小很多，甚至是加载的数据可以提前缓存一些，需要快进，播放流畅性都会更好。所以我们会使用到队列去缓存数据</p>
+
+<h3 id="缓存队列">缓存队列</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="n">PacketQueue</span><span class="o">::</span><span class="n">PacketQueue</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// 创建对象
+</span><span class="c1"></span>    <span class="n">pPacketQueue</span> <span class="o">=</span> <span class="n">new</span> <span class="n">std</span><span class="o">::</span><span class="n">queue</span><span class="o">&lt;</span><span class="n">AVPacket</span> <span class="o">*&gt;</span><span class="p">;</span>
+    <span class="n">pthread_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packetMutex</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">);</span>
+    <span class="n">pthread_cond_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packetCond</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">PacketQueue</span><span class="o">::~</span><span class="n">PacketQueue</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">pPacketQueue</span> <span class="o">!=</span> <span class="n">nullptr</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">clear</span><span class="p">();</span>
+        <span class="n">delete</span> <span class="n">pPacketQueue</span><span class="p">;</span>
+        <span class="n">pPacketQueue</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">pthread_mutex_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packetMutex</span><span class="p">);</span>
+    <span class="n">pthread_cond_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packetCond</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">PacketQueue</span><span class="o">::</span><span class="n">push</span><span class="p">(</span><span class="n">AVPacket</span> <span class="o">*</span><span class="n">packet</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packetMutex</span><span class="p">);</span>
+    <span class="n">pPacketQueue</span><span class="o">-&gt;</span><span class="n">push</span><span class="p">(</span><span class="n">packet</span><span class="p">);</span>
+
+    <span class="n">pthread_cond_signal</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packetCond</span><span class="p">);</span> <span class="c1">// 有数据了，通知另外一个线程可以读取， 因为 pop 是阻塞的，可能获取为空的时候，阻塞住了
+</span><span class="c1"></span>
+    <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packetMutex</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">AVPacket</span> <span class="o">*</span><span class="n">PacketQueue</span><span class="o">::</span><span class="n">pop</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">AVPacket</span> <span class="o">*</span><span class="n">pPacket</span><span class="p">;</span>
+
+    <span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packetMutex</span><span class="p">);</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">pPacketQueue</span><span class="o">-&gt;</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span> <span class="c1">// 如果为空，阻塞在这里
+</span><span class="c1"></span>        <span class="n">pthread_cond_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packetCond</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">packetMutex</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">pPacket</span> <span class="o">=</span> <span class="n">pPacketQueue</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">();</span> <span class="c1">// 取队列最前面的那个流数据
+</span><span class="c1"></span>    <span class="c1">// 出队
+</span><span class="c1"></span>    <span class="n">pPacketQueue</span><span class="o">-&gt;</span><span class="n">pop</span><span class="p">();</span>
+
+    <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packetMutex</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">pPacket</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">PacketQueue</span><span class="o">::</span><span class="n">clear</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packetMutex</span><span class="p">);</span> <span class="c1">// 操作队列数据，防止其他线程在别的地方操作
+</span><span class="c1"></span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">pPacketQueue</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">pPacketQueue</span><span class="o">-&gt;</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span>
+            <span class="n">AVPacket</span><span class="o">*</span> <span class="n">packet</span> <span class="o">=</span> <span class="n">pPacketQueue</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">();</span>
+            <span class="n">av_packet_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packet</span><span class="p">);</span> <span class="c1">// 释放
+</span><span class="c1"></span>            <span class="n">pPacketQueue</span><span class="o">-&gt;</span><span class="n">pop</span><span class="p">();</span> <span class="c1">// 出队
+</span><span class="c1"></span>        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packetMutex</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">PacketQueue</span><span class="o">::</span><span class="n">getSize</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">pPacketQueue</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">();</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>注意这里的缓存队列是利用 queue 来缓存 AVPacket 数据的，使用到了 packetMutex 和 packetCond，其实就像 Java 中的 Lock 锁，还有唤醒锁的行为，在对数据进行增删改查的时候，防止多线程去同时操作数据而发生数据错乱了！</p>
+
+<h3 id="子线程加载压缩数据">子线程加载压缩数据</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">threadReadPacket</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">context</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 加载压缩数据
+</span><span class="c1"></span>    <span class="k">auto</span> <span class="o">*</span><span class="n">audio</span> <span class="o">=</span> <span class="p">(</span><span class="n">AudioManager</span> <span class="o">*</span><span class="p">)</span> <span class="n">context</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">int</span> <span class="n">MAX_QUEUE_SIZE</span> <span class="o">=</span> <span class="mi">600</span><span class="p">;</span> <span class="c1">// 设置最大队列大小
+</span><span class="c1"></span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">audio</span><span class="o">-&gt;</span><span class="n">pPlayerStatus</span> <span class="o">!=</span> <span class="n">nullptr</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">audio</span><span class="o">-&gt;</span><span class="n">pPlayerStatus</span><span class="o">-&gt;</span><span class="n">isExit</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// 检查队列大小
+</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">audio</span><span class="o">-&gt;</span><span class="n">pPacketQueue</span><span class="o">-&gt;</span><span class="n">getSize</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">MAX_QUEUE_SIZE</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 固定大小不合适，这里只是一种思路，生产环境不一定是这样
+</span><span class="c1"></span>            <span class="n">LOGE</span><span class="p">(</span><span class="s">&#34;队列已满，暂停加载&#34;</span><span class="p">);</span>
+            <span class="n">usleep</span><span class="p">(</span><span class="mi">100000</span><span class="p">);</span> <span class="c1">// 暂停100毫秒
+</span><span class="c1"></span>            <span class="k">continue</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="c1">// 开始解码
+</span><span class="c1"></span>        <span class="n">AVPacket</span> <span class="o">*</span><span class="n">pPacket</span> <span class="o">=</span> <span class="n">av_packet_alloc</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">av_read_frame</span><span class="p">(</span><span class="n">audio</span><span class="o">-&gt;</span><span class="n">pFormatContext</span><span class="p">,</span> <span class="n">pPacket</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">pPacket</span><span class="o">-&gt;</span><span class="n">stream_index</span> <span class="o">==</span> <span class="n">audio</span><span class="o">-&gt;</span><span class="n">audioStreamIndex</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 判断是否是音频流，因为一个文件中，可能会有多个流
+</span><span class="c1"></span>                <span class="n">audio</span><span class="o">-&gt;</span><span class="n">pPacketQueue</span><span class="o">-&gt;</span><span class="n">push</span><span class="p">(</span><span class="n">pPacket</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="c1">// 1. 解引用数据 data ， 2. 销毁 pPacket 结构体内存  3. pPacket = NULL
+</span><span class="c1"></span>                <span class="n">av_packet_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pPacket</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="c1">// 1. 解引用数据 data ， 2. 销毁 pPacket 结构体内存  3. pPacket = NULL
+</span><span class="c1"></span>            <span class="n">av_packet_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pPacket</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">nullptr</span><span class="p">;</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里的代码就是使用 ffmpeg 通过 av_read_frame 去加载 AVPacket 数据了，然后将加载好的数据放在 pPacketQueue 队列当中，后续如果要播放的话，就去这个队列里面取，这里做了一个逻辑是假定了一个队列的阈值，当缓存了一定的数量后，就睡眠一会不再去加载压缩数据了，一个原因是我们播放是比较慢的，而且我们不一定能够播放完整个音频，如果不设置的话，这个线程一直不断的在加载，可能整个音频都已经被你加载完了，如果是使用流量的话，那耗费的流量比较多了，再一个是耗费 CPU 资源，所以我们只提前缓存一点点，能够保证流畅播放就行</p>
+
+<p>这里只是在测试环境中，一种很粗陋的优化，实际在生产环境中，问了一下 OpenAi 可能会有更好的方案，比如</p>
+
+<ol>
+<li>自适应缓冲区大小
+
+<ul>
+<li>许多现代流媒体系统使用自适应缓冲区大小。这意味着缓冲区大小会根据网络条件、设备性能和用户行为动态调整</li>
+</ul></li>
+<li>时间基础的缓冲
+
+<ul>
+<li>与其使用固定数量的数据包，更常见的做法是基于时间来设置缓冲区。例如，缓冲30秒或60秒的内容。这样可以更好地适应不同比特率的流</li>
+</ul></li>
+<li>分段加载
+
+<ul>
+<li>大多数流媒体协议（如HLS、DASH）使用分段加载。内容被分割成小段（通常是几秒到几分钟长），客户端一次只加载几个段</li>
+</ul></li>
+<li>预测性缓冲
+
+<ul>
+<li>一些高级系统会预测用户行为。例如，如果用户经常跳过片头，系统可能会减少对片头的缓冲</li>
+</ul></li>
+<li>多级缓冲
+
+<ul>
+<li>实现一个小的前端缓冲区用于即时播放，和一个较大的后端缓冲区用于平滑播放</li>
+</ul></li>
+<li>网络条件适应
+
+<ul>
+<li>根据网络带宽和延迟调整缓冲策略。在网络条件好的时候加载更多，条件差时减少加载</li>
+</ul></li>
+</ol>
+
+<p>更加具体的优化方案就不展开了，到了用到的时候再说吧，然后是另外一个线程去解码了</p>
+
+<h3 id="子线程解码数据播放">子线程解码数据播放</h3>
+
+<p>以上的逻辑我们使用了 ffmpeg 解封装了数据，到了这一步我们只需要将数据解码，然后丢给 OpenSL ES 就可以了，所以我们还有 2 个流程，初始化 OpenSL ES 和使用 ffmpeg 解码数据，首先看下 OpenSL ES 的初始化</p>
+
+<p>OpenSL ES 的创建初始化流程，在网上找了一张图，基本上是根据如下图流程进行创建，涉及到代码如下</p>
+
+<p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202409191950887.png" title="" alt="" data-align="center"></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="c1">// 初始化 OpenSLES
+</span><span class="c1"></span><span class="kt">void</span> <span class="n">AudioManager</span><span class="o">::</span><span class="n">initCrateOpenSLES</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// 3.1 创建引擎接口对象
+</span><span class="c1"></span>    <span class="n">SLObjectItf</span> <span class="n">engineObject</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span>
+    <span class="n">SLEngineItf</span> <span class="n">engineEngine</span><span class="p">;</span>
+    <span class="c1">// 创建引擎对象
+</span><span class="c1"></span>    <span class="n">slCreateEngine</span><span class="p">(</span><span class="o">&amp;</span><span class="n">engineObject</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">);</span>
+    <span class="c1">//  实例化
+</span><span class="c1"></span>    <span class="p">(</span><span class="o">*</span><span class="n">engineObject</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Realize</span><span class="p">(</span><span class="n">engineObject</span><span class="p">,</span> <span class="n">SL_BOOLEAN_FALSE</span><span class="p">);</span>
+    <span class="c1">// // 获取引擎对象接口
+</span><span class="c1"></span>    <span class="p">(</span><span class="o">*</span><span class="n">engineObject</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">GetInterface</span><span class="p">(</span><span class="n">engineObject</span><span class="p">,</span> <span class="n">SL_IID_ENGINE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">engineEngine</span><span class="p">);</span>
+    <span class="c1">// 3.2 设置混音器
+</span><span class="c1"></span>    <span class="k">static</span> <span class="n">SLObjectItf</span> <span class="n">outputMixObject</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span>
+    <span class="k">const</span> <span class="n">SLInterfaceID</span> <span class="n">ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">SL_IID_ENVIRONMENTALREVERB</span><span class="p">};</span>
+    <span class="k">const</span> <span class="n">SLboolean</span> <span class="n">req</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">SL_BOOLEAN_FALSE</span><span class="p">};</span>
+    <span class="p">(</span><span class="o">*</span><span class="n">engineEngine</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">CreateOutputMix</span><span class="p">(</span><span class="n">engineEngine</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">outputMixObject</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">req</span><span class="p">);</span>
+    <span class="c1">// 初始化混音器
+</span><span class="c1"></span>    <span class="p">(</span><span class="o">*</span><span class="n">outputMixObject</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Realize</span><span class="p">(</span><span class="n">outputMixObject</span><span class="p">,</span> <span class="n">SL_BOOLEAN_FALSE</span><span class="p">);</span>
+    <span class="n">SLEnvironmentalReverbItf</span> <span class="n">outputMixEnvironmentalReverb</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span>
+    <span class="p">(</span><span class="o">*</span><span class="n">outputMixObject</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">GetInterface</span><span class="p">(</span><span class="n">outputMixObject</span><span class="p">,</span> <span class="n">SL_IID_ENVIRONMENTALREVERB</span><span class="p">,</span>
+                                     <span class="o">&amp;</span><span class="n">outputMixEnvironmentalReverb</span><span class="p">);</span>
+    <span class="n">SLEnvironmentalReverbSettings</span> <span class="n">reverbSettings</span> <span class="o">=</span> <span class="n">SL_I3DL2_ENVIRONMENT_PRESET_STONECORRIDOR</span><span class="p">;</span>
+    <span class="p">(</span><span class="o">*</span><span class="n">outputMixEnvironmentalReverb</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">SetEnvironmentalReverbProperties</span><span class="p">(</span><span class="n">outputMixEnvironmentalReverb</span><span class="p">,</span>
+                                                                      <span class="o">&amp;</span><span class="n">reverbSettings</span><span class="p">);</span>
+    <span class="c1">// 3.3 创建播放器
+</span><span class="c1"></span>    <span class="n">SLObjectItf</span> <span class="n">pPlayer</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span>
+    <span class="n">SLPlayItf</span> <span class="n">pPlayItf</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span>
+    <span class="c1">// 数据源简单缓冲队列定位器
+</span><span class="c1"></span>    <span class="n">SLDataLocator_AndroidSimpleBufferQueue</span> <span class="n">simpleBufferQueue</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE</span><span class="p">,</span> <span class="mi">2</span><span class="p">};</span>
+    <span class="n">SLDataFormat_PCM</span> <span class="n">formatPcm</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">SL_DATAFORMAT_PCM</span><span class="p">,</span> <span class="c1">// 格式类型
+</span><span class="c1"></span>            <span class="mi">2</span><span class="p">,</span>  <span class="c1">// 通道数
+</span><span class="c1"></span>            <span class="n">SL_SAMPLINGRATE_44_1</span><span class="p">,</span>  <span class="c1">//采样率
+</span><span class="c1"></span>            <span class="n">SL_PCMSAMPLEFORMAT_FIXED_16</span><span class="p">,</span> <span class="c1">// 位宽
+</span><span class="c1"></span>            <span class="n">SL_PCMSAMPLEFORMAT_FIXED_16</span><span class="p">,</span>
+            <span class="n">SL_SPEAKER_FRONT_LEFT</span> <span class="o">|</span> <span class="n">SL_SPEAKER_FRONT_RIGHT</span><span class="p">,</span> <span class="c1">// 通道屏蔽
+</span><span class="c1"></span>            <span class="n">SL_BYTEORDER_LITTLEENDIAN</span><span class="p">};</span> <span class="c1">// 字节顺序
+</span><span class="c1"></span>    <span class="c1">// 数据源
+</span><span class="c1"></span>    <span class="n">SLDataSource</span> <span class="n">audioSrc</span> <span class="o">=</span> <span class="p">{</span><span class="o">&amp;</span><span class="n">simpleBufferQueue</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">formatPcm</span><span class="p">};</span>
+    <span class="c1">// 针对数据接收器的输出混合定位器(混音器)
+</span><span class="c1"></span>    <span class="n">SLDataLocator_OutputMix</span> <span class="n">outputMix</span> <span class="o">=</span> <span class="p">{</span><span class="n">SL_DATALOCATOR_OUTPUTMIX</span> <span class="cm">/*定位器类型*/</span><span class="p">,</span> <span class="n">outputMixObject</span> <span class="cm">/*输出混合*/</span><span class="p">};</span>
+    <span class="c1">// 输出
+</span><span class="c1"></span>    <span class="n">SLDataSink</span> <span class="n">audioSnk</span> <span class="o">=</span> <span class="p">{</span><span class="o">&amp;</span><span class="n">outputMix</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">};</span>
+    <span class="c1">//需要的接口 操作队列的接口
+</span><span class="c1">//    SL_IID_BUFFERQUEUE表示缓冲区队列接口,用于传入待播放的音频数据
+</span><span class="c1">//    SL_IID_VOLUME表示音量控制接口,用于设置播放音量
+</span><span class="c1">//    SL_IID_PLAYBACKRATE表示播放速率接口,用于控制播放速度
+</span><span class="c1"></span>    <span class="n">SLInterfaceID</span> <span class="n">interfaceIds</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">SL_IID_BUFFERQUEUE</span><span class="p">,</span> <span class="n">SL_IID_VOLUME</span><span class="p">,</span> <span class="n">SL_IID_PLAYBACKRATE</span><span class="p">};</span> <span class="c1">// 如果想要环绕立体声音，可以增加 SL_IID_SURROUND
+</span><span class="c1"></span>    <span class="c1">// 定义了一个包含3个布尔值的数组,表示上面三个接口是否为必需接口。这里全部设置为SL_BOOLEAN_TRUE,表示这三个接口都是必需的
+</span><span class="c1"></span>    <span class="n">SLboolean</span> <span class="n">interfaceRequired</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">SL_BOOLEAN_TRUE</span><span class="p">,</span> <span class="n">SL_BOOLEAN_TRUE</span><span class="p">,</span> <span class="n">SL_BOOLEAN_TRUE</span><span class="p">};</span> <span class="c1">// 也可以设置 false，设置 false 的话，表示的意思就是，设置false即使创建失败了，也可以继续创建播放器对象
+</span><span class="c1"></span>    <span class="c1">// 创建播放器
+</span><span class="c1"></span>    <span class="p">(</span><span class="o">*</span><span class="n">engineEngine</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">CreateAudioPlayer</span><span class="p">(</span><span class="n">engineEngine</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pPlayer</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">audioSrc</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">audioSnk</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+                                       <span class="n">interfaceIds</span><span class="p">,</span> <span class="n">interfaceRequired</span><span class="p">);</span>
+    <span class="c1">// 实现(初始化)刚创建的播放器对象。
+</span><span class="c1"></span>    <span class="p">(</span><span class="o">*</span><span class="n">pPlayer</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Realize</span><span class="p">(</span><span class="n">pPlayer</span><span class="p">,</span> <span class="n">SL_BOOLEAN_FALSE</span><span class="p">);</span>
+    <span class="c1">// 获取播放器对象的Play接口,用于控制播放器的播放、暂停等操作
+</span><span class="c1"></span>    <span class="p">(</span><span class="o">*</span><span class="n">pPlayer</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">GetInterface</span><span class="p">(</span><span class="n">pPlayer</span><span class="p">,</span> <span class="n">SL_IID_PLAY</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pPlayItf</span><span class="p">);</span>
+    <span class="c1">// 3.4 设置缓存队列和回调函数
+</span><span class="c1"></span>    <span class="n">SLAndroidSimpleBufferQueueItf</span> <span class="n">playerBufferQueue</span><span class="p">;</span>
+    <span class="p">(</span><span class="o">*</span><span class="n">pPlayer</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">GetInterface</span><span class="p">(</span><span class="n">pPlayer</span><span class="p">,</span> <span class="n">SL_IID_BUFFERQUEUE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">playerBufferQueue</span><span class="p">);</span>
+    <span class="p">(</span><span class="o">*</span><span class="n">playerBufferQueue</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">RegisterCallback</span><span class="p">(</span><span class="n">playerBufferQueue</span><span class="p">,</span> <span class="n">playerCallback</span><span class="p">,</span> <span class="n">this</span><span class="p">);</span> 
+    <span class="c1">// 3.5 设置播放状态
+</span><span class="c1"></span>    <span class="p">(</span><span class="o">*</span><span class="n">pPlayItf</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">SetPlayState</span><span class="p">(</span><span class="n">pPlayItf</span><span class="p">,</span> <span class="n">SL_PLAYSTATE_PLAYING</span><span class="p">);</span>
+    <span class="c1">// 3.6 调用回调函数 - 手动激活回调函数
+</span><span class="c1"></span>    <span class="n">playerCallback</span><span class="p">(</span><span class="n">playerBufferQueue</span><span class="p">,</span> <span class="n">this</span><span class="p">);</span> 
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里初始化的就是最先开始提到的，每个 object 需要使用 Realize 实例化，然后通过 GetInterface 获取接口的能力，最后需要注意的是需要手动调用 playerCallback 激活回调函数，这里好像是比较奇怪了，一般 Java 只需要设置回调函数，好像并没有手动激活这么一说</p>
+
+<h3 id="回调函数">回调函数</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">playerCallback</span><span class="p">(</span><span class="n">SLAndroidSimpleBufferQueueItf</span> <span class="n">caller</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pContext</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// void *pContext 是一个指针，传入的就是  AudioManager
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">pContext</span> <span class="o">!=</span> <span class="n">nullptr</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">auto</span> <span class="o">*</span><span class="n">pFFmepg</span> <span class="o">=</span> <span class="p">(</span><span class="n">AudioManager</span> <span class="o">*</span><span class="p">)</span> <span class="n">pContext</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">dataSize</span> <span class="o">=</span> <span class="n">pFFmepg</span><span class="o">-&gt;</span><span class="n">resampleAudio</span><span class="p">();</span> <span class="c1">// 解码，去播放，dataSize 是一帧的大小
+</span><span class="c1"></span>
+        <span class="p">(</span><span class="o">*</span><span class="n">caller</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">caller</span><span class="p">,</span> <span class="n">pFFmepg</span><span class="o">-&gt;</span><span class="n">resampleOutBuffer</span><span class="p">,</span> <span class="n">dataSize</span><span class="p">);</span> <span class="c1">// 去播放
+</span><span class="c1"></span>    <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>手动激活回调函数后，就会被调用到这个 playerCallback 方法中，这个方法中就是剩下的解码了，通过 resampleAudio 方法去解码，然后得到的数据通过 caller 调用 Enqueue() 方法，这个就是丢给了 OpenSL ES 了，注意这里当播放完成后，会再次回调这个方法解码播放，一直这样重复，所以它能够播放，然后看看解码的方法做了什么</p>
+
+<h3 id="解码音频数据">解码音频数据</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="n">AudioManager</span><span class="o">::</span><span class="n">resampleAudio</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">dataSize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">AVPacket</span> <span class="o">*</span><span class="n">pPacket</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span><span class="c1">// 压缩数据
+</span><span class="c1"></span>    <span class="n">AVFrame</span> <span class="o">*</span><span class="n">pFrame</span> <span class="o">=</span> <span class="n">av_frame_alloc</span><span class="p">();</span> <span class="c1">// 解码出来的数据
+</span><span class="c1"></span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">pPlayerStatus</span> <span class="o">!=</span> <span class="n">nullptr</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">pPlayerStatus</span><span class="o">-&gt;</span><span class="n">isExit</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">pPacket</span> <span class="o">=</span> <span class="n">pPacketQueue</span><span class="o">-&gt;</span><span class="n">pop</span><span class="p">();</span> <span class="c1">// 取压缩的数据，去解码
+</span><span class="c1"></span>        <span class="kt">int</span> <span class="n">codecSendPacketRes</span> <span class="o">=</span> <span class="n">avcodec_send_packet</span><span class="p">(</span><span class="n">pCodecContext</span><span class="p">,</span> <span class="n">pPacket</span><span class="p">);</span> <span class="c1">// 将压缩数据发送给解码器
+</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">codecSendPacketRes</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">codecReceiveFrameRes</span> <span class="o">=</span> <span class="n">avcodec_receive_frame</span><span class="p">(</span><span class="n">pCodecContext</span><span class="p">,</span> <span class="n">pFrame</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">codecReceiveFrameRes</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+
+                <span class="c1">// 第一个参数： 分配好的 SwrContext 上下文，它包含了转换操作所需的所有参数（如输入输出的声道布局、采样格式和采样率
+</span><span class="c1"></span>                <span class="c1">// 第二个参数： 输出缓冲区，用来存储转换后的音频数据。如果是打包音频数据，则只需要设置第一个缓冲区
+</span><span class="c1"></span>                <span class="c1">// 第三个参数：每个声道中可用的输出空间，单位为样本数。例如，如果你希望输出 1024 个样本，你将设置 out_count 为 1024。
+</span><span class="c1"></span>                <span class="c1">// 第四个参数：输入缓冲区，包含待转换的音频数据。如果打包音频数据，则只需要设置第一个缓冲区。
+</span><span class="c1"></span>                <span class="c1">// 第五个参数：每个声道中可用的输入样本数。这代表待转换音频数据的数量。
+</span><span class="c1"></span>                <span class="c1">// 返回的是实际转换的输出样本数
+</span><span class="c1"></span>                <span class="c1">// 计算一帧的大小： 总大小=样本数×每个样本的字节数×通道数
+</span><span class="c1"></span>                <span class="n">dataSize</span> <span class="o">=</span> <span class="n">swr_convert</span><span class="p">(</span><span class="n">swrContext</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">resampleOutBuffer</span><span class="p">,</span> <span class="n">pFrame</span><span class="o">-&gt;</span><span class="n">nb_samples</span><span class="p">,</span>
+                                       <span class="p">(</span><span class="k">const</span> <span class="n">uint8_t</span> <span class="o">**</span><span class="p">)</span> <span class="n">pFrame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">pFrame</span><span class="o">-&gt;</span><span class="n">nb_samples</span><span class="p">);</span>
+
+                <span class="n">dataSize</span> <span class="o">=</span> <span class="n">dataSize</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// 一帧的大小, 解释：2 * 2 表示的是 每个样本的字节数×通道数（或者叫声道数，比如说立体声就是2）
+</span><span class="c1"></span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="c1">// 解引用
+</span><span class="c1"></span>        <span class="n">av_packet_unref</span><span class="p">(</span><span class="n">pPacket</span><span class="p">);</span>
+        <span class="n">av_frame_unref</span><span class="p">(</span><span class="n">pFrame</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="c1">// 1. 解引用数据 data ， 2. 销毁 pPacket 结构体内存  3. pPacket = NULL
+</span><span class="c1"></span>    <span class="n">av_packet_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pPacket</span><span class="p">);</span>
+    <span class="n">av_frame_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pFrame</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">dataSize</span><span class="p">;</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里的步骤就是使用 ffmpeg 去解码数据，然后重采样，至于重采样，可以看下上篇文章的解释，然后计算好的 dataSize 返回给 Enqueue，这里的 dataSize 是一帧的大小，如果少了或者多了，可能会导致播放不完整，最后丢给 OpenSL ES 就能够正常播放了。好了，整体的核心的代码就是这些，其他的一些相关代码如果有需要多可以看下 github 项目。</p>
+
+<p>参考：
+<a href="https://cloud.tencent.com/developer/article/1832836">https://cloud.tencent.com/developer/article/1832836</a>
+<a href="https://blog.csdn.net/ta893115871/article/details/117650780">https://blog.csdn.net/ta893115871/article/details/117650780</a></p>
+
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2024-04-06
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/ndk/">NDK</a>
+          <a href="https://midFang.github.io/tags/ffmpeg/">FFmpeg</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/android-ffmpeg-audiotrack-play/">
+            <span class="next-text nav-default">Android 使用 ffmpeg &#43; AudioTrack 音频播放</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://stackoverflow.com/users/14331888/midfang" rel="me noopener" class="iconfont"
+      title="stack-overflow"  target="_blank"
+      >
+      <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M809.714286 932.571429l-638.857143 0 0-274.285714-91.428571 0 0 365.714286 821.714286 0 0-365.714286-91.428571 0 0 274.285714zm-538.285714-299.428571l18.857143-89.714286 447.428571 94.285714-18.857143 89.142857zm58.857143-213.714286l38.285714-83.428571 414.285714 193.714286-38.285714 82.857143zm114.857143-203.428571l58.285714-70.285714 350.857143 293.142857-58.285714 70.285714zm226.857143-216l272.571429 366.285714-73.142857 54.857143-272.571429-366.285714zm-410.285714 840.571429l0-90.857143 457.142857 0 0 90.857143-457.142857 0z"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://www.douban.com/people/194654920/" rel="me noopener" class="iconfont"
+      title="douban"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M926.917973 37.80608C959.65184 37.80608 986.19392 64.34816 986.19392 97.082027L986.19392 926.917973C986.19392 959.65184 959.65184 986.19392 926.917973 986.19392L97.082027 986.19392C64.34816 986.19392 37.80608 959.65184 37.80608 926.917973L37.80608 97.082027C37.80608 64.34816 64.34816 37.80608 97.082027 37.80608zM176.653653 176.19968 176.653653 252.678827 825.658027 252.678827 825.658027 176.19968zM217.719467 316.146347 217.719467 628.08064 273.524053 628.08064 341.292373 770.39616 157.259093 770.39616 157.259093 845.417813 842.949973 845.417813 842.949973 770.39616 654.226773 770.39616 722.899627 628.08064 783.67744 628.08064 783.67744 316.146347zM684.885333 392.891733 684.885333 553.987413 312.576 553.987413 312.576 392.891733zM570.770773 770.39616 426.653013 770.39616 359.621973 628.08064 639.443627 628.08064z"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://midFang.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2020 -
+    2024
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        midFang
+        
+      </span></span>
+
+  
+  
+    <span id="busuanzi_container">
+      访客数/访问量：<span id="busuanzi_value_site_uv"></span>/<span id="busuanzi_value_site_pv"></span>
+    </span>
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script type="text/javascript">
+    AV.initialize( null ,  null );
+  </script>
+
+  <script>
+    function showHitCount(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push($(this).attr("id").trim());
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var hits = item.get('hits');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(hits);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if (countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function (results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("hits");
+            counter.save(null, {
+              success: function (counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('hits'));
+              },
+              error: function (counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+             
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+             
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("hits", 1);
+            newcounter.save(null, {
+              success: function (newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('hits'));
+              },
+              error: function (newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function (error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function () {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        
+        addCount(Counter);
+      } else if ($('.post-link').length > 1) {
+        
+        showHitCount(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+  <script>
+    $("#openSearch, #openSearchMobile").click(function(){
+      $(".modal-dialog").addClass("visible");
+    });
+
+    $("#closeSearch").click(function(){
+      $(".modal-dialog").removeClass("visible");
+    });
+
+    $(document).click(function(event) {
+    
+      if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
+        $("body").find(".modal-dialog").removeClass("visible");
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -6,10 +6,19 @@
     <description>Recent content in NDK on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 30 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 06 Apr 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/ndk/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Android 使用 OpenSL ES 音频播放</title>
+      <link>https://midFang.github.io/android-ffmpeg-opensl-es-play/</link>
+      <pubDate>Sat, 06 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/android-ffmpeg-opensl-es-play/</guid>
+      <description>在上篇文章中，我们使用的是 Android 自带的 AudioTrack 来音频播放的，现在我们要切换成 OpenSL ES 来播放，那为什么要换成这个呢 ？ 一个方面是因为 OpenSL ES 性能会好一些，且都是在</description>
+    </item>
     
     <item>
       <title>Android 使用 ffmpeg &#43; AudioTrack 音频播放</title>

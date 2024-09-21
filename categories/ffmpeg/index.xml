@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>NDK on midFang&#39;s Blog</title>
-    <link>https://midFang.github.io/categories/ndk/</link>
-    <description>Recent content in NDK on midFang&#39;s Blog</description>
+    <title>FFmpeg on midFang&#39;s Blog</title>
+    <link>https://midFang.github.io/categories/ffmpeg/</link>
+    <description>Recent content in FFmpeg on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sat, 06 Apr 2024 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://midFang.github.io/categories/ndk/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://midFang.github.io/categories/ffmpeg/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -36,24 +36,6 @@
       
       <guid>https://midFang.github.io/android-compile-ffmpeg/</guid>
       <description>前言 在上两篇文章中，我们已经学习了 CMake 和 Shell 的使用，接下来本篇文章开始对 ffmpeg 进行编译, 在编译开始之前 需要准备好 Linux 环境，下载 NDK，配置 NDK 环境变量等</description>
-    </item>
-    
-    <item>
-      <title>Android NDK 开发之 shell 脚本和交叉编译</title>
-      <link>https://midFang.github.io/android-ndk-shell-and-cross-compile/</link>
-      <pubDate>Sun, 17 Mar 2024 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/android-ndk-shell-and-cross-compile/</guid>
-      <description>当编译过程比较复杂的时候, 我们就可以使用 shell 脚本来简化这个过程, 同时版本升级, 重复构建的基础上 shell 脚本也能够重复利用, 下面直接开始看看 shell 脚本是如</description>
-    </item>
-    
-    <item>
-      <title>Android NDK 开发之 cmake 使用</title>
-      <link>https://midFang.github.io/android-ndk-cmake-simple-use/</link>
-      <pubDate>Sun, 10 Mar 2024 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/android-ndk-cmake-simple-use/</guid>
-      <description>在 Android NDK 开发中, CMake 是帮助我们来生成 makefle 文件的, 本文的示例是在 windows 中进行的, CMake 安装相关的可以参考本文 Windows10下配置CMake+Make+C</description>
     </item>
     
   </channel>

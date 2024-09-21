@@ -6,10 +6,19 @@
     <description>Recent content in Posts on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 30 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 06 Apr 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Android 使用 OpenSL ES 音频播放</title>
+      <link>https://midFang.github.io/android-ffmpeg-opensl-es-play/</link>
+      <pubDate>Sat, 06 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/android-ffmpeg-opensl-es-play/</guid>
+      <description>在上篇文章中，我们使用的是 Android 自带的 AudioTrack 来音频播放的，现在我们要切换成 OpenSL ES 来播放，那为什么要换成这个呢 ？ 一个方面是因为 OpenSL ES 性能会好一些，且都是在</description>
+    </item>
     
     <item>
       <title>Android 使用 ffmpeg &#43; AudioTrack 音频播放</title>
@@ -246,15 +255,6 @@
 &lt;p&gt;每次构建（build）至少由一个 project 构成，一个 project 由一到多个 task 构成。每个 task 代表了构建过程当中的一个原子性操作，比如编译，打包，生成javadoc，发布等等这些操作&lt;/p&gt;
 
 &lt;h3 id=&#34;gradle-的构建流程&#34;&gt;Gradle 的构建流程&lt;/h3&gt;</description>
-    </item>
-    
-    <item>
-      <title>ViewPager &#43; Fragment 源码解析与性能优化</title>
-      <link>https://midFang.github.io/viewpager-fragment-code-analysis-performance-optimization/</link>
-      <pubDate>Sat, 03 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/viewpager-fragment-code-analysis-performance-optimization/</guid>
-      <description>在很多项目中都有 Banner 广告页或者是 Tab 切换页，如果是如下布局的情况，那么肯定遇到过这个问题，那就是这个 ViewPager 并不会包裹内容填充，而是会填充满整个布局，</description>
     </item>
     
   </channel>
