@@ -71,7 +71,7 @@
 
 <meta itemprop="datePublished" content="2023-05-20T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2023-05-20T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="5636">
+<meta itemprop="wordCount" content="5605">
 
 
 
@@ -361,7 +361,7 @@
 <h2 id="状态转移型动画">状态转移型动画</h2>
 
 <blockquote>
-<p>从一个状态切换到另外一个状态</p>
+<p>从一个状态切换到另外一个状态，比如从小到大</p>
 </blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -397,7 +397,7 @@
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-<p>代码比较简单，它是通过按钮的点击改变 big 的 state 对象的值，这个值的改变也导致 animateDpAsState 中的 targetValue 发生改变，而返回值 size 又作用在了 Box 的控件上，在目标状态值发生改变的时候 <code>animateDpAsState</code> 内部有一个协程会以一种动画曲线的方式不断的改变  size 的值，然后再触发 <code>ReCompose</code> 刷新界面，这样就能看到动画效果了，代码运行后，如下所示</p>
+<p>代码比较简单，它是通过按钮的点击改变 big 的 state 对象的值，这个值的改变也导致 animateDpAsState 中的 targetValue 发生改变，而返回值 size 又作用在了 Box 的控件上，在目标状态值 targetValue 发生改变的时候 <code>animateDpAsState</code> 内部有一个协程会以一种动画曲线的方式不断的改变  size 的值，然后再触发 <code>ReCompose</code> 刷新界面，这样就能看到动画效果了，代码运行后，如下所示</p>
 
 <p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312182202080.gif" alt="" /></p>
 
@@ -413,7 +413,7 @@
 <p>可以定制动画中间过程</p>
 </blockquote>
 
-<p>针对于流程定制型动画，需要使用到的 <code>Api</code> 是 <code>Animatable</code> ， 介绍这个函数之前，可以再看下  <code>animateXXXAsState</code> 针对于状态切换的场景，其实他就是一个  <code>Animatable</code> ，只不过是针对其进行封装了，对一些更强大功能进行收敛了，只提供对目标值修改后开启动画，可以看下 <code>animateDpAsState</code>  源码</p>
+<p>针对于流程定制型动画，需要使用到的 <code>Api</code> 是 <code>Animatable</code> ， 介绍这个函数之前，可以再看下  <code>animateXXXAsState</code> 的源码，其实他就是一个  <code>Animatable</code> ，只不过是针对其进行封装了，对一些更强大功能进行收敛了，只提供对目标值修改后开启动画，可以看下 <code>animateDpAsState</code>  源码</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
@@ -541,7 +541,7 @@
 
 <p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312192124044.gif" alt="" /></p>
 
-<p>解释这段代码之前，先介绍 Animatable 这个 Api 的参数设置，看下他的源码</p>
+<p>解释这段代码之前，先介绍 Animatable 这个 Api 的参数设置</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt">1
@@ -665,7 +665,7 @@
 
 <p>这些是什么呢 ？其实他们针对的就是一维、二维、三维、四维，可以理解为比如 Float 类型的是 AnimationVector1D 针对的就是一维，一个坐标点，而 offset 有 x，y 的坐标，就是   AnimationVector2D 二维，他是存在两个坐标点的，以此类推</p>
 
-<p>那么，为什么 compose 要这么设计一个转换器呢？原因就是在此，可以针对一维和二维的模型去做动画的计算，即使是针对颜色的色值渐变过渡，也是比较好处理的，比如下面的 Color 渐变转换器，同时这样也方便扩展</p>
+<p>那么，为什么 compose 要这么设计一个转换器呢？主要是可以针对一维和二维的模型去做动画的计算，即使是针对颜色的色值渐变过渡，也是比较好处理的，比如下面的 Color 渐变转换器，同时这样也方便扩展</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
@@ -718,7 +718,7 @@
     <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="n">ColorToVector</span></code></pre></td></tr></table>
 </div>
 </div>
-<p>其实他们的类型都是 TwoWayConverter 这个接口的实现类，后续我们要是有自己的算法，也是可以自己实现一个的，类似就是这样, 这里模仿的 Dp 的转换器</p>
+<p>其实他们的类型都是 TwoWayConverter 这个接口的实现类，后续我们要是有自己的算法，也是可以自己实现一个，类似就是这样, 这里模仿的 Dp 的转换器</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
@@ -774,7 +774,7 @@
 </span><span class="c1"></span>        <span class="n">targetValue</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="c1">// 目标值
 </span><span class="c1"></span>        <span class="n">animationSpec</span><span class="p">:</span> <span class="n">AnimationSpec</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">defaultSpringSpec</span><span class="p">,</span> <span class="c1">// 动画规格，默认是弹簧动画
 </span><span class="c1"></span>        <span class="n">initialVelocity</span><span class="p">:</span> <span class="n">T</span> <span class="p">=</span> <span class="n">velocity</span><span class="p">,</span> <span class="c1">// 初始速度
-</span><span class="c1"></span>        <span class="n">block</span><span class="p">:</span> <span class="p">(</span><span class="n">Animatable</span><span class="p">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">&gt;.()</span> <span class="p">-&gt;</span> <span class="n">Unit</span><span class="p">)?</span> <span class="p">=</span> <span class="k">null</span> <span class="c1">// 动画的每一帧
+</span><span class="c1"></span>        <span class="n">block</span><span class="p">:</span> <span class="p">(</span><span class="n">Animatable</span><span class="p">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">&gt;.()</span> <span class="p">-&gt;</span> <span class="n">Unit</span><span class="p">)?</span> <span class="p">=</span> <span class="k">null</span> <span class="c1">// 回调动画的每一帧
 </span><span class="c1"></span><span class="p">)</span></code></pre></td></tr></table>
 </div>
 </div>
@@ -784,7 +784,7 @@
 
 <h1 id="animationspec">animationSpec</h1>
 
-<p>接下来就是各种 animationSpec 的配置了， 他的源码中，类的结构图是这样的，我们接下来一个一个尝试一下，首先看下 tween 是如何使用的</p>
+<p>接下来就是各种 animationSpec 的配置了， 它的源码中，类的结构图是这样的，我们接下来一个一个尝试一下，首先看下 tween 是如何使用的</p>
 
 <p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/202312231517363.png" alt="" /></p>
 
@@ -858,17 +858,17 @@
 </span><span class="c1"></span><span class="p">):</span> <span class="n">TweenSpec</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">TweenSpec</span><span class="p">(</span><span class="n">durationMillis</span><span class="p">,</span> <span class="n">delayMillis</span><span class="p">,</span> <span class="n">easing</span><span class="p">)</span></code></pre></td></tr></table>
 </div>
 </div>
-<p>这里的参数配置也比较简单，DefaultDurationMillis 的默认时间是 300 毫秒，延时时间是 0，这个延时时间也很好理解，就是在点击后，需要延时多久后再执行动画，默认 0，就是立即执行，唯一比较难理解的是 easing  速度曲线, (英文翻译, 缓动)， 他可以理解为在传统 Android 中的动画插值器 interceptor，上述设置的是 FastOutLinearInEasing ，它就是默认的过渡效果，以快速开始并慢慢减速直到结束</p>
+<p>这里的参数配置也比较简单，DefaultDurationMillis 的默认时间是 300 毫秒，延时时间是 0，这个延时时间也很好理解，就是在点击后，需要延时多久后再执行动画，默认 0，就是立即执行，唯一比较难理解的是 easing  速度曲线, (英文翻译, 缓动)， 他可以理解为在传统 Android 中的动画插值器 interceptor，上述默认设置的是 FastOutLinearInEasing ，它是以快速开始并慢慢减速直到结束</p>
 
 <ul>
 <li>几种常见的速度曲线模型
 
 <ul>
-<li>FastOutSlowInEasing 默认的过渡效果，它以快速开始并慢慢减速到结束。适用于大多数常规动画</li>
-<li>FastOutSlowInEasing 默认的过渡效果，它以快速开始并慢慢减速到结束。适用于大多数常规动画</li>
-<li>LinearOutSlowInEasing  以线性速度开始并逐渐减速到结束。适用于需要匀速过渡的动画</li>
-<li>FastOutLinearInEasing 以快速开始并以线性速度进行过渡。通常用于突出起始状态的动画</li>
-<li>LinearEasing 简单的线性过渡效果，从开始到结束以恒定速度进行过渡</li>
+<li>FastOutSlowInEasing ：快速开始并慢慢减速直到结束。适用于大多数常规动画</li>
+<li>FastOutSlowInEasing ：快速开始并慢慢减速直到结束。适用于大多数常规动画</li>
+<li>LinearOutSlowInEasing ：线性速度开始并逐渐减速到结束。适用于需要匀速过渡的动画</li>
+<li>FastOutLinearInEasing ：快速开始并以线性速度进行过渡。通常用于突出起始状态的动画</li>
+<li>LinearEasing ：简单的线性过渡效果，从开始到结束以恒定速度进行过渡</li>
 </ul></li>
 </ul>
 
@@ -1452,7 +1452,7 @@
     &copy;
     
       2020 -
-    2024
+    2026
     <span class="heart">
       
       <i class="iconfont">

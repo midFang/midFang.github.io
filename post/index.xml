@@ -6,10 +6,19 @@
     <description>Recent content in Posts on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 06 Apr 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 17 Apr 2026 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>《财富自由之路》读书笔记</title>
+      <link>https://midFang.github.io/books-wealth-freedom-road-reading-notes/</link>
+      <pubDate>Fri, 17 Apr 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/books-wealth-freedom-road-reading-notes/</guid>
+      <description>226个笔记 书籍作者：李笑来 说明：本文由 GA（GenericAgent）对整份读书笔记进行自动化整理、阅读友好增强，并发布到博客。 阅读友好增</description>
+    </item>
     
     <item>
       <title>Android 使用 OpenSL ES 音频播放</title>
@@ -134,7 +143,7 @@
       <pubDate>Sun, 11 Jun 2023 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/compose-transition/</guid>
-      <description>前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 在 Android 原生中, Transition 动画是</description>
+      <description>前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 我们先通过一个例子来</description>
     </item>
     
     <item>
@@ -231,30 +240,6 @@
 &lt;li&gt;如何加载资源包插件&lt;/li&gt;
 &lt;li&gt;重启 APP、进入其他 Activty 如何换肤&lt;/li&gt;
 &lt;/ul&gt;</description>
-    </item>
-    
-    <item>
-      <title>Gradle 自定义 plugin 以及项目优化实践</title>
-      <link>https://midFang.github.io/gradle-task-plugin/</link>
-      <pubDate>Sun, 11 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/gradle-task-plugin/</guid>
-      <description>&lt;h3 id=&#34;gradle-是什么&#34;&gt;Gradle 是什么？&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;它是一款强大的构建工具，而不是语⾔&lt;/li&gt;
-&lt;li&gt;它使用了 Groovy 这个语言，创造了一种 DSL，但它本身不是语⾔&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;groovy-是什么&#34;&gt;groovy 是什么&lt;/h3&gt;
-
-&lt;p&gt;Groovy 是一种动态语言，它和 Java 类似（算是 Java 的升级版，但是又具备脚本语言的特点），都在 Java 虚拟机中运行。当运行 Groovy 脚本时它会先被编译成 Java 类字节码，然后通过 JVM 虚拟机执行这个 Java 字节码类&lt;/p&gt;
-
-&lt;h3 id=&#34;gradle-的-project-和-tasks&#34;&gt;Gradle 的 Project 和 Tasks&lt;/h3&gt;
-
-&lt;p&gt;每次构建（build）至少由一个 project 构成，一个 project 由一到多个 task 构成。每个 task 代表了构建过程当中的一个原子性操作，比如编译，打包，生成javadoc，发布等等这些操作&lt;/p&gt;
-
-&lt;h3 id=&#34;gradle-的构建流程&#34;&gt;Gradle 的构建流程&lt;/h3&gt;</description>
     </item>
     
   </channel>

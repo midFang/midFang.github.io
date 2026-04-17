@@ -71,7 +71,7 @@
 
 <meta itemprop="datePublished" content="2023-05-30T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2023-05-30T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="4077">
+<meta itemprop="wordCount" content="4068">
 
 
 
@@ -482,7 +482,7 @@
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-<p>这段代码在启动后，页面被加载后 1000 毫秒后，然后调用 animateDecay 方法，这里 animateDecay 的 1000 毫秒是一个 initialVelocity 初始速度值，这里的速度值，一般是用于对惯性滑动场景来做的，一般在列表会使用到，在上篇的文章也有介绍，可以看下上篇文章，然后第二个参数仍然是 animationSpec 的设置，这里我们设置的是 exponentialDecay</p>
+<p>这段代码在启动后，页面被加载然后 1000 毫秒后，然后调用 animateDecay 方法，这里 animateDecay 的 1000 毫秒是一个 initialVelocity 初始速度值，这里的速度值，一般是用于对惯性滑动场景来做的，一般在列表会使用到，在上篇的文章也有介绍，可以看下上篇文章，然后第二个参数仍然是 animationSpec 的设置，这里我们设置的是 exponentialDecay</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
@@ -529,7 +529,7 @@
 <h3 id="splinebaseddecay">splineBasedDecay</h3>
 
 <blockquote>
-<p>样条衰减动画，是基于屏幕像素进行的动画速度衰减，当像素密度越大动画减速越快，动画的时长越短，动画惯性滑动的距离越短；可以理解屏幕像素密度越大摩擦力越大，所以惯性滑动的距离就越短，使用这个动画，在不同的设备上可能会呈现不同的效果</p>
+<p>样条衰减动画，是基于屏幕像素进行的动画速度衰减，当像素密度越大动画减速越快，动画的时长越短，动画惯性滑动的距离越短；可以理解为屏幕像素密度越大摩擦力越大，所以惯性滑动的距离就越短，使用这个动画，在不同的设备上可能会呈现不同的效果</p>
 </blockquote>
 
 <p>其余的代码不变，我们仅仅是把 anim.animateDecay(1000.dp, exponentialDecay) 换成 anim.animateDecay(1000.dp, splineBasedDecay) 再运行一下</p>
@@ -755,7 +755,7 @@
 <li>upperBound 动画的上限</li>
 </ul>
 
-<p>这两个参数也比较简单,我们看下如下这段代码, 顺便使用一下这个参数</p>
+<p>这两个参数也比较简单,我们看下如下这段代码</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="lnt"> 1
@@ -1286,7 +1286,7 @@
     &copy;
     
       2020 -
-    2024
+    2026
     <span class="heart">
       
       <i class="iconfont">

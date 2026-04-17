@@ -71,7 +71,7 @@
 
 <meta itemprop="datePublished" content="2023-07-20T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2023-07-20T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="4045">
+<meta itemprop="wordCount" content="4096">
 
 
 
@@ -421,15 +421,15 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">interface</span> <span class="nc">Modifier</span> <span class="p">{</span>
-		<span class="c1">// 伴生对象
-</span><span class="c1"></span>	    <span class="k">companion</span> <span class="k">object</span> <span class="p">:</span> <span class="n">Modifier</span> <span class="p">{</span>
+        <span class="c1">// 伴生对象
+</span><span class="c1"></span>        <span class="k">companion</span> <span class="k">object</span> <span class="p">:</span> <span class="n">Modifier</span> <span class="p">{</span>
             <span class="k">override</span> <span class="k">fun</span> &lt;R&gt; <span class="nf">foldIn</span><span class="p">(</span><span class="n">initial</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">=</span> <span class="n">initial</span> 
             <span class="k">override</span> <span class="k">fun</span> &lt;R&gt; <span class="nf">foldOut</span><span class="p">(</span><span class="n">initial</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">Element</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">=</span> <span class="n">initial</span>
             <span class="k">override</span> <span class="k">fun</span> <span class="nf">any</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="p">(</span><span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Boolean</span><span class="p">):</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="k">false</span>
             <span class="k">override</span> <span class="k">fun</span> <span class="nf">all</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="p">(</span><span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Boolean</span><span class="p">):</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="k">true</span>
             <span class="k">override</span> <span class="k">infix</span> <span class="k">fun</span> <span class="nf">then</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">Modifier</span><span class="p">):</span> <span class="n">Modifier</span> <span class="p">=</span> <span class="n">other</span>
             <span class="k">override</span> <span class="k">fun</span> <span class="nf">toString</span><span class="p">()</span> <span class="p">=</span> <span class="s">&#34;Modifier&#34;</span>
-  	  <span class="p">}</span>
+        <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="n">Box</span><span class="p">(</span><span class="n">modifier</span> <span class="p">=</span> <span class="n">Modifier</span><span class="p">)</span>  <span class="c1">// 这样调用的就是 Modifier 的伴生对象 </span></code></pre></td></tr></table>
@@ -638,7 +638,7 @@
 <span class="k">interface</span> <span class="nc">Element</span> <span class="p">:</span> <span class="n">Modifier</span> <span class="p">{</span>
     <span class="k">override</span> <span class="k">fun</span> &lt;R&gt; <span class="nf">foldIn</span><span class="p">(</span><span class="n">initial</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">=</span>
         <span class="n">operation</span><span class="p">(</span><span class="n">initial</span><span class="p">,</span> <span class="k">this</span><span class="p">)</span> <span class="c1">// 返回本身了
-</span><span class="c1"></span>    
+</span><span class="c1"></span>
     <span class="k">override</span> <span class="k">fun</span> &lt;R&gt; <span class="nf">foldOut</span><span class="p">(</span><span class="n">initial</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">Element</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">R</span><span class="p">):</span> <span class="n">R</span> <span class="p">=</span>
         <span class="n">operation</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">initial</span><span class="p">)</span>
     <span class="k">override</span> <span class="k">fun</span> <span class="nf">any</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="p">(</span><span class="n">Element</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Boolean</span><span class="p">):</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="n">predicate</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
@@ -1047,7 +1047,7 @@
 
 <p><img src="https://raw.githubusercontent.com/midFang/imgSource/main/PixPin_2024-01-23_21-33-02.gif" alt="" /></p>
 
-<p>可以发现我们点击的是 Text 组件，但是 Box 组件的间隙也变大了，这是因为共用的是同一个 paddingValue 状态</p>
+<p>可以发现我们点击的是 Text 组件，但是 Box 组件的间隙也变大了，这是因为共用的是同一个 paddingValue 状态，而如果我们的需求是点击那个组件，那个组件就响应，如果要实现这个需求，有一种方式是，你可以创建两个变量</p>
 
 <p>我们再试试使用 composed 的情况来看看</p>
 <div class="highlight"><div class="chroma">
@@ -1268,7 +1268,7 @@
     &copy;
     
       2020 -
-    2024
+    2026
     <span class="heart">
       
       <i class="iconfont">

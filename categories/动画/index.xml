@@ -26,7 +26,7 @@
       <pubDate>Sun, 11 Jun 2023 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/compose-transition/</guid>
-      <description>前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 在 Android 原生中, Transition 动画是</description>
+      <description>前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 我们先通过一个例子来</description>
     </item>
     
     <item>

@@ -23,7 +23,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="author" content="midFang" />
-  <meta name="description" content="前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 在 Android 原生中, Transition 动画是" />
+  <meta name="description" content="前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 我们先通过一个例子来" />
 
   <meta name="keywords" content="Hugo, theme, jane" />
 
@@ -60,25 +60,25 @@
 
 
 <meta property="og:title" content="Compose转场动画之 Transition" />
-<meta property="og:description" content="前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 在 Android 原生中, Transition 动画是" />
+<meta property="og:description" content="前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 我们先通过一个例子来" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://midFang.github.io/compose-transition/" />
 <meta property="article:published_time" content="2023-06-11T00:00:00+00:00" />
 <meta property="article:modified_time" content="2023-06-11T00:00:00+00:00" />
 <meta itemprop="name" content="Compose转场动画之 Transition">
-<meta itemprop="description" content="前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 在 Android 原生中, Transition 动画是">
+<meta itemprop="description" content="前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 我们先通过一个例子来">
 
 
 <meta itemprop="datePublished" content="2023-06-11T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2023-06-11T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="3189">
+<meta itemprop="wordCount" content="3087">
 
 
 
 <meta itemprop="keywords" content="Android,动画,Compose," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Compose转场动画之 Transition"/>
-<meta name="twitter:description" content="前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 在 Android 原生中, Transition 动画是"/>
+<meta name="twitter:description" content="前言 在上两篇文章中，我们了解了 Compose 中动画的各种 animationSpec 的使用和 anim.xxx 的方法参数使用说明，这节开始学习 Transition 的使用 Transition 可对多个属性值进行动画 我们先通过一个例子来"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -361,8 +361,6 @@
 <p>可对多个属性值进行动画</p>
 </blockquote>
 
-<p>在 Android 原生中,  Transition  动画是用来做 activity 或 Fragment 的转场动画的, 因为 Activity 或 Fragment 是比 View 更外层的，是不能使用 View 的动画, 所以单独使用了 Transition 来做转场动画的, 而在 compose 中, 他和 Activity 和 Fragment 都没有关系, 它只属于 compose 的转场动画</p>
-
 <p>我们先通过一个例子来看看他是如何使用的, 后面再讲讲具体的源码的一些细节</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -415,7 +413,7 @@
 
     <span class="k">val</span> <span class="py">scaleTransition</span> <span class="p">=</span> <span class="n">updateTransition</span><span class="p">(</span><span class="n">targetState</span> <span class="p">=</span> <span class="n">big</span><span class="p">,</span> <span class="n">label</span> <span class="p">=</span> <span class="s">&#34;scaleTransition&#34;</span><span class="p">)</span>
 
-    <span class="cm">/**  animatexxx 有非常多的方法 , 根据状态的设置**/</span>
+    <span class="cm">/**  animatexxx 有非常多的方法 **/</span>
     <span class="k">val</span> <span class="py">size</span> <span class="k">by</span> <span class="n">scaleTransition</span><span class="p">.</span><span class="n">animateDp</span><span class="p">(</span>
         <span class="n">transitionSpec</span> <span class="p">=</span> <span class="p">{</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">2000</span><span class="p">)</span> <span class="p">},</span> <span class="n">label</span> <span class="p">=</span> <span class="s">&#34;size&#34;</span>
     <span class="p">)</span> <span class="p">{</span> <span class="k">if</span> <span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="m">200.</span><span class="n">dp</span> <span class="k">else</span> <span class="m">100.</span><span class="n">dp</span> <span class="p">}</span>
@@ -432,7 +430,7 @@
     <span class="k">val</span> <span class="py">color</span> <span class="k">by</span> <span class="n">scaleTransition</span><span class="p">.</span><span class="n">animateColor</span><span class="p">(</span>
         <span class="n">transitionSpec</span> <span class="p">=</span> <span class="p">{</span>
             <span class="k">when</span> <span class="p">{</span>
-                <span class="cm">/** 初始状态从 false 转换到 true 的目标状态（这里仅仅使用 Boolan 类型，实际情况可以是任意类型的） **/</span>
+                <span class="cm">/** 初始状态从 false 转换到 true 的目标状态（这里仅仅使用 Boolan 类型，实际上它是一个泛型） **/</span>
                 <span class="cm">/** 设置 false 到  true  的颜色 tween 渐变 **/</span>
                 <span class="k">false</span> <span class="n">isTransitioningTo</span> <span class="k">true</span> <span class="p">-&gt;</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">3000</span><span class="p">)</span>
                 <span class="k">else</span> <span class="p">-&gt;</span> <span class="n">tween</span><span class="p">(</span><span class="n">durationMillis</span> <span class="p">=</span> <span class="m">3000</span><span class="p">)</span>
@@ -493,7 +491,7 @@
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-<p>第一个参数是泛型状态的初始状态, 意味着可以传递任意类型, Boolean 或者枚举, 又或者是其他的各种状态, 第二个参数是 label 参数, 这个参数可以认为给这个动画起的一个名称,  后面会再介绍他在哪里具体使用场景</p>
+<p>第一个参数是泛型的初始状态, 意味着可以传递任意类型, Boolean 或者枚举, 又或者是其他的各种状态, 第二个参数是 label 参数, 这个参数可以认为给这个动画起的一个名称,  后面会再介绍他在哪里具体使用场景</p>
 
 <p>后面使用了 remember 包裹并创建了 Transition 对象, 再看看 Transition 内部</p>
 <div class="highlight"><div class="chroma">
@@ -589,7 +587,7 @@
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-<p>updateTransition 基本介绍完了, 它这里仅仅是瞄准的是状态, 因为我们传递进来的参数就是状态，但是值又是哪里改变的呢 ？</p>
+<p>updateTransition 基本介绍完了, 它这里仅仅是瞄准的是状态, 因为我们传递进来的参数都是状态值，但是值又是哪里改变的呢 ？</p>
 
 <p>值的改变其实是在 animatexxx 方法中, 这样的方法有很多, 大概有这些</p>
 
@@ -678,7 +676,7 @@
 <pre class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">var</span> <span class="py">segment</span><span class="p">:</span> <span class="n">Segment</span><span class="p">&lt;</span><span class="n">S</span><span class="p">&gt;</span> <span class="k">by</span> <span class="n">mutableStateOf</span><span class="p">(</span><span class="n">SegmentImpl</span><span class="p">(</span><span class="n">currentState</span><span class="p">,</span> <span class="n">currentState</span><span class="p">))</span>  </code></pre></td></tr></table>
 </div>
 </div>
-<p>这里一个疑问，那就是它不是把动画分成一部分的段落吗，那他是决定那个段落运行的是那段代码呢 ？也就是执行那个动画呢，其实是在 updateTransition 中的 animateTo 中，先看看</p>
+<p>这里一个疑问，它不是把动画分成一部分的段落吗，那它是如何决定那个段落运行的是那段代码呢 ？也就是执行那个动画呢，其实是在 updateTransition 中的 animateTo 中，先看看</p>
 
 <p>updateTransition 中 animateTo 的方法</p>
 <div class="highlight"><div class="chroma">
@@ -936,7 +934,7 @@
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
-<p>这个代码使用 rememberInfiniteTransition 创建了 infiniteTransition 对象，其中 rememberInfiniteTransition 并没有什么参数可以配置的， 接着调用了 animateColor 方法，他能配置的参数基本都写出来的，第一个参数是初始状态为红色，第二个参数是目标状态是绿色，所以他是一个红色转为绿色的一个动画第三个参数是 animationSpec ，这个参数返回的是一个 InfiniteRepeatableSpec 对象，目前这个参数只有一个 <em>infiniteRepeatable</em> 的实现，他是一个无限循环动画，他的第一个参数是 animation，返回的对象是 DurationBasedAnimationSpec ，这个是基于时间设置的动画，我在基础篇动画的时候讲过，repeatMode 是重复模式, start, 从起始位置开始重复, Reverse 从目标值开始重复，这个以前也讲过了，所有的配置基本都在这里了</p>
+<p>这个代码使用 rememberInfiniteTransition 创建了 infiniteTransition 对象，其中 rememberInfiniteTransition 并没有什么参数可以配置的， 接着调用了 animateColor 方法，他能配置的参数基本都写出来了，第一个参数是初始状态为红色，第二个参数是目标状态是绿色，所以他是一个红色转为绿色的一个动画，第三个参数是 animationSpec ，这个参数返回的是一个 InfiniteRepeatableSpec 对象，目前这个参数只有一个 <em>infiniteRepeatable</em> 的实现，他是一个无限循环动画，他的第一个参数是 animation，返回的对象是 DurationBasedAnimationSpec ，这个是基于时间设置的动画，我在基础篇动画的时候讲过，repeatMode 是重复模式, start, 从起始位置开始重复, Reverse 从目标值开始重复，这个以前也讲过了，所有的配置基本都在这里了</p>
 
 <p>最终它的效果是这样的</p>
 
@@ -1109,7 +1107,7 @@
     &copy;
     
       2020 -
-    2024
+    2026
     <span class="heart">
       
       <i class="iconfont">
