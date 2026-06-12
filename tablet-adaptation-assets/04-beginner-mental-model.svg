@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#eff6ff"/>
+      <stop offset="1" stop-color="#f8fafc"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2563eb" />
+    </marker>
+  </defs>
+  <rect width="1280" height="720" rx="30" fill="url(#bg)"/>
+  <text x="60" y="70" font-size="34" font-family="Arial, sans-serif" font-weight="700" fill="#0f172a">新手先记住：平板适配不是重写页面，而是换一种摆放方式</text>
+  <g font-family="Arial, sans-serif">
+    <rect x="70" y="130" width="250" height="130" rx="22" fill="#dbeafe" stroke="#60a5fa" stroke-width="3"/>
+    <text x="95" y="178" font-size="24" font-weight="700" fill="#1e3a8a">1. 先有一份返回栈</text>
+    <text x="95" y="218" font-size="18" fill="#1e40af">Home → Feature → SubPage</text>
+
+    <line x1="330" y1="195" x2="430" y2="195" stroke="#2563eb" stroke-width="5" marker-end="url(#arrow)"/>
+
+    <rect x="450" y="130" width="260" height="130" rx="22" fill="#dcfce7" stroke="#22c55e" stroke-width="3"/>
+    <text x="475" y="178" font-size="24" font-weight="700" fill="#14532d">2. 给页面贴标签</text>
+    <text x="475" y="218" font-size="18" fill="#166534">start / end / full screen</text>
+
+    <line x1="720" y1="195" x2="820" y2="195" stroke="#2563eb" stroke-width="5" marker-end="url(#arrow)"/>
+
+    <rect x="840" y="130" width="350" height="130" rx="22" fill="#fef3c7" stroke="#f59e0b" stroke-width="3"/>
+    <text x="865" y="178" font-size="24" font-weight="700" fill="#78350f">3. SceneStrategy 做选择</text>
+    <text x="865" y="218" font-size="18" fill="#92400e">小屏：普通全屏；大屏横向：双栏</text>
+
+    <rect x="130" y="355" width="420" height="260" rx="28" fill="#ffffff" stroke="#94a3b8" stroke-width="3"/>
+    <text x="165" y="405" font-size="26" font-weight="700" fill="#0f172a">手机 / 窄屏</text>
+    <rect x="240" y="435" width="200" height="130" rx="20" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/>
+    <text x="280" y="493" font-size="22" fill="#075985">一个页面</text>
+    <text x="270" y="530" font-size="18" fill="#075985">一层层 push</text>
+
+    <rect x="730" y="355" width="420" height="260" rx="28" fill="#ffffff" stroke="#94a3b8" stroke-width="3"/>
+    <text x="765" y="405" font-size="26" font-weight="700" fill="#0f172a">平板 / 宽屏横向</text>
+    <rect x="770" y="440" width="135" height="130" rx="18" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+    <text x="797" y="508" font-size="20" fill="#1e3a8a">start</text>
+    <rect x="920" y="440" width="190" height="130" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+    <text x="973" y="508" font-size="20" fill="#14532d">end</text>
+    <text x="940" y="542" font-size="16" fill="#14532d">右侧内容切换</text>
+  </g>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <defs>
+    <style>
+      .t{font:700 32px Arial,'Microsoft YaHei',sans-serif;fill:#0f172a}.s{font:500 18px Arial,'Microsoft YaHei',sans-serif;fill:#475569}.node{fill:#fff;stroke:#1e293b;stroke-width:2;rx:18}.yes{fill:#dcfce7;stroke:#166534}.no{fill:#fee2e2;stroke:#991b1b}.code{font:600 15px Consolas,monospace;fill:#1e293b}.b{font:700 20px Arial,'Microsoft YaHei',sans-serif;fill:#111827}.arrow{stroke:#334155;stroke-width:3;fill:none;marker-end:url(#m)}
+    </style>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#334155"/></marker>
+  </defs>
+  <rect width="1200" height="700" fill="#f8fafc"/>
+  <text x="60" y="60" class="t">AppStartEndSceneStrategy 的判定流程</text>
+  <text x="60" y="94" class="s">核心不是“检测设备是不是平板”，而是检测当前窗口是否适合双栏。</text>
+  <rect x="430" y="130" width="340" height="72" class="node"/><text x="600" y="160" text-anchor="middle" class="b">收到 Navigation 返回栈 entries</text><text x="600" y="184" text-anchor="middle" class="code">calculateScene(entries)</text>
+  <path d="M600 202 L600 250" class="arrow"/>
+  <rect x="410" y="250" width="380" height="86" class="node"/><text x="600" y="282" text-anchor="middle" class="b">窗口宽度达到 Medium？</text><text x="600" y="308" text-anchor="middle" class="code">isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND)</text>
+  <path d="M410 293 L250 293 L250 410" class="arrow"/><text x="305" y="280" class="s">否</text>
+  <path d="M600 336 L600 382" class="arrow"/><text x="615" y="366" class="s">是</text>
+  <rect x="410" y="382" width="380" height="80" class="node"/><text x="600" y="414" text-anchor="middle" class="b">窗口更像横屏？</text><text x="600" y="440" text-anchor="middle" class="code">containerDpSize.width > height</text>
+  <path d="M410 422 L250 422" class="arrow"/><text x="335" y="408" class="s">否</text>
+  <path d="M600 462 L600 510" class="arrow"/><text x="615" y="492" class="s">是</text>
+  <rect x="410" y="510" width="380" height="76" class="node"/><text x="600" y="542" text-anchor="middle" class="b">顶部页面是 fullScreenPane？</text><text x="600" y="568" text-anchor="middle" class="code">topEntry?.isFullScreenPane()</text>
+  <path d="M790 548 L950 548" class="arrow"/><text x="830" y="535" class="s">是</text>
+  <path d="M600 586 L600 630" class="arrow"/><text x="615" y="616" class="s">否</text>
+  <rect x="85" y="392" width="330" height="80" class="node no"/><text x="250" y="424" text-anchor="middle" class="b">返回 null</text><text x="250" y="450" text-anchor="middle" class="s">交给 NavDisplay 默认全屏场景</text>
+  <rect x="835" y="508" width="300" height="80" class="node no"/><text x="985" y="540" text-anchor="middle" class="b">返回 null</text><text x="985" y="566" text-anchor="middle" class="s">退出双栏，整屏展示</text>
+  <rect x="410" y="630" width="380" height="54" class="node yes"/><text x="600" y="664" text-anchor="middle" class="b">创建 AppStartEndScene：start + end 双栏</text>
+</svg>

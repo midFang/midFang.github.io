@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640">
+  <defs>
+    <style>
+      .title{font:700 32px Arial,'Microsoft YaHei',sans-serif;fill:#0f172a}.sub{font:500 18px Arial,'Microsoft YaHei',sans-serif;fill:#475569}.route{fill:#fff;stroke:#1e293b;stroke-width:2;rx:16}.start{fill:#dbeafe;stroke:#1d4ed8}.end{fill:#dcfce7;stroke:#15803d}.full{fill:#fef3c7;stroke:#b45309}.txt{font:700 20px Arial,'Microsoft YaHei',sans-serif;fill:#111827}.small{font:500 15px Arial,'Microsoft YaHei',sans-serif;fill:#475569}.arrow{stroke:#334155;stroke-width:3;fill:none;marker-end:url(#m)}.back{stroke:#64748b;stroke-width:2;fill:none;stroke-dasharray:7 7;marker-end:url(#m)}
+    </style>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#334155"/></marker>
+  </defs>
+  <rect width="1200" height="640" fill="#f8fafc"/>
+  <text x="60" y="58" class="title">路由元数据决定页面进入哪个 Pane</text>
+  <text x="60" y="92" class="sub">Home / LoginHome 是左侧 start；Feature 链路是右侧 end；必要时 FeatureFullScreen 主动跳出双栏。</text>
+  <rect x="70" y="170" width="190" height="90" class="route start"/><text x="165" y="206" text-anchor="middle" class="txt">Home</text><text x="165" y="234" text-anchor="middle" class="small">startPane</text>
+  <rect x="70" y="355" width="190" height="90" class="route start"/><text x="165" y="391" text-anchor="middle" class="txt">LoginHome</text><text x="165" y="419" text-anchor="middle" class="small">startPane</text>
+  <rect x="360" y="170" width="190" height="90" class="route end"/><text x="455" y="206" text-anchor="middle" class="txt">Feature</text><text x="455" y="234" text-anchor="middle" class="small">endPane 根</text>
+  <rect x="635" y="170" width="190" height="90" class="route end"/><text x="730" y="206" text-anchor="middle" class="txt">SubPage</text><text x="730" y="234" text-anchor="middle" class="small">endPane 深入</text>
+  <rect x="910" y="170" width="190" height="90" class="route end"/><text x="1005" y="206" text-anchor="middle" class="txt">ThirdPage</text><text x="1005" y="234" text-anchor="middle" class="small">endPane 三级</text>
+  <rect x="910" y="355" width="190" height="90" class="route full"/><text x="1005" y="391" text-anchor="middle" class="txt">FullScreen</text><text x="1005" y="419" text-anchor="middle" class="small">fullScreenPane</text>
+  <rect x="360" y="355" width="190" height="90" class="route end"/><text x="455" y="391" text-anchor="middle" class="txt">LoginStatus</text><text x="455" y="419" text-anchor="middle" class="small">登录 end</text>
+  <path d="M260 215 L360 215" class="arrow"/><text x="294" y="200" class="small">replacePath</text>
+  <path d="M550 215 L635 215" class="arrow"/><text x="570" y="200" class="small">Push</text>
+  <path d="M825 215 L910 215" class="arrow"/><text x="845" y="200" class="small">Push</text>
+  <path d="M1005 260 L1005 355" class="arrow"/><text x="1020" y="310" class="small">Push 并退出双栏</text>
+  <path d="M260 400 L360 400" class="arrow"/><text x="294" y="385" class="small">replacePath</text>
+  <path d="M730 280 C730 325, 570 325, 570 260" class="back"/><text x="625" y="335" class="small">Pop 反向动画</text>
+</svg>
