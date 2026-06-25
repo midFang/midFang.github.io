@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="540" viewBox="0 0 1200 540">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fbff"/>
+      <stop offset="100%" stop-color="#eef6ff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#1e293b" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb" />
+    </marker>
+    <style>
+      .title{font:700 30px 'Segoe UI','Microsoft YaHei',sans-serif;fill:#0f172a}
+      .sub{font:400 16px 'Segoe UI','Microsoft YaHei',sans-serif;fill:#475569}
+      .box{fill:white;stroke:#dbeafe;stroke-width:2;rx:22;filter:url(#shadow)}
+      .box2{fill:#eff6ff;stroke:#93c5fd;stroke-width:2;rx:18}
+      .h{font:700 20px 'Segoe UI','Microsoft YaHei',sans-serif;fill:#1e3a8a}
+      .t{font:400 14px 'Segoe UI','Microsoft YaHei',sans-serif;fill:#334155}
+      .arrow{stroke:#2563eb;stroke-width:3;fill:none;marker-end:url(#arrow)}
+      .pill{fill:#dbeafe;rx:13}
+      .pilltext{font:600 13px 'Segoe UI','Microsoft YaHei',sans-serif;fill:#1d4ed8}
+    </style>
+  </defs>
+  <rect width="1200" height="540" fill="url(#bg)"/>
+  <text x="60" y="58" class="title">AI Agent Skills 工作流总览</text>
+  <text x="60" y="86" class="sub">把“线上表格里的 Bug / Feature 想法”变成可追踪、可验证、可合并的工程任务</text>
+
+  <rect x="60" y="135" width="230" height="150" class="box"/>
+  <text x="90" y="175" class="h">输入层</text>
+  <text x="90" y="208" class="t">腾讯文档 / 在线表格</text>
+  <text x="90" y="232" class="t">需求草稿 / Plan 文档</text>
+  <text x="90" y="256" class="t">用户口头指令</text>
+
+  <rect x="360" y="115" width="280" height="190" class="box"/>
+  <text x="392" y="155" class="h">Skill 编排层</text>
+  <rect x="392" y="178" width="108" height="26" class="pill"/><text x="405" y="196" class="pilltext">bug2csv</text>
+  <rect x="512" y="178" width="118" height="26" class="pill"/><text x="525" y="196" class="pilltext">prepare</text>
+  <rect x="392" y="216" width="112" height="26" class="pill"/><text x="405" y="234" class="pilltext">worktree</text>
+  <rect x="516" y="216" width="96" height="26" class="pill"/><text x="529" y="234" class="pilltext">done</text>
+  <text x="392" y="276" class="t">每个 skill 只负责一个阶段</text>
+
+  <rect x="715" y="135" width="210" height="150" class="box"/>
+  <text x="745" y="175" class="h">执行层</text>
+  <text x="745" y="208" class="t">Git Worktree</text>
+  <text x="745" y="232" class="t">独立分支修复</text>
+  <text x="745" y="256" class="t">AI 自证验证</text>
+
+  <rect x="990" y="135" width="160" height="150" class="box"/>
+  <text x="1020" y="175" class="h">产物层</text>
+  <text x="1020" y="208" class="t">CSV 状态表</text>
+  <text x="1020" y="232" class="t">TASK 记录</text>
+  <text x="1020" y="256" class="t">待验证包</text>
+
+  <path d="M292 210 C320 210 330 210 358 210" class="arrow"/>
+  <path d="M642 210 C675 210 685 210 713 210" class="arrow"/>
+  <path d="M927 210 C950 210 962 210 988 210" class="arrow"/>
+
+  <rect x="170" y="375" width="860" height="72" class="box2"/>
+  <text x="205" y="406" class="h">核心原则</text>
+  <text x="205" y="432" class="t">状态写进文件，修改隔离在 worktree，验证先由 AI 自证，合并必须等用户确认。</text>
+</svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#16a34a" />
+    </marker>
+    <style>
+      .bg{fill:#f7fee7}.title{font:700 30px 'Segoe UI','Microsoft YaHei',sans-serif;fill:#14532d}.sub{font:400 16px 'Segoe UI','Microsoft YaHei',sans-serif;fill:#3f6212}
+      .node{fill:white;stroke:#bbf7d0;stroke-width:2;rx:22;filter:url(#shadow)}.h{font:700 18px 'Segoe UI','Microsoft YaHei',sans-serif;fill:#166534}.t{font:400 13px 'Segoe UI','Microsoft YaHei',sans-serif;fill:#365314}.arrow{stroke:#16a34a;stroke-width:3;fill:none;marker-end:url(#arrow)}
+      .warn{fill:#fff7ed;stroke:#fdba74;stroke-width:2;rx:18}.wh{font:700 16px 'Segoe UI','Microsoft YaHei',sans-serif;fill:#9a3412}.wt{font:400 13px 'Segoe UI','Microsoft YaHei',sans-serif;fill:#7c2d12}
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#14532d" flood-opacity="0.12"/></filter>
+  </defs>
+  <rect width="1200" height="620" class="bg"/>
+  <text x="60" y="58" class="title">一个 Bug 从表格到合并的生命周期</text>
+  <text x="60" y="86" class="sub">这套 skills 的价值不是“自动乱改代码”，而是把每一步都落到可检查的文件状态里。</text>
+
+  <rect x="60" y="145" width="175" height="118" class="node"/><text x="88" y="180" class="h">1. 表格输入</text><text x="88" y="210" class="t">Bug 列表</text><text x="88" y="232" class="t">复现信息</text>
+  <rect x="285" y="145" width="175" height="118" class="node"/><text x="313" y="180" class="h">2. CSV 准备</text><text x="313" y="210" class="t">ready / needs_info</text><text x="313" y="232" class="t">生成 TASK</text>
+  <rect x="510" y="145" width="175" height="118" class="node"/><text x="538" y="180" class="h">3. 创建 worktree</text><text x="538" y="210" class="t">一 bug 一分支</text><text x="538" y="232" class="t">隔离修改</text>
+  <rect x="735" y="145" width="175" height="118" class="node"/><text x="763" y="180" class="h">4. 修复与自证</text><text x="763" y="210" class="t">代码修改</text><text x="763" y="232" class="t">测试 / 构建</text>
+  <rect x="960" y="145" width="175" height="118" class="node"/><text x="988" y="180" class="h">5. 人工验收</text><text x="988" y="210" class="t">用户安装验证</text><text x="988" y="232" class="t">确认是否通过</text>
+
+  <path d="M237 204 L283 204" class="arrow"/><path d="M462 204 L508 204" class="arrow"/><path d="M687 204 L733 204" class="arrow"/><path d="M912 204 L958 204" class="arrow"/>
+
+  <rect x="190" y="370" width="220" height="105" class="warn"/><text x="220" y="405" class="wh">安全闸 1</text><text x="220" y="435" class="wt">信息不足不修</text><text x="220" y="457" class="wt">标记 needs_info</text>
+  <rect x="490" y="370" width="220" height="105" class="warn"/><text x="520" y="405" class="wh">安全闸 2</text><text x="520" y="435" class="wt">未验证不合并</text><text x="520" y="457" class="wt">AI 自证 + 人工验收</text>
+  <rect x="790" y="370" width="220" height="105" class="warn"/><text x="820" y="405" class="wh">安全闸 3</text><text x="820" y="435" class="wt">未授权不清理</text><text x="820" y="457" class="wt">避免误删 worktree</text>
+
+  <path d="M300 264 C300 315 300 335 300 368" class="arrow"/><path d="M822 264 C700 315 610 335 600 368" class="arrow"/><path d="M1047 264 C990 320 925 342 900 368" class="arrow"/>
+</svg>

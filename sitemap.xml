@@ -1,6 +1,11 @@
 <?xml-stylesheet type="text/xsl" href="https://midFang.github.io/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://midFang.github.io/ai-agent-skills-workflow/</loc>
+    <lastmod>2026-06-25T00:00:00+00:00</lastmod>
+  </url>
+
+  <url>
     <loc>https://midFang.github.io/compose-tablet-adaptation/</loc>
     <lastmod>2026-06-12T00:00:00+00:00</lastmod>
   </url>

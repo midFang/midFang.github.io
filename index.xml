@@ -9,6 +9,559 @@
     <lastBuildDate>Fri, 17 Apr 2026 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://midFang.github.io/index.xml" rel="self" type="application/rss+xml" />
+  <item>
+    <title>用 AI Agent Skills 搭一个可追踪的 Bug / Feature 开发流水线</title>
+    <link>https://midFang.github.io/ai-agent-skills-workflow/</link>
+    <pubDate>Thu, 25 Jun 2026 00:00:00 +0000</pubDate>
+    <guid>https://midFang.github.io/ai-agent-skills-workflow/</guid>
+    <description>&lt;blockquote&gt;
+&lt;p&gt;这是一篇实践记录：不是展示一个“全自动写代码”的魔法，而是介绍一种更稳的方式——把 AI Agent 的工作拆成多个小技能，让它按文件状态推进、按 Git Worktree 隔离修改、按人工验收闭环。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img loading="lazy" alt="AI Agent Skills 工作流总览" src="/ai-agent-skills-workflow/assets/skills-architecture.svg" /&gt;&lt;/p&gt;
+&lt;h2 id="1-skills"&gt;1. 这套 Skills？&lt;/h2&gt;
+&lt;p&gt;只是想， 多任务，独立环境，多个并行跑，和 AI 介入的情况下加入边界约束，看过几个 harness engineering 文章， 我觉得应该思路在往这个方向上靠了&lt;/p&gt;
+&lt;h2 id="2-skills"&gt;2. 这套 Skills 的核心思路&lt;/h2&gt;
+&lt;p&gt;我希望 AI Agent 遵守四个原则：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;原则&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;文件即状态&lt;/td&gt;
+&lt;td&gt;Bug、Feature、验收、修改记录都落在 CSV / Markdown / JSON 里。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;一任务一隔离&lt;/td&gt;
+&lt;td&gt;每个 Bug 或 Feature 使用独立 Git Worktree 和分支。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;先自证再交付&lt;/td&gt;
+&lt;td&gt;Agent 必须记录自己做过的验证，而不是只说“应该可以”。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;人工确认才合并&lt;/td&gt;
+&lt;td&gt;是否通过、是否合并、是否清理，关键节点由人确认。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;换句话说，这套流程不是让 AI “更大胆”，而是让 AI &lt;strong&gt;更可控&lt;/strong&gt;。&lt;/p&gt;
+&lt;h2 id="3"&gt;3. 整体架构&lt;/h2&gt;
+&lt;p&gt;我的目录里大概有这些 Skills：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;skills/
+├── bug2csv/                  # 从在线表格导出指定 tab 为 CSV
+├── bugbatch-prepare/         # 把原始 Bug CSV 整理成可执行任务
+├── bugfix-worktree/          # 为单个 Bug 创建/恢复 worktree 并修复
+├── bugfix-done/              # Bug 人工验证通过后的合并与清理
+├── bugfix-comment-context/   # 给非显然修复补充维护注释
+├── debug-tag-add/            # 加临时调试日志 tag
+├── debug-tag-clear/          # 清理临时调试日志
+├── feature-prepare/          # 整理功能需求和验收标准
+├── feature-worktree/         # 独立 worktree 开发 Feature
+├── feature-done/             # Feature 验收通过后的合并与清理
+├── plan/                     # 生成实施计划
+├── plan-to-issues-csv/       # 把 plan 转成 issues CSV
+└── plan-csv-execute/         # 按 CSV 执行并闭环开发
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;它们可以分成三条线：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-mermaid"&gt;flowchart LR
+  A[在线表格 Bug] --&amp;gt; B[bug2csv]
+  B --&amp;gt; C[bugbatch-prepare]
+  C --&amp;gt; D[bugfix-worktree]
+  D --&amp;gt; E[bugfix-done]
+
+  F[功能想法] --&amp;gt; G[feature-prepare]
+  G --&amp;gt; H[feature-worktree]
+  H --&amp;gt; I[feature-done]
+
+  J[Plan 文档] --&amp;gt; K[plan-to-issues-csv]
+  K --&amp;gt; L[plan-csv-execute]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;上面是 Skills 的模块关系；真正用起来时，我更关心下面这张闭环图：哪些节点交给 Agent，哪些节点必须人工确认，APK 在哪里产出、在哪里安装验证，什么时候才能合并和清理。&lt;/p&gt;
+&lt;p&gt;&lt;img loading="lazy" alt="完整使用流程" src="/ai-agent-skills-workflow/assets/full-use-flow.svg" /&gt;&lt;/p&gt;
+&lt;h2 id="4-bug"&gt;4. Bug 修复流水线：从表格到合并&lt;/h2&gt;
+&lt;p&gt;&lt;img loading="lazy" alt="Bug 生命周期" src="/ai-agent-skills-workflow/assets/bug-lifecycle.svg" /&gt;&lt;/p&gt;
+&lt;p&gt;一个 Bug 的完整生命周期，不只是“改代码 -&amp;gt; 给包”。我现在更愿意把它拆成几个明确的关卡：&lt;strong&gt;导入、整理、人工 review、隔离修复、自证、准备 APK、安装验证、合并、合并后再验证、清理现场&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="csv"&gt;第一步：从在线表格导出 CSV&lt;/h3&gt;
+&lt;p&gt;如果 Bug 列表在在线表格里，我先用 &lt;code&gt;bug2csv&lt;/code&gt; 把指定 sheet/tab 导出成 CSV。&lt;/p&gt;
+&lt;p&gt;示例指令：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;使用 bug2csv，把这个腾讯文档里的 DemoApp（Android）tab 导出为 CSV。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个 Skill 的重点是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;只导出目标 tab，而不是整个工作簿；&lt;/li&gt;
+&lt;li&gt;复用浏览器已有登录状态；&lt;/li&gt;
+&lt;li&gt;只依赖浏览器页面里的登录状态，不额外接触账号资料；&lt;/li&gt;
+&lt;li&gt;输出一个本地 CSV，供后续流程使用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="bug"&gt;第二步：整理 Bug 批次&lt;/h3&gt;
+&lt;p&gt;原始表格通常不适合直接执行，所以我用 &lt;code&gt;bugbatch-prepare&lt;/code&gt; 做一次整理。&lt;/p&gt;
+&lt;p&gt;它会把原始 CSV 转成类似这样的结构：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;issues/&amp;lt;版本&amp;gt;/
+├── bug_batch.csv
+├── tasks/
+│   ├── BUG-001-TASK.md
+│   ├── BUG-002-TASK.md
+│   └── BUG-003-TASK.md
+└── apks/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;bug_batch.csv&lt;/code&gt; 负责做状态控制，例如：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;bug_id&lt;/th&gt;
+&lt;th&gt;title&lt;/th&gt;
+&lt;th&gt;status&lt;/th&gt;
+&lt;th&gt;priority&lt;/th&gt;
+&lt;th&gt;task_file&lt;/th&gt;
+&lt;th&gt;apk_path&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;BUG-001&lt;/td&gt;
+&lt;td&gt;启动后偶现闪退&lt;/td&gt;
+&lt;td&gt;ready&lt;/td&gt;
+&lt;td&gt;P0&lt;/td&gt;
+&lt;td&gt;tasks/BUG-001-TASK.md&lt;/td&gt;
+&lt;td&gt;apks/BUG-001.apk&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;BUG-002&lt;/td&gt;
+&lt;td&gt;某页面文案错位&lt;/td&gt;
+&lt;td&gt;ready&lt;/td&gt;
+&lt;td&gt;P1&lt;/td&gt;
+&lt;td&gt;tasks/BUG-002-TASK.md&lt;/td&gt;
+&lt;td&gt;apks/BUG-002.apk&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;BUG-003&lt;/td&gt;
+&lt;td&gt;描述信息不足&lt;/td&gt;
+&lt;td&gt;needs_info&lt;/td&gt;
+&lt;td&gt;P2&lt;/td&gt;
+&lt;td&gt;tasks/BUG-003-TASK.md&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;这里我特别喜欢 &lt;code&gt;needs_info&lt;/code&gt; 这个状态。它让 Agent 在信息不足时停止，而不是硬猜。&lt;/p&gt;
+&lt;h3 id="review"&gt;第三步：先人工 Review 一遍任务&lt;/h3&gt;
+&lt;p&gt;这一点我后来觉得很重要：&lt;strong&gt;不要让 Agent 拿到 CSV 就直接开修&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;bugbatch-prepare&lt;/code&gt; 之后，我会先看一眼生成的 &lt;code&gt;TASK.md&lt;/code&gt; 和 &lt;code&gt;bug_batch.csv&lt;/code&gt;，主要确认：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Bug 描述是否足够复现；&lt;/li&gt;
+&lt;li&gt;预期结果和实际结果有没有写清楚；&lt;/li&gt;
+&lt;li&gt;优先级是否合理；&lt;/li&gt;
+&lt;li&gt;是否需要补充设备、系统版本、账号状态、连接方式等上下文；&lt;/li&gt;
+&lt;li&gt;验收标准是否能被人工执行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果信息不足，就把状态留在 &lt;code&gt;needs_info&lt;/code&gt;，补充完再进入修复。这个 review 节点看起来慢一点，但它能避免 Agent 后面花很多时间在错误方向上。&lt;/p&gt;
+&lt;h3 id="bug-worktree"&gt;第四步：一个 Bug 一个 Worktree&lt;/h3&gt;
+&lt;p&gt;真正开始修复时，用 &lt;code&gt;bugfix-worktree&lt;/code&gt; 领取一个 Bug。&lt;/p&gt;
+&lt;p&gt;示例指令：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;使用 bugfix-worktree 修复 BUG-001。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;它会做几件事：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;读取 &lt;code&gt;bug_batch.csv&lt;/code&gt; 和对应的 &lt;code&gt;BUG-001-TASK.md&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;创建或恢复 &lt;code&gt;worktrees/BUG-001&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;从目标分支切出独立分支；&lt;/li&gt;
+&lt;li&gt;只围绕这个 Bug 修改；&lt;/li&gt;
+&lt;li&gt;执行自证验证；&lt;/li&gt;
+&lt;li&gt;构建待验证 APK；&lt;/li&gt;
+&lt;li&gt;更新 TASK 和 CSV 状态。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这样做最大的好处是：&lt;strong&gt;不同 Bug 的修改不会互相污染&lt;/strong&gt;。&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-mermaid"&gt;flowchart TB
+  R[业务仓库 main/develop] --&amp;gt; W1[worktree: BUG-001]
+  R --&amp;gt; W2[worktree: BUG-002]
+  R --&amp;gt; W3[worktree: BUG-003]
+
+  W1 --&amp;gt; A1[只修 BUG-001]
+  W2 --&amp;gt; A2[只修 BUG-002]
+  W3 --&amp;gt; A3[只修 BUG-003]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="ai-apk"&gt;第五步：AI 自证验证，并准备待测 APK&lt;/h3&gt;
+&lt;p&gt;我不希望 Agent 改完代码只回复一句：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;已修复，请验证。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;所以 TASK 文件里会要求它记录：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;修改了哪些文件；&lt;/li&gt;
+&lt;li&gt;为什么这么改；&lt;/li&gt;
+&lt;li&gt;覆盖了哪些复现场景；&lt;/li&gt;
+&lt;li&gt;执行了哪些测试或构建；&lt;/li&gt;
+&lt;li&gt;待验证 APK 输出在哪里；&lt;/li&gt;
+&lt;li&gt;有哪些风险和未覆盖点。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;示例 TASK 片段：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-markdown"&gt;## 修改记录
+
+- 修复入口页状态恢复时的空对象访问。
+- 增加异常分支保护，避免首次进入页面时崩溃。
+
+## AI 自证验证
+
+- 已执行单元测试：通过。
+- 已执行 Debug 构建：通过。
+- 已检查本次 diff：未发现与 BUG-001 无关的改动。
+
+## 待验证产物
+
+- APK：apks/BUG-001.apk
+- 来源：worktree BUG-001 当前分支构建
+
+## 待人工验证
+
+- 安装 apks/BUG-001.apk。
+- 按原始复现场景重复操作 3 次。
+- 确认不再闪退。
+- 顺手检查相关页面没有明显回归。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里的 &lt;code&gt;apks/BUG-001.apk&lt;/code&gt; 不是随便丢一个包，而是和任务状态绑定的产物：谁修的、从哪个 worktree 构建、对应哪个 TASK，都能追回去。&lt;/p&gt;
+&lt;h3 id="review-diff-apk"&gt;第六步：人工 Review Diff，再安装 APK 验证&lt;/h3&gt;
+&lt;p&gt;在安装 APK 之前，我通常还会做一次很轻量的人工 review：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;diff 是否只围绕这个 Bug；&lt;/li&gt;
+&lt;li&gt;有没有顺手改了无关逻辑；&lt;/li&gt;
+&lt;li&gt;有没有临时日志、实验代码忘记清理；&lt;/li&gt;
+&lt;li&gt;对复杂逻辑，注释是否能解释“为什么这样修”。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;然后再把待测 APK 安装到设备上验证：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;安装 apks/BUG-001.apk，按 BUG-001-TASK.md 的待人工验证步骤执行。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;安装可以是手动拖包，也可以是类似这样的命令：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-bash"&gt;adb install -r apks/BUG-001.apk
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果验证不通过，就不要合并。继续回到 &lt;code&gt;BUG-001&lt;/code&gt; 的 worktree 里修，TASK 里保留失败现象和下一轮验证结果。&lt;/p&gt;
+&lt;h3 id="_1"&gt;第七步：人工确认后再合并&lt;/h3&gt;
+&lt;p&gt;当用户确认某个 Bug 的待验证包通过后，再用 &lt;code&gt;bugfix-done&lt;/code&gt; 合并。&lt;/p&gt;
+&lt;p&gt;示例指令：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;BUG-001 人工验证通过，合并到 develop。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里有两个强约束：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;如果用户没有明确目标分支，Agent 必须先问，不能自己猜；&lt;/li&gt;
+&lt;li&gt;如果人工验证没有明确通过，Agent 不能为了“流程完整”自动合并。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;code&gt;bugfix-done&lt;/code&gt; 做的事情不是简单 &lt;code&gt;git merge&lt;/code&gt;，它还应该把状态补齐：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;合并到目标分支；&lt;/li&gt;
+&lt;li&gt;更新 &lt;code&gt;bug_batch.csv&lt;/code&gt; 的状态；&lt;/li&gt;
+&lt;li&gt;在 TASK 里记录合并节点；&lt;/li&gt;
+&lt;li&gt;必要时构建目标分支的合并后 APK；&lt;/li&gt;
+&lt;li&gt;把“还需要集成验证”这件事留给用户确认。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="apk"&gt;第八步：合并后再装一次 APK，确认后清理&lt;/h3&gt;
+&lt;p&gt;单 Bug 包通过，不等于目标分支集成后一定没问题。所以合并之后，我会再准备一个“合并后 APK”，让用户做一次集成验证。&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;合并后 APK 已生成，请安装后再验证 BUG-001 复现场景和相关页面。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;只有这一步也确认通过后，才进入清理：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;删除对应 worktree；&lt;/li&gt;
+&lt;li&gt;清理临时调试日志；&lt;/li&gt;
+&lt;li&gt;确认目标分支工作区干净；&lt;/li&gt;
+&lt;li&gt;更新 TASK 和 CSV 到最终状态；&lt;/li&gt;
+&lt;li&gt;保留必要的修改记录，方便以后追溯。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这一步看起来像收尾，但很关键。因为很多“AI 改代码翻车”的问题，不发生在第一次修复，而是发生在：包给错了、分支合错了、临时代码没清、验证通过后现场没收干净。&lt;/p&gt;
+&lt;h2 id="5-feature"&gt;5. Feature 开发流水线&lt;/h2&gt;
+&lt;p&gt;Feature 流程和 Bug 类似，只是输入从“Bug 表格”变成“功能想法”。&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-mermaid"&gt;flowchart LR
+  A[一句功能想法] --&amp;gt; B[feature-prepare]
+  B --&amp;gt; C[feature_list.json]
+  B --&amp;gt; D[specs/FEAT-001.md]
+  B --&amp;gt; E[tasks/FEAT-001-TASK.md]
+  E --&amp;gt; F[feature-worktree]
+  F --&amp;gt; G[待验证构建产物]
+  G --&amp;gt; H[feature-done]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我一般会这样使用：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;使用 feature-prepare，整理一个“新增导出历史记录页面”的功能需求。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;它会生成：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;features/&amp;lt;版本&amp;gt;/
+├── feature_list.json
+├── specs/
+│   └── FEAT-001.md
+├── tasks/
+│   └── FEAT-001-TASK.md
+└── apks/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;spec.md&lt;/code&gt; 负责描述目标和行为，&lt;code&gt;TASK.md&lt;/code&gt; 负责记录执行过程。&lt;/p&gt;
+&lt;p&gt;Feature 也需要人工 review：先确认 spec 的边界、交互和验收标准，再让 Agent 进入 &lt;code&gt;feature-worktree&lt;/code&gt;。开发完成后同样要准备待测 APK，由人安装验证；验收通过后才进入 &lt;code&gt;feature-done&lt;/code&gt;，合并后再做一次集成验证，最后清理 worktree 和临时日志。&lt;/p&gt;
+&lt;p&gt;开发时：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;使用 feature-worktree 开发 FEAT-001。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;验收通过后：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;FEAT-001 验证通过，合并到 develop。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="6-plan"&gt;6. Plan 流程：把方案变成可执行列表&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这条流程适合把较大的目标先拆成方案，再转成可以逐项执行和验收的任务列表。参考的是L站的流程，不过现在有 goal 了，需求性更低了&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;除了 Bug 和 Feature，我还做了一条 Plan 流程，用于更大一点的改造。&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-mermaid"&gt;flowchart TB
+  A[生成/修改 plan/*.md] --&amp;gt; B[plan-to-issues-csv]
+  B --&amp;gt; C[issues/YYYY-MM-DD_HH-mm-ss-slug.csv]
+  C --&amp;gt; D[plan-csv-execute]
+  D --&amp;gt; E[逐项实现]
+  E --&amp;gt; F[验证]
+  F --&amp;gt; G[本地提交，不自动 push]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这条流程适合：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;重构；&lt;/li&gt;
+&lt;li&gt;多步骤改造；&lt;/li&gt;
+&lt;li&gt;需要先讨论方案的功能；&lt;/li&gt;
+&lt;li&gt;不想让 Agent 一次性改太多的任务。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;我常用的方式是：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;进入 Plan 模式，给这个需求生成实现方案。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然后：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;把这个 plan 转成 issues csv。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;最后：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;按 issues csv 执行。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里的重点是：&lt;strong&gt;CSV 是任务边界和状态来源&lt;/strong&gt;。Agent 不能跳过 CSV 自己自由发挥。&lt;/p&gt;
+&lt;h2 id="7"&gt;7. 调试日志也要可清理&lt;/h2&gt;
+&lt;p&gt;有些 Bug 需要先加日志才能定位。于是我单独做了两个 Skills：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Skill&lt;/th&gt;
+&lt;th&gt;作用&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;debug-tag-add&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;添加带固定 tag 的临时调试日志。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;debug-tag-clear&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;清理这些临时日志，避免带进正式代码。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;这比“随手加几行 log”安全得多，因为它从一开始就规定：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;日志必须有固定 tag；&lt;/li&gt;
+&lt;li&gt;日志要尽量小范围；&lt;/li&gt;
+&lt;li&gt;修复完成后必须能被定位和清理；&lt;/li&gt;
+&lt;li&gt;清理时不能误删业务代码。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="8-git-worktree"&gt;8. 为什么我喜欢 Git Worktree？&lt;/h2&gt;
+&lt;p&gt;以前我也试过让 Agent 在同一个仓库目录里连续修多个 Bug。结果很容易出现：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;上一个 Bug 的临时代码没清理；&lt;/li&gt;
+&lt;li&gt;当前 diff 里混入别的任务；&lt;/li&gt;
+&lt;li&gt;分支切换时工作区不干净；&lt;/li&gt;
+&lt;li&gt;人工验证一个包时，不知道它到底包含哪些改动。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Git Worktree 可以很好地解决这个问题。&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;worktrees/
+├── BUG-001/
+├── BUG-002/
+├── BUG-003/
+├── FEAT-001/
+└── FEAT-002/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;每个目录都是一个独立工作区，但共享同一个 Git 仓库对象库。对 Agent 来说，这个边界非常清晰：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;你现在只允许在这个 worktree 里修这个任务。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id="9-skills"&gt;9. 如何安装和使用这套 Skills？&lt;/h2&gt;
+&lt;p&gt;不同 Agent 平台的 skills 放置方式不完全一样，但核心步骤类似。&lt;/p&gt;
+&lt;h3 id="91"&gt;9.1 放置目录&lt;/h3&gt;
+&lt;p&gt;把这些目录放到你的 Agent 支持的 skills 目录里，例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;~/.agent/skills/
+└── ai-agent-skills/
+    ├── bug2csv/
+    ├── bugbatch-prepare/
+    ├── bugfix-worktree/
+    └── ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;或者直接把当前仓库作为 skills 集合引用。&lt;/p&gt;
+&lt;h3 id="92-skill"&gt;9.2 每个 Skill 的基本结构&lt;/h3&gt;
+&lt;p&gt;一个 Skill 通常长这样：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;bugfix-worktree/
+├── SKILL.md
+└── agents/
+    └── openai.yaml
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;SKILL.md&lt;/code&gt; 是核心，里面写：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这个 Skill 什么时候触发；&lt;/li&gt;
+&lt;li&gt;需要哪些输入；&lt;/li&gt;
+&lt;li&gt;具体执行步骤；&lt;/li&gt;
+&lt;li&gt;哪些事情不能做；&lt;/li&gt;
+&lt;li&gt;完成时应该怎么回复。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="93"&gt;9.3 推荐的使用顺序&lt;/h3&gt;
+&lt;p&gt;如果你是处理 Bug，我建议按这个顺序走完整闭环：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;bug2csv
+  -&amp;gt; bugbatch-prepare
+  -&amp;gt; 人工 review TASK / CSV
+  -&amp;gt; bugfix-worktree
+  -&amp;gt; Agent 自证 + 准备待测 APK
+  -&amp;gt; 人工 review diff
+  -&amp;gt; 安装待测 APK 验证
+  -&amp;gt; bugfix-done 合并
+  -&amp;gt; 构建并安装合并后 APK 验证
+  -&amp;gt; 清理 worktree / 临时日志 / 状态表
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果你是开发 Feature：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;feature-prepare
+  -&amp;gt; 人工 review spec / TASK
+  -&amp;gt; feature-worktree
+  -&amp;gt; 准备待测 APK
+  -&amp;gt; 安装验证
+  -&amp;gt; feature-done
+  -&amp;gt; 合并后验证
+  -&amp;gt; 清理
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果你是执行一个较大的计划：&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;plan
+  -&amp;gt; plan-to-issues-csv
+  -&amp;gt; plan-csv-execute
+  -&amp;gt; 按子任务逐项 review / 验证 / 合并
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="94-bug"&gt;9.4 示例：一次完整 Bug 修复&lt;/h3&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;用户：把这个在线表格里的 DemoApp（Android）tab 导出成 CSV。
+Agent：使用 bug2csv，生成 DemoApp-Android.csv。
+
+用户：把这个 CSV 整理成本周要修的 bug batch。
+Agent：使用 bugbatch-prepare，生成 issues/2026-06-25-demo/bug_batch.csv 和 tasks/*.md。
+
+用户：我先 review 一下 BUG-001 的 TASK，信息够了，可以开始修。
+Agent：使用 bugfix-worktree，创建 worktrees/BUG-001，修复并构建 apks/BUG-001.apk。
+
+用户：我 review 了 diff，范围没问题。现在安装 apks/BUG-001.apk 验证。
+Agent：等待人工验证结果，并在 TASK 中记录待验证项。
+
+用户：BUG-001 单包验证通过，合并到 develop。
+Agent：使用 bugfix-done，合并、更新状态、构建 develop 上的合并后 APK。
+
+用户：合并后 APK 也安装验证通过，可以清理。
+Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状态。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="10"&gt;10. 这套流程的收益&lt;/h2&gt;
+&lt;p&gt;我最大的感受是：Agent 的能力并不只取决于模型本身，也取决于你有没有给它设计好“轨道”。&lt;/p&gt;
+&lt;p&gt;这套 Skills 带来的收益主要有：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;任务更清楚&lt;/strong&gt;：每个 Bug / Feature 都有自己的 TASK 文件；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;状态可追踪&lt;/strong&gt;：CSV 记录 ready、in_progress、verified、merged 等状态；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;修改更安全&lt;/strong&gt;：每个任务一个 worktree，避免串改；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;验收更明确&lt;/strong&gt;：AI 自证和人工验收分开；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;合并更谨慎&lt;/strong&gt;：没有目标分支和人工确认就不合并；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;上下文可沉淀&lt;/strong&gt;：复杂修复会补充注释，避免后来的人误删；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;产物可对应&lt;/strong&gt;：每个待测 APK 都能追到具体任务、worktree 和验证记录；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;清理有节点&lt;/strong&gt;：合并后再次验证，通过后才删除 worktree 和临时日志。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="11"&gt;11. 还有哪些可以继续改进？&lt;/h2&gt;
+&lt;p&gt;这套流程还可以继续扩展：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;接入 CI，让每个 worktree 自动跑测试；&lt;/li&gt;
+&lt;li&gt;给 &lt;code&gt;bug_batch.csv&lt;/code&gt; 做一个可视化面板；&lt;/li&gt;
+&lt;li&gt;自动生成变更日志；&lt;/li&gt;
+&lt;li&gt;将 TASK 文件和 Git commit 互相关联；&lt;/li&gt;
+&lt;li&gt;为不同项目提供模板化字段；&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="12"&gt;12. 总结&lt;/h2&gt;
+&lt;p&gt;如果让我用一句话总结这套实践：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;不要让 AI Agent 自由地“到处改”，而是给它一组小而明确的 Skills，让它在可追踪的状态文件和隔离的工作区里完成任务。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;AI 写代码并不难，难的是让它在真实工程里可靠地工作。&lt;/p&gt;
+&lt;p&gt;我认为 Skills 的价值就在这里：它把“经验”和“边界”写成了可复用的流程，让 Agent 每次都沿着同一条安全路径前进。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2 id="skills"&gt;附：Skills 速查表&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Skill&lt;/th&gt;
+&lt;th&gt;什么时候用&lt;/th&gt;
+&lt;th&gt;产物&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;bug2csv&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;从在线表格导出指定 tab&lt;/td&gt;
+&lt;td&gt;CSV&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;bugbatch-prepare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;把原始 Bug CSV 整理成可执行批次&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;bug_batch.csv&lt;/code&gt;、&lt;code&gt;tasks/*.md&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;bugfix-worktree&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;修复单个 Bug&lt;/td&gt;
+&lt;td&gt;worktree、分支、待验证包、TASK 更新&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;bugfix-done&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Bug 人工验证通过后合并&lt;/td&gt;
+&lt;td&gt;合并提交、目标分支构建、状态更新&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;bugfix-comment-context&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;修复逻辑不明显时补注释&lt;/td&gt;
+&lt;td&gt;高信号维护注释&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;debug-tag-add&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;添加临时调试日志&lt;/td&gt;
+&lt;td&gt;带固定 tag 的日志&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;debug-tag-clear&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;清理临时调试日志&lt;/td&gt;
+&lt;td&gt;干净 diff&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;feature-prepare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;整理功能想法&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;feature_list.json&lt;/code&gt;、spec、TASK&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;feature-worktree&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;开发单个 Feature&lt;/td&gt;
+&lt;td&gt;worktree、待验证包&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;feature-done&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Feature 验证通过后合并&lt;/td&gt;
+&lt;td&gt;合并和清理&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;plan&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;生成实施计划&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;plan/*.md&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;plan-to-issues-csv&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;把计划拆成任务表&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;issues/*.csv&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;plan-csv-execute&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;按 CSV 执行计划&lt;/td&gt;
+&lt;td&gt;实现、验证、本地提交&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</description>
+  </item>
+
+
     
     
     <item>
