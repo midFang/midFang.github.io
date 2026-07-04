@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Engineering Workflow on midFang&#39;s Blog</title>
+    <link>https://midFang.github.io/tags/engineering-workflow/</link>
+    <description>Recent content in Engineering Workflow on midFang&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 25 Jun 2026 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://midFang.github.io/tags/engineering-workflow/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>用 AI Agent Skills 搭一个可追踪的 Bug / Feature 开发流水线</title>
+      <link>https://midFang.github.io/ai-agent-skills-workflow/</link>
+      <pubDate>Thu, 25 Jun 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/ai-agent-skills-workflow/</guid>
+      <description>这篇文章记录我如何把在线表格里的 Bug、功能想法和执行计划，拆成一组可复用的 Agent Skills，让 AI 开发从‘一句话改代码’变成‘有状态、有隔离、有验收’的工程流水线。</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>投资 on midFang&#39;s Blog</title>
+    <link>https://midFang.github.io/tags/%E6%8A%95%E8%B5%84/</link>
+    <description>Recent content in 投资 on midFang&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 04 Jul 2026 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://midFang.github.io/tags/%E6%8A%95%E8%B5%84/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>《彼得·林奇的成功投资》读书笔记</title>
+      <link>https://midFang.github.io/books-peter-lynch-successful-investing-reading-notes/</link>
+      <pubDate>Sat, 04 Jul 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/books-peter-lynch-successful-investing-reading-notes/</guid>
+      <description>按原书章节顺序整理《彼得·林奇的成功投资》微信读书划线笔记，保留核心原文，方便后续按主题回看。</description>
+    </item>
+    
+  </channel>
+</rss>

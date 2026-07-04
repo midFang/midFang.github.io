@@ -6,10 +6,32 @@
     <description>Recent content in Compose on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 09 Nov 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 12 Jun 2026 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/categories/compose/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Compose 平板适配</title>
+      <link>https://midFang.github.io/compose-tablet-adaptation/</link>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/compose-tablet-adaptation/</guid>
+      <description>&lt;p&gt;最近项目中做了一次平板适配。项目是 Kotlin Multiplatform + Compose 写的，界面代码主要在 &lt;code&gt;commonMain&lt;/code&gt;，也就是说 Android 和 iOS 会共用大部分页面逻辑。&lt;/p&gt;
+
+&lt;p&gt;一开始看到“平板适配”这几个字，很容易想到两种做法：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;判断是不是平板，然后重新写一套平板页面；&lt;/li&gt;
+&lt;li&gt;在每个页面里判断屏幕宽度，手动决定显示单栏还是双栏。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;但这两种方式后期都比较难维护。页面越来越多以后，每个页面都写一遍适配判断，代码会很散；如果单独写一套平板页面，又容易和手机页面逻辑不同步。&lt;/p&gt;
+
+&lt;p&gt;所以本文就以这个项目为例，看一下如何使用 &lt;strong&gt;Navigation 3 + Material3 Adaptive&lt;/strong&gt; 实现一套更适合真实项目的平板适配方案：手机上仍然是普通的全屏页面跳转，平板横屏时自动变成左侧 &lt;code&gt;start pane&lt;/code&gt; + 右侧 &lt;code&gt;end pane&lt;/code&gt; 的双栏结构。&lt;/p&gt;
+
+&lt;p&gt;本文只看平板 / 大屏适配相关代码，业务逻辑不展开。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Compose 绘制功能全解析</title>

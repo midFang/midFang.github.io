@@ -4,24 +4,61 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>用 AI Agent Skills 搭一个可追踪的 Bug / Feature 开发流水线 - midFang&#39;s Blog</title>
+  
 
 <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
 <meta name="MobileOptimized" content="width"/>
 <meta name="HandheldFriendly" content="true"/>
+
+
 <meta name="applicable-device" content="pc,mobile">
+
 <meta name="theme-color" content="#f8f5ec" />
 <meta name="msapplication-navbutton-color" content="#f8f5ec">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
 <meta name="mobile-web-app-capable" content="yes">
+
 <meta name="author" content="midFang" />
   <meta name="description" content="这篇文章记录我如何把在线表格里的 Bug、功能想法和执行计划，拆成一组可复用的 Agent Skills，让 AI 开发从‘一句话改代码’变成‘有状态、有隔离、有验收’的工程流水线。" />
-  <meta name="keywords" content="AI Agent,Engineering Workflow,Git Worktree,Skills,Android" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
 <meta name="generator" content="Hugo 0.58.3" />
+
+
 <link rel="canonical" href="https://midFang.github.io/ai-agent-skills-workflow/" />
+
+
+
+
+
 <link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
 <link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
 <meta property="og:title" content="用 AI Agent Skills 搭一个可追踪的 Bug / Feature 开发流水线" />
 <meta property="og:description" content="这篇文章记录我如何把在线表格里的 Bug、功能想法和执行计划，拆成一组可复用的 Agent Skills，让 AI 开发从‘一句话改代码’变成‘有状态、有隔离、有验收’的工程流水线。" />
 <meta property="og:type" content="article" />
@@ -30,20 +67,31 @@
 <meta property="article:modified_time" content="2026-06-25T00:00:00+00:00" />
 <meta itemprop="name" content="用 AI Agent Skills 搭一个可追踪的 Bug / Feature 开发流水线">
 <meta itemprop="description" content="这篇文章记录我如何把在线表格里的 Bug、功能想法和执行计划，拆成一组可复用的 Agent Skills，让 AI 开发从‘一句话改代码’变成‘有状态、有隔离、有验收’的工程流水线。">
-<meta itemprop="datePublished" content="2026-06-25T00:00:00+00:00" />
-<meta itemprop="dateModified" content="2026-06-25T00:00:00+00:00" />
-<meta itemprop="wordCount" content="6644">
-<meta itemprop="keywords" content="Compose,Navigation3,平板适配," />
+
+
+<meta itemprop="datePublished" content="2026-06-25T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2026-06-25T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="5339">
+
+
+
+<meta itemprop="keywords" content="AI Agent,Engineering Workflow,Git Worktree,Skills,Android," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="用 AI Agent Skills 搭一个可追踪的 Bug / Feature 开发流水线"/>
 <meta name="twitter:description" content="这篇文章记录我如何把在线表格里的 Bug、功能想法和执行计划，拆成一组可复用的 Agent Skills，让 AI 开发从‘一句话改代码’变成‘有状态、有隔离、有验收’的工程流水线。"/>
+
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
 <![endif]-->
+
 <!--[if lt IE 9]>
   <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
 <![endif]-->
+
+
+
+
 </head>
 <body>
   <div id="mobile-navbar" class="mobile-navbar">
@@ -59,44 +107,44 @@
 <nav id="mobile-menu" class="mobile-menu slideout-menu">
   <ul class="mobile-menu-list">
     <li class="mobile-menu-item">
-
-
-
+        
+          
+          
             <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
-
-
+          
+        
       </li><li class="mobile-menu-item">
-
-
-
+        
+          
+          
             <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
-
-
+          
+        
       </li><li class="mobile-menu-item">
-
-
-
+        
+          
+          
             <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
-
-
+          
+        
       </li><li class="mobile-menu-item">
-
-
-
+        
+          
+          
             <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
-
-
+          
+        
       </li><li class="mobile-menu-item">
-
-
-
+        
+          
+          
             <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
-
-
+          
+        
       </li>
+    
 
-
-
+    
       <li class="mobile-menu-item">
         <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
           <i class="iconfont">
@@ -110,17 +158,17 @@
           </i>
         </a>
       </li>
-
+    
   </ul>
 </nav>
 
 
+  
 
-
-
-
+  
+    
 <div class="modal-dialog">
-
+    
     <div class="modal-content">
       <div id="closeSearch" title="Close" class="close">X</div>
       <div class="modal-header">
@@ -145,83 +193,83 @@
     </div>
 </div>
 
+  
 
-
-
+  
 
   <header id="header" class="header container">
     <div class="logo-wrapper">
   <a href="/" class="logo">
-
+    
       midFang's Blog
-
+    
   </a>
 </div>
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
-
-
+    
+    
         <li class="menu-item">
-
-
-
+        
+          
+          
             <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
 
-
-
+        
 
       </li>
-
+    
         <li class="menu-item">
-
-
-
+        
+          
+          
             <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
 
-
-
+        
 
       </li>
-
+    
         <li class="menu-item">
-
-
-
+        
+          
+          
             <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
 
-
-
+        
 
       </li>
-
+    
         <li class="menu-item">
-
-
-
+        
+          
+          
             <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
 
-
-
+        
 
       </li>
-
+    
         <li class="menu-item">
-
-
-
+        
+          
+          
             <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
 
-
-
+        
 
       </li>
+    
 
+    
+    
 
-
-
-
-
+    
       <li class="menu-item">
         <a id="openSearch" class="menu-item-link menu-item-search" href="#">
           <i class="iconfont">
@@ -235,7 +283,7 @@
           </i>
         </a>
       </li>
-
+    
   </ul>
 </nav>
 
@@ -246,30 +294,99 @@
       <div class="content-wrapper">
         <div id="content" class="content container">
           <article class="post bg-white">
+    
     <header class="post-header">
       <h1 class="post-title">用 AI Agent Skills 搭一个可追踪的 Bug / Feature 开发流水线</h1>
+      
       <div class="post-meta">
         <time datetime="2026-06-25" class="post-time">
           2026-06-25
         </time>
         <div class="post-category">
-            <a href="https://midFang.github.io/categories/工程实践/"> 工程实践 </a>
+            <a href="https://midFang.github.io/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/"> 工程实践 </a>
+            
           </div>
-        <span id="busuanzi_container_page_pv">
-          <span class="post-meta-item-text"> | 阅读 </span>
-          <span id="busuanzi_value_page_pv"></span>
-        </span>
+        
+
+        
+        
+          <span id="busuanzi_container_page_pv">
+            | 阅读 <span id="busuanzi_value_page_pv"></span>
+          </span>
+        
+
+        
+        
+          <span id="/ai-agent-skills-workflow/" class="leancloud_visitors" data-flag-title="用 AI Agent Skills 搭一个可追踪的 Bug / Feature 开发流水线">
+            <span class="post-meta-item-text"> | 阅读 </span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
       </div>
     </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#1-这套-skills">1. 这套 Skills？</a></li>
+<li><a href="#2-这套-skills-的核心思路">2. 这套 Skills 的核心思路</a></li>
+<li><a href="#3-整体架构">3. 整体架构</a></li>
+<li><a href="#4-bug-修复流水线-从表格到合并">4. Bug 修复流水线：从表格到合并</a>
+<ul>
+<li><a href="#第一步-从在线表格导出-csv">第一步：从在线表格导出 CSV</a></li>
+<li><a href="#第二步-整理-bug-批次">第二步：整理 Bug 批次</a></li>
+<li><a href="#第三步-先人工-review-一遍任务">第三步：先人工 Review 一遍任务</a></li>
+<li><a href="#第四步-一个-bug-一个-worktree">第四步：一个 Bug 一个 Worktree</a></li>
+<li><a href="#第五步-ai-自证验证-并准备待测-apk">第五步：AI 自证验证，并准备待测 APK</a></li>
+<li><a href="#第六步-人工-review-diff-再安装-apk-验证">第六步：人工 Review Diff，再安装 APK 验证</a></li>
+<li><a href="#第七步-人工确认后再合并">第七步：人工确认后再合并</a></li>
+<li><a href="#第八步-合并后再装一次-apk-确认后清理">第八步：合并后再装一次 APK，确认后清理</a></li>
+</ul></li>
+<li><a href="#5-feature-开发流水线">5. Feature 开发流水线</a></li>
+<li><a href="#6-plan-流程-把方案变成可执行列表">6. Plan 流程：把方案变成可执行列表</a></li>
+<li><a href="#7-调试日志也要可清理">7. 调试日志也要可清理</a></li>
+<li><a href="#8-为什么我喜欢-git-worktree">8. 为什么我喜欢 Git Worktree？</a></li>
+<li><a href="#9-如何安装和使用这套-skills">9. 如何安装和使用这套 Skills？</a>
+<ul>
+<li><a href="#9-1-放置目录">9.1 放置目录</a></li>
+<li><a href="#9-2-每个-skill-的基本结构">9.2 每个 Skill 的基本结构</a></li>
+<li><a href="#9-3-推荐的使用顺序">9.3 推荐的使用顺序</a></li>
+<li><a href="#9-4-示例-一次完整-bug-修复">9.4 示例：一次完整 Bug 修复</a></li>
+</ul></li>
+<li><a href="#10-这套流程的收益">10. 这套流程的收益</a></li>
+<li><a href="#11-还有哪些可以继续改进">11. 还有哪些可以继续改进？</a></li>
+<li><a href="#12-总结">12. 总结</a></li>
+<li><a href="#附-skills-速查表">附：Skills 速查表</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
     <div class="post-content">
+      
+
 <blockquote>
 <p>这是一篇实践记录：不是展示一个“全自动写代码”的魔法，而是介绍一种更稳的方式——把 AI Agent 的工作拆成多个小技能，让它按文件状态推进、按 Git Worktree 隔离修改、按人工验收闭环。</p>
 </blockquote>
-<p><img loading="lazy" alt="AI Agent Skills 工作流总览" src="/ai-agent-skills-workflow/assets/skills-architecture.svg" /></p>
-<h2 id="1-skills">1. 这套 Skills？</h2>
+
+<p><img src="./assets/skills-architecture.svg" alt="AI Agent Skills 工作流总览" /></p>
+
+<h2 id="1-这套-skills">1. 这套 Skills？</h2>
+
 <p>只是想， 多任务，独立环境，多个并行跑，和 AI 介入的情况下加入边界约束，看过几个 harness engineering 文章， 我觉得应该思路在往这个方向上靠了</p>
-<h2 id="2-skills">2. 这套 Skills 的核心思路</h2>
+
+<h2 id="2-这套-skills-的核心思路">2. 这套 Skills 的核心思路</h2>
+
 <p>我希望 AI Agent 遵守四个原则：</p>
+
 <table>
 <thead>
 <tr>
@@ -277,29 +394,54 @@
 <th>说明</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>文件即状态</td>
 <td>Bug、Feature、验收、修改记录都落在 CSV / Markdown / JSON 里。</td>
 </tr>
+
 <tr>
 <td>一任务一隔离</td>
 <td>每个 Bug 或 Feature 使用独立 Git Worktree 和分支。</td>
 </tr>
+
 <tr>
 <td>先自证再交付</td>
 <td>Agent 必须记录自己做过的验证，而不是只说“应该可以”。</td>
 </tr>
+
 <tr>
 <td>人工确认才合并</td>
 <td>是否通过、是否合并、是否清理，关键节点由人确认。</td>
 </tr>
 </tbody>
 </table>
+
 <p>换句话说，这套流程不是让 AI “更大胆”，而是让 AI <strong>更可控</strong>。</p>
-<h2 id="3">3. 整体架构</h2>
+
+<h2 id="3-整体架构">3. 整体架构</h2>
+
 <p>我的目录里大概有这些 Skills：</p>
-<pre><code class="language-text">skills/
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">skills/
 ├── bug2csv/                  # 从在线表格导出指定 tab 为 CSV
 ├── bugbatch-prepare/         # 把原始 Bug CSV 整理成可执行任务
 ├── bugfix-worktree/          # 为单个 Bug 创建/恢复 worktree 并修复
@@ -312,10 +454,27 @@
 ├── feature-done/             # Feature 验收通过后的合并与清理
 ├── plan/                     # 生成实施计划
 ├── plan-to-issues-csv/       # 把 plan 转成 issues CSV
-└── plan-csv-execute/         # 按 CSV 执行并闭环开发
-</code></pre>
+└── plan-csv-execute/         # 按 CSV 执行并闭环开发</code></pre></td></tr></table>
+</div>
+</div>
 <p>它们可以分成三条线：</p>
-<pre><code class="language-mermaid">flowchart LR
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-mermaid" data-lang="mermaid"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-mermaid" data-lang="mermaid">flowchart LR
   A[在线表格 Bug] --&gt; B[bug2csv]
   B --&gt; C[bugbatch-prepare]
   C --&gt; D[bugfix-worktree]
@@ -326,37 +485,68 @@
   H --&gt; I[feature-done]
 
   J[Plan 文档] --&gt; K[plan-to-issues-csv]
-  K --&gt; L[plan-csv-execute]
-</code></pre>
+  K --&gt; L[plan-csv-execute]</code></pre></td></tr></table>
+</div>
+</div>
 <p>上面是 Skills 的模块关系；真正用起来时，我更关心下面这张闭环图：哪些节点交给 Agent，哪些节点必须人工确认，APK 在哪里产出、在哪里安装验证，什么时候才能合并和清理。</p>
-<p><img loading="lazy" alt="完整使用流程" src="/ai-agent-skills-workflow/assets/full-use-flow.svg" /></p>
-<h2 id="4-bug">4. Bug 修复流水线：从表格到合并</h2>
-<p><img loading="lazy" alt="Bug 生命周期" src="/ai-agent-skills-workflow/assets/bug-lifecycle.svg" /></p>
+
+<p><img src="./assets/full-use-flow.svg" alt="完整使用流程" /></p>
+
+<h2 id="4-bug-修复流水线-从表格到合并">4. Bug 修复流水线：从表格到合并</h2>
+
+<p><img src="./assets/bug-lifecycle.svg" alt="Bug 生命周期" /></p>
+
 <p>一个 Bug 的完整生命周期，不只是“改代码 -&gt; 给包”。我现在更愿意把它拆成几个明确的关卡：<strong>导入、整理、人工 review、隔离修复、自证、准备 APK、安装验证、合并、合并后再验证、清理现场</strong>。</p>
-<h3 id="csv">第一步：从在线表格导出 CSV</h3>
+
+<h3 id="第一步-从在线表格导出-csv">第一步：从在线表格导出 CSV</h3>
+
 <p>如果 Bug 列表在在线表格里，我先用 <code>bug2csv</code> 把指定 sheet/tab 导出成 CSV。</p>
+
 <p>示例指令：</p>
-<pre><code class="language-text">使用 bug2csv，把这个腾讯文档里的 DemoApp（Android）tab 导出为 CSV。
-</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">使用 bug2csv，把这个腾讯文档里的 DemoApp（Android）tab 导出为 CSV。</code></pre></td></tr></table>
+</div>
+</div>
 <p>这个 Skill 的重点是：</p>
+
 <ul>
 <li>只导出目标 tab，而不是整个工作簿；</li>
 <li>复用浏览器已有登录状态；</li>
 <li>只依赖浏览器页面里的登录状态，不额外接触账号资料；</li>
 <li>输出一个本地 CSV，供后续流程使用。</li>
 </ul>
-<h3 id="bug">第二步：整理 Bug 批次</h3>
+
+<h3 id="第二步-整理-bug-批次">第二步：整理 Bug 批次</h3>
+
 <p>原始表格通常不适合直接执行，所以我用 <code>bugbatch-prepare</code> 做一次整理。</p>
+
 <p>它会把原始 CSV 转成类似这样的结构：</p>
-<pre><code class="language-text">issues/&lt;版本&gt;/
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">issues/&lt;版本&gt;/
 ├── bug_batch.csv
 ├── tasks/
 │   ├── BUG-001-TASK.md
 │   ├── BUG-002-TASK.md
 │   └── BUG-003-TASK.md
-└── apks/
-</code></pre>
+└── apks/</code></pre></td></tr></table>
+</div>
+</div>
 <p><code>bug_batch.csv</code> 负责做状态控制，例如：</p>
+
 <table>
 <thead>
 <tr>
@@ -368,6 +558,7 @@
 <th>apk_path</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>BUG-001</td>
@@ -377,6 +568,7 @@
 <td>tasks/BUG-001-TASK.md</td>
 <td>apks/BUG-001.apk</td>
 </tr>
+
 <tr>
 <td>BUG-002</td>
 <td>某页面文案错位</td>
@@ -385,6 +577,7 @@
 <td>tasks/BUG-002-TASK.md</td>
 <td>apks/BUG-002.apk</td>
 </tr>
+
 <tr>
 <td>BUG-003</td>
 <td>描述信息不足</td>
@@ -395,10 +588,15 @@
 </tr>
 </tbody>
 </table>
+
 <p>这里我特别喜欢 <code>needs_info</code> 这个状态。它让 Agent 在信息不足时停止，而不是硬猜。</p>
-<h3 id="review">第三步：先人工 Review 一遍任务</h3>
+
+<h3 id="第三步-先人工-review-一遍任务">第三步：先人工 Review 一遍任务</h3>
+
 <p>这一点我后来觉得很重要：<strong>不要让 Agent 拿到 CSV 就直接开修</strong>。</p>
+
 <p><code>bugbatch-prepare</code> 之后，我会先看一眼生成的 <code>TASK.md</code> 和 <code>bug_batch.csv</code>，主要确认：</p>
+
 <ul>
 <li>Bug 描述是否足够复现；</li>
 <li>预期结果和实际结果有没有写清楚；</li>
@@ -406,13 +604,24 @@
 <li>是否需要补充设备、系统版本、账号状态、连接方式等上下文；</li>
 <li>验收标准是否能被人工执行。</li>
 </ul>
+
 <p>如果信息不足，就把状态留在 <code>needs_info</code>，补充完再进入修复。这个 review 节点看起来慢一点，但它能避免 Agent 后面花很多时间在错误方向上。</p>
-<h3 id="bug-worktree">第四步：一个 Bug 一个 Worktree</h3>
+
+<h3 id="第四步-一个-bug-一个-worktree">第四步：一个 Bug 一个 Worktree</h3>
+
 <p>真正开始修复时，用 <code>bugfix-worktree</code> 领取一个 Bug。</p>
+
 <p>示例指令：</p>
-<pre><code class="language-text">使用 bugfix-worktree 修复 BUG-001。
-</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">使用 bugfix-worktree 修复 BUG-001。</code></pre></td></tr></table>
+</div>
+</div>
 <p>它会做几件事：</p>
+
 <ol>
 <li>读取 <code>bug_batch.csv</code> 和对应的 <code>BUG-001-TASK.md</code>；</li>
 <li>创建或恢复 <code>worktrees/BUG-001</code>；</li>
@@ -422,22 +631,40 @@
 <li>构建待验证 APK；</li>
 <li>更新 TASK 和 CSV 状态。</li>
 </ol>
+
 <p>这样做最大的好处是：<strong>不同 Bug 的修改不会互相污染</strong>。</p>
-<pre><code class="language-mermaid">flowchart TB
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-mermaid" data-lang="mermaid"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-mermaid" data-lang="mermaid">flowchart TB
   R[业务仓库 main/develop] --&gt; W1[worktree: BUG-001]
   R --&gt; W2[worktree: BUG-002]
   R --&gt; W3[worktree: BUG-003]
 
   W1 --&gt; A1[只修 BUG-001]
   W2 --&gt; A2[只修 BUG-002]
-  W3 --&gt; A3[只修 BUG-003]
-</code></pre>
-<h3 id="ai-apk">第五步：AI 自证验证，并准备待测 APK</h3>
+  W3 --&gt; A3[只修 BUG-003]</code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="第五步-ai-自证验证-并准备待测-apk">第五步：AI 自证验证，并准备待测 APK</h3>
+
 <p>我不希望 Agent 改完代码只回复一句：</p>
+
 <blockquote>
 <p>已修复，请验证。</p>
 </blockquote>
+
 <p>所以 TASK 文件里会要求它记录：</p>
+
 <ul>
 <li>修改了哪些文件；</li>
 <li>为什么这么改；</li>
@@ -446,57 +673,113 @@
 <li>待验证 APK 输出在哪里；</li>
 <li>有哪些风险和未覆盖点。</li>
 </ul>
+
 <p>示例 TASK 片段：</p>
-<pre><code class="language-markdown">## 修改记录
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-markdown" data-lang="markdown"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-markdown" data-lang="markdown"><span class="gu">## 修改记录
+</span><span class="gu"></span>
+<span class="k">-</span> 修复入口页状态恢复时的空对象访问。
+<span class="k">-</span> 增加异常分支保护，避免首次进入页面时崩溃。
 
-- 修复入口页状态恢复时的空对象访问。
-- 增加异常分支保护，避免首次进入页面时崩溃。
+<span class="gu">## AI 自证验证
+</span><span class="gu"></span>
+<span class="k">-</span> 已执行单元测试：通过。
+<span class="k">-</span> 已执行 Debug 构建：通过。
+<span class="k">-</span> 已检查本次 diff：未发现与 BUG-001 无关的改动。
 
-## AI 自证验证
+<span class="gu">## 待验证产物
+</span><span class="gu"></span>
+<span class="k">-</span> APK：apks/BUG-001.apk
+<span class="k">-</span> 来源：worktree BUG-001 当前分支构建
 
-- 已执行单元测试：通过。
-- 已执行 Debug 构建：通过。
-- 已检查本次 diff：未发现与 BUG-001 无关的改动。
-
-## 待验证产物
-
-- APK：apks/BUG-001.apk
-- 来源：worktree BUG-001 当前分支构建
-
-## 待人工验证
-
-- 安装 apks/BUG-001.apk。
-- 按原始复现场景重复操作 3 次。
-- 确认不再闪退。
-- 顺手检查相关页面没有明显回归。
-</code></pre>
+<span class="gu">## 待人工验证
+</span><span class="gu"></span>
+<span class="k">-</span> 安装 apks/BUG-001.apk。
+<span class="k">-</span> 按原始复现场景重复操作 3 次。
+<span class="k">-</span> 确认不再闪退。
+- 顺手检查相关页面没有明显回归。</code></pre></td></tr></table>
+</div>
+</div>
 <p>这里的 <code>apks/BUG-001.apk</code> 不是随便丢一个包，而是和任务状态绑定的产物：谁修的、从哪个 worktree 构建、对应哪个 TASK，都能追回去。</p>
-<h3 id="review-diff-apk">第六步：人工 Review Diff，再安装 APK 验证</h3>
+
+<h3 id="第六步-人工-review-diff-再安装-apk-验证">第六步：人工 Review Diff，再安装 APK 验证</h3>
+
 <p>在安装 APK 之前，我通常还会做一次很轻量的人工 review：</p>
+
 <ul>
 <li>diff 是否只围绕这个 Bug；</li>
 <li>有没有顺手改了无关逻辑；</li>
 <li>有没有临时日志、实验代码忘记清理；</li>
 <li>对复杂逻辑，注释是否能解释“为什么这样修”。</li>
 </ul>
+
 <p>然后再把待测 APK 安装到设备上验证：</p>
-<pre><code class="language-text">安装 apks/BUG-001.apk，按 BUG-001-TASK.md 的待人工验证步骤执行。
-</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">安装 apks/BUG-001.apk，按 BUG-001-TASK.md 的待人工验证步骤执行。</code></pre></td></tr></table>
+</div>
+</div>
 <p>安装可以是手动拖包，也可以是类似这样的命令：</p>
-<pre><code class="language-bash">adb install -r apks/BUG-001.apk
-</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">adb install -r apks/BUG-001.apk</code></pre></td></tr></table>
+</div>
+</div>
 <p>如果验证不通过，就不要合并。继续回到 <code>BUG-001</code> 的 worktree 里修，TASK 里保留失败现象和下一轮验证结果。</p>
-<h3 id="_1">第七步：人工确认后再合并</h3>
+
+<h3 id="第七步-人工确认后再合并">第七步：人工确认后再合并</h3>
+
 <p>当用户确认某个 Bug 的待验证包通过后，再用 <code>bugfix-done</code> 合并。</p>
+
 <p>示例指令：</p>
-<pre><code class="language-text">BUG-001 人工验证通过，合并到 develop。
-</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">BUG-001 人工验证通过，合并到 develop。</code></pre></td></tr></table>
+</div>
+</div>
 <p>这里有两个强约束：</p>
+
 <ol>
 <li>如果用户没有明确目标分支，Agent 必须先问，不能自己猜；</li>
 <li>如果人工验证没有明确通过，Agent 不能为了“流程完整”自动合并。</li>
 </ol>
+
 <p><code>bugfix-done</code> 做的事情不是简单 <code>git merge</code>，它还应该把状态补齐：</p>
+
 <ul>
 <li>合并到目标分支；</li>
 <li>更新 <code>bug_batch.csv</code> 的状态；</li>
@@ -504,11 +787,20 @@
 <li>必要时构建目标分支的合并后 APK；</li>
 <li>把“还需要集成验证”这件事留给用户确认。</li>
 </ul>
-<h3 id="apk">第八步：合并后再装一次 APK，确认后清理</h3>
+
+<h3 id="第八步-合并后再装一次-apk-确认后清理">第八步：合并后再装一次 APK，确认后清理</h3>
+
 <p>单 Bug 包通过，不等于目标分支集成后一定没问题。所以合并之后，我会再准备一个“合并后 APK”，让用户做一次集成验证。</p>
-<pre><code class="language-text">合并后 APK 已生成，请安装后再验证 BUG-001 复现场景和相关页面。
-</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">合并后 APK 已生成，请安装后再验证 BUG-001 复现场景和相关页面。</code></pre></td></tr></table>
+</div>
+</div>
 <p>只有这一步也确认通过后，才进入清理：</p>
+
 <ul>
 <li>删除对应 worktree；</li>
 <li>清理临时调试日志；</li>
@@ -516,70 +808,155 @@
 <li>更新 TASK 和 CSV 到最终状态；</li>
 <li>保留必要的修改记录，方便以后追溯。</li>
 </ul>
+
 <p>这一步看起来像收尾，但很关键。因为很多“AI 改代码翻车”的问题，不发生在第一次修复，而是发生在：包给错了、分支合错了、临时代码没清、验证通过后现场没收干净。</p>
-<h2 id="5-feature">5. Feature 开发流水线</h2>
+
+<h2 id="5-feature-开发流水线">5. Feature 开发流水线</h2>
+
 <p>Feature 流程和 Bug 类似，只是输入从“Bug 表格”变成“功能想法”。</p>
-<pre><code class="language-mermaid">flowchart LR
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-mermaid" data-lang="mermaid"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-mermaid" data-lang="mermaid">flowchart LR
   A[一句功能想法] --&gt; B[feature-prepare]
   B --&gt; C[feature_list.json]
   B --&gt; D[specs/FEAT-001.md]
   B --&gt; E[tasks/FEAT-001-TASK.md]
   E --&gt; F[feature-worktree]
   F --&gt; G[待验证构建产物]
-  G --&gt; H[feature-done]
-</code></pre>
+  G --&gt; H[feature-done]</code></pre></td></tr></table>
+</div>
+</div>
 <p>我一般会这样使用：</p>
-<pre><code class="language-text">使用 feature-prepare，整理一个“新增导出历史记录页面”的功能需求。
-</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">使用 feature-prepare，整理一个“新增导出历史记录页面”的功能需求。</code></pre></td></tr></table>
+</div>
+</div>
 <p>它会生成：</p>
-<pre><code class="language-text">features/&lt;版本&gt;/
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">features/&lt;版本&gt;/
 ├── feature_list.json
 ├── specs/
 │   └── FEAT-001.md
 ├── tasks/
 │   └── FEAT-001-TASK.md
-└── apks/
-</code></pre>
+└── apks/</code></pre></td></tr></table>
+</div>
+</div>
 <p><code>spec.md</code> 负责描述目标和行为，<code>TASK.md</code> 负责记录执行过程。</p>
+
 <p>Feature 也需要人工 review：先确认 spec 的边界、交互和验收标准，再让 Agent 进入 <code>feature-worktree</code>。开发完成后同样要准备待测 APK，由人安装验证；验收通过后才进入 <code>feature-done</code>，合并后再做一次集成验证，最后清理 worktree 和临时日志。</p>
+
 <p>开发时：</p>
-<pre><code class="language-text">使用 feature-worktree 开发 FEAT-001。
-</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">使用 feature-worktree 开发 FEAT-001。</code></pre></td></tr></table>
+</div>
+</div>
 <p>验收通过后：</p>
-<pre><code class="language-text">FEAT-001 验证通过，合并到 develop。
-</code></pre>
-<h2 id="6-plan">6. Plan 流程：把方案变成可执行列表</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">FEAT-001 验证通过，合并到 develop。</code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="6-plan-流程-把方案变成可执行列表">6. Plan 流程：把方案变成可执行列表</h2>
+
 <blockquote>
 <p>这条流程适合把较大的目标先拆成方案，再转成可以逐项执行和验收的任务列表。参考的是L站的流程，不过现在有 goal 了，需求性更低了</p>
 </blockquote>
+
 <p>除了 Bug 和 Feature，我还做了一条 Plan 流程，用于更大一点的改造。</p>
-<pre><code class="language-mermaid">flowchart TB
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-mermaid" data-lang="mermaid"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-mermaid" data-lang="mermaid">flowchart TB
   A[生成/修改 plan/*.md] --&gt; B[plan-to-issues-csv]
   B --&gt; C[issues/YYYY-MM-DD_HH-mm-ss-slug.csv]
   C --&gt; D[plan-csv-execute]
   D --&gt; E[逐项实现]
   E --&gt; F[验证]
-  F --&gt; G[本地提交，不自动 push]
-</code></pre>
+  F --&gt; G[本地提交，不自动 push]</code></pre></td></tr></table>
+</div>
+</div>
 <p>这条流程适合：</p>
+
 <ul>
 <li>重构；</li>
 <li>多步骤改造；</li>
 <li>需要先讨论方案的功能；</li>
 <li>不想让 Agent 一次性改太多的任务。</li>
 </ul>
+
 <p>我常用的方式是：</p>
-<pre><code class="language-text">进入 Plan 模式，给这个需求生成实现方案。
-</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">进入 Plan 模式，给这个需求生成实现方案。</code></pre></td></tr></table>
+</div>
+</div>
 <p>然后：</p>
-<pre><code class="language-text">把这个 plan 转成 issues csv。
-</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">把这个 plan 转成 issues csv。</code></pre></td></tr></table>
+</div>
+</div>
 <p>最后：</p>
-<pre><code class="language-text">按 issues csv 执行。
-</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">按 issues csv 执行。</code></pre></td></tr></table>
+</div>
+</div>
 <p>这里的重点是：<strong>CSV 是任务边界和状态来源</strong>。Agent 不能跳过 CSV 自己自由发挥。</p>
-<h2 id="7">7. 调试日志也要可清理</h2>
+
+<h2 id="7-调试日志也要可清理">7. 调试日志也要可清理</h2>
+
 <p>有些 Bug 需要先加日志才能定位。于是我单独做了两个 Skills：</p>
+
 <table>
 <thead>
 <tr>
@@ -587,64 +964,111 @@
 <th>作用</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td><code>debug-tag-add</code></td>
 <td>添加带固定 tag 的临时调试日志。</td>
 </tr>
+
 <tr>
 <td><code>debug-tag-clear</code></td>
 <td>清理这些临时日志，避免带进正式代码。</td>
 </tr>
 </tbody>
 </table>
+
 <p>这比“随手加几行 log”安全得多，因为它从一开始就规定：</p>
+
 <ul>
 <li>日志必须有固定 tag；</li>
 <li>日志要尽量小范围；</li>
 <li>修复完成后必须能被定位和清理；</li>
 <li>清理时不能误删业务代码。</li>
 </ul>
-<h2 id="8-git-worktree">8. 为什么我喜欢 Git Worktree？</h2>
+
+<h2 id="8-为什么我喜欢-git-worktree">8. 为什么我喜欢 Git Worktree？</h2>
+
 <p>以前我也试过让 Agent 在同一个仓库目录里连续修多个 Bug。结果很容易出现：</p>
+
 <ul>
 <li>上一个 Bug 的临时代码没清理；</li>
 <li>当前 diff 里混入别的任务；</li>
 <li>分支切换时工作区不干净；</li>
 <li>人工验证一个包时，不知道它到底包含哪些改动。</li>
 </ul>
+
 <p>Git Worktree 可以很好地解决这个问题。</p>
-<pre><code class="language-text">worktrees/
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">worktrees/
 ├── BUG-001/
 ├── BUG-002/
 ├── BUG-003/
 ├── FEAT-001/
-└── FEAT-002/
-</code></pre>
+└── FEAT-002/</code></pre></td></tr></table>
+</div>
+</div>
 <p>每个目录都是一个独立工作区，但共享同一个 Git 仓库对象库。对 Agent 来说，这个边界非常清晰：</p>
+
 <blockquote>
 <p>你现在只允许在这个 worktree 里修这个任务。</p>
 </blockquote>
-<h2 id="9-skills">9. 如何安装和使用这套 Skills？</h2>
+
+<h2 id="9-如何安装和使用这套-skills">9. 如何安装和使用这套 Skills？</h2>
+
 <p>不同 Agent 平台的 skills 放置方式不完全一样，但核心步骤类似。</p>
-<h3 id="91">9.1 放置目录</h3>
+
+<h3 id="9-1-放置目录">9.1 放置目录</h3>
+
 <p>把这些目录放到你的 Agent 支持的 skills 目录里，例如：</p>
-<pre><code class="language-text">~/.agent/skills/
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">~/.agent/skills/
 └── ai-agent-skills/
     ├── bug2csv/
     ├── bugbatch-prepare/
     ├── bugfix-worktree/
-    └── ...
-</code></pre>
+    └── ...</code></pre></td></tr></table>
+</div>
+</div>
 <p>或者直接把当前仓库作为 skills 集合引用。</p>
-<h3 id="92-skill">9.2 每个 Skill 的基本结构</h3>
+
+<h3 id="9-2-每个-skill-的基本结构">9.2 每个 Skill 的基本结构</h3>
+
 <p>一个 Skill 通常长这样：</p>
-<pre><code class="language-text">bugfix-worktree/
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">bugfix-worktree/
 ├── SKILL.md
 └── agents/
-    └── openai.yaml
-</code></pre>
+    └── openai.yaml</code></pre></td></tr></table>
+</div>
+</div>
 <p><code>SKILL.md</code> 是核心，里面写：</p>
+
 <ul>
 <li>这个 Skill 什么时候触发；</li>
 <li>需要哪些输入；</li>
@@ -652,9 +1076,25 @@
 <li>哪些事情不能做；</li>
 <li>完成时应该怎么回复。</li>
 </ul>
-<h3 id="93">9.3 推荐的使用顺序</h3>
+
+<h3 id="9-3-推荐的使用顺序">9.3 推荐的使用顺序</h3>
+
 <p>如果你是处理 Bug，我建议按这个顺序走完整闭环：</p>
-<pre><code class="language-text">bug2csv
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">bug2csv
   -&gt; bugbatch-prepare
   -&gt; 人工 review TASK / CSV
   -&gt; bugfix-worktree
@@ -663,26 +1103,70 @@
   -&gt; 安装待测 APK 验证
   -&gt; bugfix-done 合并
   -&gt; 构建并安装合并后 APK 验证
-  -&gt; 清理 worktree / 临时日志 / 状态表
-</code></pre>
+  -&gt; 清理 worktree / 临时日志 / 状态表</code></pre></td></tr></table>
+</div>
+</div>
 <p>如果你是开发 Feature：</p>
-<pre><code class="language-text">feature-prepare
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">feature-prepare
   -&gt; 人工 review spec / TASK
   -&gt; feature-worktree
   -&gt; 准备待测 APK
   -&gt; 安装验证
   -&gt; feature-done
   -&gt; 合并后验证
-  -&gt; 清理
-</code></pre>
+  -&gt; 清理</code></pre></td></tr></table>
+</div>
+</div>
 <p>如果你是执行一个较大的计划：</p>
-<pre><code class="language-text">plan
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">plan
   -&gt; plan-to-issues-csv
   -&gt; plan-csv-execute
-  -&gt; 按子任务逐项 review / 验证 / 合并
-</code></pre>
-<h3 id="94-bug">9.4 示例：一次完整 Bug 修复</h3>
-<pre><code class="language-text">用户：把这个在线表格里的 DemoApp（Android）tab 导出成 CSV。
+  -&gt; 按子任务逐项 review / 验证 / 合并</code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="9-4-示例-一次完整-bug-修复">9.4 示例：一次完整 Bug 修复</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">用户：把这个在线表格里的 DemoApp（Android）tab 导出成 CSV。
 Agent：使用 bug2csv，生成 DemoApp-Android.csv。
 
 用户：把这个 CSV 整理成本周要修的 bug batch。
@@ -698,11 +1182,15 @@ Agent：等待人工验证结果，并在 TASK 中记录待验证项。
 Agent：使用 bugfix-done，合并、更新状态、构建 develop 上的合并后 APK。
 
 用户：合并后 APK 也安装验证通过，可以清理。
-Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状态。
-</code></pre>
-<h2 id="10">10. 这套流程的收益</h2>
+Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状态。</code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="10-这套流程的收益">10. 这套流程的收益</h2>
+
 <p>我最大的感受是：Agent 的能力并不只取决于模型本身，也取决于你有没有给它设计好“轨道”。</p>
+
 <p>这套 Skills 带来的收益主要有：</p>
+
 <ol>
 <li><strong>任务更清楚</strong>：每个 Bug / Feature 都有自己的 TASK 文件；</li>
 <li><strong>状态可追踪</strong>：CSV 记录 ready、in_progress、verified、merged 等状态；</li>
@@ -713,8 +1201,11 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
 <li><strong>产物可对应</strong>：每个待测 APK 都能追到具体任务、worktree 和验证记录；</li>
 <li><strong>清理有节点</strong>：合并后再次验证，通过后才删除 worktree 和临时日志。</li>
 </ol>
-<h2 id="11">11. 还有哪些可以继续改进？</h2>
+
+<h2 id="11-还有哪些可以继续改进">11. 还有哪些可以继续改进？</h2>
+
 <p>这套流程还可以继续扩展：</p>
+
 <ul>
 <li>接入 CI，让每个 worktree 自动跑测试；</li>
 <li>给 <code>bug_batch.csv</code> 做一个可视化面板；</li>
@@ -722,15 +1213,23 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
 <li>将 TASK 文件和 Git commit 互相关联；</li>
 <li>为不同项目提供模板化字段；</li>
 </ul>
-<h2 id="12">12. 总结</h2>
+
+<h2 id="12-总结">12. 总结</h2>
+
 <p>如果让我用一句话总结这套实践：</p>
+
 <blockquote>
 <p>不要让 AI Agent 自由地“到处改”，而是给它一组小而明确的 Skills，让它在可追踪的状态文件和隔离的工作区里完成任务。</p>
 </blockquote>
+
 <p>AI 写代码并不难，难的是让它在真实工程里可靠地工作。</p>
+
 <p>我认为 Skills 的价值就在这里：它把“经验”和“边界”写成了可复用的流程，让 Agent 每次都沿着同一条安全路径前进。</p>
+
 <hr />
-<h2 id="skills">附：Skills 速查表</h2>
+
+<h2 id="附-skills-速查表">附：Skills 速查表</h2>
+
 <table>
 <thead>
 <tr>
@@ -739,67 +1238,80 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
 <th>产物</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td><code>bug2csv</code></td>
 <td>从在线表格导出指定 tab</td>
 <td>CSV</td>
 </tr>
+
 <tr>
 <td><code>bugbatch-prepare</code></td>
 <td>把原始 Bug CSV 整理成可执行批次</td>
 <td><code>bug_batch.csv</code>、<code>tasks/*.md</code></td>
 </tr>
+
 <tr>
 <td><code>bugfix-worktree</code></td>
 <td>修复单个 Bug</td>
 <td>worktree、分支、待验证包、TASK 更新</td>
 </tr>
+
 <tr>
 <td><code>bugfix-done</code></td>
 <td>Bug 人工验证通过后合并</td>
 <td>合并提交、目标分支构建、状态更新</td>
 </tr>
+
 <tr>
 <td><code>bugfix-comment-context</code></td>
 <td>修复逻辑不明显时补注释</td>
 <td>高信号维护注释</td>
 </tr>
+
 <tr>
 <td><code>debug-tag-add</code></td>
 <td>添加临时调试日志</td>
 <td>带固定 tag 的日志</td>
 </tr>
+
 <tr>
 <td><code>debug-tag-clear</code></td>
 <td>清理临时调试日志</td>
 <td>干净 diff</td>
 </tr>
+
 <tr>
 <td><code>feature-prepare</code></td>
 <td>整理功能想法</td>
 <td><code>feature_list.json</code>、spec、TASK</td>
 </tr>
+
 <tr>
 <td><code>feature-worktree</code></td>
 <td>开发单个 Feature</td>
 <td>worktree、待验证包</td>
 </tr>
+
 <tr>
 <td><code>feature-done</code></td>
 <td>Feature 验证通过后合并</td>
 <td>合并和清理</td>
 </tr>
+
 <tr>
 <td><code>plan</code></td>
 <td>生成实施计划</td>
 <td><code>plan/*.md</code></td>
 </tr>
+
 <tr>
 <td><code>plan-to-issues-csv</code></td>
 <td>把计划拆成任务表</td>
 <td><code>issues/*.csv</code></td>
 </tr>
+
 <tr>
 <td><code>plan-csv-execute</code></td>
 <td>按 CSV 执行计划</td>
@@ -807,35 +1319,88 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
 </tr>
 </tbody>
 </table>
+
     </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2026-06-25
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
     <footer class="post-footer">
       <div class="post-tags">
-          <a href="https://midFang.github.io/tags/AI Agent/">AI Agent</a>
-          <a href="https://midFang.github.io/tags/Engineering Workflow/">Engineering Workflow</a>
-          <a href="https://midFang.github.io/tags/Git Worktree/">Git Worktree</a>
-          <a href="https://midFang.github.io/tags/Skills/">Skills</a>
-          <a href="https://midFang.github.io/tags/Android/">Android</a>
-      </div>
+          <a href="https://midFang.github.io/tags/ai-agent/">AI Agent</a>
+          <a href="https://midFang.github.io/tags/engineering-workflow/">Engineering Workflow</a>
+          <a href="https://midFang.github.io/tags/git-worktree/">Git Worktree</a>
+          <a href="https://midFang.github.io/tags/skills/">Skills</a>
+          <a href="https://midFang.github.io/tags/android/">Android</a>
+          
+        </div>
+
+      
       <nav class="post-nav">
-          <a href="/compose-tablet-adaptation/" class="prev" rel="prev" title="Compose 平板适配">
-            <span class="prev-text nav-default">Compose 平板适配</span>
+        
+          <a class="prev" href="/books-peter-lynch-successful-investing-reading-notes/">
+            
+            <i class="iconfont">
+              <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M691.908486 949.511495l75.369571-89.491197c10.963703-12.998035 10.285251-32.864502-1.499144-44.378743L479.499795 515.267417 757.434875 204.940602c11.338233-12.190647 11.035334-32.285311-0.638543-44.850487l-80.46666-86.564541c-11.680017-12.583596-30.356378-12.893658-41.662889-0.716314L257.233596 494.235404c-11.332093 12.183484-11.041474 32.266891 0.657986 44.844348l80.46666 86.564541c1.772366 1.910513 3.706415 3.533476 5.750981 4.877077l306.620399 321.703933C662.505829 963.726242 680.945807 962.528973 691.908486 949.511495z"></path>
+</svg>
+
+            </i>
+            <span class="prev-text nav-default">《彼得·林奇的成功投资》读书笔记</span>
             <span class="prev-text nav-mobile">Prev</span>
-            <i class="iconfont"><svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="18" height="18"><path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path></svg></i>
+          </a>
+        
+          <a class="next" href="/compose-tablet-adaptation/">
+            <span class="next-text nav-default">Compose 平板适配</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
           </a>
       </nav>
     </footer>
   </article>
 
+  
+  
 
+  
+  
 
+  
 
-
-
-
-
-
-
-
+  
+  
     <div class="post bg-white">
       <script src="https://utteranc.es/client.js"
             repo= "midFang/blog-comments"
@@ -845,17 +1410,17 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
             async>
       </script>
     </div>
+  
 
+  
 
+  
 
+  
 
+    
 
-
-
-
-
-
-
+  
 
         </div>
       </div>
@@ -863,8 +1428,8 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
 
     <footer id="footer" class="footer">
       <div class="icon-links">
-
-
+  
+  
     <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
       title="github"  target="_blank"
       >
@@ -875,7 +1440,7 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
 </svg>
 
     </a>
-
+  
     <a href="https://stackoverflow.com/users/14331888/midfang" rel="me noopener" class="iconfont"
       title="stack-overflow"  target="_blank"
       >
@@ -886,7 +1451,7 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
 </svg>
 
     </a>
-
+  
     <a href="https://www.douban.com/people/194654920/" rel="me noopener" class="iconfont"
       title="douban"  target="_blank"
       >
@@ -908,7 +1473,7 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
 </svg>
 
   </a>
-
+   
 </div>
 
 <div class="copyright">
@@ -922,11 +1487,11 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
 
   <span class="copyright-year">
     &copy;
-
+    
       2020 -
     2026
     <span class="heart">
-
+      
       <i class="iconfont">
         <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
   xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -938,24 +1503,24 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
       </i>
     </span><span class="author">
         midFang
-
+        
       </span></span>
 
-
-
+  
+  
     <span id="busuanzi_container">
       访客数/访问量：<span id="busuanzi_value_site_uv"></span>/<span id="busuanzi_value_site_pv"></span>
     </span>
+  
 
-
-
+  
 </div>
 
     </footer>
 
     <div class="back-to-top" id="back-to-top">
       <i class="iconfont">
-
+        
         <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
   xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
   width="35" height="35">
@@ -965,7 +1530,7 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
       </i>
     </div>
   </div>
-
+  
 <script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
 
@@ -1064,12 +1629,12 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
             });
           } else {
             var newcounter = new Counter();
-
+             
             var acl = new AV.ACL();
             acl.setPublicReadAccess(true);
             acl.setPublicWriteAccess(true);
             newcounter.setACL(acl);
-
+             
             newcounter.set("title", title);
             newcounter.set("url", url);
             newcounter.set("hits", 1);
@@ -1093,10 +1658,10 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
     $(function () {
       var Counter = AV.Object.extend("Counter");
       if ($('.leancloud_visitors').length == 1) {
-
+        
         addCount(Counter);
       } else if ($('.post-link').length > 1) {
-
+        
         showHitCount(Counter);
       }
     });
@@ -1116,7 +1681,7 @@ Agent：清理对应 worktree 和临时日志，更新 TASK / CSV 到最终状�
     });
 
     $(document).click(function(event) {
-
+    
       if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
         $("body").find(".modal-dialog").removeClass("visible");
       }
