@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760"><rect width="100%" height="100%" fill="#F7F9FC"/><style>
+  .title{font:700 34px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#14213d}
+  .sub{font:400 18px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#526079}
+  .h{font:700 22px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#14213d}
+  .t{font:400 17px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#33415c}
+  .small{font:400 15px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#526079}
+  .white{fill:#fff}.mono{font:500 15px Consolas,monospace;fill:#33415c}
+</style>
+<text x="70" y="70" class="title">从一句 Goal 到可持续执行的 Harness</text>
+<text x="70" y="108" class="sub">模型负责判断与编码，文件系统、Git 和验证规则负责提供可重复的执行环境</text>
+<rect x="70" y="155" width="280" height="120" rx="20" fill="#E8F0FF" stroke="#7297F5"/><text x="210" y="202" text-anchor="middle" class="h">Goal</text><text x="210" y="236" text-anchor="middle" class="t">完整迁移全部页面</text>
+<path d="M350 215 H460" stroke="#5B6B88" stroke-width="3" marker-end="url(#a)"/>
+<rect x="460" y="145" width="480" height="140" rx="22" fill="#14213D"/><text x="700" y="195" text-anchor="middle" class="h white">AGENTS.md：总入口与边界</text><text x="700" y="233" text-anchor="middle" class="t white">读规则 · 建契约 · 更新台账 · 二次审查</text>
+<path d="M940 215 H1050" stroke="#5B6B88" stroke-width="3" marker-end="url(#a)"/>
+<rect x="1050" y="155" width="280" height="120" rx="20" fill="#E8FFF5" stroke="#56B88A"/><text x="1190" y="202" text-anchor="middle" class="h">工作循环</text><text x="1190" y="236" text-anchor="middle" class="t">持续选择下一项</text>
+<rect x="70" y="355" width="220" height="120" rx="18" fill="#fff" stroke="#C9D3E4"/><text x="180" y="397" text-anchor="middle" class="h">盘点基准</text><text x="180" y="432" text-anchor="middle" class="small">页面 / 资源 / 功能</text>
+<rect x="330" y="355" width="220" height="120" rx="18" fill="#fff" stroke="#C9D3E4"/><text x="440" y="397" text-anchor="middle" class="h">建立契约</text><text x="440" y="432" text-anchor="middle" class="small">状态 / 交互 / 差异</text>
+<rect x="590" y="355" width="220" height="120" rx="18" fill="#fff" stroke="#C9D3E4"/><text x="700" y="397" text-anchor="middle" class="h">迁移实现</text><text x="700" y="432" text-anchor="middle" class="small">按依赖与入口排序</text>
+<rect x="850" y="355" width="220" height="120" rx="18" fill="#fff" stroke="#C9D3E4"/><text x="960" y="397" text-anchor="middle" class="h">构建验证</text><text x="960" y="432" text-anchor="middle" class="small">测试 / 截图 / 静审</text>
+<rect x="1110" y="355" width="220" height="120" rx="18" fill="#fff" stroke="#C9D3E4"/><text x="1220" y="397" text-anchor="middle" class="h">Git 提交</text><text x="1220" y="432" text-anchor="middle" class="small">阶段成果可恢复</text>
+<path d="M290 415 H330 M550 415 H590 M810 415 H850 M1070 415 H1110" stroke="#7297F5" stroke-width="3" marker-end="url(#a)"/>
+<path d="M1220 475 V565 H180 V475" fill="none" stroke="#56B88A" stroke-width="3" stroke-dasharray="10 8" marker-end="url(#a)"/>
+<rect x="350" y="620" width="700" height="75" rx="18" fill="#FFF4DC" stroke="#E7B75C"/><text x="700" y="666" text-anchor="middle" class="t">停止条件：全部通过，或遇到经过记录且无法绕开的真实外部阻塞</text>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#5B6B88"/></marker></defs>
+</svg>

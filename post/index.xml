@@ -6,10 +6,25 @@
     <description>Recent content in Posts on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 04 Jul 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 10 Jul 2026 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>让 AI 连续干四天：我给 Android 到鸿蒙迁移搭了一套 Loop Harness</title>
+      <link>https://midFang.github.io/loop-harness-android-to-harmonyos-migration/</link>
+      <pubDate>Fri, 10 Jul 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/loop-harness-android-to-harmonyos-migration/</guid>
+      <description>&lt;p&gt;最近项目中，我需要把一个 Android 项目的全部页面迁移到鸿蒙。目标不是重新设计，而是尽可能完整地复刻原项目的页面、UI、交互、状态和跳转。&lt;/p&gt;
+
+&lt;p&gt;实际效果比我预想得好：我只设置了一次总 Goal，中间没有继续指挥，Agent 持续执行了四天多。阶段结果里，鸿蒙界面的主体完成度已经接近九成。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;./assets/01-four-day-execution.png&#34; alt=&#34;一次 Goal 的执行记录&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这里最重要的不是“四天”这个数字，而是：&lt;strong&gt;Agent 为什么能够在没有人持续补充指令的情况下，知道下一步该做什么，并且没有把大型迁移变成一堆不可追踪的改动？&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>《彼得·林奇的成功投资》读书笔记</title>
@@ -193,15 +208,6 @@
       
       <guid>https://midFang.github.io/compose-animatedecay/</guid>
       <description>前言 回顾上篇文章我们学习了 compose 中的 animateTo 、 snapTo 如何使用，和 animationSpec 的参数配置等等，这篇文章，我们学习 Animatable 中另外一个方法 animateDecay animateDecay 衰减型动画， 它只有一个实现类 DecayAnimationSpecImpl 有了</description>
-    </item>
-    
-    <item>
-      <title>Compose 动画基础篇之各种 Spec</title>
-      <link>https://midFang.github.io/compose-animation-basics/</link>
-      <pubDate>Sat, 20 May 2023 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/compose-animation-basics/</guid>
-      <description>从这一节开始，我们开始讲解 compose 最基础的动画 Api 使用，最基础也是最重要的部分，掌握这些基础的配置，会对后面的高阶动画的使用配置更加的得心应手 状态转</description>
     </item>
     
   </channel>

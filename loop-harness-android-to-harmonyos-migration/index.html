@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>让 AI 连续干四天：我给 Android 到鸿蒙迁移搭了一套 Loop Harness - midFang&#39;s Blog</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="midFang" />
+  <meta name="description" content="最近项目中，我需要把一个 Android 项目的全部页面迁移到鸿蒙。目标不是重新设计，而是尽可能完整地复刻原项目的页面、UI、交互、状态和跳转。
+实际效果比我预想得好：我只设置了一次总 Goal，中间没有继续指挥，Agent 持续执行了四天多。阶段结果里，鸿蒙界面的主体完成度已经接近九成。
+这里最重要的不是“四天”这个数字，而是：Agent 为什么能够在没有人持续补充指令的情况下，知道下一步该做什么，并且没有把大型迁移变成一堆不可追踪的改动？
+" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<link rel="canonical" href="https://midFang.github.io/loop-harness-android-to-harmonyos-migration/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.af20b78e95c84de86b00a0242a4a77bd2601700e1b250edf27537d957ac0041d.css" integrity="sha256-ryC3jpXITehrAKAkKkp3vSYBcA4bJQ7fJ1N9lXrABB0=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="让 AI 连续干四天：我给 Android 到鸿蒙迁移搭了一套 Loop Harness" />
+<meta property="og:description" content="最近项目中，我需要把一个 Android 项目的全部页面迁移到鸿蒙。目标不是重新设计，而是尽可能完整地复刻原项目的页面、UI、交互、状态和跳转。
+
+实际效果比我预想得好：我只设置了一次总 Goal，中间没有继续指挥，Agent 持续执行了四天多。阶段结果里，鸿蒙界面的主体完成度已经接近九成。
+
+
+
+这里最重要的不是“四天”这个数字，而是：Agent 为什么能够在没有人持续补充指令的情况下，知道下一步该做什么，并且没有把大型迁移变成一堆不可追踪的改动？" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://midFang.github.io/loop-harness-android-to-harmonyos-migration/" />
+<meta property="article:published_time" content="2026-07-10T00:00:00+00:00" />
+<meta property="article:modified_time" content="2026-07-10T00:00:00+00:00" />
+<meta itemprop="name" content="让 AI 连续干四天：我给 Android 到鸿蒙迁移搭了一套 Loop Harness">
+<meta itemprop="description" content="最近项目中，我需要把一个 Android 项目的全部页面迁移到鸿蒙。目标不是重新设计，而是尽可能完整地复刻原项目的页面、UI、交互、状态和跳转。
+
+实际效果比我预想得好：我只设置了一次总 Goal，中间没有继续指挥，Agent 持续执行了四天多。阶段结果里，鸿蒙界面的主体完成度已经接近九成。
+
+
+
+这里最重要的不是“四天”这个数字，而是：Agent 为什么能够在没有人持续补充指令的情况下，知道下一步该做什么，并且没有把大型迁移变成一堆不可追踪的改动？">
+
+
+<meta itemprop="datePublished" content="2026-07-10T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2026-07-10T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="5088">
+
+
+
+<meta itemprop="keywords" content="AI Agent,Harness Engineering,Android,HarmonyOS,工程实践," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="让 AI 连续干四天：我给 Android 到鸿蒙迁移搭了一套 Loop Harness"/>
+<meta name="twitter:description" content="最近项目中，我需要把一个 Android 项目的全部页面迁移到鸿蒙。目标不是重新设计，而是尽可能完整地复刻原项目的页面、UI、交互、状态和跳转。
+
+实际效果比我预想得好：我只设置了一次总 Goal，中间没有继续指挥，Agent 持续执行了四天多。阶段结果里，鸿蒙界面的主体完成度已经接近九成。
+
+
+
+这里最重要的不是“四天”这个数字，而是：Agent 为什么能够在没有人持续补充指令的情况下，知道下一步该做什么，并且没有把大型迁移变成一堆不可追踪的改动？"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">midFang's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+        
+      </li>
+    
+
+    
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+
+  
+    
+<div class="modal-dialog">
+    
+    <div class="modal-content">
+      <div id="closeSearch" title="Close" class="close">X</div>
+      <div class="modal-header">
+        <div class="modal-title">Search</div>
+      </div>
+      <div class="modal-body">
+          <script>
+            (function() {
+              var cx = '57787f7f4d21d54fc';
+              var gcse = document.createElement('script');
+              gcse.type = 'text/javascript';
+              gcse.async = true;
+              gcse.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//cse.google.com/cse.js?cx=' + cx;
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(gcse, s);
+            })();
+          </script>
+          <gcse:search></gcse:search>
+      </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      midFang's Blog
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://midFang.github.io/about/">关于</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+      <li class="menu-item">
+        <a id="openSearch" class="menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            <svg version="1.1" viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M973.81454219 973.81454219a91.78207815 91.78207815 0 0 1-129.80999631 0l-161.97482118-161.97482118a425.48527711 425.48527711 0 0 1-230.35931791 68.16531768 428.3346319 428.3346319 0 1 1 428.3346319-428.3346319 425.48527711 425.48527711 0 0 1-68.16531768 230.35931791l162.02961656 161.97482118a91.83687354 91.83687354 0 0 1-0.05479538 129.80999631zM451.67040679 145.69361559a305.97679241 305.97679241 0 1 0 0 611.95358361 305.97679241 305.97679241 0 0 0 0-611.95358361z">
+  </path>
+</svg>
+
+          </i>
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">让 AI 连续干四天：我给 Android 到鸿蒙迁移搭了一套 Loop Harness</h1>
+      
+      <div class="post-meta">
+        <time datetime="2026-07-10" class="post-time">
+          2026-07-10
+        </time>
+        <div class="post-category">
+            <a href="https://midFang.github.io/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/"> 工程实践 </a>
+            
+          </div>
+        
+
+        
+        
+          <span id="busuanzi_container_page_pv">
+            | 阅读 <span id="busuanzi_value_page_pv"></span>
+          </span>
+        
+
+        
+        
+          <span id="/loop-harness-android-to-harmonyos-migration/" class="leancloud_visitors" data-flag-title="让 AI 连续干四天：我给 Android 到鸿蒙迁移搭了一套 Loop Harness">
+            <span class="post-meta-item-text"> | 阅读 </span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#先把两个概念说清楚-harness-engineering-与-loop-engineering">先把两个概念说清楚：Harness Engineering 与 Loop Engineering</a></li>
+<li><a href="#先说结论-loop-不等于重复调用模型">先说结论：Loop 不等于重复调用模型</a></li>
+<li><a href="#一-先用-agents-md-固定总边界">一、先用 AGENTS.md 固定总边界</a></li>
+<li><a href="#二-把长规则拆成按任务读取的路由">二、把长规则拆成按任务读取的路由</a></li>
+<li><a href="#三-先盘点-再按依赖关系决定迁移顺序">三、先盘点，再按依赖关系决定迁移顺序</a></li>
+<li><a href="#四-先给大模型一个-标准-再让它开始实现">四、先给大模型一个“标准”，再让它开始实现</a></li>
+<li><a href="#五-一个小例子-迁移-清理缓存-功能">五、一个小例子：迁移“清理缓存”功能</a></li>
+<li><a href="#六-用状态台账驱动下一轮-而不是依赖聊天记忆">六、用状态台账驱动下一轮，而不是依赖聊天记忆</a></li>
+<li><a href="#七-差异日志不是失败记录-而是防止-假完成-的护栏">七、差异日志不是失败记录，而是防止“假完成”的护栏</a></li>
+<li><a href="#八-二次审查必须反向阅读-android-原实现">八、二次审查必须反向阅读 Android 原实现</a></li>
+<li><a href="#九-git-阶段提交给长任务提供恢复点">九、Git 阶段提交给长任务提供恢复点</a></li>
+<li><a href="#十-我实际下发的-goal-怎么写">十、我实际下发的 Goal 怎么写</a></li>
+<li><a href="#十一-为什么这套方式能工作">十一、为什么这套方式能工作</a>
+<ul>
+<li><a href="#1-范围可枚举">1. 范围可枚举</a></li>
+<li><a href="#2-完成可验证">2. 完成可验证</a></li>
+<li><a href="#3-状态可恢复">3. 状态可恢复</a></li>
+<li><a href="#4-失败半径可控制">4. 失败半径可控制</a></li>
+<li><a href="#5-agent-有自主推进权-但没有随意改目标的权力">5. Agent 有自主推进权，但没有随意改目标的权力</a></li>
+</ul></li>
+<li><a href="#最后">最后</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      <p>最近项目中，我需要把一个 Android 项目的全部页面迁移到鸿蒙。目标不是重新设计，而是尽可能完整地复刻原项目的页面、UI、交互、状态和跳转。</p>
+
+<p>实际效果比我预想得好：我只设置了一次总 Goal，中间没有继续指挥，Agent 持续执行了四天多。阶段结果里，鸿蒙界面的主体完成度已经接近九成。</p>
+
+<p><img src="./assets/01-four-day-execution.png" alt="一次 Goal 的执行记录" /></p>
+
+<p>这里最重要的不是“四天”这个数字，而是：<strong>Agent 为什么能够在没有人持续补充指令的情况下，知道下一步该做什么，并且没有把大型迁移变成一堆不可追踪的改动？</strong></p>
+
+<h2 id="先把两个概念说清楚-harness-engineering-与-loop-engineering">先把两个概念说清楚：Harness Engineering 与 Loop Engineering</h2>
+
+<p>这两个词经常一起出现，但关注的层级不同。</p>
+
+<ul>
+<li><strong>Harness Engineering（执行环境工程）</strong>：围绕一次 Agent 执行，为它准备工具、上下文、规则、权限、验证方式，以及“什么才算完成”。它解决的是：<strong>这一轮怎样做对？</strong></li>
+<li><strong>Loop Engineering（循环工程）</strong>：位于 Harness 的外层，负责反复启动任务、读取上轮状态、选择下一步、调用验证、记录结果，并决定继续还是停止。它解决的是：<strong>做完这一轮以后，下一轮怎样自动开始？</strong></li>
+</ul>
+
+<p>可以把它们理解成：Harness 是给 Agent 铺好的跑道和护栏，Loop 是让它一圈圈继续跑下去的调度系统。我的实践把两者结合在了一起：仓库里的规则、契约和验证组成 Harness；外部 Loop Runner 则重复驱动“读取状态 → 选择任务 → 实现 → 验证 → 记录 → 下一轮”。</p>
+
+<h2 id="先说结论-loop-不等于重复调用模型">先说结论：Loop 不等于重复调用模型</h2>
+
+<p>如果只是把同一句提示放进 <code>while</code> 循环，Agent 很快就会遇到几个问题：</p>
+
+<ul>
+<li>不知道整个项目还有多少页面；</li>
+<li>不知道当前页面做到什么程度；</li>
+<li>上一轮说“完成”，下一轮无法验证；</li>
+<li>上下文压缩或进程重启后，执行状态丢失；</li>
+<li>为了继续推进，可能开始猜测、简化，甚至把平台不支持的能力标成完成；</li>
+<li>大量改动堆在一起，一旦失败很难回滚。</li>
+</ul>
+
+<p>我理解的 Harness，不是某一条神奇 Prompt，而是围绕模型搭建的一层工程环境：<strong>规则负责约束，契约负责定义完成，文件负责保存状态，工具负责验证，Git 负责提供恢复点。</strong></p>
+
+<p><img src="./assets/02-harness-architecture.svg" alt="Loop Harness 总体结构" /></p>
+
+<p>模型仍然负责理解代码、做判断和实现迁移，但它不再只依赖对话记忆。每一轮都能从仓库中的文件重新得到三个答案：</p>
+
+<ol>
+<li>总目标是什么；</li>
+<li>当前做到哪里；</li>
+<li>下一步应该选哪一项。</li>
+</ol>
+
+<h2 id="一-先用-agents-md-固定总边界">一、先用 AGENTS.md 固定总边界</h2>
+
+<p>这套工作流的入口是项目根目录下的 <code>AGENTS.md</code>。它不承担每个页面的全部细节，而是声明长期不变的边界：</p>
+
+<ul>
+<li>Android 原项目是事实基准；</li>
+<li>默认只修改鸿蒙目标项目，不修改 Android 源项目；</li>
+<li>迁移前先判断任务属于 UI、功能、资源、数据还是权限；</li>
+<li>没有页面或功能契约时，不直接开始大规模编码；</li>
+<li>每个迁移任务完成后都要做二次审查；</li>
+<li>平台差异必须进入差异日志，不能只留在聊天记录里；</li>
+<li>禁止主观重设计，禁止只迁移 happy path；</li>
+<li>未验证或平台不支持的能力，不能标成已完成。</li>
+</ul>
+
+<p>它更像仓库内的“执行宪法”。Goal 可以变化，页面可以增加，但这些边界在每一轮都成立。</p>
+
+<h2 id="二-把长规则拆成按任务读取的路由">二、把长规则拆成按任务读取的路由</h2>
+
+<p>我没有把所有要求都塞进一份超长提示，而是按迁移类型拆成多份规则：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">AGENTS.md
+└── docs/migration/
+    ├── README.md
+    ├── ui-migration-rules.md
+    ├── feature-migration-rules.md
+    ├── resource-migration-rules.md
+    ├── data-migration-rules.md
+    ├── permission-migration-rules.md
+    ├── review-rules.md
+    ├── migration-status.md
+    ├── difference-log.md
+    └── templates/
+        ├── page-contract-template.md
+        └── feature-contract-template.md</code></pre></td></tr></table>
+</div>
+</div>
+<p>Agent 先判断当前任务类型，再读取对应规则。迁移一个页面时，通常需要 UI、资源和功能规则；涉及本地存储或系统能力时，再加载数据和权限规则。</p>
+
+<p>每份 Markdown 的职责尽量保持单一：</p>
+
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>主要职责</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>AGENTS.md</code></td>
+<td>项目级总入口，声明事实基准、修改边界、执行顺序和禁止事项</td>
+</tr>
+
+<tr>
+<td><code>README.md</code></td>
+<td>迁移文档索引，告诉 Agent 不同任务应该继续读哪些规则</td>
+</tr>
+
+<tr>
+<td><code>ui-migration-rules.md</code></td>
+<td>约束布局、状态、交互、截图对照和视觉一致性</td>
+</tr>
+
+<tr>
+<td><code>feature-migration-rules.md</code></td>
+<td>约束功能入口、调用链、输入输出与成功/失败分支</td>
+</tr>
+
+<tr>
+<td><code>resource-migration-rules.md</code></td>
+<td>约束图片、图标、颜色、字符串、字体和资源复用</td>
+</tr>
+
+<tr>
+<td><code>data-migration-rules.md</code></td>
+<td>约束字段语义、默认值、缓存、排序、读写和异常数据</td>
+</tr>
+
+<tr>
+<td><code>permission-migration-rules.md</code></td>
+<td>约束权限申请时机、拒绝处理、系统能力和降级路径</td>
+</tr>
+
+<tr>
+<td><code>review-rules.md</code></td>
+<td>规定二次审查必须反向核对 Android 基准，并输出明确结论</td>
+</tr>
+
+<tr>
+<td><code>migration-status.md</code></td>
+<td>保存全局进度，供下一轮选择优先级最高的未完成任务</td>
+</tr>
+
+<tr>
+<td><code>difference-log.md</code></td>
+<td>持久记录无法完全等价的差异、原因、影响和处理决策</td>
+</tr>
+
+<tr>
+<td><code>page-contract-template.md</code></td>
+<td>为每个页面生成可检查的 UI 与交互标准</td>
+</tr>
+
+<tr>
+<td><code>feature-contract-template.md</code></td>
+<td>为每个功能生成输入、输出、分支和异常标准</td>
+</tr>
+</tbody>
+</table>
+
+<p><img src="./assets/03-document-routing.svg" alt="迁移规则的文档路由" /></p>
+
+<p>这样做有两个直接收益：</p>
+
+<ul>
+<li><strong>减少无关上下文</strong>：当前任务只加载当前需要的规则；</li>
+<li><strong>让约束可维护</strong>：发现遗漏时修改对应规则，而不是重新发明一条越来越长的总 Prompt。</li>
+</ul>
+
+<h2 id="三-先盘点-再按依赖关系决定迁移顺序">三、先盘点，再按依赖关系决定迁移顺序</h2>
+
+<p>总 Goal 的第一阶段不是马上写 ArkTS，而是同时盘点两边的工程。</p>
+
+<p>Android 侧需要找到的不只是 Activity 和 Fragment，还包括：</p>
+
+<ul>
+<li>Layout；</li>
+<li>Adapter / ViewHolder；</li>
+<li>自定义 View；</li>
+<li>弹窗和菜单；</li>
+<li>列表项；</li>
+<li>图片、图标、颜色、字符串和状态资源；</li>
+<li>页面入口、跳转关系以及相关功能调用链。</li>
+</ul>
+
+<p>鸿蒙侧则要盘点已有页面、路由、组件、资源和目录结构。两份盘点结果合并成迁移总清单，写入 <code>migration-status.md</code>。</p>
+
+<p>迁移顺序也不是简单按文件名遍历，而是优先：</p>
+
+<ol>
+<li>主入口和首页；</li>
+<li>一级页面；</li>
+<li>公共组件；</li>
+<li>高复用资源；</li>
+<li>被多个页面依赖的功能；</li>
+<li>最后处理低频页面和平台差异较大的能力。</li>
+</ol>
+
+<p>这样可以尽早打通主链路，也能减少同一组件被重复实现。</p>
+
+<h2 id="四-先给大模型一个-标准-再让它开始实现">四、先给大模型一个“标准”，再让它开始实现</h2>
+
+<p>大模型其实并不知道我们口中的“完成”“还原”或“1:1”具体指什么。如果只说“把这个页面复刻出来”，它只能根据通用经验自行猜测：能显示主界面，也许就会被当成完成；至于空状态、按压态、错误分支、弹窗和返回行为，则很容易被遗漏。</p>
+
+<p>所以关键不是要求模型自己领会标准，而是<strong>先把标准写出来</strong>。我采用的落地方式，是在页面实现前，根据统一模板建立一份页面迁移契约：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">docs/migration/pages/&lt;page-name&gt;.md</code></pre></td></tr></table>
+</div>
+</div>
+<p>契约至少记录：</p>
+
+<ul>
+<li>Android 页面入口、源码、Layout、Adapter 和资源；</li>
+<li>默认、加载、空数据、错误、禁用、选中、按压、弹窗和菜单状态；</li>
+<li>鸿蒙页面文件、路由、组件拆分和状态管理；</li>
+<li>布局、间距、字号、颜色、图标、文案和动画要求；</li>
+<li>点击、长按、返回、刷新、重试、跳转和权限触发；</li>
+<li>已知平台差异；</li>
+<li>截图对照和验收清单。</li>
+</ul>
+
+<p><img src="./assets/04-contract-anatomy.svg" alt="页面迁移契约的组成" /></p>
+
+<p>契约的价值是把“复刻原页面”拆成一组 Agent 可以逐项核对的事实。它既是实现说明，也是后续二次审查的输入。</p>
+
+<p>功能迁移同样有独立契约，重点记录输入、输出、默认值、排序、过滤、缓存，以及成功、失败、取消、权限拒绝、设备不支持、重复执行和生命周期分支。</p>
+
+<h2 id="五-一个小例子-迁移-清理缓存-功能">五、一个小例子：迁移“清理缓存”功能</h2>
+
+<p>假设要迁移一个很普通的“清理缓存”功能。用户点击按钮后，页面需要二次确认，执行时显示处理中状态，成功后刷新缓存大小；如果没有权限、清理失败或用户取消，还要有对应反馈。</p>
+
+<p><strong>没有这套工程时</strong>，常见的指令可能只有一句：“把 Android 的清理缓存功能迁到鸿蒙。”模型很可能先做出一个能点击的按钮，调用清理方法后弹出“完成”。主路径看起来通了，但二次确认、执行中禁用、取消、失败、重复点击和数据刷新都没有统一标准。下一轮模型也不知道上轮漏了什么，最后只能靠人逐项试出来再返工。</p>
+
+<p><strong>有了这套工作流后</strong>，执行方式会变成：</p>
+
+<ol>
+<li>从 Android 代码反向列出入口、确认弹窗、调用链和全部结果分支；</li>
+<li>在功能契约中写明输入、默认值、成功、失败、取消、无权限和重复点击行为；</li>
+<li>在状态台账中把该功能从“契约中”推进到“迁移中”；</li>
+<li>实现后按契约验证，二次审查再从 Android 基准反向核对；</li>
+<li>发现平台 API 不同，就写入差异日志，而不是静默改掉行为；</li>
+<li>验证通过后更新台账并提交 Git，Loop 再选择下一项。</li>
+</ol>
+
+<p><img src="./assets/06-feature-comparison.svg" alt="没有工程约束与使用 Loop Harness 的功能迁移对比" /></p>
+
+<p>同一个模型、同一个功能，区别不只是“Prompt 写得更长”，而是从<strong>模型自己猜什么叫完成</strong>，变成了<strong>仓库里已经存在可读取、可验证、可恢复的完成标准</strong>。</p>
+
+<h2 id="六-用状态台账驱动下一轮-而不是依赖聊天记忆">六、用状态台账驱动下一轮，而不是依赖聊天记忆</h2>
+
+<p><code>migration-status.md</code> 是整个循环的调度中心。页面和功能会在这些状态之间移动：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">未开始 → 契约中 → 迁移中 → 待审查 → 通过 / 有条件通过
+                                      └→ 不通过 → 继续修复</code></pre></td></tr></table>
+</div>
+</div>
+<p><img src="./assets/05-state-loop.svg" alt="迁移状态循环" /></p>
+
+<p>Agent 每轮都可以从台账中选择优先级最高、依赖已满足、尚未完成的对象。执行过程中同步更新状态，因此即使上下文被压缩，下一轮仍能从文件恢复现场。</p>
+
+<p>这也是“人不在，AI 干活不能停”的基础：不是要求模型永远记住一切，而是让它随时能够<strong>重新读取事实并继续</strong>。</p>
+
+<h2 id="七-差异日志不是失败记录-而是防止-假完成-的护栏">七、差异日志不是失败记录，而是防止“假完成”的护栏</h2>
+
+<p>Android 和鸿蒙的控件、权限模型、生命周期和系统能力并不完全相同。要求百分之百使用相同技术方案并不现实，但业务意图和用户体验应尽可能等价。</p>
+
+<p>我的处理方式是：</p>
+
+<ol>
+<li>先寻找鸿蒙上的等价实现；</li>
+<li>能迁移的部分继续推进，不因局部不确定而停住；</li>
+<li>无法等价时写入 <code>difference-log.md</code>；</li>
+<li>记录 Android 基准、鸿蒙实现、原因、影响范围、决策和后续动作；</li>
+<li>审查时给出“通过、条件通过或不通过”，不允许含糊地写“基本完成”。</li>
+</ol>
+
+<p>差异进入持久台账后，Agent 就不需要为了维持“任务在前进”的表象而掩盖问题。</p>
+
+<h2 id="八-二次审查必须反向阅读-android-原实现">八、二次审查必须反向阅读 Android 原实现</h2>
+
+<p>第一次实现很容易受到当前鸿蒙代码的锚定。如果 Review 只看迁移后的代码，往往只能检查代码风格，很难发现“原项目里其实还有一个状态没迁”。</p>
+
+<p>所以 <code>review-rules.md</code> 要求二次审查重新从 Android 侧开始：</p>
+
+<ol>
+<li>重新阅读 Android 原实现，列出真实存在的元素、分支和状态；</li>
+<li>对照鸿蒙实现逐项确认；</li>
+<li>核对图片、图标、颜色和文案是否被近似资源替代；</li>
+<li>核对点击、长按、返回、取消、确认、失败和重试；</li>
+<li>核对差异是否有原因、影响和替代方案；</li>
+<li>明确给出审查结论。</li>
+</ol>
+
+<p>它不是普通的 Code Review，而是一次<strong>迁移一致性 Review</strong>。</p>
+
+<h2 id="九-git-阶段提交给长任务提供恢复点">九、Git 阶段提交给长任务提供恢复点</h2>
+
+<p>四天级别的任务不能等到最后再提交。Agent 连续工作时间越长，未提交的改动就越多；一旦出现进程异常、误操作或工作区损坏，前面完成的代码就可能一起丢失。为此，我在 Goal 中明确要求：每完成一个阶段或一组页面，就进行一次 Git 提交。</p>
+
+<p>阶段提交有四个作用：</p>
+
+<ul>
+<li>及时把已经验证的代码保存到版本历史，避免意外丢失；</li>
+<li>将大任务切成可以回滚的小批次；</li>
+<li>让后续审查能看到每组页面的修改边界；</li>
+<li>Agent 中断或走错方向时，可以回到最近一个可信节点，而不是推翻四天的全部工作。</li>
+</ul>
+
+<p>通常每组页面会经历：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">迁移实现
+  → 构建 / 检查 / 测试
+  → 按 review-rules.md 二次审查
+  → 修复审查问题
+  → 更新状态与差异日志
+  → Git 提交
+  → 选择下一组页面</code></pre></td></tr></table>
+</div>
+</div>
+<p>如果构建环境暂时不可用，也不能静默跳过：需要记录原因，并继续完成可做的静态审查。</p>
+
+<h2 id="十-我实际下发的-goal-怎么写">十、我实际下发的 Goal 怎么写</h2>
+
+<p>这次 Goal 的核心不是一句“把 Android 项目迁到鸿蒙”，而是同时写清楚范围、执行规则、停止策略和完成标准。压缩后可以概括为：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">目标：完整迁移 Android 原项目的全部页面到当前鸿蒙项目。
+
+执行：
+1. 先读 AGENTS.md 和迁移规则；
+2. 自动盘点 Android 页面入口与鸿蒙现状；
+3. 生成总清单，为每个页面建立迁移契约；
+4. 按入口优先级和依赖顺序迁移；
+5. UI、交互、状态和资源尽可能与 Android 一致；
+6. 平台差异进入 difference-log.md，不阻塞其他可迁移内容；
+7. 每组页面后构建、二次审查、修复并提交 Git；
+8. 只有遇到真实外部阻塞才询问用户。
+
+完成：
+- 页面盘点完整；
+- 每页有状态和契约；
+- 可迁移页面全部实现；
+- 差异全部记录；
+- 二次审查完成；
+- 输出最终迁移报告。</code></pre></td></tr></table>
+</div>
+</div>
+<p>这里有一个很重要的措辞：<strong>不要因为缺截图、命名不确定或实现路径不确定而停止。</strong> Agent 可以做合理假设，但必须记录依据；只有遇到无法通过代码、工具或其他任务绕开的真实外部阻塞，才安全停下来。</p>
+
+<h2 id="十一-为什么这套方式能工作">十一、为什么这套方式能工作</h2>
+
+<p>回头看，这套流程真正解决了长任务的五个问题：</p>
+
+<h3 id="1-范围可枚举">1. 范围可枚举</h3>
+
+<p>先盘点全部页面和入口，任务不再是模糊的“迁完一个 App”，而是有限集合上的状态推进。</p>
+
+<h3 id="2-完成可验证">2. 完成可验证</h3>
+
+<p>契约里同时包含正常路径、异常路径、视觉状态和交互行为，避免把“能打开”当成“已迁移”。</p>
+
+<h3 id="3-状态可恢复">3. 状态可恢复</h3>
+
+<p>迁移状态、审查结论和平台差异都写在仓库中，不依赖某一轮对话上下文。</p>
+
+<h3 id="4-失败半径可控制">4. 失败半径可控制</h3>
+
+<p>阶段构建、二次审查和 Git 提交让每组页面成为独立恢复点。</p>
+
+<h3 id="5-agent-有自主推进权-但没有随意改目标的权力">5. Agent 有自主推进权，但没有随意改目标的权力</h3>
+
+<p>它可以决定下一页如何实现、遇到差异先做哪一部分，却不能主观重设计、隐藏差异或把未验证能力标成完成。</p>
+
+<p>这正是我对 Harness Engineering 的理解：<strong>不是让模型变得更自由，而是让它在清晰边界、持久状态和自动反馈中持续行动。</strong></p>
+
+<h2 id="最后">最后</h2>
+
+<p>这次实践让我感受最明显的一点是：大模型能不能长时间工作，关键不只在模型本身，更在模型外面有没有一套足够清晰的 Harness。</p>
+
+<p>当目标、约束、状态、验证和恢复点都落到仓库里以后，Agent 才真正从“一次性回答问题”变成了“持续推进工程任务”。</p>
+
+<p>一次 Goal，四天执行，界面主体接近九成。真正起作用的不是让 AI 不停生成代码，而是先把它工作的轨道铺好。</p>
+
+<p>做到这里，我也在某种程度上重新理解了 AI：它不再只是靠一轮轮 Prompt 对话来干活，也可以发展成一套能够自循环的系统。这应该是一项长期工程。AI 是个人能力的放大器，有 Token，也有想法，个人真的可以做很多事情。</p>
+
+<p>文中使用的工作流模板已经开源：<a href="https://github.com/midFang/android-harmonyos-loop-harness">android-harmonyos-loop-harness</a>。</p>
+
+<p>有不了解 Harness 和 Loop 循环工程的，在这里推荐一篇文章，花叔写的 <a href="https://github.com/alchaincyf/loop-engineering-orange-book">《Loop Engineering 橙皮书》</a>，写得非常好。</p>
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">midFang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2026-07-10
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://midFang.github.io/tags/ai-agent/">AI Agent</a>
+          <a href="https://midFang.github.io/tags/harness-engineering/">Harness Engineering</a>
+          <a href="https://midFang.github.io/tags/android/">Android</a>
+          <a href="https://midFang.github.io/tags/harmonyos/">HarmonyOS</a>
+          <a href="https://midFang.github.io/tags/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">工程实践</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/books-peter-lynch-successful-investing-reading-notes/">
+            <span class="next-text nav-default">《彼得·林奇的成功投资》读书笔记</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "midFang/blog-comments"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/midFang" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://stackoverflow.com/users/14331888/midfang" rel="me noopener" class="iconfont"
+      title="stack-overflow"  target="_blank"
+      >
+      <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M809.714286 932.571429l-638.857143 0 0-274.285714-91.428571 0 0 365.714286 821.714286 0 0-365.714286-91.428571 0 0 274.285714zm-538.285714-299.428571l18.857143-89.714286 447.428571 94.285714-18.857143 89.142857zm58.857143-213.714286l38.285714-83.428571 414.285714 193.714286-38.285714 82.857143zm114.857143-203.428571l58.285714-70.285714 350.857143 293.142857-58.285714 70.285714zm226.857143-216l272.571429 366.285714-73.142857 54.857143-272.571429-366.285714zm-410.285714 840.571429l0-90.857143 457.142857 0 0 90.857143-457.142857 0z"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://www.douban.com/people/194654920/" rel="me noopener" class="iconfont"
+      title="douban"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M926.917973 37.80608C959.65184 37.80608 986.19392 64.34816 986.19392 97.082027L986.19392 926.917973C986.19392 959.65184 959.65184 986.19392 926.917973 986.19392L97.082027 986.19392C64.34816 986.19392 37.80608 959.65184 37.80608 926.917973L37.80608 97.082027C37.80608 64.34816 64.34816 37.80608 97.082027 37.80608zM176.653653 176.19968 176.653653 252.678827 825.658027 252.678827 825.658027 176.19968zM217.719467 316.146347 217.719467 628.08064 273.524053 628.08064 341.292373 770.39616 157.259093 770.39616 157.259093 845.417813 842.949973 845.417813 842.949973 770.39616 654.226773 770.39616 722.899627 628.08064 783.67744 628.08064 783.67744 316.146347zM684.885333 392.891733 684.885333 553.987413 312.576 553.987413 312.576 392.891733zM570.770773 770.39616 426.653013 770.39616 359.621973 628.08064 639.443627 628.08064z"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://midFang.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2020 -
+    2026
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        midFang
+        
+      </span></span>
+
+  
+  
+    <span id="busuanzi_container">
+      访客数/访问量：<span id="busuanzi_value_site_uv"></span>/<span id="busuanzi_value_site_pv"></span>
+    </span>
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script type="text/javascript">
+    AV.initialize( null ,  null );
+  </script>
+
+  <script>
+    function showHitCount(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push($(this).attr("id").trim());
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var hits = item.get('hits');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(hits);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if (countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function (results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("hits");
+            counter.save(null, {
+              success: function (counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('hits'));
+              },
+              error: function (counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+             
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+             
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("hits", 1);
+            newcounter.save(null, {
+              success: function (newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('hits'));
+              },
+              error: function (newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function (error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function () {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        
+        addCount(Counter);
+      } else if ($('.post-link').length > 1) {
+        
+        showHitCount(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+  <script>
+    $("#openSearch, #openSearchMobile").click(function(){
+      $(".modal-dialog").addClass("visible");
+    });
+
+    $("#closeSearch").click(function(){
+      $(".modal-dialog").removeClass("visible");
+    });
+
+    $(document).click(function(event) {
+    
+      if (!$(event.target).closest(".modal-content, #openSearch, #openSearchMobile").length) {
+        $("body").find(".modal-dialog").removeClass("visible");
+      }
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>

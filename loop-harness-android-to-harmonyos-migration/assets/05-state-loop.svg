@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="640" viewBox="0 0 1400 640"><rect width="100%" height="100%" fill="#F7F9FC"/><style>
+  .title{font:700 34px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#14213d}
+  .sub{font:400 18px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#526079}
+  .h{font:700 22px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#14213d}
+  .t{font:400 17px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#33415c}
+  .small{font:400 15px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#526079}
+  .white{fill:#fff}.mono{font:500 15px Consolas,monospace;fill:#33415c}
+</style>
+<text x="70" y="70" class="title">循环的关键：每一步都有持久状态和明确出口</text>
+<text x="70" y="108" class="sub">不是“永远重复同一句提示”，而是根据台账挑选下一个未完成对象</text>
+<circle cx="180" cy="315" r="92" fill="#E8F0FF" stroke="#7297F5"/><text x="180" y="308" text-anchor="middle" class="h">未开始</text><text x="180" y="340" text-anchor="middle" class="small">尚未建契约</text>
+<circle cx="440" cy="315" r="92" fill="#EDF3FF" stroke="#7297F5"/><text x="440" y="308" text-anchor="middle" class="h">契约中</text><text x="440" y="340" text-anchor="middle" class="small">定义基准与验收</text>
+<circle cx="700" cy="315" r="92" fill="#E8FFF5" stroke="#56B88A"/><text x="700" y="308" text-anchor="middle" class="h">迁移中</text><text x="700" y="340" text-anchor="middle" class="small">实现与阶段提交</text>
+<circle cx="960" cy="315" r="92" fill="#FFF4DC" stroke="#E7B75C"/><text x="960" y="308" text-anchor="middle" class="h">待审查</text><text x="960" y="340" text-anchor="middle" class="small">反向核对 Android</text>
+<circle cx="1220" cy="235" r="82" fill="#E8FFF5" stroke="#56B88A"/><text x="1220" y="228" text-anchor="middle" class="h">通过</text><text x="1220" y="260" text-anchor="middle" class="small">或有条件通过</text>
+<circle cx="1220" cy="440" r="82" fill="#FFECEC" stroke="#E47C7C"/><text x="1220" y="433" text-anchor="middle" class="h">不通过</text><text x="1220" y="465" text-anchor="middle" class="small">回到迁移中</text>
+<path d="M272 315 H348 M532 315 H608 M792 315 H868 M1052 295 L1140 255 M1042 355 L1145 415" fill="none" stroke="#5B6B88" stroke-width="3" marker-end="url(#a)"/>
+<path d="M1190 520 C1050 600 760 590 700 407" fill="none" stroke="#E47C7C" stroke-width="3" stroke-dasharray="10 8" marker-end="url(#a)"/>
+<rect x="420" y="520" width="560" height="70" rx="16" fill="#14213D"/><text x="700" y="563" text-anchor="middle" class="t white">真实外部阻塞：记录原因，保留现场，安全停止</text>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#5B6B88"/></marker></defs>
+</svg>

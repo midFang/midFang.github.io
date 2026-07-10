@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>HarmonyOS on midFang&#39;s Blog</title>
+    <link>https://midFang.github.io/tags/harmonyos/</link>
+    <description>Recent content in HarmonyOS on midFang&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 10 Jul 2026 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://midFang.github.io/tags/harmonyos/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>让 AI 连续干四天：我给 Android 到鸿蒙迁移搭了一套 Loop Harness</title>
+      <link>https://midFang.github.io/loop-harness-android-to-harmonyos-migration/</link>
+      <pubDate>Fri, 10 Jul 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/loop-harness-android-to-harmonyos-migration/</guid>
+      <description>&lt;p&gt;最近项目中，我需要把一个 Android 项目的全部页面迁移到鸿蒙。目标不是重新设计，而是尽可能完整地复刻原项目的页面、UI、交互、状态和跳转。&lt;/p&gt;
+
+&lt;p&gt;实际效果比我预想得好：我只设置了一次总 Goal，中间没有继续指挥，Agent 持续执行了四天多。阶段结果里，鸿蒙界面的主体完成度已经接近九成。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;./assets/01-four-day-execution.png&#34; alt=&#34;一次 Goal 的执行记录&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这里最重要的不是“四天”这个数字，而是：&lt;strong&gt;Agent 为什么能够在没有人持续补充指令的情况下，知道下一步该做什么，并且没有把大型迁移变成一堆不可追踪的改动？&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

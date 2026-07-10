@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="780" viewBox="0 0 1400 780"><rect width="100%" height="100%" fill="#F7F9FC"/><style>
+  .title{font:700 34px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#14213d}
+  .sub{font:400 18px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#526079}
+  .h{font:700 22px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#14213d}
+  .t{font:400 17px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#33415c}
+  .small{font:400 15px "Microsoft YaHei","Noto Sans SC",sans-serif;fill:#526079}
+  .white{fill:#fff}.mono{font:500 15px Consolas,monospace;fill:#33415c}
+</style>
+<text x="70" y="70" class="title">页面契约：把“像原项目”变成可验收的定义</text>
+<text x="70" y="108" class="sub">一页一契约；先写基准，再实现，最后由另一轮审查反向核对</text>
+<rect x="70" y="155" width="1260" height="540" rx="24" fill="#fff" stroke="#D6DEEA"/>
+<rect x="70" y="155" width="1260" height="75" rx="24" fill="#14213D"/><text x="110" y="202" class="h white">&lt;页面名称&gt; 页面迁移契约</text><text x="1240" y="202" text-anchor="end" class="t white">草稿 → 迁移中 → 待审查 → 通过</text>
+<rect x="110" y="270" width="350" height="170" rx="18" fill="#E8F0FF"/><text x="140" y="310" class="h">Android 基准</text><text x="140" y="348" class="t">• 入口、Activity / Fragment</text><text x="140" y="380" class="t">• Layout、Adapter、资源</text><text x="140" y="412" class="t">• 默认 / 加载 / 错误等状态</text>
+<rect x="525" y="270" width="350" height="170" rx="18" fill="#E8FFF5"/><text x="555" y="310" class="h">鸿蒙目标</text><text x="555" y="348" class="t">• 页面文件与路由入口</text><text x="555" y="380" class="t">• 组件拆分与状态管理</text><text x="555" y="412" class="t">• 资源与能力映射</text>
+<rect x="940" y="270" width="350" height="170" rx="18" fill="#FFF4DC"/><text x="970" y="310" class="h">一致性要求</text><text x="970" y="348" class="t">• UI、文案、资源、交互</text><text x="970" y="380" class="t">• 权限、异常、生命周期</text><text x="970" y="412" class="t">• 已知差异与替代方案</text>
+<rect x="110" y="485" width="760" height="160" rx="18" fill="#F7F9FC" stroke="#D6DEEA"/><text x="140" y="525" class="h">验收清单</text><text x="140" y="563" class="t">□ 截图对照　□ 所有状态　□ 点击/返回/重试　□ 差异已入账</text><text x="140" y="601" class="t">□ 状态表已更新　□ 构建/检查完成　□ 二次审查完成</text>
+<rect x="940" y="485" width="350" height="160" rx="18" fill="#FFECEC" stroke="#E47C7C"/><text x="970" y="525" class="h">审查结论</text><text x="970" y="565" class="t">通过 / 有条件通过 / 不通过</text><text x="970" y="603" class="small">平台差异必须说明原因与影响</text>
+<path d="M460 355 H525 M875 355 H940" stroke="#5B6B88" stroke-width="3" marker-end="url(#a)"/>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#5B6B88"/></marker></defs>
+</svg>

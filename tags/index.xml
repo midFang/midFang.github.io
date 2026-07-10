@@ -6,10 +6,55 @@
     <description>Recent content in Tags on midFang&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 04 Jul 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 10 Jul 2026 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://midFang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>AI Agent</title>
+      <link>https://midFang.github.io/tags/ai-agent/</link>
+      <pubDate>Fri, 10 Jul 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/ai-agent/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Android</title>
+      <link>https://midFang.github.io/tags/android/</link>
+      <pubDate>Fri, 10 Jul 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>HarmonyOS</title>
+      <link>https://midFang.github.io/tags/harmonyos/</link>
+      <pubDate>Fri, 10 Jul 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/harmonyos/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Harness Engineering</title>
+      <link>https://midFang.github.io/tags/harness-engineering/</link>
+      <pubDate>Fri, 10 Jul 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/harness-engineering/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>工程实践</title>
+      <link>https://midFang.github.io/tags/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Fri, 10 Jul 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://midFang.github.io/tags/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>投资</title>
@@ -26,24 +71,6 @@
       <pubDate>Sat, 04 Jul 2026 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>AI Agent</title>
-      <link>https://midFang.github.io/tags/ai-agent/</link>
-      <pubDate>Thu, 25 Jun 2026 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/tags/ai-agent/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Android</title>
-      <link>https://midFang.github.io/tags/android/</link>
-      <pubDate>Thu, 25 Jun 2026 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/tags/android/</guid>
       <description></description>
     </item>
     
@@ -161,33 +188,6 @@
       <pubDate>Tue, 04 May 2021 00:00:00 +0000</pubDate>
       
       <guid>https://midFang.github.io/tags/ipc/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Socket</title>
-      <link>https://midFang.github.io/tags/socket/</link>
-      <pubDate>Tue, 04 May 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/tags/socket/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Hook</title>
-      <link>https://midFang.github.io/tags/hook/</link>
-      <pubDate>Sun, 18 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/tags/hook/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>gradle</title>
-      <link>https://midFang.github.io/tags/gradle/</link>
-      <pubDate>Sun, 11 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://midFang.github.io/tags/gradle/</guid>
       <description></description>
     </item>
     
